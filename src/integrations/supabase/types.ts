@@ -14,7 +14,219 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          department: string | null
+          details: string | null
+          id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          department?: string | null
+          details?: string | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          department?: string | null
+          details?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      department_pins: {
+        Row: {
+          id: string
+          label: string
+          pin: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          label: string
+          pin: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          label?: string
+          pin?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      dynamic_fields: {
+        Row: {
+          created_at: string
+          department: string | null
+          dropdown_options: Json | null
+          field_label: string
+          field_name: string
+          field_type: string
+          id: string
+          is_active: boolean
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          dropdown_options?: Json | null
+          field_label: string
+          field_name: string
+          field_type?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          dropdown_options?: Json | null
+          field_label?: string
+          field_name?: string
+          field_type?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      lab_results: {
+        Row: {
+          created_at: string
+          employee_id: string
+          id: string
+          parameter_name: string
+          plant: string
+          sample_type: string
+          technician_name: string
+          timestamp: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          id?: string
+          parameter_name: string
+          plant: string
+          sample_type: string
+          technician_name: string
+          timestamp?: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          id?: string
+          parameter_name?: string
+          plant?: string
+          sample_type?: string
+          technician_name?: string
+          timestamp?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      locked_dates: {
+        Row: {
+          id: string
+          locked_at: string
+          locked_by: string
+          locked_date: string
+        }
+        Insert: {
+          id?: string
+          locked_at?: string
+          locked_by?: string
+          locked_date: string
+        }
+        Update: {
+          id?: string
+          locked_at?: string
+          locked_by?: string
+          locked_date?: string
+        }
+        Relationships: []
+      }
+      operations_logs: {
+        Row: {
+          created_at: string
+          department: string
+          employee_id: string | null
+          id: string
+          timestamp: string
+          unit_tag: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          employee_id?: string | null
+          id?: string
+          timestamp?: string
+          unit_tag: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          employee_id?: string | null
+          id?: string
+          timestamp?: string
+          unit_tag?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      samples: {
+        Row: {
+          analysis_type: string
+          created_at: string
+          department: string
+          dynamic_data: Json
+          employee_id: string
+          id: string
+          notes: string | null
+          sample_date: string
+          sample_name: string
+          status: string
+          technician_name: string
+          updated_at: string
+        }
+        Insert: {
+          analysis_type?: string
+          created_at?: string
+          department: string
+          dynamic_data?: Json
+          employee_id: string
+          id?: string
+          notes?: string | null
+          sample_date?: string
+          sample_name: string
+          status?: string
+          technician_name: string
+          updated_at?: string
+        }
+        Update: {
+          analysis_type?: string
+          created_at?: string
+          department?: string
+          dynamic_data?: Json
+          employee_id?: string
+          id?: string
+          notes?: string | null
+          sample_date?: string
+          sample_name?: string
+          status?: string
+          technician_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
