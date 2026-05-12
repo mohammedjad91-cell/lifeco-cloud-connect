@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -102,6 +103,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -109,7 +112,7 @@ function RootComponent() {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <Outlet />
+          {mounted ? <Outlet /> : <div className="min-h-screen bg-background" />}
         </TooltipProvider>
       </I18nProvider>
     </QueryClientProvider>
