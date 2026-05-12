@@ -242,10 +242,12 @@ export const useI18n = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "en";
     return (localStorage.getItem("lifeco_lang") as Lang) || "en";
   });
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.setItem("lifeco_lang", lang);
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = lang;
