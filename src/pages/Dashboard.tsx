@@ -61,7 +61,7 @@ const Dashboard = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
   const [value, setValue] = useState("");
-  const [employeeId, setEmployeeId] = useState("");
+  const [employeeId, setEmployeeId] = useState(getOperator()?.employeeId || "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
