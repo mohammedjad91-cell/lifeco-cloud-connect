@@ -28,21 +28,28 @@ const Login = () => {
   const [error, setError] = useState("");
   const [shaking, setShaking] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [pendingDept, setPendingDept] = useState<string | null>(null);
   const navigate = useNavigate();
   const { t, lang, setLang } = useI18n();
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const pinPanelRef = useRef<HTMLDivElement>(null);
+
+  // Autofocus hidden input + scroll into view when a department is selected
+  useEffect(() => {
+    if (selectedDept) {
+      setTimeout(() => {
+        hiddenInputRef.current?.focus();
+        pinPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+    }
+  }, [selectedDept]);
 
   const verifyPin = async (deptId: string, enteredPin: string): Promise<boolean> => {
     const fallbackDept = DEPARTMENTS.find((dept) => dept.id === deptId);
-
     try {
       const { data, error } = await supabase
-        .from("department_pins")
-        .select("pin")
-        .eq("id", deptId)
-        .maybeSingle();
-
+        .from("department_pins").select("pin").eq("id", deptId).maybeSingle();
       if (!error && data?.pin) return data.pin === enteredPin;
-
       return fallbackDept?.pin === enteredPin;
     } catch {
       return fallbackDept?.pin === enteredPin;
@@ -56,26 +63,42 @@ const Login = () => {
     else navigate("/dashboard");
   };
 
+  const submitPin = (pinValue: string) => {
+    if (!selectedDept || pinValue.length !== 4) return;
+    setIsVerifying(true);
+    verifyPin(selectedDept, pinValue).then((ok) => {
+      setIsVerifying(false);
+      if (ok) {
+        setPendingDept(selectedDept);
+      } else {
+        setShaking(true);
+        setError(lang === "ar" ? "رمز غير صحيح" : "Invalid PIN");
+        setTimeout(() => { setPin(""); setShaking(false); }, 600);
+      }
+    });
+  };
+
   const handlePinInput = (digit: string) => {
     if (pin.length < 4) {
       const newPin = pin + digit;
       setPin(newPin);
       setError("");
-      if (newPin.length === 4) {
-        if (!selectedDept) return;
-        setIsVerifying(true);
-        verifyPin(selectedDept, newPin).then((ok) => {
-          setIsVerifying(false);
-          if (ok) {
-            navigateToDept(selectedDept);
-          } else {
-            setShaking(true);
-            setError(lang === "ar" ? "رمز غير صحيح" : "Invalid PIN");
-            setTimeout(() => { setPin(""); setShaking(false); }, 600);
-          }
-        });
-      }
+      if (newPin.length === 4) submitPin(newPin);
     }
+  };
+
+  const handleHiddenKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitPin(pin);
+    }
+  };
+
+  const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+    setPin(v);
+    setError("");
+    if (v.length === 4) submitPin(v);
   };
 
   return (
