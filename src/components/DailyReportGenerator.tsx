@@ -1,0 +1,99 @@
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { generateDailyReport } from "@/lib/report.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Sparkles, FileDown, Loader2 } from "lucide-react";
+import { format } from "date-fns";
+import jsPDF from "jspdf";
+import { useToast } from "@/hooks/use-toast";
+import { getOperator, getStamp } from "@/lib/session";
+
+interface Props {
+  department: string;
+  date: Date;
+}
+
+export default function DailyReportGenerator({ department, date }: Props) {
+  const { toast } = useToast();
+  const generate = useServerFn(generateDailyReport);
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const run = async () => {
+    setBusy(true);
+    try {
+      const start = new Date(date); start.setHours(0, 0, 0, 0);
+      const end = new Date(date); end.setHours(23, 59, 59, 999);
+      const op = getOperator();
+      const stamp = getStamp(op);
+
+      const [opsRes, labRes] = await Promise.all([
+        supabase.from("operations_logs").select("unit_tag,value,timestamp,employee_id")
+          .eq("department", department)
+          .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString()),
+        supabase.from("lab_results").select("parameter_name,value,sample_type,technician_name,timestamp")
+          .eq("plant", department)
+          .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString()),
+      ]);
+
+      const result = await generate({
+        data: {
+          department,
+          date: format(date, "EEEE, dd MMM yyyy"),
+          operator: stamp.user,
+          opsLogs: (opsRes.data || []) as any,
+          labResults: (labRes.data || []) as any,
+          maintenance: [],
+        },
+      });
+      setDraft(result.draft);
+      if (result.error) toast({ title: "AI returned an error", variant: "destructive" });
+    } catch (e) {
+      toast({ title: "Failed to generate", variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const exportPdf = () => {
+    const op = getOperator();
+    const stamp = getStamp(op);
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`LIFECO PMS 2026 — Daily Report (${department})`, 14, 18);
+    doc.setFontSize(10);
+    doc.text(`${stamp.day}, ${stamp.date} — Operator: ${stamp.user}`, 14, 26);
+    doc.setFontSize(11);
+    const lines = doc.splitTextToSize(draft || "(empty)", 180);
+    doc.text(lines, 14, 36);
+    doc.save(`LIFECO_DailyReport_${department}_${format(date, "yyyyMMdd")}.pdf`);
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold neon-text flex items-center gap-2">
+          <Sparkles className="w-5 h-5" /> Smart Daily Report
+        </h3>
+        <div className="flex gap-2">
+          <Button onClick={run} disabled={busy} className="gap-1.5">
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            Generate
+          </Button>
+          <Button variant="outline" onClick={exportPdf} disabled={!draft} className="gap-1.5">
+            <FileDown className="w-4 h-4" /> Export PDF
+          </Button>
+        </div>
+      </div>
+      <Textarea
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        rows={16}
+        placeholder="Click Generate to draft a professional shift report from today's logs and lab readings. You can edit before exporting."
+        className="font-mono text-xs"
+      />
+    </div>
+  );
+}
