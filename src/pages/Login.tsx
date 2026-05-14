@@ -235,7 +235,18 @@ const Login = () => {
                 exit={{ opacity: 0, y: 20, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="glass-card p-6 max-w-sm mx-auto neon-border">
+                <div ref={pinPanelRef} className="glass-card p-6 max-w-sm mx-auto neon-border">
+                  <input
+                    ref={hiddenInputRef}
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={pin}
+                    onChange={handleHiddenChange}
+                    onKeyDown={handleHiddenKey}
+                    className="absolute opacity-0 w-px h-px"
+                    aria-label="PIN entry"
+                  />
                   <div className="flex items-center gap-2 mb-4 justify-center">
                     <Shield className="w-4 h-4 text-primary" />
                     <span className="text-foreground font-medium text-sm">
