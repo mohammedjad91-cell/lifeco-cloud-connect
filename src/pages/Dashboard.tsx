@@ -468,6 +468,12 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
+            <TabsTrigger value="assets" className="gap-1.5">
+              <Wrench className="w-3.5 h-3.5" /> Assets
+            </TabsTrigger>
+            <TabsTrigger value="report" className="gap-1.5">
+              <FileText className="w-3.5 h-3.5" /> Report
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
