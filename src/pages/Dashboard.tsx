@@ -396,6 +396,9 @@ const Dashboard = () => {
           <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
+            <Sparkles className="w-4 h-4" /> AI Assistant
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
           </Button>
@@ -406,12 +409,13 @@ const Dashboard = () => {
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
-            <LogOut className="w-4 h-4" /> {t.exit}
+            <LogOut className="w-4 h-4" /> Back to Main
           </Button>
         </div>
       </header>
 
       <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6">
+        <DateUserBanner />
         {/* Global Date Filter */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
