@@ -1,62 +1,104 @@
-# Port LIFECO PMS into this Lovable project
+## LIFECO PMS — Final UI & Functional Improvements
 
-## What you uploaded
-- Standard Vite + React + React Router + Tailwind v3 app
-- 6 pages: `Login`, `Dashboard`, `LabDashboard`, `PlantView`, `AdminSettings`, `BIDashboard` + `NotFound`
-- Components: `AnalyticsDashboard`, `ExportPreviewDialog`, `FieldOpsForm`, `GlassPulseChart`, `NavLink`, full shadcn/ui
-- Libs: `i18n` provider, `departments`, `ranges`, `utils`; hooks: `use-mobile`, `use-toast`
-- Supabase integration files + 10 migrations + 1 edge function (`verify-pin`)
-- Glassmorphism design tokens (HSL) with Orbitron + Inter fonts, neon glow, `.glass-card` utility
+I'll ship this in 5 focused workstreams, all preserving the existing glassmorphism dark-blue theme.
 
-## Target environment
-- This Lovable project runs **TanStack Start + Tailwind v4** (not React Router + Tailwind v3). Per your choice, I'll port the source into the TanStack template rather than replace it.
-- Lovable Cloud will be enabled, which provisions a fresh Supabase project. Your 10 migrations will be replayed there. **The original project ID `kvqfsqlcbbjtazuwhjjl` cannot be reused** — Lovable Cloud always creates a new one. Schema and data structure are preserved; the project ID changes.
+---
 
-## Steps
+### 1. PIN Entry & Navigation UX
 
-1. **Enable Lovable Cloud** — provisions Supabase, generates `src/integrations/supabase/{client.ts,client.server.ts,auth-middleware.ts,types.ts}` and the env vars.
+**File:** `src/pages/Login.tsx`
 
-2. **Install missing deps**: `framer-motion`, `recharts`, `jspdf`, `jspdf-autotable`, `date-fns`, `zod`, `react-hook-form`, `@hookform/resolvers`, `next-themes`, `embla-carousel-react`, `input-otp`, `react-day-picker`, `cmdk`, `vaul` (only the ones not already in the template).
+- Replace numeric keypad-only input with a **hidden auto-focused `<input type="password" inputMode="numeric" maxLength={4}>`** that opens centered in viewport when a department is selected (scroll into view + autofocus).
+- Keep the visual 4-dot indicator + on-screen keypad for touch users, but allow physical keyboard typing + **Enter to submit**.
+- After successful PIN, navigate to dashboard (already works).
+- Add a consistent **"Back to Main"** button on every sub-page (Dashboard, Lab, Plant, Admin, BI) → routes to `/`.
 
-3. **Copy non-routing source verbatim** into the project:
-   - `src/components/{AnalyticsDashboard,ExportPreviewDialog,FieldOpsForm,GlassPulseChart,NavLink}.tsx`
-   - `src/lib/{i18n.tsx,departments.ts,ranges.ts}` (merge with existing `utils.ts`)
-   - `src/hooks/use-toast.ts` (keep existing `use-mobile.tsx`)
-   - `src/assets/*` (any logos/images)
+---
 
-4. **Port routing to TanStack file-based routes** under `src/routes/`:
-   ```
-   src/routes/
-     __root.tsx          ← wrap Outlet in QueryClientProvider + I18nProvider + TooltipProvider + Toaster + Sonner
-     index.tsx           ← Login (path "/")
-     dashboard.tsx       ← Dashboard
-     lab.tsx             ← LabDashboard
-     plant.tsx           ← PlantView
-     admin.tsx           ← AdminSettings
-     bi.tsx              ← BIDashboard
-   ```
-   - Replace `react-router-dom` imports (`useNavigate`, `Link`, `useParams`) with `@tanstack/react-router` equivalents inside each page.
-   - Delete `src/App.tsx` / `src/main.tsx` patterns (template uses `__root.tsx`).
-   - Remove the `PlaceholderIndex` from current `src/routes/index.tsx`.
+### 2. Auto-Documentation (Day / Date / User)
 
-5. **Translate glassmorphism tokens to Tailwind v4** in `src/styles.css`:
-   - Convert the HSL design tokens (background, primary gold, accent cyan, neon-glow, glass-bg/border/shadow, sidebar tokens) to **oklch** equivalents to match template conventions.
-   - Add `@theme inline` mappings so Tailwind classes (`bg-background`, `text-primary`, etc.) resolve.
-   - Re-add `.glass-card`, neon glow utilities, and the Orbitron + Inter `@import url(...)` from Google Fonts.
-   - Visual result is identical to the original (dark navy background, gold primary, cyan accent, frosted glass panels).
+**New file:** `src/lib/session.ts` — helpers `getCurrentUser()`, `getTimestampStamp()` returning `{ day, date, time, user }`.
 
-6. **Replay Supabase schema** — apply the 10 migration SQL files (`20260326…` → `20260412…`) via the migration tool against the new Lovable Cloud Supabase project, in chronological order. Adjust any references to the old project ID.
+**Login flow update:** capture **Operator Name + Employee ID** in a small modal AFTER PIN success (stored in `sessionStorage` as `lifeco_user`). Pre-fill on next login.
 
-7. **Recreate the `verify-pin` edge function** as a TanStack server function (`src/lib/verify-pin.functions.ts`) using `requireSupabaseAuth` — TanStack Start uses server functions instead of Supabase Edge Functions.
+**Dashboard header (`src/pages/Dashboard.tsx`):** prominent banner showing `Thursday, 14 May 2026 — Operator: <name> (<empId>)`, live clock.
 
-8. **Verification**:
-   - Build passes (no unresolved imports, no React Router DOM left).
-   - `/`, `/dashboard`, `/lab`, `/plant`, `/admin`, `/bi` all render with glass styling.
-   - Supabase client connects; tables from migrations are visible in the Cloud tab.
+**Stamping:** every insert into `operations_logs`, `lab_results`, `samples` includes `employee_id` + a `logged_by` text field with the formatted stamp `[Day/Date/Time/User]`.
 
-## Tradeoffs you should know
-- **Schema is preserved, data is not.** Migrations recreate empty tables; if you have production data in `kvqfsqlcbbjtazuwhjjl`, you'll need to export/import it separately (I can help with `pg_dump` → `psql` if you want).
-- **`verify-pin` becomes a server function**, not an edge function. Same behavior, different invocation path (`useServerFn` instead of `supabase.functions.invoke`).
-- **Tailwind v3 → v4 migration** means class names stay the same, but the config lives in `src/styles.css` (`@theme inline`) instead of `tailwind.config.ts`.
+---
 
-Ready to implement when you approve.
+### 3. Official Asset Register & Dynamic Equipment
+
+**New table:** `equipment_assets` via migration:
+- `id uuid pk`, `department text`, `asset_code text`, `asset_name text`, `is_custom boolean`, `created_at`
+- RLS: read all, insert/update all (matches existing project pattern)
+
+**New table:** `maintenance_records`:
+- `id`, `asset_id uuid → equipment_assets.id`, `notes text`, `recorded_by text`, `recorded_at timestamptz`
+- RLS: read/insert all
+
+**Seed the official asset register** in the same migration:
+- AMM1 & AMM2: 101-J, 102-J, 103-J, 105-J, 104-J, H-101, R-101, HTS Converter, LTS Converter, Methanator, R-501
+- DESAL1 & DESAL2 (under UTILITIES with sub-tag): Sea Water Intake Pumps, Brine Recirculation Pumps, Distillers D-1, Distillers D-2, Vacuum Ejectors
+- NITROGEN: ZR 460 Air Compressor, Air Dryer Units, Cold Box, Expansion Turbine
+
+**New component:** `src/components/AssetRegister.tsx`
+- Lists assets per department from `equipment_assets`
+- "**+ Add New Equipment**" button → modal with name/code → inserts custom asset
+- Each asset row → expandable **Maintenance Records** textarea (history list + "Add record" form)
+
+Wired into `Dashboard.tsx` as a new "Asset Register" tab/section.
+
+---
+
+### 4. Professional Daily Reporting
+
+**New component:** `src/components/DailyReportGenerator.tsx`
+- "Generate Report" button on Dashboard
+- Pulls today's `operations_logs` + `lab_results` + `samples` for the active department
+- Uses **Lovable AI** (`google/gemini-3-flash-preview`) via a server function `src/lib/report.functions.ts` to draft a professional summary
+- Renders editable textarea (user can refine) → Export to PDF (jspdf, already installed)
+- Header includes Day/Date/Operator/Employee ID stamp
+
+---
+
+### 5. Integrated AI Assistant
+
+**New route:** `src/routes/assistant.tsx` → `src/pages/Assistant.tsx`
+- Glassmorphism chat window
+- Streaming chat to **Lovable AI Gateway** via server function `src/lib/assistant.functions.ts`
+- System prompt scoped to LIFECO PMS technical/system help (departments, parameters, equipment)
+- Add "AI Assistant" link in Login + Dashboard nav (Sparkles icon)
+
+---
+
+### Technical Details
+
+- All new tables get permissive RLS (matches existing `Allow all read/insert` pattern).
+- Lovable AI Gateway via `createServerFn` (not edge functions).
+- All new UI uses existing `.glass-card`, `.neon-border`, `.neon-text` tokens — no hex literals.
+- Adds one secret check: `LOVABLE_API_KEY` (already present per fetched secrets — no add_secret needed).
+- Migrations run via `supabase--migration` tool (single consolidated migration).
+
+### Files Created/Modified
+
+```text
+NEW:  src/lib/session.ts
+NEW:  src/lib/report.functions.ts
+NEW:  src/lib/assistant.functions.ts
+NEW:  src/components/AssetRegister.tsx
+NEW:  src/components/DailyReportGenerator.tsx
+NEW:  src/components/UserCaptureModal.tsx
+NEW:  src/pages/Assistant.tsx
+NEW:  src/routes/assistant.tsx
+NEW:  supabase migration (equipment_assets, maintenance_records + seed)
+EDIT: src/pages/Login.tsx           (autofocus, Enter key, user capture)
+EDIT: src/pages/Dashboard.tsx       (header stamp, asset tab, report gen, back btn)
+EDIT: src/pages/LabDashboard.tsx    (back btn, user stamping)
+EDIT: src/pages/PlantView.tsx       (back btn)
+EDIT: src/pages/AdminSettings.tsx   (back btn)
+EDIT: src/pages/BIDashboard.tsx     (back btn)
+EDIT: src/start.ts                  (attachSupabaseAuth if missing — verify only)
+```
+
+Approve this plan and I'll execute end-to-end.
