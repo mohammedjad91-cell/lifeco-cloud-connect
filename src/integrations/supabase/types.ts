@@ -95,6 +95,33 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment_assets: {
+        Row: {
+          asset_code: string
+          asset_name: string
+          created_at: string
+          department: string
+          id: string
+          is_custom: boolean
+        }
+        Insert: {
+          asset_code: string
+          asset_name: string
+          created_at?: string
+          department: string
+          id?: string
+          is_custom?: boolean
+        }
+        Update: {
+          asset_code?: string
+          asset_name?: string
+          created_at?: string
+          department?: string
+          id?: string
+          is_custom?: boolean
+        }
+        Relationships: []
+      }
       lab_results: {
         Row: {
           created_at: string
@@ -151,6 +178,38 @@ export type Database = {
           locked_date?: string
         }
         Relationships: []
+      }
+      maintenance_records: {
+        Row: {
+          asset_id: string
+          id: string
+          notes: string
+          recorded_at: string
+          recorded_by: string | null
+        }
+        Insert: {
+          asset_id: string
+          id?: string
+          notes: string
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Update: {
+          asset_id?: string
+          id?: string
+          notes?: string
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_records_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_assets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       operations_logs: {
         Row: {

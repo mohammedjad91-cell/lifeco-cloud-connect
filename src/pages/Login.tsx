@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { motion, AnimatePresence } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Droplets, Wind, Settings, Users, Eye, BarChart3 } from "lucide-react";
+import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Droplets, Wind, Settings, Users, Eye, BarChart3, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import UserCaptureModal from "@/components/UserCaptureModal";
 import lifecoLogo from "@/assets/lifeco-logo.png";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import heroWorker from "@/assets/lifeco-hero-2.webp";
@@ -27,21 +28,28 @@ const Login = () => {
   const [error, setError] = useState("");
   const [shaking, setShaking] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [pendingDept, setPendingDept] = useState<string | null>(null);
   const navigate = useNavigate();
   const { t, lang, setLang } = useI18n();
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const pinPanelRef = useRef<HTMLDivElement>(null);
+
+  // Autofocus hidden input + scroll into view when a department is selected
+  useEffect(() => {
+    if (selectedDept) {
+      setTimeout(() => {
+        hiddenInputRef.current?.focus();
+        pinPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+    }
+  }, [selectedDept]);
 
   const verifyPin = async (deptId: string, enteredPin: string): Promise<boolean> => {
     const fallbackDept = DEPARTMENTS.find((dept) => dept.id === deptId);
-
     try {
       const { data, error } = await supabase
-        .from("department_pins")
-        .select("pin")
-        .eq("id", deptId)
-        .maybeSingle();
-
+        .from("department_pins").select("pin").eq("id", deptId).maybeSingle();
       if (!error && data?.pin) return data.pin === enteredPin;
-
       return fallbackDept?.pin === enteredPin;
     } catch {
       return fallbackDept?.pin === enteredPin;
@@ -55,26 +63,42 @@ const Login = () => {
     else navigate("/dashboard");
   };
 
+  const submitPin = (pinValue: string) => {
+    if (!selectedDept || pinValue.length !== 4) return;
+    setIsVerifying(true);
+    verifyPin(selectedDept, pinValue).then((ok) => {
+      setIsVerifying(false);
+      if (ok) {
+        setPendingDept(selectedDept);
+      } else {
+        setShaking(true);
+        setError(lang === "ar" ? "رمز غير صحيح" : "Invalid PIN");
+        setTimeout(() => { setPin(""); setShaking(false); }, 600);
+      }
+    });
+  };
+
   const handlePinInput = (digit: string) => {
     if (pin.length < 4) {
       const newPin = pin + digit;
       setPin(newPin);
       setError("");
-      if (newPin.length === 4) {
-        if (!selectedDept) return;
-        setIsVerifying(true);
-        verifyPin(selectedDept, newPin).then((ok) => {
-          setIsVerifying(false);
-          if (ok) {
-            navigateToDept(selectedDept);
-          } else {
-            setShaking(true);
-            setError(lang === "ar" ? "رمز غير صحيح" : "Invalid PIN");
-            setTimeout(() => { setPin(""); setShaking(false); }, 600);
-          }
-        });
-      }
+      if (newPin.length === 4) submitPin(newPin);
     }
+  };
+
+  const handleHiddenKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitPin(pin);
+    }
+  };
+
+  const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+    setPin(v);
+    setError("");
+    if (v.length === 4) submitPin(v);
   };
 
   return (
@@ -211,7 +235,18 @@ const Login = () => {
                 exit={{ opacity: 0, y: 20, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="glass-card p-6 max-w-sm mx-auto neon-border">
+                <div ref={pinPanelRef} className="glass-card p-6 max-w-sm mx-auto neon-border">
+                  <input
+                    ref={hiddenInputRef}
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={pin}
+                    onChange={handleHiddenChange}
+                    onKeyDown={handleHiddenKey}
+                    className="absolute opacity-0 w-px h-px"
+                    aria-label="PIN entry"
+                  />
                   <div className="flex items-center gap-2 mb-4 justify-center">
                     <Shield className="w-4 h-4 text-primary" />
                     <span className="text-foreground font-medium text-sm">
@@ -277,6 +312,15 @@ const Login = () => {
         </div>
       </div>
 
+      <UserCaptureModal
+        open={!!pendingDept}
+        department={pendingDept || ""}
+        onComplete={() => {
+          const d = pendingDept;
+          setPendingDept(null);
+          if (d) navigateToDept(d);
+        }}
+      />
     </div>
   );
 };

@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LogOut, Plus, FileDown, FileSpreadsheet, Clock, Tag, Hash, CheckCircle,
   Loader2, Trash2, Edit2, Lock, CalendarIcon, History, BarChart3, Globe, User, FlaskConical,
-  Wrench,
+  Wrench, Sparkles, FileText,
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -24,9 +24,13 @@ import { useToast } from "@/hooks/use-toast";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import GlassPulseChart from "@/components/GlassPulseChart";
 import FieldOpsForm from "@/components/FieldOpsForm";
+import AssetRegister from "@/components/AssetRegister";
+import DailyReportGenerator from "@/components/DailyReportGenerator";
+import DateUserBanner from "@/components/DateUserBanner";
 import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
+import { getOperator, getStamp } from "@/lib/session";
 
 interface LogEntry {
   id: string;
@@ -57,7 +61,7 @@ const Dashboard = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
   const [value, setValue] = useState("");
-  const [employeeId, setEmployeeId] = useState("");
+  const [employeeId, setEmployeeId] = useState(getOperator()?.employeeId || "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -392,6 +396,9 @@ const Dashboard = () => {
           <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
+            <Sparkles className="w-4 h-4" /> AI Assistant
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
           </Button>
@@ -402,12 +409,13 @@ const Dashboard = () => {
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
-            <LogOut className="w-4 h-4" /> {t.exit}
+            <LogOut className="w-4 h-4" /> Back to Main
           </Button>
         </div>
       </header>
 
       <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6">
+        <DateUserBanner />
         {/* Global Date Filter */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
@@ -460,6 +468,12 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
+            <TabsTrigger value="assets" className="gap-1.5">
+              <Wrench className="w-3.5 h-3.5" /> Assets
+            </TabsTrigger>
+            <TabsTrigger value="report" className="gap-1.5">
+              <FileText className="w-3.5 h-3.5" /> Report
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
@@ -649,6 +663,14 @@ const Dashboard = () => {
               )}
             </TabsContent>
           )}
+
+          <TabsContent value="assets" className="mt-4">
+            <AssetRegister department={department.id} />
+          </TabsContent>
+
+          <TabsContent value="report" className="mt-4">
+            <DailyReportGenerator department={department.id} date={selectedDate} />
+          </TabsContent>
 
           <TabsContent value="analytics" className="mt-4">
             <AnalyticsDashboard />
