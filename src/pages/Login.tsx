@@ -21,15 +21,6 @@ const DEPT_ICONS: Record<string, React.ReactNode> = {
   PLANTVIEW: <Eye className="w-8 h-8" />,
   OPERATIONS: <Users className="w-8 h-8" />,
 };
-  AMM1: <Factory className="w-8 h-8" />,
-  AMM2: <Factory className="w-8 h-8" />,
-  NITROGEN: <Wind className="w-8 h-8" />,
-  DEMIN1: <Droplets className="w-8 h-8" />,
-  DEMIN2: <Droplets className="w-8 h-8" />,
-  LABORATORY: <FlaskConical className="w-8 h-8" />,
-  PLANTVIEW: <Eye className="w-8 h-8" />,
-  OPERATIONS: <Users className="w-8 h-8" />,
-};
 
 const Login = () => {
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
