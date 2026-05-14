@@ -312,6 +312,15 @@ const Login = () => {
         </div>
       </div>
 
+      <UserCaptureModal
+        open={!!pendingDept}
+        department={pendingDept || ""}
+        onComplete={() => {
+          const d = pendingDept;
+          setPendingDept(null);
+          if (d) navigateToDept(d);
+        }}
+      />
     </div>
   );
 };
