@@ -664,6 +664,14 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
+          <TabsContent value="assets" className="mt-4">
+            <AssetRegister department={department.id} />
+          </TabsContent>
+
+          <TabsContent value="report" className="mt-4">
+            <DailyReportGenerator department={department.id} date={selectedDate} />
+          </TabsContent>
+
           <TabsContent value="analytics" className="mt-4">
             <AnalyticsDashboard />
           </TabsContent>
