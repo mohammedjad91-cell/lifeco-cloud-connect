@@ -2,9 +2,11 @@
 // against @tanstack/react-router with minimal edits.
 import { useNavigate as _useTanstackNavigate } from "@tanstack/react-router";
 
+type NavOpts = { replace?: boolean };
+
 export function useNavigate() {
   const nav = _useTanstackNavigate();
-  return (to: string) => nav({ to });
+  return (to: string, opts?: NavOpts) => nav({ to, replace: opts?.replace ?? true });
 }
 
 export function useSearchParams(): [URLSearchParams] {
