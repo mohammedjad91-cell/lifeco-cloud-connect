@@ -26,6 +26,7 @@ import GlassPulseChart from "@/components/GlassPulseChart";
 import FieldOpsForm from "@/components/FieldOpsForm";
 import AssetRegister from "@/components/AssetRegister";
 import DailyReportGenerator from "@/components/DailyReportGenerator";
+import NitrogenLogSheets from "@/components/NitrogenLogSheets";
 import DateUserBanner from "@/components/DateUserBanner";
 import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
@@ -471,6 +472,11 @@ const Dashboard = () => {
             <TabsTrigger value="assets" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> Assets
             </TabsTrigger>
+            {department.id === "NITROGEN" && (
+              <TabsTrigger value="nitrogen" className="gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> N2 Log Sheets
+              </TabsTrigger>
+            )}
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> Report
             </TabsTrigger>
@@ -667,6 +673,12 @@ const Dashboard = () => {
           <TabsContent value="assets" className="mt-4">
             <AssetRegister department={department.id} />
           </TabsContent>
+
+          {department.id === "NITROGEN" && (
+            <TabsContent value="nitrogen" className="mt-4">
+              <NitrogenLogSheets selectedDate={selectedDate} />
+            </TabsContent>
+          )}
 
           <TabsContent value="report" className="mt-4">
             <DailyReportGenerator department={department.id} date={selectedDate} />
