@@ -224,7 +224,7 @@ const BIDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border px-4 md:px-6 py-3 glass-card rounded-none flex items-center gap-3 sticky top-0 z-30">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/admin")}>
+        <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="Back to Main">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1 min-w-0">
