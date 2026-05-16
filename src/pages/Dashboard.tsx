@@ -674,6 +674,12 @@ const Dashboard = () => {
             <AssetRegister department={department.id} />
           </TabsContent>
 
+          {department.id === "NITROGEN" && (
+            <TabsContent value="nitrogen" className="mt-4">
+              <NitrogenLogSheets selectedDate={selectedDate} />
+            </TabsContent>
+          )}
+
           <TabsContent value="report" className="mt-4">
             <DailyReportGenerator department={department.id} date={selectedDate} />
           </TabsContent>
