@@ -26,6 +26,7 @@ import GlassPulseChart from "@/components/GlassPulseChart";
 import FieldOpsForm from "@/components/FieldOpsForm";
 import AssetRegister from "@/components/AssetRegister";
 import DailyReportGenerator from "@/components/DailyReportGenerator";
+import NitrogenLogSheets from "@/components/NitrogenLogSheets";
 import DateUserBanner from "@/components/DateUserBanner";
 import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
