@@ -122,6 +122,57 @@ export type Database = {
         }
         Relationships: []
       }
+      field_ops_logs: {
+        Row: {
+          created_at: string
+          department: string
+          discharge_pressure: number | null
+          dynamic_data: Json
+          employee_id: string | null
+          equipment_tag: string
+          id: string
+          notes: string | null
+          photo_url: string | null
+          recorded_by: string | null
+          running_hours: number | null
+          technician_name: string | null
+          temperature: number | null
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          discharge_pressure?: number | null
+          dynamic_data?: Json
+          employee_id?: string | null
+          equipment_tag: string
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          recorded_by?: string | null
+          running_hours?: number | null
+          technician_name?: string | null
+          temperature?: number | null
+          timestamp?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          discharge_pressure?: number | null
+          dynamic_data?: Json
+          employee_id?: string | null
+          equipment_tag?: string
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          recorded_by?: string | null
+          running_hours?: number | null
+          technician_name?: string | null
+          temperature?: number | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
       lab_results: {
         Row: {
           created_at: string
