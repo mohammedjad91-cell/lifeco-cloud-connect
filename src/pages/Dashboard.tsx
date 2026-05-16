@@ -472,6 +472,11 @@ const Dashboard = () => {
             <TabsTrigger value="assets" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> Assets
             </TabsTrigger>
+            {department.id === "NITROGEN" && (
+              <TabsTrigger value="nitrogen" className="gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> N2 Log Sheets
+              </TabsTrigger>
+            )}
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> Report
             </TabsTrigger>
