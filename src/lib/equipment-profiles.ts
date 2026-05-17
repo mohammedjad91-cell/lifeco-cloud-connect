@@ -102,10 +102,15 @@ const genericProfile = (label: string): EquipmentProfile => ({
 });
 
 export const EQUIPMENT_PROFILES: Record<string, EquipmentProfile> = {
-  // Compressors (60-M, ZR series, instrument air)
-  "60-M-1001A": compressorProfile("60-M-1001A Syngas Compressor"),
-  "60-M-1001B": compressorProfile("60-M-1001B Syngas Compressor"),
-  "60-M-1001C": compressorProfile("60-M-1001C Syngas Compressor"),
+  // Nitrogen plant compressors (60-1001 series). LOCKED REFERENCE (May 2026):
+  // discharge header 9.04 barg, after-cooler outlet 36.47 °C.
+  // 60-1001A and 60-1001C are RACKIN/LOADING; 60-1001B is RACKOUT/UNLOAD (standby).
+  "60-M-1001A": compressorProfile("60-1001A Air Compressor (RACKIN/LOADING)"),
+  "60-M-1001B": compressorProfile("60-1001B Air Compressor (RACKOUT/STANDBY)"),
+  "60-M-1001C": compressorProfile("60-1001C Air Compressor (RACKIN/LOADING)"),
+  "60-1001A": compressorProfile("60-1001A Air Compressor (RACKIN/LOADING)"),
+  "60-1001B": compressorProfile("60-1001B Air Compressor (RACKOUT/STANDBY)"),
+  "60-1001C": compressorProfile("60-1001C Air Compressor (RACKIN/LOADING)"),
   "INST AIR": compressorProfile("Instrument Air Compressor (ZR 460)"),
   "ZR 460": compressorProfile("ZR 460 Instrument Air Compressor"),
 
