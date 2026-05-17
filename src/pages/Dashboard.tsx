@@ -27,6 +27,7 @@ import FieldOpsForm from "@/components/FieldOpsForm";
 import AssetRegister from "@/components/AssetRegister";
 import DailyReportGenerator from "@/components/DailyReportGenerator";
 import NitrogenLogSheets from "@/components/NitrogenLogSheets";
+import PlantTrainingSimulator from "@/components/PlantTrainingSimulator";
 import DateUserBanner from "@/components/DateUserBanner";
 import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
@@ -480,6 +481,9 @@ const Dashboard = () => {
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> Report
             </TabsTrigger>
+            <TabsTrigger value="ots" className="gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" /> OTS Simulator
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
@@ -682,6 +686,10 @@ const Dashboard = () => {
 
           <TabsContent value="report" className="mt-4">
             <DailyReportGenerator department={department.id} date={selectedDate} />
+          </TabsContent>
+
+          <TabsContent value="ots" className="mt-4">
+            <PlantTrainingSimulator />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-4">
