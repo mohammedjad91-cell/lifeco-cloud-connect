@@ -24,9 +24,9 @@ interface SimState {
 
 const DEFAULTS: SimState = {
   pv: 9.04, sv: 9.05, mv: 26.3,
-  vent: "CLOSED", psaInlet: "OPEN",
-  compA: "LOAD", compB: "UNLOAD", compC: "LOAD",
-  tripped: false,
+  vent: "CLOSED" as ValveState, psaInlet: "OPEN" as ValveState,
+  compA: "LOAD" as CompState, compB: "UNLOAD" as CompState, compC: "LOAD" as CompState,
+  tripped: false as boolean,
 };
 
 const TRIP = 10.5;
