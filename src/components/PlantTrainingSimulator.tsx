@@ -1,41 +1,50 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RotateCcw, VolumeX, Volume2, ZoomIn, ZoomOut, X, ChevronUp, ChevronDown } from "lucide-react";
 
 // =============================================================================
 // LIFECO PMS 2026 — Operator Training Simulator (OTS)
-// Industrial Yokogawa-style mimic clone — GP01 LIFECO IA & N2 GENERATION UNIT
+// Authentic Yokogawa GP01 mimic clone — LIFECO IA & N2 GENERATION UNIT
+// Light DCS aesthetic (gray bg, thin black lines) matching live screen.
 // =============================================================================
 
 type ValveState = "OPEN" | "CLOSED";
 type CompState = "LOAD" | "UNLOAD";
 
 interface SimState {
-  pv: number;          // 60PIC006 PV — header pressure barg
-  sv: number;          // setpoint
-  mv: number;          // valve opening %
-  vent: ValveState;
-  psaInlet: ValveState;
-  compA: CompState;
-  compB: CompState;
-  compC: CompState;
+  pv: number; sv: number; mv: number;
+  vent: ValveState; psaInlet: ValveState;
+  compA: CompState; compB: CompState; compC: CompState;
   tripped: boolean;
 }
 
 const DEFAULTS: SimState = {
   pv: 9.04, sv: 9.05, mv: 26.3,
-  vent: "CLOSED" as ValveState, psaInlet: "OPEN" as ValveState,
-  compA: "LOAD" as CompState, compB: "UNLOAD" as CompState, compC: "LOAD" as CompState,
-  tripped: false as boolean,
+  vent: "CLOSED", psaInlet: "OPEN",
+  compA: "LOAD", compB: "UNLOAD", compC: "LOAD",
+  tripped: false,
 };
-
 const TRIP = 10.5;
 
-// ---------- Audio engine (Web Audio API — no external mp3 needed) ----------
+// Yokogawa palette
+const YK = {
+  bg: "#d6d6d6",
+  panel: "#e8e8e8",
+  line: "#1a1a1a",
+  text: "#111",
+  dim: "#444",
+  green: "#1b8a2e",
+  red: "#d61f1f",
+  orange: "#d96a18",
+  blue: "#1b4fa6",
+  cyan: "#0aa3c2",
+  header: "#a0a0a0",
+};
+
+// ---------- Audio engine ----------
 function useAudioEngine(muted: boolean) {
   const ctxRef = useRef<AudioContext | null>(null);
   const nodesRef = useRef<Record<string, { osc?: OscillatorNode; gain: GainNode; noise?: AudioBufferSourceNode }>>({});
-
   const ensureCtx = () => {
     if (!ctxRef.current) {
       const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -44,22 +53,17 @@ function useAudioEngine(muted: boolean) {
     if (ctxRef.current.state === "suspended") ctxRef.current.resume();
     return ctxRef.current;
   };
-
   const stop = (key: string) => {
     const n = nodesRef.current[key];
     if (!n) return;
     try { n.gain.gain.setTargetAtTime(0, ctxRef.current!.currentTime, 0.05); } catch {}
-    setTimeout(() => {
-      try { n.osc?.stop(); n.noise?.stop(); } catch {}
-      delete nodesRef.current[key];
-    }, 120);
+    setTimeout(() => { try { n.osc?.stop(); n.noise?.stop(); } catch {} delete nodesRef.current[key]; }, 120);
   };
-
   const playHiss = (key: string) => {
     if (muted) return;
     const ctx = ensureCtx();
     if (nodesRef.current[key]) return;
-    const buf = ctx.createBuffer(1, ctx.sampleRate * 1, ctx.sampleRate);
+    const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.6;
     const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
@@ -68,7 +72,6 @@ function useAudioEngine(muted: boolean) {
     src.connect(hp); hp.connect(gain); gain.connect(ctx.destination); src.start();
     nodesRef.current[key] = { noise: src, gain };
   };
-
   const playHum = (key: string) => {
     if (muted) return;
     const ctx = ensureCtx();
@@ -79,7 +82,6 @@ function useAudioEngine(muted: boolean) {
     osc.connect(lp); lp.connect(gain); gain.connect(ctx.destination); osc.start();
     nodesRef.current[key] = { osc, gain };
   };
-
   const playSiren = (key: string) => {
     if (muted) return;
     const ctx = ensureCtx();
@@ -87,19 +89,13 @@ function useAudioEngine(muted: boolean) {
     const osc = ctx.createOscillator(); osc.type = "square"; osc.frequency.value = 880;
     const gain = ctx.createGain(); gain.gain.value = 0.18;
     osc.connect(gain); gain.connect(ctx.destination); osc.start();
-    // pulse between 660 and 1320 Hz
     const t0 = ctx.currentTime;
-    for (let i = 0; i < 60; i++) {
-      osc.frequency.setValueAtTime(i % 2 ? 1320 : 660, t0 + i * 0.35);
-    }
+    for (let i = 0; i < 60; i++) osc.frequency.setValueAtTime(i % 2 ? 1320 : 660, t0 + i * 0.35);
     nodesRef.current[key] = { osc, gain };
   };
-
   const stopAll = () => Object.keys(nodesRef.current).forEach(stop);
-
   useEffect(() => { if (muted) stopAll(); }, [muted]);
   useEffect(() => () => stopAll(), []);
-
   return { playHiss, playHum, playSiren, stop, stopAll };
 }
 
@@ -111,139 +107,113 @@ export default function PlantTrainingSimulator() {
   const [showPIC, setShowPIC] = useState(false);
   const audio = useAudioEngine(muted);
 
-  // ---- Process simulation tick (every 600ms) ----
   useEffect(() => {
     const id = window.setInterval(() => {
       setS((prev) => {
         if (prev.tripped) return prev;
         const loading = [prev.compA, prev.compB, prev.compC].filter((c) => c === "LOAD").length;
         let pv = prev.pv;
-
         if (prev.vent === "OPEN") {
           pv = Math.max(0.2, pv - 0.55);
         } else {
-          // production minus outflow via MV opening
           const production = 0.18 * loading;
           const outflow = (prev.mv / 100) * 0.42 * (prev.psaInlet === "OPEN" ? 1 : 0.15);
           pv = pv + production - outflow + (Math.random() - 0.5) * 0.04;
-          // gentle pull toward SV when balanced
           pv = pv + (prev.sv - pv) * 0.02;
         }
         pv = Math.max(0, Math.min(15, pv));
-
-        let tripped: boolean = prev.tripped;
-        if (pv >= TRIP) tripped = true;
-
+        const tripped = pv >= TRIP ? true : prev.tripped;
         return { ...prev, pv: +pv.toFixed(2), tripped };
       });
     }, 600);
     return () => window.clearInterval(id);
   }, []);
 
-  // ---- Audio reactions ----
-  useEffect(() => {
-    if (s.vent === "OPEN") audio.playHiss("vent"); else audio.stop("vent");
-  }, [s.vent]); // eslint-disable-line
+  useEffect(() => { s.vent === "OPEN" ? audio.playHiss("vent") : audio.stop("vent"); }, [s.vent]); // eslint-disable-line
   useEffect(() => {
     const loading = [s.compA, s.compB, s.compC].some((c) => c === "LOAD");
-    if (loading) audio.playHum("hum"); else audio.stop("hum");
+    loading ? audio.playHum("hum") : audio.stop("hum");
   }, [s.compA, s.compB, s.compC]); // eslint-disable-line
   useEffect(() => {
-    if (s.tripped || (s.pv >= TRIP && s.mv < 20)) audio.playSiren("siren"); else audio.stop("siren");
+    (s.tripped || (s.pv >= TRIP && s.mv < 20)) ? audio.playSiren("siren") : audio.stop("siren");
   }, [s.tripped, s.pv, s.mv]); // eslint-disable-line
 
-  const reset = useCallback(() => {
-    audio.stopAll();
-    setS(DEFAULTS);
-  }, [audio]);
-
+  const reset = useCallback(() => { audio.stopAll(); setS(DEFAULTS); }, [audio]);
   const toggleVent = () => setS((p) => ({ ...p, vent: p.vent === "OPEN" ? "CLOSED" : "OPEN" }));
   const togglePSA = () => setS((p) => ({ ...p, psaInlet: p.psaInlet === "OPEN" ? "CLOSED" : "OPEN" }));
   const toggleComp = (k: "compA" | "compB" | "compC") =>
     setS((p) => ({ ...p, [k]: p[k] === "LOAD" ? "UNLOAD" : "LOAD" }));
-
-  const setPV = (delta: number) => setS((p) => ({ ...p, pv: Math.max(0, Math.min(15, +(p.pv + delta).toFixed(2))) }));
-
-  // ---- Colors (Yokogawa-ish) ----
-  const C = {
-    air: "#00d4ff",       // glowing cyan
-    water: "#0d7a3a",     // dark green
-    n2: "#5cb8ff",        // vivid light blue
-    pipeStroke: 3,
-    label: "#cfd6dd",
-    grid: "#1a1a1a",
-  };
+  const setPV = (delta: number) =>
+    setS((p) => ({ ...p, pv: Math.max(0, Math.min(15, +(p.pv + delta).toFixed(2))) }));
 
   return (
-    <div className="space-y-3">
-      {/* ===== Top status bar (mimic DCS title bar) ===== */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#0a0a0a] border border-[#1f1f1f] font-mono text-[11px] text-[#cfd6dd]">
-        <div className="flex items-center gap-4">
-          <span className="text-[#00d4ff]">●</span>
-          <span className="tracking-widest">GP01 — LIFECO IA &amp; N2 GENERATION UNIT — PLANT OVERVIEW</span>
+    <div className="space-y-2 select-none">
+      {/* Yokogawa title bar */}
+      <div className="flex items-center justify-between px-3 py-1 bg-[#c0c0c0] border border-[#888] font-sans text-[11px] text-black">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <span className="w-4 h-4 bg-[#e0e0e0] border border-[#888] text-center leading-3 text-[10px]">0</span>
+            <span className="w-4 h-4 bg-[#e0e0e0] border border-[#888] text-center leading-3 text-[10px]">0</span>
+            <span className="w-5 h-4 bg-[#ffd86b] border border-[#888] text-center leading-3 text-[10px]">15</span>
+          </div>
+          <span className="text-black">.AL Process Alarm</span>
+          <span className="px-2 py-0.5 bg-white border border-[#888] text-black">GP0001 OVERVIEW ✕</span>
         </div>
         <div className="flex items-center gap-3">
-          <span>LIFECO PMS 2026 / OTS</span>
-          <span className="text-[#888]">{new Date().toLocaleString()}</span>
-          <span className="text-[#00d4ff]">YOKOGAWA ◆</span>
+          <span>{new Date().toLocaleString()}</span>
+          <span className="font-bold tracking-wider">YOKOGAWA ◆</span>
+          <span className="text-[#444]">ONUSER (U1)</span>
         </div>
       </div>
 
-      {/* ===== Floating toolbar ===== */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-[#0a0a0a] border border-[#1f1f1f]">
-        <div className="flex items-center gap-2 font-mono text-[11px]">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-2 py-1 bg-[#c8c8c8] border border-[#999] font-sans text-[11px]">
+        <div className="flex items-center gap-2">
           <button onClick={() => setZoom((z) => Math.min(1.6, z + 0.1))}
-            className="px-2 py-1 bg-[#141414] border border-[#2a2a2a] text-[#cfd6dd] hover:bg-[#1c1c1c] flex items-center gap-1">
+            className="px-2 py-0.5 bg-[#e0e0e0] border border-[#888] text-black hover:bg-white flex items-center gap-1">
             <ZoomIn className="w-3 h-3" /> Zoom +
           </button>
           <button onClick={() => setZoom((z) => Math.max(0.6, z - 0.1))}
-            className="px-2 py-1 bg-[#141414] border border-[#2a2a2a] text-[#cfd6dd] hover:bg-[#1c1c1c] flex items-center gap-1">
+            className="px-2 py-0.5 bg-[#e0e0e0] border border-[#888] text-black hover:bg-white flex items-center gap-1">
             <ZoomOut className="w-3 h-3" /> Zoom −
           </button>
-          <span className="text-[#666] ml-1">{Math.round(zoom * 100)}%</span>
+          <span className="text-[#555]">{Math.round(zoom * 100)}%</span>
         </div>
-        <div className="flex items-center gap-2 font-mono text-[11px]">
+        <div className="flex items-center gap-2">
           <button onClick={() => setMuted((m) => !m)}
-            className={`px-3 py-1 border flex items-center gap-1.5 ${muted ? "bg-[#141414] border-[#2a2a2a] text-[#888]" : "bg-[#3a0d0d] border-[#ff3333] text-[#ff8c8c]"}`}>
+            className={`px-3 py-0.5 border flex items-center gap-1.5 ${muted ? "bg-[#e0e0e0] border-[#888] text-[#444]" : "bg-[#ffd0d0] border-[#d61f1f] text-[#a01010]"}`}>
             {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} MUTE ALARM
           </button>
           <button onClick={reset}
-            className="px-3 py-1 bg-[#0d2a3a] border border-[#00d4ff] text-[#00d4ff] hover:bg-[#0f3a4a] flex items-center gap-1.5">
+            className="px-3 py-0.5 bg-[#d0e0ff] border border-[#1b4fa6] text-[#1b4fa6] hover:bg-[#e0eaff] flex items-center gap-1.5">
             <RotateCcw className="w-3 h-3" /> RESET SIMULATOR
           </button>
         </div>
       </div>
 
-      {/* ===== Trip banner ===== */}
       <AnimatePresence>
         {s.tripped && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="px-4 py-2 bg-[#3a0d0d] border-2 border-[#ff3333] font-mono text-sm text-[#ff8080] tracking-widest animate-pulse">
+            className="px-4 py-1.5 bg-[#ffd0d0] border-2 border-[#d61f1f] font-mono text-sm text-[#a01010] tracking-widest animate-pulse">
             ▲ HIGH PRESSURE INTERLOCK — 60PIC006 PV {s.pv.toFixed(2)} barg ≥ {TRIP} barg — COMPRESSORS TRIPPED
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ===== Mimic canvas ===== */}
-      <div className="relative bg-black border border-[#1f1f1f] overflow-auto" style={{ minHeight: 620 }}>
-        <div style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: 1280, height: 620 }}>
-          <MimicSVG s={s} C={C} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} />
-
-          {/* Compressor manual toggles overlay (positioned absolutely over SVG blocks) */}
-          <CompressorToggle x={170} y={170} tag="60-1001A" state={s.compA} onToggle={() => toggleComp("compA")} />
-          <CompressorToggle x={170} y={290} tag="60-1001B" state={s.compB} onToggle={() => toggleComp("compB")} />
-          <CompressorToggle x={170} y={410} tag="60-1001C" state={s.compC} onToggle={() => toggleComp("compC")} />
+      {/* Canvas */}
+      <div className="relative bg-[#d6d6d6] border border-[#888] overflow-auto" style={{ minHeight: 720 }}>
+        <div style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: 1280, height: 720 }}>
+          <MimicSVG s={s} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} onToggleComp={toggleComp} />
         </div>
       </div>
 
-      {/* ===== 60PIC006 Faceplate overlay ===== */}
       <AnimatePresence>
         {showPIC && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setShowPIC(false)}>
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={() => setShowPIC(false)}>
             <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#1a1d24] border-2 border-[#3a4250] font-mono text-[#e6e9ef] w-[300px] shadow-[0_0_40px_rgba(0,212,255,0.3)]">
+              className="bg-[#c8c8c8] border-2 border-[#666] font-sans text-black w-[300px] shadow-2xl">
               <Faceplate s={s} setPV={setPV} onClose={() => setShowPIC(false)} />
             </motion.div>
           </motion.div>
@@ -254,265 +224,313 @@ export default function PlantTrainingSimulator() {
 }
 
 // =============================================================================
-// SVG MIMIC — process flow diagram
+// SVG MIMIC — authentic Yokogawa schematic (light theme, thin black pipes)
 // =============================================================================
 function MimicSVG({
-  s, C, onOpenPIC, onToggleVent, onTogglePSA,
+  s, onOpenPIC, onToggleVent, onTogglePSA, onToggleComp,
 }: {
-  s: SimState; C: any;
+  s: SimState;
   onOpenPIC: () => void; onToggleVent: () => void; onTogglePSA: () => void;
+  onToggleComp: (k: "compA" | "compB" | "compC") => void;
 }) {
-  const pipe = (d: string, color: string) => (
-    <path d={d} fill="none" stroke={color} strokeWidth={C.pipeStroke}
-      style={{ filter: `drop-shadow(0 0 4px ${color})` }} />
+  const Pipe = ({ d }: { d: string }) => <path d={d} fill="none" stroke={YK.line} strokeWidth={1.4} />;
+  // Inline label rectangle (white box with thin black border) like the DCS
+  const Tag = ({ x, y, w = 70, h = 14, t, fs = 10, color = YK.text }: { x: number; y: number; w?: number; h?: number; t: string; fs?: number; color?: string }) => (
+    <g>
+      <rect x={x} y={y} width={w} height={h} fill="#ffffff" stroke={YK.line} strokeWidth={0.8} />
+      <text x={x + w / 2} y={y + h - 3} textAnchor="middle" fontFamily="Arial, sans-serif" fontSize={fs} fill={color}>{t}</text>
+    </g>
+  );
+  // Diamond (instrument symbol)
+  const Diamond = ({ cx, cy, r = 9, fill = "#ffffff" }: { cx: number; cy: number; r?: number; fill?: string }) => (
+    <polygon points={`${cx},${cy - r} ${cx + r},${cy} ${cx},${cy + r} ${cx - r},${cy}`} fill={fill} stroke={YK.line} strokeWidth={0.8} />
+  );
+  // Valve hourglass
+  const Valve = ({ cx, cy, w = 14, h = 14, fillTop = "#ffffff", fillBot = "#ffffff", stroke = YK.line, sw = 1 }: any) => (
+    <g>
+      <polygon points={`${cx - w / 2},${cy - h / 2} ${cx + w / 2},${cy - h / 2} ${cx},${cy}`} fill={fillTop} stroke={stroke} strokeWidth={sw} />
+      <polygon points={`${cx - w / 2},${cy + h / 2} ${cx + w / 2},${cy + h / 2} ${cx},${cy}`} fill={fillBot} stroke={stroke} strokeWidth={sw} />
+    </g>
   );
 
   return (
-    <svg width={1280} height={620} className="block">
-      {/* faint grid */}
-      <defs>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0d0d0d" strokeWidth="1" />
-        </pattern>
-      </defs>
-      <rect width="1280" height="620" fill="#000" />
-      <rect width="1280" height="620" fill="url(#grid)" />
+    <svg width={1280} height={720} className="block" style={{ background: YK.bg }}>
+      {/* === Title strip === */}
+      <rect x={0} y={0} width={1280} height={22} fill="#bfbfbf" stroke={YK.line} strokeWidth={0.5} />
+      <text x={10} y={16} fontFamily="Arial" fontSize={12} fill={YK.text} fontWeight="bold">
+        GP01 - LIFECO IA &amp; N2 GENERATION UNIT - PLANT OVERVIEW
+      </text>
 
-      {/* === Utility feed labels (top-left) === */}
-      <g fontFamily="monospace" fontSize="11" fill={C.label}>
-        <rect x={20} y={50} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={63}>WATER</text>
-        <rect x={20} y={72} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={85}>WATER</text>
-        <rect x={20} y={94} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={107}>LP STEAM</text>
-        <rect x={20} y={130} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={143}>SERVICE AIR</text>
-        <rect x={20} y={210} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={223}>PLANT AIR</text>
-        <rect x={20} y={510} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={523}>SEA WATER</text>
-        <rect x={20} y={532} width={90} height={18} fill="none" stroke="#2a2a2a" />
-        <text x={28} y={545}>SEA WATER</text>
-      </g>
+      {/* === Utility feeds (top-left) === */}
+      <Tag x={10} y={40} w={80} t="WATER" />
+      <Tag x={10} y={58} w={80} t="WATER" />
+      <Tag x={10} y={76} w={80} t="LP STEAM" />
+      <Tag x={10} y={130} w={80} t="SERVICE AIR" />
+      <Tag x={10} y={195} w={80} t="PLANT AIR" />
 
-      {/* === Service / Plant air header to compressors === */}
-      {pipe("M 110 139 L 350 139", C.air)}
-      {pipe("M 110 219 L 350 219", C.air)}
-      {/* feeds to A/B/C compressor blocks (right angles) */}
-      {pipe("M 350 139 L 350 230 L 380 230", C.air)}
-      {pipe("M 350 219 L 350 350 L 380 350", C.air)}
-      {pipe("M 350 219 L 350 470 L 380 470", C.air)}
+      {/* SERVICE AIR pressure readings */}
+      <text x={130} y={120} fontFamily="Arial" fontSize={11} fill={YK.text}>0.00barg</text>
+      <text x={130} y={155} fontFamily="Arial" fontSize={11} fill={YK.text}>8.95barg</text>
+      <text x={230} y={120} fontFamily="Arial" fontSize={11} fill={YK.text}>9.18barg</text>
 
-      {/* Service air reading card */}
-      <DataCard x={130} y={108} w={90} value="0.00 barg" />
-      <DataCard x={130} y={158} w={90} value="8.95 barg" />
-      <DataCard x={230} y={108} w={90} value="9.18 barg" />
+      {/* horizontal service/plant air pipes */}
+      <Pipe d="M 90 137 L 360 137" />
+      <Pipe d="M 90 202 L 360 202" />
 
-      {/* === Compressor block frames (RACKIN/RACKOUT visuals) === */}
-      <CompBlock x={380} y={180} loaded={s.compA === "LOAD"} />
-      <CompBlock x={380} y={300} loaded={s.compB === "LOAD"} />
-      <CompBlock x={380} y={420} loaded={s.compC === "LOAD"} />
+      {/* Valves on service & plant air */}
+      <Diamond cx={195} cy={137} />
+      <text x={195} y={141} textAnchor="middle" fontFamily="Arial" fontSize={9} fill={YK.text}>M</text>
+      <text x={210} y={155} fontFamily="Arial" fontSize={10} fill={YK.text}>0.0%</text>
 
-      {/* === Discharge pipes to common header → 60-2002 === */}
-      {pipe("M 500 230 L 580 230 L 580 360", C.air)}
-      {pipe("M 500 350 L 580 350", C.air)}
-      {pipe("M 500 470 L 580 470 L 580 360", C.air)}
+      <Diamond cx={290} cy={202} />
+      <text x={290} y={206} textAnchor="middle" fontFamily="Arial" fontSize={9} fill={YK.text}>M</text>
+      <text x={305} y={220} fontFamily="Arial" fontSize={10} fill={YK.text}>22.8%</text>
 
-      {/* Vertical pipe to 60-2002 vessel */}
-      {pipe("M 580 360 L 580 280", C.air)}
-      {pipe("M 580 280 L 700 280", C.air)}
+      {/* === Three compressor blocks (60-1001A/B/C) === */}
+      {/* feeds dropping to each compressor */}
+      <Pipe d="M 360 137 L 360 215 L 395 215" />
+      <Pipe d="M 360 202 L 360 305 L 395 305" />
+      <Pipe d="M 360 202 L 360 405 L 395 405" />
 
-      {/* === 60PIC006 valve symbol on header above 60-2002 === */}
+      <CompUnit x={395} y={195} tag="60-1001A" loaded={s.compA === "LOAD"} loadLabel="LOADING" onClick={() => onToggleComp("compA")} />
+      <CompUnit x={395} y={285} tag="60-1001B" loaded={s.compB === "LOAD"} loadLabel="UNLOAD" onClick={() => onToggleComp("compB")} />
+      <CompUnit x={395} y={385} tag="60-1001C" loaded={s.compC === "LOAD"} loadLabel="LOADING" onClick={() => onToggleComp("compC")} />
+
+      {/* === Discharge header to common point === */}
+      <Pipe d="M 525 215 L 590 215" />
+      <Pipe d="M 525 305 L 590 305" />
+      <Pipe d="M 525 405 L 590 405" />
+      <Pipe d="M 590 215 L 590 405" />
+      <Pipe d="M 590 310 L 660 310" />
+
+      {/* Vertical riser to dryers area */}
+      <Pipe d="M 660 310 L 660 245" />
+      {/* 60PIC006 valve on header (clickable) */}
       <g onClick={onOpenPIC} style={{ cursor: "pointer" }}>
-        <polygon points="640,265 660,265 650,280" fill="#0a0a0a" stroke={C.air} strokeWidth="2" />
-        <polygon points="640,295 660,295 650,280" fill="#0a0a0a" stroke={C.air} strokeWidth="2" />
-        <circle cx="650" cy="255" r="9" fill="#0a0a0a" stroke={C.air} strokeWidth="1.5" />
-        <text x="650" y="259" textAnchor="middle" fontFamily="monospace" fontSize="9" fill={C.air}>M</text>
-        <rect x={605} y={232} width={90} height={18} fill="#0a0a0a" stroke={C.air} />
-        <text x={650} y={245} textAnchor="middle" fontFamily="monospace" fontSize="10" fill={C.air}>60PIC006</text>
-        <text x={695} y={310} fontFamily="monospace" fontSize="11" fill="#ffd86b">{s.mv.toFixed(1)}%</text>
+        <Valve cx={660} cy={232} w={18} h={18} stroke={YK.blue} sw={1.4} />
+        <Diamond cx={660} cy={213} r={7} fill="#fff" />
+        <text x={660} y={216} textAnchor="middle" fontFamily="Arial" fontSize={8} fill={YK.text}>M</text>
       </g>
+      <text x={680} y={235} fontFamily="Arial" fontSize={11} fill={YK.text}>9.01barg</text>
+
+      {/* Riser to top header line */}
+      <Pipe d="M 660 213 L 660 130 L 760 130" />
+
+      {/* === Process value 36.47 °C label after-cooler === */}
+      <Pipe d="M 590 310 L 590 380 L 700 380" />
+      <text x={605} y={350} fontFamily="Arial" fontSize={11} fill={YK.text}>36.47°C</text>
 
       {/* === 60-2002 vessel === */}
-      <rect x={685} y={310} width={50} height={130} fill="#0a0a0a" stroke="#888" strokeWidth="1.5" />
-      <rect x={685} y={310} width={50} height={130} fill="url(#vesselGloss)" opacity="0.2" />
-      <text x={710} y={460} textAnchor="middle" fontFamily="monospace" fontSize="10" fill={C.label}>60-2002</text>
+      <rect x={680} y={395} width={50} height={130} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <ellipse cx={705} cy={395} rx={25} ry={6} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <ellipse cx={705} cy={525} rx={25} ry={6} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={705} y={555} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>60-2002</text>
 
-      {/* Discharge header pressure card */}
-      <DataCard x={620} y={460} w={110} value={`${s.pv.toFixed(2)} barg`} highlight />
+      {/* Discharge header pressure (locked reference) */}
+      <text x={620} y={555} fontFamily="Arial" fontSize={12} fill={YK.blue} fontWeight="bold">{s.pv.toFixed(2)}barg</text>
+      <text x={695} y={580} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.text}>43.89°C</text>
 
-      {/* === Pipe to dryers 60-2201 A/B and 60-2202 A/B === */}
-      {pipe("M 735 360 L 820 360", C.air)}
-      {pipe("M 820 360 L 820 280", C.air)}
-      {pipe("M 820 360 L 820 440", C.air)}
+      {/* === Header top line crossing screen === */}
+      <Pipe d="M 760 130 L 1140 130" />
+      <text x={780} y={125} fontFamily="Arial" fontSize={10} fill={YK.text}>1Nm³/h</text>
+      <text x={780} y={155} fontFamily="Arial" fontSize={10} fill={YK.red}>-0.05barg</text>
+      <Diamond cx={800} cy={140} r={6} />
+      <text x={800} y={144} textAnchor="middle" fontFamily="Arial" fontSize={8} fill={YK.text}>&lt;</text>
 
-      {/* Dryer blocks */}
-      <DryerBlock x={830} y={250} tag="60-2201A/B" flow="2838 Nm³/h" />
-      <DryerBlock x={830} y={410} tag="60-2202A/B" flow="2758 Nm³/h" />
+      {/* === LINDE N2 PLANT box === */}
+      <rect x={770} y={70} width={150} height={50} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={845} y={100} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.text} fontWeight="bold">LINDE N2 PLANT</text>
 
-      {/* === Out from dryers to PSA vessel 60-2003 === */}
-      {pipe("M 920 280 L 980 280 L 980 470", C.air)}
-      {pipe("M 920 440 L 980 440", C.air)}
+      {/* VENT pipe up from LINDE */}
+      <Pipe d="M 845 70 L 845 40 L 920 40" />
+      <text x={845} y={36} fontFamily="Arial" fontSize={10} fill={YK.text}>VENT</text>
+      <g onClick={onToggleVent} style={{ cursor: "pointer" }}>
+        <Valve cx={905} cy={40} w={14} h={14}
+          fillTop={s.vent === "OPEN" ? "#b8f0c0" : "#ffd0d0"}
+          fillBot={s.vent === "OPEN" ? "#b8f0c0" : "#ffd0d0"}
+          stroke={s.vent === "OPEN" ? YK.green : YK.red} sw={1.6} />
+        <text x={925} y={44} fontFamily="Arial" fontSize={10} fill={s.vent === "OPEN" ? YK.green : YK.red} fontWeight="bold">{s.vent}</text>
+      </g>
+
+      {/* === LIQUID N2 STORAGE box === */}
+      <rect x={930} y={140} width={150} height={70} fill="#f4f4f4" stroke={YK.line} strokeDasharray="4 2" strokeWidth={1} />
+      <text x={1005} y={158} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text} fontWeight="bold">LIQUID N2 STORAGE</text>
+      <text x={1005} y={172} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text} fontWeight="bold">LIQUID N2 PUMP</text>
+      <text x={1005} y={189} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.orange}>-0.9%</text>
+      <text x={1005} y={203} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.red}>0.00barg</text>
+      <text x={1005} y={216} fontFamily="Arial" fontSize={9} fill={YK.dim} textAnchor="middle">(not commissioned)</text>
+
+      {/* === 60-2201 A/B dryer pair === */}
+      <Pipe d="M 730 310 L 830 310" />
+      <Pipe d="M 830 310 L 830 250" />
+      <DryerPair x={815} y={250} tag="60-2201A/B" flow="2838Nm³/h" valvePct={48.0} />
+
+      {/* === 60-2202 A/B dryer pair === */}
+      <Pipe d="M 830 310 L 830 420" />
+      <DryerPair x={815} y={420} tag="60-2202A/B" flow="2758Nm³/h" valvePct={48.0} />
+
+      {/* === Combined to 60-2003 vessel === */}
+      <Pipe d="M 880 280 L 940 280 L 940 450" />
+      <Pipe d="M 880 450 L 940 450" />
+      <Pipe d="M 940 450 L 990 450" />
 
       {/* PSA inlet valve (clickable) */}
       <g onClick={onTogglePSA} style={{ cursor: "pointer" }}>
-        <polygon points="965,460 995,460 980,475"
-          fill={s.psaInlet === "OPEN" ? "#0a3a0a" : "#3a0a0a"}
-          stroke={s.psaInlet === "OPEN" ? "#3aff6e" : "#ff3a3a"} strokeWidth="2" />
-        <polygon points="965,490 995,490 980,475"
-          fill={s.psaInlet === "OPEN" ? "#0a3a0a" : "#3a0a0a"}
-          stroke={s.psaInlet === "OPEN" ? "#3aff6e" : "#ff3a3a"} strokeWidth="2" />
-        <text x={1000} y={478} fontFamily="monospace" fontSize="9" fill={s.psaInlet === "OPEN" ? "#3aff6e" : "#ff3a3a"}>
-          PSA-IN {s.psaInlet}
-        </text>
+        <Valve cx={970} cy={450} w={16} h={16}
+          fillTop={s.psaInlet === "OPEN" ? "#b8f0c0" : "#ffd0d0"}
+          fillBot={s.psaInlet === "OPEN" ? "#b8f0c0" : "#ffd0d0"}
+          stroke={s.psaInlet === "OPEN" ? YK.green : YK.red} sw={1.6} />
+        <text x={970} y={478} textAnchor="middle" fontFamily="Arial" fontSize={9} fill={s.psaInlet === "OPEN" ? YK.green : YK.red} fontWeight="bold">PSA-IN</text>
       </g>
+
+      {/* Mid pressures */}
+      <text x={755} y={295} fontFamily="Arial" fontSize={11} fill={YK.text}>7.61barg</text>
+      <text x={755} y={335} fontFamily="Arial" fontSize={11} fill={YK.text}>-65.92°C</text>
+      <text x={755} y={350} fontFamily="Arial" fontSize={11} fill={YK.text}>42.5°C</text>
+
+      {/* === 60-2003 receiver === */}
+      <rect x={990} y={480} width={50} height={110} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <ellipse cx={1015} cy={480} rx={25} ry={6} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <ellipse cx={1015} cy={590} rx={25} ry={6} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={1015} y={615} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>60-2003</text>
 
       {/* === PSA UNIT === */}
-      {pipe("M 980 500 L 1080 500", C.n2)}
-      <rect x={1080} y={440} width={140} height={90} fill="#0a0a0a" stroke="#888" strokeWidth="1.5" />
-      <text x={1150} y={460} textAnchor="middle" fontFamily="monospace" fontSize="11" fill={C.label}>PSA UNIT</text>
-      <text x={1150} y={480} textAnchor="middle" fontFamily="monospace" fontSize="13" fill={C.n2}>
-        {s.psaInlet === "OPEN" && !s.tripped ? "3.01 barg" : "0.00 barg"}
+      <rect x={1080} y={380} width={140} height={90} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.4} />
+      <text x={1150} y={400} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.text} fontWeight="bold">PSA UNIT</text>
+      <text x={1150} y={420} textAnchor="middle" fontFamily="Arial" fontSize={13} fill={YK.blue} fontWeight="bold">
+        {s.psaInlet === "OPEN" && !s.tripped ? "3.01barg" : "0.00barg"}
       </text>
-      <text x={1150} y={498} textAnchor="middle" fontFamily="monospace" fontSize="10" fill="#ff8c4a">11951 ppm</text>
-      <circle cx={1110} cy={518} r="5" fill="#3aff6e" /><text x={1120} y={522} fontFamily="monospace" fontSize="9" fill={C.label}>XA1</text>
-      <circle cx={1160} cy={518} r="5" fill="#3aff6e" /><text x={1170} y={522} fontFamily="monospace" fontSize="9" fill={C.label}>XA2</text>
+      <text x={1150} y={436} textAnchor="middle" fontFamily="Arial" fontSize={11} fill={YK.orange}>11951PPM</text>
+      <circle cx={1110} cy={455} r={5} fill={YK.green} />
+      <text x={1120} y={459} fontFamily="Arial" fontSize={10} fill={YK.text}>XA1</text>
+      <circle cx={1160} cy={455} r={5} fill={YK.green} />
+      <text x={1170} y={459} fontFamily="Arial" fontSize={10} fill={YK.text}>XA2</text>
+      <Pipe d="M 1040 450 L 1080 450" />
 
-      {/* === N2 product line === */}
-      {pipe("M 1220 485 L 1260 485", C.n2)}
-      <text x={1230} y={478} fontFamily="monospace" fontSize="10" fill={C.n2}>N2</text>
+      {/* === Product N2 lines === */}
+      <Pipe d="M 1220 425 L 1260 425" />
+      <text x={1240} y={420} fontFamily="Arial" fontSize={11} fill={YK.text}>N2</text>
+      <text x={1230} y={460} fontFamily="Arial" fontSize={10} fill={YK.text}>61NM³/H</text>
+      <text x={1230} y={472} fontFamily="Arial" fontSize={9} fill={YK.text}>962ppm</text>
 
-      {/* === VENT valve (top center) === */}
-      <g onClick={onToggleVent} style={{ cursor: "pointer" }}>
-        {pipe("M 580 280 L 580 200 L 540 200", C.air)}
-        <polygon points="510,190 540,190 525,200"
-          fill={s.vent === "OPEN" ? "#0a3a0a" : "#3a0a0a"}
-          stroke={s.vent === "OPEN" ? "#3aff6e" : "#ff3a3a"} strokeWidth="2" />
-        <polygon points="510,210 540,210 525,200"
-          fill={s.vent === "OPEN" ? "#0a3a0a" : "#3a0a0a"}
-          stroke={s.vent === "OPEN" ? "#3aff6e" : "#ff3a3a"} strokeWidth="2" />
-        <text x={460} y={185} fontFamily="monospace" fontSize="10" fill={s.vent === "OPEN" ? "#3aff6e" : "#ff3a3a"}>
-          VENT {s.vent}
-        </text>
-        <text x={500} y={175} fontFamily="monospace" fontSize="9" fill={C.label}>↑ VENT</text>
-      </g>
+      {/* === N2 SOC top-right === */}
+      <Pipe d="M 1080 130 L 1260 130" />
+      <Diamond cx={1140} cy={130} r={6} />
+      <text x={1140} y={134} textAnchor="middle" fontFamily="Arial" fontSize={8} fill={YK.text}>M</text>
+      <text x={1265} y={134} fontFamily="Arial" fontSize={11} fill={YK.text}>N2</text>
+      <text x={1100} y={155} fontFamily="Arial" fontSize={10} fill={YK.text}>2.07barg</text>
+      <text x={1100} y={170} fontFamily="Arial" fontSize={10} fill={YK.text}>0.56barg</text>
+      <Pipe d="M 1140 130 L 1140 240 L 1260 240" />
+      <text x={1265} y={244} fontFamily="Arial" fontSize={11} fill={YK.text}>N2 SOC</text>
+      <text x={1180} y={258} fontFamily="Arial" fontSize={10} fill={YK.text}>284Nm³/h</text>
 
-      {/* === Cooling water (sea water) feed bottom === */}
-      {pipe("M 110 519 L 300 519 L 300 560 L 800 560", C.water)}
-      <DataCard x={130} y={540} w={90} value="0.96 barg" />
-      <DataCard x={230} y={540} w={90} value="21.44 °C" />
+      {/* === IA SOC & INLET AIR (bottom right) === */}
+      <Pipe d="M 1040 590 L 1180 590 L 1180 640 L 1260 640" />
+      <text x={1265} y={644} fontFamily="Arial" fontSize={11} fill={YK.text}>IA SOC</text>
+      <text x={1100} y={585} fontFamily="Arial" fontSize={10} fill={YK.text}>0.14barg</text>
+      <Pipe d="M 1180 590 L 1260 590" />
+      <text x={1100} y={612} fontFamily="Arial" fontSize={11} fill={YK.text}>6.68barg</text>
+      <text x={1265} y={594} fontFamily="Arial" fontSize={11} fill={YK.text}>INLET AIR</text>
+      <text x={1140} y={670} fontFamily="Arial" fontSize={11} fill={YK.blue} fontWeight="bold">6.64barg</text>
 
-      {/* === LIQUID N2 STORAGE (offline notice) === */}
-      <rect x={1080} y={310} width={140} height={90} fill="#0a0a0a" stroke="#444" strokeWidth="1" strokeDasharray="4 3" />
-      <text x={1150} y={328} textAnchor="middle" fontFamily="monospace" fontSize="10" fill="#666">LIQUID N2 STORAGE</text>
-      <text x={1150} y={344} textAnchor="middle" fontFamily="monospace" fontSize="10" fill="#666">LIQUID N2 PUMP</text>
-      <text x={1150} y={364} textAnchor="middle" fontFamily="monospace" fontSize="11" fill="#ff8c4a">-0.9%</text>
-      <text x={1150} y={380} textAnchor="middle" fontFamily="monospace" fontSize="11" fill="#ff8c4a">0.00 barg</text>
-      <text x={1150} y={395} textAnchor="middle" fontFamily="monospace" fontSize="8" fill="#666">— NOT COMMISSIONED —</text>
+      {/* === Sea water cooling exchangers (bottom-left) === */}
+      <Tag x={10} y={510} w={80} t="SEA WATER" />
+      <Tag x={10} y={528} w={80} t="SEA WATER" />
+      <rect x={120} y={500} width={90} height={45} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={165} y={555} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>60-2102</text>
+      <text x={120} y={490} fontFamily="Arial" fontSize={10} fill={YK.red}>0.96barg</text>
+      <text x={120} y={478} fontFamily="Arial" fontSize={10} fill={YK.red}>21.44°C</text>
 
-      {/* === Inlet air pressure reading (right) === */}
-      <DataCard x={1110} y={570} w={120} value="6.64 barg" />
-      <text x={1170} y={595} textAnchor="middle" fontFamily="monospace" fontSize="9" fill={C.label}>INLET AIR HDR</text>
+      <Tag x={10} y={620} w={80} t="WATER" />
+      <Tag x={10} y={638} w={80} t="WATER" />
+      <rect x={120} y={615} width={90} height={45} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={165} y={670} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>60-2101</text>
+      <text x={120} y={605} fontFamily="Arial" fontSize={10} fill={YK.text}>2.13barg</text>
+      <text x={120} y={593} fontFamily="Arial" fontSize={10} fill={YK.text}>34.92°C</text>
 
-      {/* Bottom tabs (mimic) */}
-      <g fontFamily="monospace" fontSize="10" fill="#888">
-        {["CG1","CG2","CG3","CG4","CG5","TG1","INTERLOCK","MOTOR SUMMARY"].map((t, i) => (
+      {/* Two recirc pumps */}
+      <circle cx={290} cy={630} r={14} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={290} y={634} textAnchor="middle" fontFamily="Arial" fontSize={9} fill={YK.text}>M</text>
+      <text x={310} y={628} fontFamily="Arial" fontSize={9} fill={YK.text}>R 60-1101A</text>
+      <rect x={272} y={650} width={36} height={12} fill="#b8f0c0" stroke={YK.green} />
+      <text x={290} y={659} textAnchor="middle" fontFamily="Arial" fontSize={8} fill={YK.green} fontWeight="bold">RACKIN</text>
+
+      <circle cx={290} cy={690} r={14} fill="#f4f4f4" stroke={YK.line} strokeWidth={1.2} />
+      <text x={290} y={694} textAnchor="middle" fontFamily="Arial" fontSize={9} fill={YK.text}>M</text>
+      <text x={310} y={688} fontFamily="Arial" fontSize={9} fill={YK.text}>R 60-1101B</text>
+      <rect x={272} y={702} width={36} height={11} fill="#b8f0c0" stroke={YK.green} />
+      <text x={290} y={710} textAnchor="middle" fontFamily="Arial" fontSize={8} fill={YK.green} fontWeight="bold">RACKIN</text>
+
+      {/* Blue tank 60-2001 (cooler / chilled water tank) */}
+      <rect x={365} y={490} width={75} height={55} fill="#5cb8ff" stroke={YK.line} strokeWidth={1.2} />
+      <text x={402} y={555} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>60-2001</text>
+      <text x={402} y={520} textAnchor="middle" fontFamily="Arial" fontSize={12} fill="#fff" fontWeight="bold">93.8%</text>
+      <text x={355} y={485} fontFamily="Arial" fontSize={9} fill={YK.text}>VENT</text>
+
+      {/* === Bottom tabs === */}
+      <g fontFamily="Arial" fontSize={10} fill={YK.text}>
+        {["CG1", "CG2", "CG3", "CG4", "CG5", "TG1", "INTERLOCK", "MOTOR SUMMARY"].map((t, i) => (
           <g key={t}>
-            <rect x={500 + i * 90} y={595} width={85} height={18} fill="#0a0a0a" stroke="#2a2a2a" />
-            <text x={500 + i * 90 + 42} y={608} textAnchor="middle">{t}</text>
+            <rect x={510 + i * 92} y={695} width={88} height={20} fill="#e8e8e8" stroke={YK.line} strokeWidth={0.6} />
+            <text x={510 + i * 92 + 44} y={709} textAnchor="middle">{t}</text>
           </g>
         ))}
       </g>
-
-      {/* gradients */}
-      <defs>
-        <linearGradient id="vesselGloss" x1="0" x2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.4" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-      </defs>
     </svg>
   );
 }
 
-// ---- Data card ----
-function DataCard({ x, y, w, value, highlight = false }: { x: number; y: number; w: number; value: string; highlight?: boolean }) {
+// ---- Compressor (Yokogawa-style green/red panel with M/R indicator) ----
+function CompUnit({
+  x, y, tag, loaded, loadLabel, onClick,
+}: { x: number; y: number; tag: string; loaded: boolean; loadLabel: string; onClick: () => void }) {
+  const color = loaded ? YK.green : YK.red;
+  const fill = loaded ? "#c8f0d0" : "#ffd0d0";
+  const stateLabel = loaded ? "RACKIN" : "RACKOUT";
   return (
-    <g>
-      <rect x={x} y={y} width={w} height={26} fill="#0a0a0a"
-        stroke={highlight ? "#00d4ff" : "#2a2a2a"} strokeWidth={highlight ? 1.5 : 1}
-        style={highlight ? { filter: "drop-shadow(0 0 6px rgba(0,212,255,0.6))" } : undefined} />
-      <text x={x + w / 2} y={y + 18} textAnchor="middle" fontFamily="monospace"
-        fontSize={highlight ? 15 : 13} fill={highlight ? "#00d4ff" : "#e6e9ef"} fontWeight="bold">
-        {value}
-      </text>
+    <g onClick={onClick} style={{ cursor: "pointer" }}>
+      {/* status pill (LOADING / UNLOAD) to the left */}
+      <rect x={x - 70} y={y + 5} width={60} height={16} fill={loaded ? "#cce0ff" : "#ffe6c2"} stroke={YK.line} strokeWidth={0.8} />
+      <text x={x - 40} y={y + 17} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text} fontWeight="bold">{loadLabel}</text>
+
+      {/* main framed compressor */}
+      <rect x={x} y={y} width={130} height={50} fill="#f4f4f4" stroke={color} strokeWidth={loaded ? 1.4 : 2.2}
+        style={loaded ? undefined : { filter: "drop-shadow(0 0 6px rgba(214,31,31,0.7))" }} />
+      {/* status block */}
+      <rect x={x + 6} y={y + 6} width={70} height={18} fill={fill} stroke={color} strokeWidth={1.2} />
+      <text x={x + 41} y={y + 19} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={color} fontWeight="bold">{stateLabel}</text>
+      {/* M/R column */}
+      <text x={x + 92} y={y + 16} fontFamily="Arial" fontSize={10} fill={YK.text}>M</text>
+      <text x={x + 92} y={y + 32} fontFamily="Arial" fontSize={10} fill={YK.text}>R</text>
+      <circle cx={x + 110} cy={y + 14} r={6} fill={color} />
+      <circle cx={x + 110} cy={y + 30} r={6} fill="#f4f4f4" stroke={YK.line} strokeWidth={0.8} />
+      {/* tag */}
+      <text x={x + 65} y={y + 62} textAnchor="middle" fontFamily="Arial" fontSize={10} fill={YK.text}>{tag}</text>
     </g>
   );
 }
 
-// ---- Compressor block frame (RACKIN green / RACKOUT red glow) ----
-function CompBlock({ x, y, loaded }: { x: number; y: number; loaded: boolean }) {
-  const color = loaded ? "#3aff6e" : "#ff3333";
+// ---- Dryer pair block (two columns) ----
+function DryerPair({ x, y, tag, flow, valvePct }: { x: number; y: number; tag: string; flow: string; valvePct: number }) {
   return (
     <g>
-      <rect x={x} y={y} width={120} height={70} fill="#0a0a0a" stroke={color} strokeWidth={loaded ? 1.5 : 3}
-        style={{ filter: loaded ? "drop-shadow(0 0 4px #3aff6e)" : "drop-shadow(0 0 10px #ff3333)" }} />
-      <rect x={x + 8} y={y + 8} width={70} height={22} fill={loaded ? "#0a3a0a" : "#3a0a0a"} stroke={color} />
-      <text x={x + 43} y={y + 24} textAnchor="middle" fontFamily="monospace" fontSize="11" fill={color} fontWeight="bold">
-        {loaded ? "RACKIN" : "RACKOUT"}
-      </text>
-      <circle cx={x + 90} cy={y + 19} r="7" fill={loaded ? "#3aff6e" : "#ff3333"}
-        style={{ filter: `drop-shadow(0 0 4px ${color})` }} />
-      <text x={x + 105} y={y + 23} fontFamily="monospace" fontSize="10" fill="#ccc">M</text>
-      <text x={x + 105} y={y + 38} fontFamily="monospace" fontSize="10" fill="#ccc">R</text>
+      <text x={x + 30} y={y - 4} textAnchor="middle" fontFamily="Arial" fontSize={10} fill="#111">{tag}</text>
+      <rect x={x} y={y} width={26} height={55} fill="#cccccc" stroke="#1a1a1a" strokeWidth={1.2} />
+      <text x={x + 22} y={y + 8} fontFamily="Arial" fontSize={8} fill="#111">M</text>
+      <rect x={x + 34} y={y} width={26} height={55} fill="#cccccc" stroke="#1a1a1a" strokeWidth={1.2} />
+      <text x={x + 56} y={y + 8} fontFamily="Arial" fontSize={8} fill="#111">M</text>
+      {/* flow + valve % below */}
+      <polygon points={`${x + 18},${y + 70} ${x + 38},${y + 70} ${x + 28},${y + 82}`}
+        fill="#b8f0c0" stroke="#1b8a2e" strokeWidth={1.2} />
+      <polygon points={`${x + 18},${y + 94} ${x + 38},${y + 94} ${x + 28},${y + 82}`}
+        fill="#b8f0c0" stroke="#1b8a2e" strokeWidth={1.2} />
+      <text x={x + 60} y={y + 88} fontFamily="Arial" fontSize={10} fill="#111">{valvePct.toFixed(1)}%</text>
+      <text x={x - 5} y={y + 110} fontFamily="Arial" fontSize={11} fill="#0aa3c2" fontWeight="bold">{flow}</text>
     </g>
   );
 }
 
-// ---- Dryer block ----
-function DryerBlock({ x, y, tag, flow }: { x: number; y: number; tag: string; flow: string }) {
-  return (
-    <g>
-      <rect x={x} y={y} width={28} height={60} fill="#1a1a1a" stroke="#666" />
-      <rect x={x + 38} y={y} width={28} height={60} fill="#1a1a1a" stroke="#666" />
-      <text x={x + 33} y={y - 4} textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#cfd6dd">{tag}</text>
-      <text x={x + 33} y={y + 75} textAnchor="middle" fontFamily="monospace" fontSize="11" fill="#00d4ff" fontWeight="bold">{flow}</text>
-    </g>
-  );
-}
-
-// =============================================================================
-// Compressor manual toggle widget
-// =============================================================================
-function CompressorToggle({
-  x, y, tag, state, onToggle,
-}: { x: number; y: number; tag: string; state: CompState; onToggle: () => void }) {
-  return (
-    <div className="absolute font-mono text-[10px]" style={{ left: x - 130, top: y - 10 }}>
-      <div className="px-2 py-1 bg-[#0a0a0a] border border-[#2a2a2a] text-[#cfd6dd] mb-1 text-center w-[120px]">
-        {tag}
-      </div>
-      <button onClick={onToggle}
-        className={`w-[120px] py-1.5 border-2 tracking-widest font-bold ${
-          state === "LOAD"
-            ? "bg-[#0a3a0a] border-[#3aff6e] text-[#3aff6e]"
-            : "bg-[#3a0a0a] border-[#ff3333] text-[#ff8080]"
-        }`}
-        style={{
-          boxShadow: state === "LOAD"
-            ? "0 0 10px rgba(58,255,110,0.5)"
-            : "0 0 12px rgba(255,51,51,0.6)",
-        }}>
-        ▣ {state}
-      </button>
-    </div>
-  );
-}
-
-// =============================================================================
-// 60PIC006 Faceplate
-// =============================================================================
+// ---- 60PIC006 Faceplate (Yokogawa controller faceplate) ----
 function Faceplate({
   s, setPV, onClose,
 }: { s: SimState; setPV: (d: number) => void; onClose: () => void }) {
@@ -520,44 +538,33 @@ function Faceplate({
   const spPct = Math.max(0, Math.min(1, s.sv / 15));
   return (
     <>
-      <div className="flex items-center justify-between px-2 py-1 bg-[#0d2a3a] border-b border-[#3a4250]">
-        <span className="text-[10px] tracking-widest text-[#00d4ff]">60PIC006 COMPRESSED AIR HEADER PR</span>
-        <button onClick={onClose} className="text-[#888] hover:text-white"><X className="w-3 h-3" /></button>
+      <div className="flex items-center justify-between px-2 py-1 bg-[#1b4fa6] border-b border-[#666]">
+        <span className="text-[11px] tracking-wider text-white font-bold">60PIC006 — COMPRESSED AIR HEADER PR</span>
+        <button onClick={onClose} className="text-white hover:text-red-300"><X className="w-3 h-3" /></button>
       </div>
-
-      {/* Mode badges */}
-      <div className="flex gap-1 px-2 py-2 border-b border-[#3a4250]">
-        <span className="px-2 py-0.5 bg-[#3aff6e] text-black text-[10px] font-bold tracking-widest">AUT</span>
-        <span className="px-2 py-0.5 bg-[#2a2e36] text-[#cfd6dd] text-[10px] font-bold tracking-widest border border-[#3a4250]">NR</span>
+      <div className="flex gap-1 px-2 py-1 border-b border-[#888] bg-[#d8d8d8]">
+        <span className="px-2 py-0.5 bg-[#1b8a2e] text-white text-[10px] font-bold tracking-widest">AUT</span>
+        <span className="px-2 py-0.5 bg-[#e8e8e8] text-black text-[10px] font-bold tracking-widest border border-[#888]">NR</span>
       </div>
-
-      <div className="flex">
-        {/* Vertical bar gauge */}
-        <div className="relative w-14 h-[260px] m-2 bg-[#0a0d12] border border-[#3a4250]">
-          {/* scale ticks */}
+      <div className="flex bg-[#c8c8c8]">
+        <div className="relative w-14 h-[260px] m-2 bg-white border border-[#666]">
           {[0, 3, 6, 9, 12, 15].map((v) => (
-            <div key={v} className="absolute right-full pr-1 text-[8px] text-[#888]"
+            <div key={v} className="absolute right-full pr-1 text-[8px] text-[#333]"
               style={{ bottom: `${(v / 15) * 100}%`, transform: "translateY(50%)" }}>{v.toFixed(2)}</div>
           ))}
-          {/* PV bar */}
-          <div className="absolute bottom-0 left-0 right-0 bg-[#3aff6e] transition-all"
-            style={{ height: `${pct * 100}%`, boxShadow: "0 0 8px #3aff6e" }} />
-          {/* SP arrow */}
+          <div className="absolute bottom-0 left-0 right-0 bg-[#1b8a2e] transition-all" style={{ height: `${pct * 100}%` }} />
           <div className="absolute left-full pl-1" style={{ bottom: `${spPct * 100}%`, transform: "translateY(50%)" }}>
-            <div className="text-[#ff3333] text-sm leading-none">◄</div>
+            <div className="text-[#d61f1f] text-sm leading-none">◄</div>
           </div>
         </div>
-
-        {/* Parameter readouts */}
         <div className="flex-1 p-2 space-y-2">
-          <ParamRow label="PV" value={s.pv.toFixed(2)} unit="barg" color="#3aff6e" editable
+          <ParamRow label="PV" value={s.pv.toFixed(2)} unit="barg" color="#1b8a2e" editable
             onUp={() => setPV(0.1)} onDown={() => setPV(-0.1)} />
-          <ParamRow label="SV" value={s.sv.toFixed(2)} unit="barg" color="#ff3333" />
-          <ParamRow label="MV" value={s.mv.toFixed(1)} unit="%" color="#00d4ff" />
+          <ParamRow label="SV" value={s.sv.toFixed(2)} unit="barg" color="#d61f1f" />
+          <ParamRow label="MV" value={s.mv.toFixed(1)} unit="%" color="#1b4fa6" />
         </div>
       </div>
-
-      <div className="px-2 py-1 border-t border-[#3a4250] text-[9px] text-[#666] tracking-widest text-center">
+      <div className="px-2 py-1 border-t border-[#888] bg-[#c0c0c0] text-[9px] text-[#333] tracking-widest text-center">
         TRIP @ {TRIP.toFixed(1)} barg • CLICK PV ▲▼ TO TEST
       </div>
     </>
@@ -568,18 +575,18 @@ function ParamRow({
   label, value, unit, color, editable, onUp, onDown,
 }: { label: string; value: string; unit: string; color: string; editable?: boolean; onUp?: () => void; onDown?: () => void }) {
   return (
-    <div className="flex items-center justify-between bg-[#0a0d12] border border-[#3a4250] px-2 py-1.5">
-      <span className="text-[10px] text-[#888] tracking-widest">{label}</span>
+    <div className="flex items-center justify-between bg-white border border-[#888] px-2 py-1.5">
+      <span className="text-[10px] text-[#333] tracking-widest font-bold">{label}</span>
       <div className="flex items-center gap-1">
         <span className="font-mono text-lg font-bold tabular-nums" style={{ color }}>{value}</span>
-        <span className="text-[9px] text-[#666]">{unit}</span>
+        <span className="text-[9px] text-[#555]">{unit}</span>
         {editable && (
           <div className="flex flex-col ml-1">
-            <button onClick={onUp} className="bg-[#1a1d24] border border-[#3a4250] hover:bg-[#2a2e36]">
-              <ChevronUp className="w-3 h-3 text-[#cfd6dd]" />
+            <button onClick={onUp} className="bg-[#e0e0e0] border border-[#888] hover:bg-white">
+              <ChevronUp className="w-3 h-3 text-black" />
             </button>
-            <button onClick={onDown} className="bg-[#1a1d24] border border-[#3a4250] hover:bg-[#2a2e36]">
-              <ChevronDown className="w-3 h-3 text-[#cfd6dd]" />
+            <button onClick={onDown} className="bg-[#e0e0e0] border border-[#888] hover:bg-white">
+              <ChevronDown className="w-3 h-3 text-black" />
             </button>
           </div>
         )}
