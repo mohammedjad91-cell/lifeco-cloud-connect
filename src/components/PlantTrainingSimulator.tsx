@@ -131,7 +131,7 @@ export default function PlantTrainingSimulator() {
         }
         pv = Math.max(0, Math.min(15, pv));
 
-        let tripped = prev.tripped;
+        let tripped: boolean = prev.tripped;
         if (pv >= TRIP) tripped = true;
 
         return { ...prev, pv: +pv.toFixed(2), tripped };
