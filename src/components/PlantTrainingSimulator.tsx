@@ -265,6 +265,10 @@ export default function PlantTrainingSimulator() {
           <span className="text-[#555]">{Math.round(zoom * 100)}%</span>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => { setEditMode((e) => !e); setTool("select"); setPipeStart(null); }}
+            className={`px-3 py-0.5 border flex items-center gap-1.5 ${editMode ? "bg-[#fff4b8] border-[#a07a00] text-[#604a00] font-bold" : "bg-[#e0e0e0] border-[#888] text-black"}`}>
+            <Pencil className="w-3 h-3" /> {editMode ? "EDIT: ON" : "EDIT MODE"}
+          </button>
           <button onClick={() => setMuted((m) => !m)}
             className={`px-3 py-0.5 border flex items-center gap-1.5 ${muted ? "bg-[#e0e0e0] border-[#888] text-[#444]" : "bg-[#ffd0d0] border-[#d61f1f] text-[#a01010]"}`}>
             {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} MUTE ALARM
@@ -275,6 +279,42 @@ export default function PlantTrainingSimulator() {
           </button>
         </div>
       </div>
+
+      {editMode && (
+        <div className="flex flex-wrap items-center gap-2 px-2 py-1.5 bg-[#fff4b8] border border-[#a07a00] font-sans text-[11px] text-[#604a00]">
+          <span className="font-bold tracking-widest">TOOLS:</span>
+          {([
+            { k: "select" as EditTool, label: "Select / Drag", icon: MousePointer2 },
+            { k: "valve" as EditTool, label: "+ Valve", icon: Plus },
+            { k: "pipe" as EditTool, label: "+ Pipe", icon: Spline },
+            { k: "label" as EditTool, label: "+ Label", icon: Plus },
+            { k: "delete" as EditTool, label: "Delete", icon: Trash2 },
+          ]).map(({ k, label, icon: Ic }) => (
+            <button key={k} onClick={() => { setTool(k); setPipeStart(null); }}
+              className={`px-2 py-0.5 border flex items-center gap-1 ${tool === k ? "bg-[#604a00] text-white border-[#604a00]" : "bg-white border-[#a07a00] hover:bg-[#fff8d8]"}`}>
+              <Ic className="w-3 h-3" /> {label}
+            </button>
+          ))}
+          <span className="ml-2">Pipe color:</span>
+          {["#1a1a1a", "#0aa3c2", "#1b4fa6", "#1b8a2e", "#d61f1f", "#d96a18"].map((c) => (
+            <button key={c} onClick={() => setPipeColor(c)}
+              className={`w-5 h-5 border-2 ${pipeColor === c ? "border-black" : "border-[#888]"}`}
+              style={{ background: c }} aria-label={`pipe color ${c}`} />
+          ))}
+          <button onClick={clearLayer}
+            className="ml-auto px-2 py-0.5 bg-[#ffd0d0] border border-[#d61f1f] text-[#a01010] flex items-center gap-1">
+            <Trash2 className="w-3 h-3" /> Clear custom
+          </button>
+          <span className="px-2 py-0.5 bg-white border border-[#a07a00] flex items-center gap-1">
+            <Save className="w-3 h-3" /> Auto-saved
+          </span>
+          {tool === "pipe" && pipeStart && (
+            <span className="px-2 py-0.5 bg-[#cce0ff] border border-[#1b4fa6] text-[#1b4fa6]">
+              Click second point to finish ({pipeStart.x},{pipeStart.y})
+            </span>
+          )}
+        </div>
+      )}
 
       <AnimatePresence>
         {s.tripped && (
@@ -288,7 +328,12 @@ export default function PlantTrainingSimulator() {
       {/* Canvas */}
       <div className="relative bg-[#d6d6d6] border border-[#888] overflow-auto" style={{ minHeight: 720 }}>
         <div style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: 1280, height: 720 }}>
-          <MimicSVG s={s} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} onToggleComp={toggleComp} />
+          <MimicSVG
+            s={s} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} onToggleComp={toggleComp}
+            editMode={editMode} tool={tool} layer={layer} pipeStart={pipeStart}
+            onCanvasClick={handleCanvasClick} onItemClick={handleItemClick}
+            onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
+          />
         </div>
       </div>
 
