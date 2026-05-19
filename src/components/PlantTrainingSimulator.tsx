@@ -358,10 +358,16 @@ export default function PlantTrainingSimulator() {
 // =============================================================================
 function MimicSVG({
   s, onOpenPIC, onToggleVent, onTogglePSA, onToggleComp,
+  editMode, tool, layer, pipeStart, onCanvasClick, onItemClick, onMouseMove, onMouseUp,
 }: {
   s: SimState;
   onOpenPIC: () => void; onToggleVent: () => void; onTogglePSA: () => void;
   onToggleComp: (k: "compA" | "compB" | "compC") => void;
+  editMode: boolean; tool: EditTool; layer: CustomLayer; pipeStart: { x: number; y: number } | null;
+  onCanvasClick: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onItemClick: (kind: "valve" | "pipe" | "label", id: string) => void;
+  onMouseMove: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseUp: () => void;
 }) {
   const Pipe = ({ d }: { d: string }) => <path d={d} fill="none" stroke={YK.line} strokeWidth={1.4} />;
   // Inline label rectangle (white box with thin black border) like the DCS
