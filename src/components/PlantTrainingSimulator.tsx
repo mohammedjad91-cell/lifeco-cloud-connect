@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RotateCcw, VolumeX, Volume2, ZoomIn, ZoomOut, X, ChevronUp, ChevronDown } from "lucide-react";
+import { RotateCcw, VolumeX, Volume2, ZoomIn, ZoomOut, X, ChevronUp, ChevronDown, Pencil, Plus, Minus, Trash2, Spline, MousePointer2, Save } from "lucide-react";
+
+// ---- Editor types ----
+type EditTool = "select" | "valve" | "pipe" | "label" | "delete";
+interface CustomValve { id: string; x: number; y: number; state: "OPEN" | "CLOSED"; label: string; }
+interface CustomPipe { id: string; x1: number; y1: number; x2: number; y2: number; color: string; }
+interface CustomLabel { id: string; x: number; y: number; text: string; }
+interface CustomLayer { valves: CustomValve[]; pipes: CustomPipe[]; labels: CustomLabel[]; }
+const EMPTY_LAYER: CustomLayer = { valves: [], pipes: [], labels: [] };
+const LS_KEY = "lifeco_ots_custom_layer_v1";
 
 // =============================================================================
 // LIFECO PMS 2026 — Operator Training Simulator (OTS)
