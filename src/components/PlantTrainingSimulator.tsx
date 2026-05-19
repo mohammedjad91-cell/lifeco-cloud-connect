@@ -116,6 +116,82 @@ export default function PlantTrainingSimulator() {
   const [showPIC, setShowPIC] = useState(false);
   const audio = useAudioEngine(muted);
 
+  // ---- Editor state ----
+  const [editMode, setEditMode] = useState(false);
+  const [tool, setTool] = useState<EditTool>("select");
+  const [layer, setLayer] = useState<CustomLayer>(() => {
+    try { const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : EMPTY_LAYER; } catch { return EMPTY_LAYER; }
+  });
+  const [pipeStart, setPipeStart] = useState<{ x: number; y: number } | null>(null);
+  const [pipeColor, setPipeColor] = useState("#1a1a1a");
+  const [drag, setDrag] = useState<{ id: string; kind: "valve" | "label" } | null>(null);
+
+  // Persist
+  useEffect(() => { try { localStorage.setItem(LS_KEY, JSON.stringify(layer)); } catch {} }, [layer]);
+
+  const svgPoint = (e: React.MouseEvent<SVGSVGElement>) => {
+    const svg = e.currentTarget;
+    const r = svg.getBoundingClientRect();
+    return { x: Math.round((e.clientX - r.left) / zoom), y: Math.round((e.clientY - r.top) / zoom) };
+  };
+
+  const handleCanvasClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!editMode) return;
+    const p = svgPoint(e);
+    if (tool === "valve") {
+      const id = "v_" + Date.now();
+      setLayer((l) => ({ ...l, valves: [...l.valves, { id, x: p.x, y: p.y, state: "CLOSED", label: "VLV" }] }));
+    } else if (tool === "pipe") {
+      if (!pipeStart) setPipeStart(p);
+      else {
+        const id = "p_" + Date.now();
+        setLayer((l) => ({ ...l, pipes: [...l.pipes, { id, x1: pipeStart.x, y1: pipeStart.y, x2: p.x, y2: p.y, color: pipeColor }] }));
+        setPipeStart(null);
+      }
+    } else if (tool === "label") {
+      const text = window.prompt("Label text:", "TAG");
+      if (text) {
+        const id = "l_" + Date.now();
+        setLayer((l) => ({ ...l, labels: [...l.labels, { id, x: p.x, y: p.y, text }] }));
+      }
+    }
+  };
+
+  const handleItemClick = (kind: "valve" | "pipe" | "label", id: string) => {
+    if (!editMode) {
+      if (kind === "valve") {
+        setLayer((l) => ({
+          ...l,
+          valves: l.valves.map((v) => v.id === id ? { ...v, state: v.state === "OPEN" ? "CLOSED" : "OPEN" } : v),
+        }));
+      }
+      return;
+    }
+    if (tool === "delete") {
+      setLayer((l) => ({
+        valves: l.valves.filter((v) => v.id !== id),
+        pipes: l.pipes.filter((p) => p.id !== id),
+        labels: l.labels.filter((x) => x.id !== id),
+      }));
+    } else if (tool === "select" && (kind === "valve" || kind === "label")) {
+      setDrag({ id, kind });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!drag) return;
+    const p = svgPoint(e);
+    setLayer((l) => ({
+      ...l,
+      valves: drag.kind === "valve" ? l.valves.map((v) => v.id === drag.id ? { ...v, x: p.x, y: p.y } : v) : l.valves,
+      labels: drag.kind === "label" ? l.labels.map((x) => x.id === drag.id ? { ...x, x: p.x, y: p.y } : x) : l.labels,
+    }));
+  };
+
+  const handleMouseUp = () => setDrag(null);
+  const clearLayer = () => { if (window.confirm("Clear all custom items?")) setLayer(EMPTY_LAYER); };
+
+
   useEffect(() => {
     const id = window.setInterval(() => {
       setS((prev) => {
