@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RotateCcw, VolumeX, Volume2, ZoomIn, ZoomOut, X, ChevronUp, ChevronDown } from "lucide-react";
+import { RotateCcw, VolumeX, Volume2, ZoomIn, ZoomOut, X, ChevronUp, ChevronDown, Pencil, Plus, Minus, Trash2, Spline, MousePointer2, Save } from "lucide-react";
+
+// ---- Editor types ----
+type EditTool = "select" | "valve" | "pipe" | "label" | "delete";
+interface CustomValve { id: string; x: number; y: number; state: "OPEN" | "CLOSED"; label: string; }
+interface CustomPipe { id: string; x1: number; y1: number; x2: number; y2: number; color: string; }
+interface CustomLabel { id: string; x: number; y: number; text: string; }
+interface CustomLayer { valves: CustomValve[]; pipes: CustomPipe[]; labels: CustomLabel[]; }
+const EMPTY_LAYER: CustomLayer = { valves: [], pipes: [], labels: [] };
+const LS_KEY = "lifeco_ots_custom_layer_v1";
 
 // =============================================================================
 // LIFECO PMS 2026 — Operator Training Simulator (OTS)
@@ -107,6 +116,82 @@ export default function PlantTrainingSimulator() {
   const [showPIC, setShowPIC] = useState(false);
   const audio = useAudioEngine(muted);
 
+  // ---- Editor state ----
+  const [editMode, setEditMode] = useState(false);
+  const [tool, setTool] = useState<EditTool>("select");
+  const [layer, setLayer] = useState<CustomLayer>(() => {
+    try { const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : EMPTY_LAYER; } catch { return EMPTY_LAYER; }
+  });
+  const [pipeStart, setPipeStart] = useState<{ x: number; y: number } | null>(null);
+  const [pipeColor, setPipeColor] = useState("#1a1a1a");
+  const [drag, setDrag] = useState<{ id: string; kind: "valve" | "label" } | null>(null);
+
+  // Persist
+  useEffect(() => { try { localStorage.setItem(LS_KEY, JSON.stringify(layer)); } catch {} }, [layer]);
+
+  const svgPoint = (e: React.MouseEvent<SVGSVGElement>) => {
+    const svg = e.currentTarget;
+    const r = svg.getBoundingClientRect();
+    return { x: Math.round((e.clientX - r.left) / zoom), y: Math.round((e.clientY - r.top) / zoom) };
+  };
+
+  const handleCanvasClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!editMode) return;
+    const p = svgPoint(e);
+    if (tool === "valve") {
+      const id = "v_" + Date.now();
+      setLayer((l) => ({ ...l, valves: [...l.valves, { id, x: p.x, y: p.y, state: "CLOSED", label: "VLV" }] }));
+    } else if (tool === "pipe") {
+      if (!pipeStart) setPipeStart(p);
+      else {
+        const id = "p_" + Date.now();
+        setLayer((l) => ({ ...l, pipes: [...l.pipes, { id, x1: pipeStart.x, y1: pipeStart.y, x2: p.x, y2: p.y, color: pipeColor }] }));
+        setPipeStart(null);
+      }
+    } else if (tool === "label") {
+      const text = window.prompt("Label text:", "TAG");
+      if (text) {
+        const id = "l_" + Date.now();
+        setLayer((l) => ({ ...l, labels: [...l.labels, { id, x: p.x, y: p.y, text }] }));
+      }
+    }
+  };
+
+  const handleItemClick = (kind: "valve" | "pipe" | "label", id: string) => {
+    if (!editMode) {
+      if (kind === "valve") {
+        setLayer((l) => ({
+          ...l,
+          valves: l.valves.map((v) => v.id === id ? { ...v, state: v.state === "OPEN" ? "CLOSED" : "OPEN" } : v),
+        }));
+      }
+      return;
+    }
+    if (tool === "delete") {
+      setLayer((l) => ({
+        valves: l.valves.filter((v) => v.id !== id),
+        pipes: l.pipes.filter((p) => p.id !== id),
+        labels: l.labels.filter((x) => x.id !== id),
+      }));
+    } else if (tool === "select" && (kind === "valve" || kind === "label")) {
+      setDrag({ id, kind });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!drag) return;
+    const p = svgPoint(e);
+    setLayer((l) => ({
+      ...l,
+      valves: drag.kind === "valve" ? l.valves.map((v) => v.id === drag.id ? { ...v, x: p.x, y: p.y } : v) : l.valves,
+      labels: drag.kind === "label" ? l.labels.map((x) => x.id === drag.id ? { ...x, x: p.x, y: p.y } : x) : l.labels,
+    }));
+  };
+
+  const handleMouseUp = () => setDrag(null);
+  const clearLayer = () => { if (window.confirm("Clear all custom items?")) setLayer(EMPTY_LAYER); };
+
+
   useEffect(() => {
     const id = window.setInterval(() => {
       setS((prev) => {
@@ -180,6 +265,10 @@ export default function PlantTrainingSimulator() {
           <span className="text-[#555]">{Math.round(zoom * 100)}%</span>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => { setEditMode((e) => !e); setTool("select"); setPipeStart(null); }}
+            className={`px-3 py-0.5 border flex items-center gap-1.5 ${editMode ? "bg-[#fff4b8] border-[#a07a00] text-[#604a00] font-bold" : "bg-[#e0e0e0] border-[#888] text-black"}`}>
+            <Pencil className="w-3 h-3" /> {editMode ? "EDIT: ON" : "EDIT MODE"}
+          </button>
           <button onClick={() => setMuted((m) => !m)}
             className={`px-3 py-0.5 border flex items-center gap-1.5 ${muted ? "bg-[#e0e0e0] border-[#888] text-[#444]" : "bg-[#ffd0d0] border-[#d61f1f] text-[#a01010]"}`}>
             {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} MUTE ALARM
@@ -190,6 +279,42 @@ export default function PlantTrainingSimulator() {
           </button>
         </div>
       </div>
+
+      {editMode && (
+        <div className="flex flex-wrap items-center gap-2 px-2 py-1.5 bg-[#fff4b8] border border-[#a07a00] font-sans text-[11px] text-[#604a00]">
+          <span className="font-bold tracking-widest">TOOLS:</span>
+          {([
+            { k: "select" as EditTool, label: "Select / Drag", icon: MousePointer2 },
+            { k: "valve" as EditTool, label: "+ Valve", icon: Plus },
+            { k: "pipe" as EditTool, label: "+ Pipe", icon: Spline },
+            { k: "label" as EditTool, label: "+ Label", icon: Plus },
+            { k: "delete" as EditTool, label: "Delete", icon: Trash2 },
+          ]).map(({ k, label, icon: Ic }) => (
+            <button key={k} onClick={() => { setTool(k); setPipeStart(null); }}
+              className={`px-2 py-0.5 border flex items-center gap-1 ${tool === k ? "bg-[#604a00] text-white border-[#604a00]" : "bg-white border-[#a07a00] hover:bg-[#fff8d8]"}`}>
+              <Ic className="w-3 h-3" /> {label}
+            </button>
+          ))}
+          <span className="ml-2">Pipe color:</span>
+          {["#1a1a1a", "#0aa3c2", "#1b4fa6", "#1b8a2e", "#d61f1f", "#d96a18"].map((c) => (
+            <button key={c} onClick={() => setPipeColor(c)}
+              className={`w-5 h-5 border-2 ${pipeColor === c ? "border-black" : "border-[#888]"}`}
+              style={{ background: c }} aria-label={`pipe color ${c}`} />
+          ))}
+          <button onClick={clearLayer}
+            className="ml-auto px-2 py-0.5 bg-[#ffd0d0] border border-[#d61f1f] text-[#a01010] flex items-center gap-1">
+            <Trash2 className="w-3 h-3" /> Clear custom
+          </button>
+          <span className="px-2 py-0.5 bg-white border border-[#a07a00] flex items-center gap-1">
+            <Save className="w-3 h-3" /> Auto-saved
+          </span>
+          {tool === "pipe" && pipeStart && (
+            <span className="px-2 py-0.5 bg-[#cce0ff] border border-[#1b4fa6] text-[#1b4fa6]">
+              Click second point to finish ({pipeStart.x},{pipeStart.y})
+            </span>
+          )}
+        </div>
+      )}
 
       <AnimatePresence>
         {s.tripped && (
@@ -203,7 +328,12 @@ export default function PlantTrainingSimulator() {
       {/* Canvas */}
       <div className="relative bg-[#d6d6d6] border border-[#888] overflow-auto" style={{ minHeight: 720 }}>
         <div style={{ transform: `scale(${zoom})`, transformOrigin: "top left", width: 1280, height: 720 }}>
-          <MimicSVG s={s} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} onToggleComp={toggleComp} />
+          <MimicSVG
+            s={s} onOpenPIC={() => setShowPIC(true)} onToggleVent={toggleVent} onTogglePSA={togglePSA} onToggleComp={toggleComp}
+            editMode={editMode} tool={tool} layer={layer} pipeStart={pipeStart}
+            onCanvasClick={handleCanvasClick} onItemClick={handleItemClick}
+            onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
+          />
         </div>
       </div>
 
@@ -228,10 +358,16 @@ export default function PlantTrainingSimulator() {
 // =============================================================================
 function MimicSVG({
   s, onOpenPIC, onToggleVent, onTogglePSA, onToggleComp,
+  editMode, tool, layer, pipeStart, onCanvasClick, onItemClick, onMouseMove, onMouseUp,
 }: {
   s: SimState;
   onOpenPIC: () => void; onToggleVent: () => void; onTogglePSA: () => void;
   onToggleComp: (k: "compA" | "compB" | "compC") => void;
+  editMode: boolean; tool: EditTool; layer: CustomLayer; pipeStart: { x: number; y: number } | null;
+  onCanvasClick: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onItemClick: (kind: "valve" | "pipe" | "label", id: string) => void;
+  onMouseMove: (e: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseUp: () => void;
 }) {
   const Pipe = ({ d }: { d: string }) => <path d={d} fill="none" stroke={YK.line} strokeWidth={1.4} />;
   // Inline label rectangle (white box with thin black border) like the DCS
@@ -254,7 +390,19 @@ function MimicSVG({
   );
 
   return (
-    <svg width={1280} height={720} className="block" style={{ background: YK.bg }}>
+    <svg width={1280} height={720} className="block"
+      style={{ background: YK.bg, cursor: editMode ? (tool === "delete" ? "not-allowed" : tool === "select" ? "move" : "crosshair") : "default" }}
+      onClick={onCanvasClick} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}>
+      {editMode && (
+        <g>
+          <defs>
+            <pattern id="ots-grid" width={20} height={20} patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#b0b0b0" strokeWidth={0.4} />
+            </pattern>
+          </defs>
+          <rect x={0} y={22} width={1280} height={698} fill="url(#ots-grid)" />
+        </g>
+      )}
       {/* === Title strip === */}
       <rect x={0} y={0} width={1280} height={22} fill="#bfbfbf" stroke={YK.line} strokeWidth={0.5} />
       <text x={10} y={16} fontFamily="Arial" fontSize={12} fill={YK.text} fontWeight="bold">
@@ -475,6 +623,40 @@ function MimicSVG({
             <text x={510 + i * 92 + 44} y={709} textAnchor="middle">{t}</text>
           </g>
         ))}
+      </g>
+      {/* === Custom user-drawn layer === */}
+      <g>
+        {layer.pipes.map((p) => (
+          <line key={p.id} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2}
+            stroke={p.color} strokeWidth={2.2}
+            style={{ cursor: editMode && tool === "delete" ? "not-allowed" : "default" }}
+            onClick={(e) => { e.stopPropagation(); onItemClick("pipe", p.id); }} />
+        ))}
+        {layer.valves.map((v) => {
+          const open = v.state === "OPEN";
+          const stroke = open ? YK.green : YK.red;
+          const fill = open ? "#b8f0c0" : "#ffd0d0";
+          return (
+            <g key={v.id} onClick={(e) => { e.stopPropagation(); onItemClick("valve", v.id); }}
+              style={{ cursor: "pointer" }}>
+              <polygon points={`${v.x - 8},${v.y - 8} ${v.x + 8},${v.y - 8} ${v.x},${v.y}`} fill={fill} stroke={stroke} strokeWidth={1.6} />
+              <polygon points={`${v.x - 8},${v.y + 8} ${v.x + 8},${v.y + 8} ${v.x},${v.y}`} fill={fill} stroke={stroke} strokeWidth={1.6} />
+              <text x={v.x} y={v.y + 22} textAnchor="middle" fontFamily="Arial" fontSize={9}
+                fill={stroke} fontWeight="bold">{v.label} {v.state}</text>
+            </g>
+          );
+        })}
+        {layer.labels.map((l) => (
+          <g key={l.id} onClick={(e) => { e.stopPropagation(); onItemClick("label", l.id); }}
+            style={{ cursor: editMode ? "move" : "default" }}>
+            <text x={l.x} y={l.y} fontFamily="Arial" fontSize={11} fill={YK.text} fontWeight="bold">{l.text}</text>
+          </g>
+        ))}
+        {editMode && pipeStart && (
+          <circle cx={pipeStart.x} cy={pipeStart.y} r={5} fill="none" stroke={YK.blue} strokeWidth={2}>
+            <animate attributeName="r" values="4;8;4" dur="1s" repeatCount="indefinite" />
+          </circle>
+        )}
       </g>
     </svg>
   );
