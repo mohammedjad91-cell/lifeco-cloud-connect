@@ -624,6 +624,40 @@ function MimicSVG({
           </g>
         ))}
       </g>
+      {/* === Custom user-drawn layer === */}
+      <g>
+        {layer.pipes.map((p) => (
+          <line key={p.id} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2}
+            stroke={p.color} strokeWidth={2.2}
+            style={{ cursor: editMode && tool === "delete" ? "not-allowed" : "default" }}
+            onClick={(e) => { e.stopPropagation(); onItemClick("pipe", p.id); }} />
+        ))}
+        {layer.valves.map((v) => {
+          const open = v.state === "OPEN";
+          const stroke = open ? YK.green : YK.red;
+          const fill = open ? "#b8f0c0" : "#ffd0d0";
+          return (
+            <g key={v.id} onClick={(e) => { e.stopPropagation(); onItemClick("valve", v.id); }}
+              style={{ cursor: "pointer" }}>
+              <polygon points={`${v.x - 8},${v.y - 8} ${v.x + 8},${v.y - 8} ${v.x},${v.y}`} fill={fill} stroke={stroke} strokeWidth={1.6} />
+              <polygon points={`${v.x - 8},${v.y + 8} ${v.x + 8},${v.y + 8} ${v.x},${v.y}`} fill={fill} stroke={stroke} strokeWidth={1.6} />
+              <text x={v.x} y={v.y + 22} textAnchor="middle" fontFamily="Arial" fontSize={9}
+                fill={stroke} fontWeight="bold">{v.label} {v.state}</text>
+            </g>
+          );
+        })}
+        {layer.labels.map((l) => (
+          <g key={l.id} onClick={(e) => { e.stopPropagation(); onItemClick("label", l.id); }}
+            style={{ cursor: editMode ? "move" : "default" }}>
+            <text x={l.x} y={l.y} fontFamily="Arial" fontSize={11} fill={YK.text} fontWeight="bold">{l.text}</text>
+          </g>
+        ))}
+        {editMode && pipeStart && (
+          <circle cx={pipeStart.x} cy={pipeStart.y} r={5} fill="none" stroke={YK.blue} strokeWidth={2}>
+            <animate attributeName="r" values="4;8;4" dur="1s" repeatCount="indefinite" />
+          </circle>
+        )}
+      </g>
     </svg>
   );
 }
