@@ -390,7 +390,19 @@ function MimicSVG({
   );
 
   return (
-    <svg width={1280} height={720} className="block" style={{ background: YK.bg }}>
+    <svg width={1280} height={720} className="block"
+      style={{ background: YK.bg, cursor: editMode ? (tool === "delete" ? "not-allowed" : tool === "select" ? "move" : "crosshair") : "default" }}
+      onClick={onCanvasClick} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}>
+      {editMode && (
+        <g>
+          <defs>
+            <pattern id="ots-grid" width={20} height={20} patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#b0b0b0" strokeWidth={0.4} />
+            </pattern>
+          </defs>
+          <rect x={0} y={22} width={1280} height={698} fill="url(#ots-grid)" />
+        </g>
+      )}
       {/* === Title strip === */}
       <rect x={0} y={0} width={1280} height={22} fill="#bfbfbf" stroke={YK.line} strokeWidth={0.5} />
       <text x={10} y={16} fontFamily="Arial" fontSize={12} fill={YK.text} fontWeight="bold">
