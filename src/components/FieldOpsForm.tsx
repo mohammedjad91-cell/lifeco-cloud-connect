@@ -8,7 +8,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Wrench, Loader2, CheckCircle, User, Hash, Camera, X, AlertTriangle,
+  Wrench, Loader2, CheckCircle, User, Hash, Camera, X, AlertTriangle, FileText,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
@@ -34,10 +34,12 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
   const [technicianName, setTechnicianName] = useState(operator?.name ?? "");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
 
   const equipmentList = FIELD_OPS_EQUIPMENT[department] || FIELD_OPS_EQUIPMENT.OPERATIONS;
   const profile = useMemo(() => getEquipmentProfile(equipmentTag), [equipmentTag]);
@@ -94,6 +96,42 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
     return data.publicUrl;
   };
 
+  const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.type !== "application/pdf") {
+      toast({ title: "Only PDF files are allowed", variant: "destructive" });
+      return;
+    }
+    if (f.size > 15 * 1024 * 1024) {
+      toast({ title: "PDF too large (max 15MB)", variant: "destructive" });
+      return;
+    }
+    setPdfFile(f);
+  };
+
+  const clearPdf = () => {
+    setPdfFile(null);
+    if (pdfRef.current) pdfRef.current.value = "";
+  };
+
+  const uploadPdf = async (): Promise<string | null> => {
+    if (!pdfFile) return null;
+    setUploading(true);
+    const safeTag = (equipmentTag || "doc").replace(/[^a-zA-Z0-9_-]+/g, "_");
+    const path = `${department}/pdf/${safeTag}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.pdf`;
+    const { error } = await supabase.storage
+      .from("field-ops-photos")
+      .upload(path, pdfFile, { upsert: false, contentType: "application/pdf" });
+    setUploading(false);
+    if (error) {
+      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    const { data } = supabase.storage.from("field-ops-photos").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   const handleSave = async () => {
     if (!employeeId || !equipmentTag) {
       toast({ title: t.fieldOpsMissing, variant: "destructive" });
@@ -107,6 +145,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
 
     setSaving(true);
     const photoUrl = await uploadPhoto();
+    const pdfUrl = await uploadPdf();
 
     const dynamicData: Record<string, number> = {};
     profile.params.forEach((p) => {
@@ -126,6 +165,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       notes: notes || null,
       dynamic_data: dynamicData,
       photo_url: photoUrl,
+      pdf_url: pdfUrl,
       recorded_by: stamp.formatted,
       timestamp: new Date().toISOString(),
     };
@@ -151,6 +191,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       setValues({});
       setNotes("");
       clearPhoto();
+      clearPdf();
       toast({ title: t.saved, description: t.fieldOpsSaved });
       supabase.from("activity_logs").insert({
         action: "FIELD_OPS_ENTRY",
@@ -304,6 +345,43 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
                 onClick={clearPhoto}
                 className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-0.5"
                 aria-label="remove photo"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
+          <input
+            ref={pdfRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handlePdfSelect}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => pdfRef.current?.click()}
+            className="gap-2"
+          >
+            <FileText className="w-4 h-4" />
+            {pdfFile ? "Change PDF" : "Attach PDF"}
+          </Button>
+          {pdfFile && (
+            <div className="flex items-center gap-2 px-2 py-1 rounded border border-border bg-secondary/40 text-xs">
+              <FileText className="w-3.5 h-3.5 text-primary" />
+              <span className="max-w-[160px] truncate" title={pdfFile.name}>
+                {pdfFile.name}
+              </span>
+              <span className="opacity-60">
+                {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+              </span>
+              <button
+                type="button"
+                onClick={clearPdf}
+                className="bg-destructive text-destructive-foreground rounded-full p-0.5"
+                aria-label="remove pdf"
               >
                 <X className="w-3 h-3" />
               </button>

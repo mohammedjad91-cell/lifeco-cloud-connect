@@ -132,6 +132,7 @@ export type Database = {
           equipment_tag: string
           id: string
           notes: string | null
+          pdf_url: string | null
           photo_url: string | null
           recorded_by: string | null
           running_hours: number | null
@@ -148,6 +149,7 @@ export type Database = {
           equipment_tag: string
           id?: string
           notes?: string | null
+          pdf_url?: string | null
           photo_url?: string | null
           recorded_by?: string | null
           running_hours?: number | null
@@ -164,6 +166,7 @@ export type Database = {
           equipment_tag?: string
           id?: string
           notes?: string | null
+          pdf_url?: string | null
           photo_url?: string | null
           recorded_by?: string | null
           running_hours?: number | null
