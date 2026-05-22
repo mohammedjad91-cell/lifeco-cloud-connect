@@ -350,6 +350,43 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
               </button>
             </div>
           )}
+
+          <input
+            ref={pdfRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handlePdfSelect}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => pdfRef.current?.click()}
+            className="gap-2"
+          >
+            <FileText className="w-4 h-4" />
+            {pdfFile ? "Change PDF" : "Attach PDF"}
+          </Button>
+          {pdfFile && (
+            <div className="flex items-center gap-2 px-2 py-1 rounded border border-border bg-secondary/40 text-xs">
+              <FileText className="w-3.5 h-3.5 text-primary" />
+              <span className="max-w-[160px] truncate" title={pdfFile.name}>
+                {pdfFile.name}
+              </span>
+              <span className="opacity-60">
+                {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+              </span>
+              <button
+                type="button"
+                onClick={clearPdf}
+                className="bg-destructive text-destructive-foreground rounded-full p-0.5"
+                aria-label="remove pdf"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
