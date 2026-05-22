@@ -145,6 +145,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
 
     setSaving(true);
     const photoUrl = await uploadPhoto();
+    const pdfUrl = await uploadPdf();
 
     const dynamicData: Record<string, number> = {};
     profile.params.forEach((p) => {
@@ -164,6 +165,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       notes: notes || null,
       dynamic_data: dynamicData,
       photo_url: photoUrl,
+      pdf_url: pdfUrl,
       recorded_by: stamp.formatted,
       timestamp: new Date().toISOString(),
     };
