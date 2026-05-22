@@ -1,0 +1,1 @@
+ALTER TABLE public.field_ops_logs ADD COLUMN IF NOT EXISTS pdf_url text;
