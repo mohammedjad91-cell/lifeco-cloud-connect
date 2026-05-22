@@ -191,6 +191,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       setValues({});
       setNotes("");
       clearPhoto();
+      clearPdf();
       toast({ title: t.saved, description: t.fieldOpsSaved });
       supabase.from("activity_logs").insert({
         action: "FIELD_OPS_ENTRY",
