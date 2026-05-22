@@ -34,10 +34,12 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
   const [technicianName, setTechnicianName] = useState(operator?.name ?? "");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
 
   const equipmentList = FIELD_OPS_EQUIPMENT[department] || FIELD_OPS_EQUIPMENT.OPERATIONS;
   const profile = useMemo(() => getEquipmentProfile(equipmentTag), [equipmentTag]);
