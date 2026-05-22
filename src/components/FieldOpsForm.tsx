@@ -8,7 +8,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Wrench, Loader2, CheckCircle, User, Hash, Camera, X, AlertTriangle,
+  Wrench, Loader2, CheckCircle, User, Hash, Camera, X, AlertTriangle, FileText,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
