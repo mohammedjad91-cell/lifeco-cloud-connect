@@ -96,6 +96,42 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
     return data.publicUrl;
   };
 
+  const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.type !== "application/pdf") {
+      toast({ title: "Only PDF files are allowed", variant: "destructive" });
+      return;
+    }
+    if (f.size > 15 * 1024 * 1024) {
+      toast({ title: "PDF too large (max 15MB)", variant: "destructive" });
+      return;
+    }
+    setPdfFile(f);
+  };
+
+  const clearPdf = () => {
+    setPdfFile(null);
+    if (pdfRef.current) pdfRef.current.value = "";
+  };
+
+  const uploadPdf = async (): Promise<string | null> => {
+    if (!pdfFile) return null;
+    setUploading(true);
+    const safeTag = (equipmentTag || "doc").replace(/[^a-zA-Z0-9_-]+/g, "_");
+    const path = `${department}/pdf/${safeTag}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.pdf`;
+    const { error } = await supabase.storage
+      .from("field-ops-photos")
+      .upload(path, pdfFile, { upsert: false, contentType: "application/pdf" });
+    setUploading(false);
+    if (error) {
+      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    const { data } = supabase.storage.from("field-ops-photos").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   const handleSave = async () => {
     if (!employeeId || !equipmentTag) {
       toast({ title: t.fieldOpsMissing, variant: "destructive" });
