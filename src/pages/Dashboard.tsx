@@ -29,6 +29,10 @@ import DailyReportGenerator from "@/components/DailyReportGenerator";
 import NitrogenLogSheets from "@/components/NitrogenLogSheets";
 import PlantTrainingSimulator from "@/components/PlantTrainingSimulator";
 import DateUserBanner from "@/components/DateUserBanner";
+import SafetyMonitor from "@/components/SafetyMonitor";
+import AIChatSidebar from "@/components/AIChatSidebar";
+import ShiftCharts from "@/components/ShiftCharts";
+import ShiftReportButton from "@/components/ShiftReportButton";
 import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
@@ -684,7 +688,14 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          <TabsContent value="report" className="mt-4">
+          <TabsContent value="report" className="mt-4 space-y-4">
+            <div className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="font-display text-sm font-bold neon-text tracking-wider">SHIFT REPORT</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Branded PDF — entries, personnel & activity for {format(selectedDate, "dd MMM yyyy")}</p>
+              </div>
+              <ShiftReportButton department={department.id} date={selectedDate} />
+            </div>
             <DailyReportGenerator department={department.id} date={selectedDate} />
           </TabsContent>
 
@@ -692,7 +703,8 @@ const Dashboard = () => {
             <PlantTrainingSimulator />
           </TabsContent>
 
-          <TabsContent value="analytics" className="mt-4">
+          <TabsContent value="analytics" className="mt-4 space-y-4">
+            <ShiftCharts />
             <AnalyticsDashboard />
           </TabsContent>
         </Tabs>
@@ -711,6 +723,9 @@ const Dashboard = () => {
           onExportExcel={previewMode === "lab" ? handleExportLabExcel : handleExportExcel}
         />
       )}
+
+      <SafetyMonitor />
+      <AIChatSidebar />
     </div>
   );
 };
