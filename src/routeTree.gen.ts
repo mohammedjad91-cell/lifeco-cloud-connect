@@ -13,6 +13,7 @@ import { Route as PlantRouteImport } from './routes/plant'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const BiRoute = BiRouteImport.update({
   path: '/bi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssistantRoute = AssistantRouteImport.update({
   id: '/assistant',
   path: '/assistant',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
+  '/auth': typeof AuthRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
+  '/auth': typeof AuthRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/assistant': typeof AssistantRoute
+  '/auth': typeof AuthRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
@@ -87,17 +96,27 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/assistant'
+    | '/auth'
     | '/bi'
     | '/dashboard'
     | '/lab'
     | '/plant'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/assistant' | '/bi' | '/dashboard' | '/lab' | '/plant'
+  to:
+    | '/'
+    | '/admin'
+    | '/assistant'
+    | '/auth'
+    | '/bi'
+    | '/dashboard'
+    | '/lab'
+    | '/plant'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/assistant'
+    | '/auth'
     | '/bi'
     | '/dashboard'
     | '/lab'
@@ -108,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AssistantRoute: typeof AssistantRoute
+  AuthRoute: typeof AuthRoute
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
   LabRoute: typeof LabRoute
@@ -144,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assistant': {
       id: '/assistant'
       path: '/assistant'
@@ -172,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AssistantRoute: AssistantRoute,
+  AuthRoute: AuthRoute,
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
   LabRoute: LabRoute,
@@ -180,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
