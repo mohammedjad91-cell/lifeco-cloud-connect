@@ -5,6 +5,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -114,6 +116,44 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [status, setStatus] = useState<"checking" | "authed" | "anon">("checking");
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      setStatus(data.session ? "authed" : "anon");
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      setStatus(session ? "authed" : "anon");
+      if (event === "SIGNED_OUT") router.navigate({ to: "/auth", replace: true });
+      if (event === "SIGNED_IN") router.invalidate();
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [router]);
+
+  const onAuthRoute = pathname === "/auth";
+
+  useEffect(() => {
+    if (status === "anon" && !onAuthRoute) {
+      router.navigate({ to: "/auth", replace: true });
+    }
+  }, [status, onAuthRoute, router]);
+
+  if (onAuthRoute) return <>{children}</>;
+  if (status !== "authed") {
+    return <div className="min-h-screen bg-background" />;
+  }
+  return <>{children}</>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [mounted, setMounted] = useState(false);
@@ -125,7 +165,13 @@ function RootComponent() {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          {mounted ? <Outlet /> : <div className="min-h-screen bg-background" />}
+          {mounted ? (
+            <AuthGate>
+              <Outlet />
+            </AuthGate>
+          ) : (
+            <div className="min-h-screen bg-background" />
+          )}
         </TooltipProvider>
       </I18nProvider>
     </QueryClientProvider>
