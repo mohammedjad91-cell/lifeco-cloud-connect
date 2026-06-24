@@ -4,7 +4,7 @@ import { generateDailyReport } from "@/lib/report.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, FileDown, Loader2 } from "lucide-react";
+import { Sparkles, FileDown, Loader2, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
@@ -21,9 +21,13 @@ export default function DailyReportGenerator({ department, date }: Props) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const whatsappUrl = "https://wa.me/qr/SZECUN6LJ65KI1";
+
   const run = async () => {
     setBusy(true);
+    let whatsappWindow: Window | null = null;
     try {
+      whatsappWindow = window.open("about:blank", "_blank");
       const start = new Date(date); start.setHours(0, 0, 0, 0);
       const end = new Date(date); end.setHours(23, 59, 59, 999);
       const op = getOperator();
@@ -49,12 +53,28 @@ export default function DailyReportGenerator({ department, date }: Props) {
         },
       });
       setDraft(result.draft);
-      if (result.error) toast({ title: "AI returned an error", variant: "destructive" });
+
+      if (result.error) {
+        toast({ title: "AI returned an error", variant: "destructive" });
+        if (whatsappWindow) whatsappWindow.close();
+      } else {
+        if (whatsappWindow) {
+          whatsappWindow.location.href = whatsappUrl;
+        } else {
+          window.open(whatsappUrl, "_blank");
+        }
+        toast({ title: "تم إنشاء التقرير", description: "تم فتح واتساب لمشاركة التقرير.", });
+      }
     } catch (e) {
       toast({ title: "Failed to generate", variant: "destructive" });
+      if (whatsappWindow) whatsappWindow.close();
     } finally {
       setBusy(false);
     }
+  };
+
+  const shareWhatsApp = () => {
+    window.open(whatsappUrl, "_blank");
   };
 
   const exportPdf = () => {
@@ -84,6 +104,9 @@ export default function DailyReportGenerator({ department, date }: Props) {
           </Button>
           <Button variant="outline" onClick={exportPdf} disabled={!draft} className="gap-1.5">
             <FileDown className="w-4 h-4" /> Export PDF
+          </Button>
+          <Button variant="secondary" onClick={shareWhatsApp} disabled={!draft} className="gap-1.5">
+            <Share2 className="w-4 h-4" /> مشاركة عبر واتساب
           </Button>
         </div>
       </div>
