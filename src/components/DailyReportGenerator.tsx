@@ -21,14 +21,12 @@ export default function DailyReportGenerator({ department, date }: Props) {
   const generate = useServerFn(generateDailyReport);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-
-  const whatsappUrl = "https://wa.me/qr/SZECUN6LJ65KI1";
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   const run = async () => {
     setBusy(true);
-    let whatsappWindow: Window | null = null;
     try {
-      whatsappWindow = window.open("about:blank", "_blank");
       const start = new Date(date); start.setHours(0, 0, 0, 0);
       const end = new Date(date); end.setHours(23, 59, 59, 999);
       const op = getOperator();
@@ -57,25 +55,35 @@ export default function DailyReportGenerator({ department, date }: Props) {
 
       if (result.error) {
         toast({ title: "AI returned an error", variant: "destructive" });
-        if (whatsappWindow) whatsappWindow.close();
       } else {
-        if (whatsappWindow) {
-          whatsappWindow.location.href = whatsappUrl;
-        } else {
-          window.open(whatsappUrl, "_blank");
-        }
-        toast({ title: "تم إنشاء التقرير", description: "تم فتح واتساب لمشاركة التقرير.", });
+        toast({ title: "تم إنشاء التقرير", description: "يمكنك الآن مشاركته عبر واتساب أو الإيميل." });
       }
     } catch (e) {
       toast({ title: "Failed to generate", variant: "destructive" });
-      if (whatsappWindow) whatsappWindow.close();
     } finally {
       setBusy(false);
     }
   };
 
+  const cleanPhone = (p: string) => p.replace(/[^\d]/g, "");
+
   const shareWhatsApp = () => {
-    window.open(whatsappUrl, "_blank");
+    if (!draft) return;
+    const num = cleanPhone(phone);
+    const text = encodeURIComponent(draft);
+    const url = num
+      ? `https://wa.me/${num}?text=${text}`
+      : `https://wa.me/?text=${text}`;
+    window.open(url, "_blank");
+  };
+
+  const shareEmail = () => {
+    if (!draft) return;
+    const subject = encodeURIComponent(`LIFECO Daily Report — ${department} — ${format(date, "dd MMM yyyy")}`);
+    const body = encodeURIComponent(draft);
+    const to = email.trim();
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${subject}&body=${body}`;
+    window.open(gmailUrl, "_blank");
   };
 
   const exportPdf = () => {
