@@ -106,7 +106,7 @@ export default function DailyReportGenerator({ department, date }: Props) {
         <h3 className="text-lg font-semibold neon-text flex items-center gap-2">
           <Sparkles className="w-5 h-5" /> Smart Daily Report
         </h3>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button onClick={run} disabled={busy} className="gap-1.5">
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Generate
@@ -114,16 +114,40 @@ export default function DailyReportGenerator({ department, date }: Props) {
           <Button variant="outline" onClick={exportPdf} disabled={!draft} className="gap-1.5">
             <FileDown className="w-4 h-4" /> Export PDF
           </Button>
-          <Button variant="secondary" onClick={shareWhatsApp} disabled={!draft} className="gap-1.5">
-            <Share2 className="w-4 h-4" /> مشاركة عبر واتساب
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="flex gap-2">
+          <Input
+            dir="ltr"
+            placeholder="رقم واتساب مع رمز الدولة (مثال: 966555555555)"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <Button variant="secondary" onClick={shareWhatsApp} disabled={!draft} className="gap-1.5 shrink-0">
+            <Share2 className="w-4 h-4" /> واتساب
+          </Button>
+        </div>
+        <div className="flex gap-2">
+          <Input
+            dir="ltr"
+            type="email"
+            placeholder="بريد المستلم (Gmail)"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Button variant="secondary" onClick={shareEmail} disabled={!draft} className="gap-1.5 shrink-0">
+            <Mail className="w-4 h-4" /> Gmail
           </Button>
         </div>
       </div>
+
       <Textarea
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         rows={16}
-        placeholder="Click Generate to draft a professional shift report from today's logs and lab readings. You can edit before exporting."
+        placeholder="اضغط Generate لإنشاء التقرير، ثم أدخل رقم الواتساب أو البريد وشاركه."
         className="font-mono text-xs"
       />
     </div>
