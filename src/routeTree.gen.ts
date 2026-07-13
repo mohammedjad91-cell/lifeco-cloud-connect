@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlantRouteImport } from './routes/plant'
+import { Route as OtsRouteImport } from './routes/ots'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const PlantRoute = PlantRouteImport.update({
   id: '/plant',
   path: '/plant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OtsRoute = OtsRouteImport.update({
+  id: '/ots',
+  path: '/ots',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
+  '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
+  '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/lab': typeof LabRoute
+  '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
 export interface FileRouteTypes {
@@ -90,9 +99,18 @@ export interface FileRouteTypes {
     | '/bi'
     | '/dashboard'
     | '/lab'
+    | '/ots'
     | '/plant'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/assistant' | '/bi' | '/dashboard' | '/lab' | '/plant'
+  to:
+    | '/'
+    | '/admin'
+    | '/assistant'
+    | '/bi'
+    | '/dashboard'
+    | '/lab'
+    | '/ots'
+    | '/plant'
   id:
     | '__root__'
     | '/'
@@ -101,6 +119,7 @@ export interface FileRouteTypes {
     | '/bi'
     | '/dashboard'
     | '/lab'
+    | '/ots'
     | '/plant'
   fileRoutesById: FileRoutesById
 }
@@ -111,6 +130,7 @@ export interface RootRouteChildren {
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
   LabRoute: typeof LabRoute
+  OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
 }
 
@@ -121,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/plant'
       fullPath: '/plant'
       preLoaderRoute: typeof PlantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ots': {
+      id: '/ots'
+      path: '/ots'
+      fullPath: '/ots'
+      preLoaderRoute: typeof OtsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab': {
@@ -175,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
   LabRoute: LabRoute,
+  OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
 }
 export const routeTree = rootRouteImport
