@@ -38,6 +38,38 @@ export type Database = {
         }
         Relationships: []
       }
+      areas: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          plant_id: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          plant_id: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "areas_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       department_pins: {
         Row: {
           id: string
@@ -95,6 +127,47 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment: {
+        Row: {
+          area_id: string
+          created_at: string
+          criticality: string | null
+          description: string | null
+          id: string
+          name: string
+          tag: string
+          type: string | null
+        }
+        Insert: {
+          area_id: string
+          created_at?: string
+          criticality?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          tag: string
+          type?: string | null
+        }
+        Update: {
+          area_id?: string
+          created_at?: string
+          criticality?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          tag?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_assets: {
         Row: {
           asset_code: string
@@ -121,6 +194,145 @@ export type Database = {
           is_custom?: boolean
         }
         Relationships: []
+      }
+      equipment_docs: {
+        Row: {
+          created_at: string
+          equipment_id: string
+          id: string
+          kind: string
+          label: string | null
+          uploaded_by: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_id: string
+          id?: string
+          kind: string
+          label?: string | null
+          uploaded_by?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          equipment_id?: string
+          id?: string
+          kind?: string
+          label?: string | null
+          uploaded_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_docs_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_spares: {
+        Row: {
+          equipment_id: string
+          qty_required: number
+          spare_id: string
+        }
+        Insert: {
+          equipment_id: string
+          qty_required?: number
+          spare_id: string
+        }
+        Update: {
+          equipment_id?: string
+          qty_required?: number
+          spare_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_spares_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_spares_spare_id_fkey"
+            columns: ["spare_id"]
+            isOneToOne: false
+            referencedRelation: "spare_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      execution_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          execution_id: string
+          id: string
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          execution_id: string
+          id?: string
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          execution_id?: string
+          id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "execution_photos_execution_id_fkey"
+            columns: ["execution_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_executions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      execution_spares: {
+        Row: {
+          execution_id: string
+          id: string
+          qty_used: number
+          spare_id: string
+        }
+        Insert: {
+          execution_id: string
+          id?: string
+          qty_used?: number
+          spare_id: string
+        }
+        Update: {
+          execution_id?: string
+          id?: string
+          qty_used?: number
+          spare_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "execution_spares_execution_id_fkey"
+            columns: ["execution_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_executions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "execution_spares_spare_id_fkey"
+            columns: ["spare_id"]
+            isOneToOne: false
+            referencedRelation: "spare_parts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       field_ops_logs: {
         Row: {
@@ -233,6 +445,41 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_executions: {
+        Row: {
+          ended_at: string | null
+          executed_by: string | null
+          id: string
+          notes: string | null
+          request_id: string
+          started_at: string
+        }
+        Insert: {
+          ended_at?: string | null
+          executed_by?: string | null
+          id?: string
+          notes?: string | null
+          request_id: string
+          started_at?: string
+        }
+        Update: {
+          ended_at?: string | null
+          executed_by?: string | null
+          id?: string
+          notes?: string | null
+          request_id?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_executions_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_records: {
         Row: {
           asset_id: string
@@ -265,6 +512,98 @@ export type Database = {
           },
         ]
       }
+      maintenance_requests: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          description: string | null
+          equipment_id: string
+          id: string
+          priority: string
+          requested_by: string | null
+          status: Database["public"]["Enums"]["mreq_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          equipment_id: string
+          id?: string
+          priority?: string
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["mreq_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          equipment_id?: string
+          id?: string
+          priority?: string
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["mreq_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_issues: {
+        Row: {
+          id: string
+          issued_at: string
+          issued_by: string | null
+          qty: number
+          request_id: string | null
+          spare_id: string
+        }
+        Insert: {
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          qty: number
+          request_id?: string | null
+          spare_id: string
+        }
+        Update: {
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          qty?: number
+          request_id?: string | null
+          spare_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_issues_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_issues_spare_id_fkey"
+            columns: ["spare_id"]
+            isOneToOne: false
+            referencedRelation: "spare_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       operations_logs: {
         Row: {
           created_at: string
@@ -292,6 +631,30 @@ export type Database = {
           timestamp?: string
           unit_tag?: string
           value?: number
+        }
+        Relationships: []
+      }
+      plants: {
+        Row: {
+          code: string | null
+          created_at: string
+          department_key: string
+          id: string
+          name: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          department_key: string
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          department_key?: string
+          id?: string
+          name?: string
         }
         Relationships: []
       }
@@ -340,15 +703,93 @@ export type Database = {
         }
         Relationships: []
       }
+      spare_parts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string | null
+          min_qty: number
+          name: string
+          part_no: string
+          stock_qty: number
+          uom: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          min_qty?: number
+          name: string
+          part_no: string
+          stock_qty?: number
+          uom?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          min_qty?: number
+          name?: string
+          part_no?: string
+          stock_qty?: number
+          uom?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          department_key: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department_key?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department_key?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_developer"
+        | "administrator"
+        | "department_manager"
+        | "plant_manager"
+        | "engineer"
+        | "technician"
+        | "operator"
+        | "viewer"
+      mreq_status:
+        | "draft"
+        | "pending"
+        | "approved"
+        | "in_progress"
+        | "done"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -475,6 +916,25 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_developer",
+        "administrator",
+        "department_manager",
+        "plant_manager",
+        "engineer",
+        "technician",
+        "operator",
+        "viewer",
+      ],
+      mreq_status: [
+        "draft",
+        "pending",
+        "approved",
+        "in_progress",
+        "done",
+        "rejected",
+      ],
+    },
   },
 } as const
