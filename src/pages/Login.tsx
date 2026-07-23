@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Droplets, Wind, Settings, Users, Eye, BarChart3, Sparkles } from "lucide-react";
+import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import UserCaptureModal from "@/components/UserCaptureModal";
 import lifecoLogo from "@/assets/lifeco-logo.png";
@@ -12,14 +12,11 @@ import heroPlant from "@/assets/lifeco-hero-1.webp";
 import heroWorker from "@/assets/lifeco-hero-2.webp";
 
 const DEPT_ICONS: Record<string, React.ReactNode> = {
-  AMM1: <Factory className="w-8 h-8" />,
-  AMM2: <Factory className="w-8 h-8" />,
-  NITROGEN: <Wind className="w-8 h-8" />,
-  DEMIN1: <Droplets className="w-8 h-8" />,
-  DEMIN2: <Droplets className="w-8 h-8" />,
-  LABORATORY: <FlaskConical className="w-8 h-8" />,
-  PLANTVIEW: <Eye className="w-8 h-8" />,
-  OPERATIONS: <Users className="w-8 h-8" />,
+  AMMONIA: <Flame className="w-8 h-8" />,
+  UREA: <Beaker className="w-8 h-8" />,
+  LAB: <FlaskConical className="w-8 h-8" />,
+  MAINTENANCE: <Wrench className="w-8 h-8" />,
+  WAREHOUSE: <PackageOpen className="w-8 h-8" />,
 };
 
 const Login = () => {
