@@ -55,8 +55,7 @@ const Login = () => {
 
   const navigateToDept = (deptId: string) => {
     sessionStorage.setItem("lifeco_dept", deptId);
-    if (deptId === "LABORATORY") navigate("/lab");
-    else if (deptId === "PLANTVIEW") navigate("/plant");
+    if (deptId === "LAB") navigate("/lab");
     else navigate("/dashboard");
   };
 
