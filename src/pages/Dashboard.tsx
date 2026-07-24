@@ -68,6 +68,10 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { t, lang, setLang } = useI18n();
   const [department, setDepartment] = useState(getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""));
+  const rootDept = useMemo(() => getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""), []);
+  const hasHub = !!(rootDept && DEPT_STRUCTURE[rootDept.id]);
+  const [activePlant, setActivePlant] = useState<DeptPlant | null>(null);
+  const [activeModule, setActiveModule] = useState<DeptModule | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
   const [value, setValue] = useState("");
