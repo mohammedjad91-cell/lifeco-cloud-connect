@@ -95,6 +95,16 @@ const Dashboard = () => {
     return saved ? JSON.parse(saved) : department.tags;
   }, [department]);
 
+  const [deptBg, setDeptBgState] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!department) return;
+    setDeptBgState(getDeptBg(department.id));
+    const handler = () => setDeptBgState(getDeptBg(department.id));
+    window.addEventListener("lifeco:bg-changed", handler);
+    return () => window.removeEventListener("lifeco:bg-changed", handler);
+  }, [department]);
+
   useEffect(() => {
     if (!department) { navigate("/"); return; }
     supabase.from("activity_logs").insert({
