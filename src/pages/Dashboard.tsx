@@ -790,6 +790,8 @@ const Dashboard = () => {
             <AnalyticsDashboard />
           </TabsContent>
         </Tabs>
+        </>
+        )}
       </main>
 
       <footer className="border-t border-border px-6 py-3 text-center">
