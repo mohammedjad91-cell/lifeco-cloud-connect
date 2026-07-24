@@ -140,6 +140,21 @@ const Login = () => {
         <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "لوحة التحكم" : "Live BI"}</span>
       </motion.button>
 
+      {/* Hierarchy Link */}
+      <motion.button
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 200 }}
+        onClick={() => navigate("/hierarchy")}
+        className="absolute top-4 left-60 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
+        title="Hierarchy"
+        aria-label="Plant Hierarchy"
+      >
+        <Network className="w-5 h-5" />
+        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
+      </motion.button>
+
       {/* Background — LIFECO hero imagery */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img
