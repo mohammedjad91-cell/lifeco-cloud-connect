@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
+import DeptBackgroundManager from "@/components/DeptBackgroundManager";
 
 interface ActivityLog {
   id: string;
@@ -313,6 +314,7 @@ const AdminSettings = () => {
       </header>
 
       <main className="p-4 md:p-6 max-w-5xl mx-auto space-y-6">
+        <DeptBackgroundManager />
         {/* Tag Management - Full CRUD */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
           <div className="flex items-center gap-2 mb-4">

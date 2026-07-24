@@ -37,6 +37,7 @@ import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getOperator, getStamp } from "@/lib/session";
+import { getDeptBg } from "@/lib/dept-backgrounds";
 
 interface LogEntry {
   id: string;
@@ -92,6 +93,16 @@ const Dashboard = () => {
     if (!department) return [];
     const saved = localStorage.getItem(`lifeco_tags_${department.id}`);
     return saved ? JSON.parse(saved) : department.tags;
+  }, [department]);
+
+  const [deptBg, setDeptBgState] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!department) return;
+    setDeptBgState(getDeptBg(department.id));
+    const handler = () => setDeptBgState(getDeptBg(department.id));
+    window.addEventListener("lifeco:bg-changed", handler);
+    return () => window.removeEventListener("lifeco:bg-changed", handler);
   }, [department]);
 
   useEffect(() => {
@@ -394,7 +405,16 @@ const Dashboard = () => {
   if (!department) return null;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
+      {deptBg && (
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${deptBg})` }}
+          />
+          <div className="absolute inset-0 bg-background/75 backdrop-blur-sm" />
+        </div>
+      )}
       {/* Header */}
       <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
         <div>
