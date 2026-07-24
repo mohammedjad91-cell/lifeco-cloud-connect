@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3 } from "lucide-react";
+import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import UserCaptureModal from "@/components/UserCaptureModal";
 import lifecoLogo from "@/assets/lifeco-logo.png";
@@ -138,6 +138,21 @@ const Login = () => {
       >
         <BarChart3 className="w-5 h-5" />
         <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "لوحة التحكم" : "Live BI"}</span>
+      </motion.button>
+
+      {/* Hierarchy Link */}
+      <motion.button
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 200 }}
+        onClick={() => navigate("/hierarchy")}
+        className="absolute top-4 left-60 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
+        title="Hierarchy"
+        aria-label="Plant Hierarchy"
+      >
+        <Network className="w-5 h-5" />
+        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
       </motion.button>
 
       {/* Background — LIFECO hero imagery */}

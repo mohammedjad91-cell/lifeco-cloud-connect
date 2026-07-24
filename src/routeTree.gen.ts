@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
 import { Route as LabRouteImport } from './routes/lab'
+import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
@@ -31,6 +32,11 @@ const OtsRoute = OtsRouteImport.update({
 const LabRoute = LabRouteImport.update({
   id: '/lab',
   path: '/lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HierarchyRoute = HierarchyRouteImport.update({
+  id: '/hierarchy',
+  path: '/hierarchy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/hierarchy'
     | '/lab'
     | '/ots'
     | '/plant'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/hierarchy'
     | '/lab'
     | '/ots'
     | '/plant'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/hierarchy'
     | '/lab'
     | '/ots'
     | '/plant'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
+  HierarchyRoute: typeof HierarchyRoute
   LabRoute: typeof LabRoute
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/lab'
       fullPath: '/lab'
       preLoaderRoute: typeof LabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hierarchy': {
+      id: '/hierarchy'
+      path: '/hierarchy'
+      fullPath: '/hierarchy'
+      preLoaderRoute: typeof HierarchyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
+  HierarchyRoute: HierarchyRoute,
   LabRoute: LabRoute,
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
@@ -208,13 +229,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
