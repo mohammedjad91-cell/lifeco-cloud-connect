@@ -112,6 +112,21 @@ const Dashboard = () => {
     return () => window.removeEventListener("lifeco:bg-changed", handler);
   }, [department]);
 
+  const handleOpenModule = (plant: DeptPlant, mod: DeptModule) => {
+    setActivePlant(plant);
+    setActiveModule(mod);
+    if (mod.targetDept) {
+      const target = getDepartmentById(mod.targetDept);
+      if (target) setDepartment(target);
+    }
+  };
+
+  const handleBackToHub = () => {
+    setActivePlant(null);
+    setActiveModule(null);
+    if (rootDept) setDepartment(rootDept);
+  };
+
   useEffect(() => {
     if (!department) { navigate("/"); return; }
     supabase.from("activity_logs").insert({
