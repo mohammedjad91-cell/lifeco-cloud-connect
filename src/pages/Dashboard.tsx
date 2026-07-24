@@ -37,6 +37,7 @@ import { LAB_PARAMETERS } from "@/lib/departments";
 import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getOperator, getStamp } from "@/lib/session";
+import { getDeptBg } from "@/lib/dept-backgrounds";
 
 interface LogEntry {
   id: string;
