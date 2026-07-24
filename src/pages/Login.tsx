@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3 } from "lucide-react";
+import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import UserCaptureModal from "@/components/UserCaptureModal";
 import lifecoLogo from "@/assets/lifeco-logo.png";
