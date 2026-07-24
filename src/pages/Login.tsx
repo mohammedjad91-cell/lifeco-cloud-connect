@@ -190,8 +190,8 @@ const Login = () => {
         <p className="text-white/90 mt-1 text-xs tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
           {t.opsLoggingSystem}
         </p>
-        <p className="text-white/85 mt-2 text-sm drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]" dir="rtl">
-          إعداد م. محمد جادالله
+        <p className="text-white/85 mt-2 text-sm drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+          Prepared by Eng. Mohamed Gadalla
         </p>
       </motion.div>
 
