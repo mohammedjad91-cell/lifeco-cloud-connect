@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
+import DeptBackgroundManager from "@/components/DeptBackgroundManager";
 
 interface ActivityLog {
   id: string;
