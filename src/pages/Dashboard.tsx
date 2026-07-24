@@ -38,6 +38,9 @@ import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getOperator, getStamp } from "@/lib/session";
 import { getDeptBg } from "@/lib/dept-backgrounds";
+import DepartmentHome from "@/components/DepartmentHome";
+import { DEPT_STRUCTURE, DeptPlant, DeptModule } from "@/lib/dept-structure";
+import { ArrowLeft, Construction } from "lucide-react";
 
 interface LogEntry {
   id: string;
