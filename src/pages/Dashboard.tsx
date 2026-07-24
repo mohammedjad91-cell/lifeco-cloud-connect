@@ -405,7 +405,7 @@ const Dashboard = () => {
   if (!department) return null;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative">
+    <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
           <div
