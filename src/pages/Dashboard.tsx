@@ -405,7 +405,16 @@ const Dashboard = () => {
   if (!department) return null;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      {deptBg && (
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${deptBg})` }}
+          />
+          <div className="absolute inset-0 bg-background/75 backdrop-blur-sm" />
+        </div>
+      )}
       {/* Header */}
       <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
         <div>
