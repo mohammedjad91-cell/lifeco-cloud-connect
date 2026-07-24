@@ -481,6 +481,29 @@ const Dashboard = () => {
 
       <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6">
         <DateUserBanner />
+
+        {hasHub && !activeModule && rootDept && (
+          <DepartmentHome
+            departmentId={rootDept.id}
+            departmentLabel={rootDept.label}
+            onOpenModule={handleOpenModule}
+          />
+        )}
+
+        {(!hasHub || activeModule) && activeModule && !activeModule.targetDept ? (
+          <div className="glass-card neon-border p-12 text-center space-y-3">
+            <Construction className="w-10 h-10 text-primary mx-auto" />
+            <h3 className="font-display text-xl font-bold neon-text tracking-wider">
+              {activePlant?.label} — {activeModule.label}
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              This module is scaffolded and reserved. Full workflow will be wired to Lovable Cloud in the next iteration.
+            </p>
+          </div>
+        ) : null}
+
+        {(!hasHub || (activeModule && activeModule.targetDept)) && (
+        <>
         {/* Global Date Filter */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
@@ -522,7 +545,7 @@ const Dashboard = () => {
           labParameters={LAB_PARAMETERS[department.id]?.daily ?? []}
         />
 
-        <Tabs defaultValue="logs" className="w-full">
+        <Tabs key={activeModule?.key || "default"} defaultValue={activeModule?.tab || "logs"} className="w-full">
           <TabsList className="glass-card border border-border">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
