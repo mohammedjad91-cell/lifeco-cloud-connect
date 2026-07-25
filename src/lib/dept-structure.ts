@@ -154,4 +154,68 @@ export const DEPT_STRUCTURE: Record<string, DeptPlant[]> = {
     { key: "ELECTRONIC", label: "Electronic Spare Parts Request", icon: "Cpu", modules: [{ key: "request", label: "New Request" }] },
     { key: "SUPPLIERS", label: "Suppliers", icon: "Users", modules: [{ key: "list", label: "Suppliers" }] },
   ],
+  ENGINEERING: [
+    { key: "PROCESS_ENG", label: "Process Engineering", icon: "GitBranch", modules: [
+      { key: "pfd", label: "PFD" }, { key: "pid", label: "P&ID" }, { key: "sop", label: "SOP" },
+      { key: "calc", label: "Calculations" }, { key: "reports", label: "Engineering Reports" },
+    ]},
+    { key: "MECH_ENG", label: "Mechanical Engineering", icon: "Cog", modules: [
+      { key: "drawings", label: "Drawings" }, { key: "specs", label: "Specifications" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "ELEC_ENG", label: "Electrical Engineering", icon: "Zap", modules: [
+      { key: "sld", label: "Single Line Diagrams" }, { key: "loads", label: "Load Studies" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "INST_ENG", label: "Instrumentation & Control", icon: "Gauge", modules: [
+      { key: "loops", label: "Control Loops" }, { key: "dcs", label: "DCS Config" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "PROJECTS", label: "Projects", icon: "Hammer", modules: [
+      { key: "active", label: "Active Projects" }, { key: "planning", label: "Planning" }, { key: "reports", label: "Reports" },
+    ]},
+  ],
+  HSE: [
+    { key: "SAFETY", label: "Occupational Safety", icon: "ShieldCheck", modules: [
+      { key: "incidents", label: "Incidents" }, { key: "audits", label: "Audits" },
+      { key: "ppe", label: "PPE Register" }, { key: "training", label: "Safety Training" },
+    ]},
+    { key: "HEALTH", label: "Occupational Health", icon: "Users", modules: [
+      { key: "medical", label: "Medical Records" }, { key: "checkups", label: "Periodic Check-ups" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "ENV", label: "Environment", icon: "Droplet", modules: [
+      { key: "emissions", label: "Emissions" }, { key: "waste", label: "Waste Management" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "FIRE", label: "Fire & Emergency", icon: "Power", modules: [
+      { key: "equipment", label: "Fire Equipment" }, { key: "drills", label: "Drills" }, { key: "permits", label: "Hot Work Permits" },
+    ]},
+    { key: "PERMITS", label: "Work Permits", icon: "Package", modules: [
+      { key: "active", label: "Active Permits" }, { key: "history", label: "History" }, { key: "reports", label: "Reports" },
+    ]},
+  ],
+  MATERIALS: [
+    { key: "PROCUREMENT", label: "Procurement", icon: "Truck", modules: [
+      { key: "orders", label: "Purchase Orders" }, { key: "vendors", label: "Vendors" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "INVENTORY", label: "Inventory Control", icon: "Package", modules: [
+      { key: "stock", label: "Stock Levels" }, { key: "movement", label: "Movements" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "LOGISTICS", label: "Logistics", icon: "Truck", modules: [
+      { key: "shipments", label: "Shipments" }, { key: "customs", label: "Customs" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "CONTRACTS", label: "Contracts", icon: "Users", modules: [
+      { key: "active", label: "Active Contracts" }, { key: "renewals", label: "Renewals" }, { key: "reports", label: "Reports" },
+    ]},
+  ],
+  TECHAFFAIRS: [
+    { key: "DOCS", label: "Technical Documentation", icon: "Package", modules: [
+      { key: "manuals", label: "Manuals" }, { key: "drawings", label: "Drawings" }, { key: "standards", label: "Standards" },
+    ]},
+    { key: "QAQC", label: "Quality Assurance / QC", icon: "ShieldCheck", modules: [
+      { key: "inspections", label: "Inspections" }, { key: "ndt", label: "NDT" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "TRAINING", label: "Technical Training", icon: "Users", modules: [
+      { key: "programs", label: "Programs" }, { key: "matrix", label: "Competency Matrix" }, { key: "reports", label: "Reports" },
+    ]},
+    { key: "RND", label: "Research & Development", icon: "FlaskConical", modules: [
+      { key: "projects", label: "R&D Projects" }, { key: "studies", label: "Studies" }, { key: "reports", label: "Reports" },
+    ]},
+  ],
 };
