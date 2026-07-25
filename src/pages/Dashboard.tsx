@@ -38,9 +38,6 @@ import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getOperator, getStamp } from "@/lib/session";
 import { getDeptBg } from "@/lib/dept-backgrounds";
-import DepartmentHome from "@/components/DepartmentHome";
-import { DEPT_STRUCTURE, DeptPlant, DeptModule } from "@/lib/dept-structure";
-import { ArrowLeft, Construction } from "lucide-react";
 
 interface LogEntry {
   id: string;
@@ -68,10 +65,6 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { t, lang, setLang } = useI18n();
   const [department, setDepartment] = useState(getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""));
-  const rootDept = useMemo(() => getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""), []);
-  const hasHub = !!(rootDept && DEPT_STRUCTURE[rootDept.id]);
-  const [activePlant, setActivePlant] = useState<DeptPlant | null>(null);
-  const [activeModule, setActiveModule] = useState<DeptModule | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
   const [value, setValue] = useState("");
@@ -111,21 +104,6 @@ const Dashboard = () => {
     window.addEventListener("lifeco:bg-changed", handler);
     return () => window.removeEventListener("lifeco:bg-changed", handler);
   }, [department]);
-
-  const handleOpenModule = (plant: DeptPlant, mod: DeptModule) => {
-    setActivePlant(plant);
-    setActiveModule(mod);
-    if (mod.targetDept) {
-      const target = getDepartmentById(mod.targetDept);
-      if (target) setDepartment(target);
-    }
-  };
-
-  const handleBackToHub = () => {
-    setActivePlant(null);
-    setActiveModule(null);
-    if (rootDept) setDepartment(rootDept);
-  };
 
   useEffect(() => {
     if (!department) { navigate("/"); return; }
@@ -439,21 +417,9 @@ const Dashboard = () => {
       )}
       {/* Header */}
       <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
-        <div className="flex items-center gap-3">
-          {hasHub && activeModule && (
-            <Button variant="outline" size="sm" onClick={handleBackToHub} className="gap-1.5 border-primary/40">
-              <ArrowLeft className="w-4 h-4" /> Hub
-            </Button>
-          )}
-          <div>
-            <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
-            <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">
-              {rootDept?.label || department.label} {t.department}
-              {activePlant && activeModule && (
-                <span className="text-primary/80 normal-case tracking-normal"> — {activePlant.label} / {activeModule.label}</span>
-              )}
-            </p>
-          </div>
+        <div>
+          <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
+          <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
@@ -462,48 +428,20 @@ const Dashboard = () => {
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
           </Button>
-          {activeModule && (
-            <>
-              <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
-                <FileDown className="w-4 h-4" /> {t.pdf}
-              </Button>
-              <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
-                <FileSpreadsheet className="w-4 h-4" /> {t.excel}
-              </Button>
-            </>
-          )}
+          <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
+            <FileDown className="w-4 h-4" /> {t.pdf}
+          </Button>
+          <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
+            <FileSpreadsheet className="w-4 h-4" /> {t.excel}
+          </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
             <LogOut className="w-4 h-4" /> Back to Main
           </Button>
         </div>
       </header>
 
-
       <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6">
         <DateUserBanner />
-
-        {hasHub && !activeModule && rootDept && (
-          <DepartmentHome
-            departmentId={rootDept.id}
-            departmentLabel={rootDept.label}
-            onOpenModule={handleOpenModule}
-          />
-        )}
-
-        {(!hasHub || activeModule) && activeModule && !activeModule.targetDept ? (
-          <div className="glass-card neon-border p-12 text-center space-y-3">
-            <Construction className="w-10 h-10 text-primary mx-auto" />
-            <h3 className="font-display text-xl font-bold neon-text tracking-wider">
-              {activePlant?.label} — {activeModule.label}
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              This module is scaffolded and reserved. Full workflow will be wired to Lovable Cloud in the next iteration.
-            </p>
-          </div>
-        ) : null}
-
-        {(!hasHub || (activeModule && activeModule.targetDept)) && (
-        <>
         {/* Global Date Filter */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
@@ -545,7 +483,7 @@ const Dashboard = () => {
           labParameters={LAB_PARAMETERS[department.id]?.daily ?? []}
         />
 
-        <Tabs key={activeModule?.key || "default"} defaultValue={activeModule?.tab || "logs"} className="w-full">
+        <Tabs defaultValue="logs" className="w-full">
           <TabsList className="glass-card border border-border">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
@@ -790,8 +728,6 @@ const Dashboard = () => {
             <AnalyticsDashboard />
           </TabsContent>
         </Tabs>
-        </>
-        )}
       </main>
 
       <footer className="border-t border-border px-6 py-3 text-center">

@@ -1,147 +1,148 @@
 
-# LIFECO Hierarchical Navigation Rebuild
+# LIFECO Digital Transformation Platform — Build Plan
 
-This restructures the app around a strict navigation hierarchy and modern
-industrial UI. Existing PIN gating, Supabase tables, and glassmorphism theme
-are preserved — only the routing + shell change.
+Scope confirmed: build **all** layers (skeleton + equipment tree + maintenance workflow + 8-tier roles), and **replace** current departments with the 5 new ones.
 
-## New Routes (TanStack, file-based)
+## 1. Department restructure (breaking change)
 
-```text
-/                              → Home (department grid, no PIN wall by default)
-/dept/$deptId                  → Department page (plants grid)
-/dept/$deptId/plant/$plantId   → Plant page (sections grid: Overview, Ops, Equipment, …)
-/dept/$deptId/plant/$plantId/section/$sectionId   → Section page (equipment grid / list)
-/equipment/$equipmentId        → Equipment profile (tabs: Info, Specs, Schedule, History, …)
+Replace the existing `departments.ts` list with the 5 new departments:
+
+| Key | Name | Icon | Color |
+|---|---|---|---|
+| `AMMONIA` | Ammonia | Flame | cyan |
+| `UREA` | Urea | Beaker | emerald |
+| `LAB` | Laboratory | FlaskConical | violet |
+| `MAINTENANCE` | Maintenance | Wrench | amber |
+| `WAREHOUSE` | Warehouse | PackageOpen | orange |
+
+- Legacy departments (NITROGEN, UTILITIES, etc.) removed from the picker.
+- Existing PIN-login flow keeps working — PINs will be re-seeded for the 5 new departments in `department_pins`.
+- OTS, Nitrogen log sheets, and other legacy code stay accessible from the Maintenance department's tools panel (nothing deleted).
+
+## 2. Database — new schema for the equipment hierarchy & workflow
+
+One migration adds the whole backbone (all with GRANTs + RLS `USING(true)` to match current permissive posture):
+
+```
+plants           (id, department_key, name, code)
+areas            (id, plant_id, name, code)
+equipment        (id, area_id, tag, name, type, description, criticality)
+equipment_docs   (id, equipment_id, kind: pdf|image|manual, url, label, uploaded_by, created_at)
+spare_parts     (id, part_no, name, description, uom, stock_qty, min_qty, location)
+equipment_spares (equipment_id, spare_id, qty_required)   -- BOM
+maintenance_requests  (id, equipment_id, requested_by, status: draft|pending|approved|in_progress|done|rejected,
+                       priority, description, created_at, approved_by, approved_at)
+maintenance_executions (id, request_id, executed_by, notes, started_at, ended_at)
+execution_spares      (id, execution_id, spare_id, qty_used)
+execution_photos      (id, execution_id, url, caption)
+material_issues       (id, request_id, spare_id, qty, issued_by, issued_at)
 ```
 
-Existing routes `/admin`, `/bi`, `/assistant`, `/hierarchy`, `/documents`
-stay and become the destinations for the top-bar "centers".
+Plus the roles system (see §5). A second storage bucket `equipment-docs` is added.
 
-PIN entry moves into a small modal triggered from a department card when the
-department is PIN-protected; users no longer land on a PIN screen.
-
-## Step 1 — Home Screen (`/`)
-
-Replace current `Login` landing with a `Home` component:
-- 14 large cards: 8 operational departments + 6 centers (Reports, Equipment,
-  Documents, AI, Administration, Developer).
-- Each department card shows: department image (from `dept-backgrounds`),
-  name (EN/AR), plant count, equipment count, active users, open tasks,
-  live status dot (green/amber/red).
-- Counts come from a single `useHomeStats()` hook that runs one
-  `supabase.rpc`-style parallel query set:
-  `plants`, `equipment`, `field_ops_logs` (24h active users),
-  `maintenance_requests` (status='open') filtered by department.
-- Hover: subtle scale + neon glow (existing `.neon-border` + `hover:shadow`).
-- Global top bar: logo, language switch, notifications bell, user avatar.
-
-## Step 2 — Department Page
-
-`/dept/$deptId` reuses the current `DEPT_STRUCTURE` taxonomy:
-- Header: department icon + name + breadcrumb (Home ▸ Ammonia).
-- Grid of plant cards from `DEPT_STRUCTURE[deptId]` with per-plant image
-  (new field `image?: string` on `DeptPlant`, falls back to placeholder).
-- Each card: plant name, module count, equipment count (query
-  `equipment` by `plant_id`), live indicator.
-
-## Step 3 — Plant Page
-
-`/dept/$deptId/plant/$plantId` renders a fixed section grid regardless of
-plant type: Overview, Operations, Equipment, Maintenance, Laboratory,
-Engineering, Documents, Reports, Photos, P&ID, Manuals, Spare Parts, KPIs,
-Live Dashboard. Sections not applicable to a plant are dimmed with a
-"coming soon" chip.
-- Reuses existing Dashboard sub-components (`FieldOpsForm`,
-  `NitrogenLogSheets`, `AnalyticsDashboard`, `PlantMimic`, etc.) via a
-  section→component map so no logic is lost.
-
-## Step 4 — Section: Equipment
-
-`/dept/$deptId/plant/$plantId/section/equipment` shows equipment cards:
-- Image, name, tag number, status pill, health score bar, running hours,
-  criticality badge, QR code (generated inline with `qrcode` npm).
-- Filter/search bar at top (name, tag, criticality, status).
-- Data source: `equipment` table joined with `equipment_assets` for image.
-
-## Step 5 — Equipment Details
-
-`/equipment/$equipmentId` opens a tabbed profile:
-- Tabs: General, Specs, Schedule, History, Inspection, Lubrication, Oil,
-  Spares, Manuals, Photos, Videos, Drawings, Datasheets, Attachments,
-  Reports.
-- Actions row: Export PDF, Export Excel, Export Word, WhatsApp, Outlook,
-  Print. PDF via existing report generator; Excel via `xlsx`; Word via
-  `docx`; WhatsApp/Outlook via `mailto:`/`wa.me` deep links (already used
-  in `ReportShareButtons`).
-
-## Shared Page Chrome
-
-New `<PageShell>` wrapping every page provides:
-- Back button (`router.history.back()` with fallback to parent route).
-- Breadcrumb generated from the current route match tree.
-- Search box, filter chips slot, export/print buttons slot.
-- Language switch (existing `useI18n`), notifications bell (stub), user chip
-  (from `sessionStorage.lifeco_user`).
-
-## Data Additions
-
-- Migration `add_home_stats_helpers`:
-  - Add `department_id text` and `image_url text` to `plants` if missing.
-  - Add `image_url text` to `equipment` if missing.
-  - Create `home_stats` view aggregating plant/equipment/active-user/open-task
-    counts per department for a single-round-trip Home query.
-
-## Files to Add
+## 3. Route map (new/updated)
 
 ```text
-src/routes/home.tsx                    (new /, replacing Login as landing)
-src/routes/dept.$deptId.tsx
-src/routes/dept.$deptId.plant.$plantId.tsx
-src/routes/dept.$deptId.plant.$plantId.section.$sectionId.tsx
-src/routes/equipment.$equipmentId.tsx
-src/components/shell/PageShell.tsx
-src/components/shell/Breadcrumbs.tsx
-src/components/shell/NotificationsBell.tsx
-src/components/home/DepartmentCard.tsx
-src/components/plants/PlantCard.tsx
-src/components/plants/SectionGrid.tsx
-src/components/equipment/EquipmentCard.tsx
-src/components/equipment/EquipmentProfile.tsx
-src/components/equipment/QRBadge.tsx
-src/lib/home-stats.ts                  (queries + types)
-src/lib/section-map.ts                 (section id → component)
+/                         → Landing (redirects to /dashboard if PIN session)
+/dashboard                → 5-tile department dashboard (Ammonia, Urea, Lab, Maint., Warehouse)
+/dept/$dept               → Department home (KPIs + shortcuts)
+/dept/$dept/plants        → Plant list
+/dept/$dept/plants/$plant → Plant → area list
+/areas/$area              → Area → equipment list
+/equipment/$eqId          → Equipment profile (tabs: Profile, Maintenance History,
+                              PDFs, Images, Spare Parts, Reports, Documents)
+/maintenance              → Maintenance workflow board (kanban by status)
+/maintenance/new          → Create request (Inspection → Request)
+/maintenance/$id          → Request detail (Approval, Execution, Spares, Photos, Report)
+/warehouse                → Spare parts inventory + issue requests
+/warehouse/parts/$id      → Part detail (stock, movements)
+/reports                  → Reports & Document Center (existing + new equipment history exports)
+/admin/dev                → Developer Control Panel (feature flags, seed, system health)
+/admin/users              → Role management (super_dev/admin only)
 ```
 
-## Files to Edit
+Every route wraps existing glassmorphism theme + Back button that goes to `/dashboard`.
 
-- `src/lib/dept-structure.ts` — add `image?` to `DeptPlant`, add fixed
-  section list constant.
-- `src/lib/i18n.tsx` — add EN/AR strings for new UI.
-- `src/pages/Login.tsx` — demoted to `/login`, only used when a PIN modal
-  triggers it explicitly (kept intact for existing PIN flow).
-- `src/routes/index.tsx` — render new `Home` component.
-- `src/routes/dashboard.tsx` — remains but is no longer the landing; kept
-  as a Live-Dashboard section target.
+## 4. Maintenance workflow (implements the pasted flow)
 
-## Out of Scope (this pass)
+```text
+Inspection → Request → Approval → Execution → Spare Parts →
+Photos → Report → History → Export (PDF/Excel/Word) → Share (WhatsApp/Email)
+```
 
-- Real permit-to-work, PR/PO, inspection, and lubrication data models —
-  the Section pages ship with empty-state UI wired to a placeholder query
-  so shape is right, data can land in follow-ups.
-- Rich role-based routing (admin vs operator) — existing `user_roles`
-  table stays; the Developer Panel card is only shown to `admin`.
+Implemented as a status machine on `maintenance_requests.status` with:
+- **Request** form on equipment page.
+- **Approval** button visible to `department_manager` and above.
+- **Execution** panel: mark spares used (decrements `spare_parts.stock_qty` via `material_issues`), upload photos to `equipment-docs` bucket, add notes.
+- **Report** — reuses the existing AI report generator (`generateDailyReport`) with a new prompt for maintenance jobs, producing PDF via `jspdf` (already installed). Excel via `xlsx` and Word via `docx` (added).
+- **Share** — reuses `ReportShareButtons` (WhatsApp + Gmail).
+- Every execution appends a row to `equipment` history (join view).
 
-## Verification
+## 5. Roles (8 tiers)
 
-- Build must pass (`tsgo`).
-- Manual smoke via Playwright: Home renders 14 cards, clicking Ammonia
-  opens `/dept/AMMONIA` with 6 plant cards, clicking AMM1 opens the
-  section grid, clicking Equipment opens the equipment list, clicking a
-  row opens the equipment profile with all 15 tabs mounted.
-- Arabic toggle flips labels on every new screen.
-- Existing dashboard flows (Nitrogen sheets, Field Ops, OTS) still reach
-  the same components through the new section map.
+New enum + table:
 
-Approve to start with Home + routing scaffold (Steps 1–3), then Equipment
-list and profile (Steps 4–5) in a second batch to keep changes reviewable.
+```sql
+CREATE TYPE app_role AS ENUM (
+  'super_developer','administrator','department_manager','plant_manager',
+  'engineer','technician','operator','viewer'
+);
+CREATE TABLE user_roles (id, user_id, role, department_key nullable);
+CREATE FUNCTION has_role(_uid, _role) RETURNS bool SECURITY DEFINER;
+CREATE FUNCTION role_level(_uid) RETURNS int SECURITY DEFINER;  -- 8=super, 1=viewer
+```
+
+**Important note:** the app currently has **no Supabase Auth** (PIN-only). To make role gates real we need real logins. Two options — I will default to (a) unless you say otherwise:
+
+- **(a) Keep it soft for now** — store role as extra metadata on the PIN session (localStorage) and gate the UI only. No DB enforcement yet. Ships today.
+- **(b) Add proper Supabase Auth on top of PIN** — email/password login layered under the PIN flow, real RLS enforcement. Bigger change, breaks anonymous access.
+
+Client-side helper `useRole()` returns `{ role, level, can(action) }`; buttons/tabs are hidden when `level` is below the required threshold. When (b) is chosen later, only the RLS policies change — UI stays the same.
+
+## 6. UI additions
+
+- New `DepartmentGrid` on `/dashboard` (5 large glass tiles, glow accent per color above).
+- New `EquipmentTree` sidebar component (collapsible Department → Plant → Area → Equipment).
+- New `EquipmentProfile` tabbed page (7 tabs as listed).
+- New `MaintenanceBoard` (kanban with 6 columns matching the status enum).
+- New `WarehouseInventory` (searchable table, low-stock highlight, issue button).
+- New `RoleManager` page (only super_developer/administrator see it).
+- All new pages inherit the existing dark-blue glassmorphism theme (`glass-card`, `neon-border`).
+
+## 7. Seeds
+
+Migration seeds:
+- 5 departments PINs in `department_pins`.
+- Ammonia: Plant A + areas (Reforming, Synthesis, Utilities) + 6 sample equipment.
+- Urea: Plant U + area (Prilling) + 3 sample equipment.
+- Lab, Maintenance, Warehouse: 1 dummy plant each so navigation isn't empty.
+- 20 sample spare parts.
+- Super-developer role granted to a placeholder UUID `00000000-0000-0000-0000-000000000000` (replace once (b) is chosen).
+
+## 8. What I will NOT touch
+
+- Existing OTS, Nitrogen Log Sheets, Field Ops Form, Safety Monitor, AI Chat sidebar, Assets Register, Daily Report — all stay usable from the Maintenance department tools.
+- Existing tables (`operations_logs`, `field_ops_logs`, `lab_results`, `samples`, `activity_logs`, `equipment_assets`, `maintenance_records`, `locked_dates`, `dynamic_fields`) remain untouched. The new `equipment` table is separate from the legacy `equipment_assets` (kept for backwards compat).
+
+## Technical section
+
+- **New deps:** `xlsx` (Excel export), `docx` (Word export). `jspdf`, `recharts`, `lucide-react`, `@tanstack/react-router`, `@supabase/supabase-js` already present.
+- **New storage bucket:** `equipment-docs` (private, authenticated read via signed URLs).
+- **Route auth:** since there's no Supabase Auth yet, all new routes remain publicly accessible with the PIN gate on `/dashboard`. RLS on new tables uses `USING (true) WITH CHECK (true)` to match the current permissive posture — flagged in security memory.
+- **Realtime:** enable Realtime on `maintenance_requests` and `spare_parts` so kanban and inventory update live.
+- **Files:** ~15 new components, 6 new routes, 1 migration, 1 storage bucket, 1 seed pass. Estimated LOC: ~2,500.
+
+## Deliverable order (single turn)
+
+1. Migration (schema + seeds + bucket + Realtime).
+2. `departments.ts` replaced + PIN seed updated in migration.
+3. Roles helper + `useRole`.
+4. Dashboard grid + equipment tree.
+5. Equipment profile page (7 tabs).
+6. Maintenance kanban + request/approval/execution flow.
+7. Warehouse inventory + issue flow.
+8. Reports & Document Center enhancements (Excel/Word export).
+9. Developer Control Panel + Role Manager.
+10. Wire back-navigation everywhere to `/dashboard`.
+
+Reply **approve** to proceed, or tell me which sections to trim.
