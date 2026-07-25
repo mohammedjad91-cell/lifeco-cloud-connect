@@ -90,7 +90,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
       });
       if (upErr) throw upErr;
 
-      const session = getUserSession();
+      const session = getOperator();
       const { error: insErr } = await supabase.from("library_files").insert({
         file_name: fileName.trim(),
         category,
