@@ -448,8 +448,186 @@ const HSE_REPORTS_MODULES: PlantModule[] = [
   { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
 ];
 
+// ============= Materials Management Department =============
+const MAT_DASHBOARD_MODULES: PlantModule[] = [
+  { key: "overview", label: "Materials Overview", labelAr: "نظرة عامة" },
+  { key: "inventory", label: "Live Inventory Status", labelAr: "المخزون المباشر" },
+  { key: "critical", label: "Critical Stock", labelAr: "المخزون الحرج" },
+  { key: "requests", label: "Purchase Requests", labelAr: "طلبات الشراء" },
+  { key: "orders", label: "Purchase Orders", labelAr: "أوامر الشراء" },
+  { key: "pending", label: "Pending Deliveries", labelAr: "التسليمات المعلقة" },
+  { key: "consumption", label: "Material Consumption", labelAr: "استهلاك المواد" },
+  { key: "supplier-perf", label: "Supplier Performance", labelAr: "أداء الموردين" },
+  { key: "cost", label: "Material Cost Analysis", labelAr: "تحليل التكاليف" },
+  { key: "stats", label: "Monthly Statistics", labelAr: "الإحصائيات الشهرية" },
+  { key: "notifications", label: "Notifications", labelAr: "التنبيهات" },
+];
+
+const MAT_PR_MODULES: PlantModule[] = [
+  { key: "create", label: "Create Request", labelAr: "إنشاء طلب" },
+  { key: "approve", label: "Request Approval", labelAr: "اعتماد الطلب" },
+  { key: "emergency", label: "Emergency Request", labelAr: "طلب طارئ" },
+  { key: "dept", label: "Department Requests", labelAr: "طلبات الإدارات" },
+  { key: "tracking", label: "Request Tracking", labelAr: "تتبع الطلبات" },
+  { key: "history", label: "Request History", labelAr: "سجل الطلبات" },
+  { key: "cancel", label: "Cancel Request", labelAr: "إلغاء الطلب" },
+  { key: "docs", label: "Attach Documents", labelAr: "إرفاق المستندات" },
+];
+
+const MAT_PO_MODULES: PlantModule[] = [
+  { key: "create", label: "Create Purchase Order", labelAr: "إنشاء أمر شراء" },
+  { key: "approve", label: "Purchase Approval", labelAr: "اعتماد الشراء" },
+  { key: "tracking", label: "Purchase Tracking", labelAr: "تتبع الشراء" },
+  { key: "schedule", label: "Delivery Schedule", labelAr: "جدول التسليم" },
+  { key: "open", label: "Open Orders", labelAr: "الأوامر المفتوحة" },
+  { key: "closed", label: "Closed Orders", labelAr: "الأوامر المغلقة" },
+  { key: "history", label: "Purchase History", labelAr: "سجل المشتريات" },
+];
+
+const MAT_SUPPLIER_MODULES: PlantModule[] = [
+  { key: "list", label: "Suppliers List", labelAr: "قائمة الموردين" },
+  { key: "info", label: "Supplier Information", labelAr: "معلومات المورد" },
+  { key: "approved", label: "Approved Suppliers", labelAr: "الموردون المعتمدون" },
+  { key: "evaluation", label: "Vendor Evaluation", labelAr: "تقييم المورد" },
+  { key: "performance", label: "Supplier Performance", labelAr: "أداء الموردين" },
+  { key: "contracts", label: "Contracts", labelAr: "العقود" },
+  { key: "contact", label: "Contact Information", labelAr: "بيانات الاتصال" },
+  { key: "docs", label: "Supplier Documents", labelAr: "مستندات المورد" },
+];
+
+const MAT_RECEIVING_MODULES: PlantModule[] = [
+  { key: "goods", label: "Goods Receiving", labelAr: "استلام البضائع" },
+  { key: "inspection", label: "Receiving Inspection", labelAr: "فحص الاستلام" },
+  { key: "notes", label: "Delivery Notes", labelAr: "بيانات التسليم" },
+  { key: "qty", label: "Quantity Verification", labelAr: "التحقق من الكمية" },
+  { key: "quality", label: "Quality Verification", labelAr: "التحقق من الجودة" },
+  { key: "accepted", label: "Accepted Materials", labelAr: "المواد المقبولة" },
+  { key: "rejected", label: "Rejected Materials", labelAr: "المواد المرفوضة" },
+  { key: "reports", label: "Receiving Reports", labelAr: "تقارير الاستلام" },
+];
+
+const MAT_INSPECTION_MODULES: PlantModule[] = [
+  { key: "technical", label: "Technical Inspection", labelAr: "الفحص الفني" },
+  { key: "quality", label: "Quality Inspection", labelAr: "فحص الجودة" },
+  { key: "verify", label: "Material Verification", labelAr: "التحقق من المواد" },
+  { key: "reports", label: "Inspection Reports", labelAr: "تقارير الفحص" },
+  { key: "ncr", label: "NCR", labelAr: "تقارير عدم المطابقة" },
+  { key: "approve", label: "Approval", labelAr: "الاعتماد" },
+];
+
+const MAT_INVENTORY_MODULES: PlantModule[] = [
+  { key: "overview", label: "Inventory Overview", labelAr: "نظرة عامة على المخزون" },
+  { key: "available", label: "Available Stock", labelAr: "المخزون المتاح" },
+  { key: "reserved", label: "Reserved Stock", labelAr: "المخزون المحجوز" },
+  { key: "incoming", label: "Incoming Stock", labelAr: "المخزون الوارد" },
+  { key: "outgoing", label: "Outgoing Stock", labelAr: "المخزون الصادر" },
+  { key: "value", label: "Inventory Value", labelAr: "قيمة المخزون" },
+  { key: "locations", label: "Stock Locations", labelAr: "مواقع المخزون" },
+  { key: "map", label: "Warehouse Mapping", labelAr: "خريطة المستودع" },
+];
+
+const MAT_CATEGORIES_MODULES: PlantModule[] = [
+  { key: "mech", label: "Mechanical Spare Parts", labelAr: "قطع غيار ميكانيكية" },
+  { key: "elec", label: "Electrical Spare Parts", labelAr: "قطع غيار كهربائية" },
+  { key: "inst", label: "Instrumentation Parts", labelAr: "قطع أجهزة القياس" },
+  { key: "safety", label: "Safety Equipment", labelAr: "معدات السلامة" },
+  { key: "chem", label: "Chemicals", labelAr: "المواد الكيميائية" },
+  { key: "lube", label: "Lubricants", labelAr: "زيوت التشحيم" },
+  { key: "pipes", label: "Pipes & Fittings", labelAr: "الأنابيب والوصلات" },
+  { key: "valves", label: "Valves", labelAr: "الصمامات" },
+  { key: "bearings", label: "Bearings", labelAr: "المحامل" },
+  { key: "gaskets", label: "Gaskets", labelAr: "الحشوات" },
+  { key: "fasteners", label: "Fasteners", labelAr: "المثبتات" },
+  { key: "filters", label: "Filters", labelAr: "الفلاتر" },
+  { key: "motors", label: "Motors", labelAr: "المحركات" },
+  { key: "pumps", label: "Pumps", labelAr: "المضخات" },
+  { key: "compressors", label: "Compressors", labelAr: "الضواغط" },
+  { key: "office", label: "Office Supplies", labelAr: "لوازم مكتبية" },
+  { key: "consumables", label: "General Consumables", labelAr: "مستهلكات عامة" },
+];
+
+const MAT_CARD_MODULES: PlantModule[] = [
+  { key: "search", label: "Material Search", labelAr: "بحث عن المواد" },
+  { key: "browse", label: "Browse Materials", labelAr: "تصفح المواد" },
+  { key: "add", label: "Add New Material", labelAr: "إضافة مادة" },
+  { key: "barcode", label: "Barcode / QR", labelAr: "الباركود" },
+  { key: "specs", label: "Technical Specifications", labelAr: "المواصفات الفنية" },
+  { key: "datasheet", label: "Datasheets", labelAr: "الجداول الفنية" },
+  { key: "certs", label: "Material Certificates", labelAr: "شهادات المواد" },
+  { key: "msds", label: "SDS / MSDS", labelAr: "بيانات السلامة" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+  { key: "history", label: "Material History", labelAr: "سجل المادة" },
+];
+
+const MAT_PLANNING_MODULES: PlantModule[] = [
+  { key: "min", label: "Minimum Stock", labelAr: "الحد الأدنى" },
+  { key: "max", label: "Maximum Stock", labelAr: "الحد الأقصى" },
+  { key: "reorder", label: "Reorder Point", labelAr: "نقطة إعادة الطلب" },
+  { key: "consumption", label: "Consumption Analysis", labelAr: "تحليل الاستهلاك" },
+  { key: "forecast", label: "Stock Forecast", labelAr: "توقعات المخزون" },
+  { key: "planning", label: "Material Planning", labelAr: "تخطيط المواد" },
+];
+
+const MAT_TRANSFER_MODULES: PlantModule[] = [
+  { key: "internal", label: "Internal Transfer", labelAr: "تحويل داخلي" },
+  { key: "plant", label: "Plant Transfer", labelAr: "تحويل بين المصانع" },
+  { key: "warehouse", label: "Warehouse Transfer", labelAr: "تحويل بين المستودعات" },
+  { key: "history", label: "Transfer History", labelAr: "سجل التحويلات" },
+];
+
+const MAT_ISSUE_MODULES: PlantModule[] = [
+  { key: "request", label: "Material Request", labelAr: "طلب صرف" },
+  { key: "approve", label: "Material Approval", labelAr: "اعتماد الصرف" },
+  { key: "issue", label: "Material Issue", labelAr: "صرف المواد" },
+  { key: "dept", label: "Department Issue", labelAr: "صرف للإدارات" },
+  { key: "equipment", label: "Equipment Issue", labelAr: "صرف للمعدات" },
+  { key: "history", label: "Issue History", labelAr: "سجل الصرف" },
+];
+
+const MAT_RETURN_MODULES: PlantModule[] = [
+  { key: "return", label: "Return Material", labelAr: "إرجاع المواد" },
+  { key: "inspection", label: "Return Inspection", labelAr: "فحص المرتجعات" },
+  { key: "history", label: "Return History", labelAr: "سجل الإرجاع" },
+];
+
+const MAT_COST_MODULES: PlantModule[] = [
+  { key: "cost", label: "Material Cost", labelAr: "تكلفة المواد" },
+  { key: "purchase", label: "Purchase Cost", labelAr: "تكلفة الشراء" },
+  { key: "avg", label: "Average Cost", labelAr: "متوسط التكلفة" },
+  { key: "consumption", label: "Total Consumption", labelAr: "إجمالي الاستهلاك" },
+  { key: "analysis", label: "Cost Analysis", labelAr: "تحليل التكاليف" },
+];
+
+const MAT_REPORTS_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Reports", labelAr: "التقارير اليومية" },
+  { key: "weekly", label: "Weekly Reports", labelAr: "التقارير الأسبوعية" },
+  { key: "monthly", label: "Monthly Reports", labelAr: "التقارير الشهرية" },
+  { key: "inventory", label: "Inventory Reports", labelAr: "تقارير المخزون" },
+  { key: "purchase", label: "Purchase Reports", labelAr: "تقارير المشتريات" },
+  { key: "supplier", label: "Supplier Reports", labelAr: "تقارير الموردين" },
+  { key: "consumption", label: "Consumption Reports", labelAr: "تقارير الاستهلاك" },
+  { key: "cost", label: "Cost Reports", labelAr: "تقارير التكاليف" },
+  { key: "kpi", label: "KPI Reports", labelAr: "تقارير المؤشرات" },
+  { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
+];
+
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("MAT-DASH")) return MAT_DASHBOARD_MODULES;
+  if (c.startsWith("MAT-PR")) return MAT_PR_MODULES;
+  if (c.startsWith("MAT-PO")) return MAT_PO_MODULES;
+  if (c.startsWith("MAT-SUP")) return MAT_SUPPLIER_MODULES;
+  if (c.startsWith("MAT-RECV")) return MAT_RECEIVING_MODULES;
+  if (c.startsWith("MAT-INSP")) return MAT_INSPECTION_MODULES;
+  if (c.startsWith("MAT-INV")) return MAT_INVENTORY_MODULES;
+  if (c.startsWith("MAT-CAT")) return MAT_CATEGORIES_MODULES;
+  if (c.startsWith("MAT-CARD")) return MAT_CARD_MODULES;
+  if (c.startsWith("MAT-PLAN")) return MAT_PLANNING_MODULES;
+  if (c.startsWith("MAT-TRANS")) return MAT_TRANSFER_MODULES;
+  if (c.startsWith("MAT-ISSUE")) return MAT_ISSUE_MODULES;
+  if (c.startsWith("MAT-RET")) return MAT_RETURN_MODULES;
+  if (c.startsWith("MAT-COST")) return MAT_COST_MODULES;
+  if (c.startsWith("MAT-REP")) return MAT_REPORTS_MODULES;
   if (c.startsWith("HSE-DASH")) return HSE_DASHBOARD_MODULES;
   if (c.startsWith("HSE-PTW")) return HSE_PTW_MODULES;
   if (c.startsWith("HSE-INC")) return HSE_INCIDENT_MODULES;
