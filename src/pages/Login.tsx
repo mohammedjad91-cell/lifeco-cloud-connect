@@ -55,8 +55,7 @@ const Login = () => {
 
   const navigateToDept = (deptId: string) => {
     sessionStorage.setItem("lifeco_dept", deptId);
-    if (deptId === "LAB") navigate("/lab");
-    else navigate("/dashboard");
+    navigate(`/dept/${deptId}`);
   };
 
   const submitPin = (pinValue: string) => {

@@ -18,6 +18,7 @@ import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 
 const PlantRoute = PlantRouteImport.update({
   id: '/plant',
@@ -64,6 +65,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeptDeptIdRoute = DeptDeptIdRouteImport.update({
+  id: '/dept/$deptId',
+  path: '/dept/$deptId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +157,7 @@ export interface RootRouteChildren {
   LabRoute: typeof LabRoute
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
+  DeptDeptIdRoute: typeof DeptDeptIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dept/$deptId': {
+      id: '/dept/$deptId'
+      path: '/dept/$deptId'
+      fullPath: '/dept/$deptId'
+      preLoaderRoute: typeof DeptDeptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   LabRoute: LabRoute,
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
+  DeptDeptIdRoute: DeptDeptIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
