@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
+import { Route as MntCommandRouteImport } from './routes/mnt-command'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -29,6 +30,11 @@ const PlantRoute = PlantRouteImport.update({
 const OtsRoute = OtsRouteImport.update({
   id: '/ots',
   path: '/ots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MntCommandRoute = MntCommandRouteImport.update({
+  id: '/mnt-command',
+  path: '/mnt-command',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/hierarchy'
     | '/lab'
+    | '/mnt-command'
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/hierarchy'
     | '/lab'
+    | '/mnt-command'
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/hierarchy'
     | '/lab'
+    | '/mnt-command'
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   HierarchyRoute: typeof HierarchyRoute
   LabRoute: typeof LabRoute
+  MntCommandRoute: typeof MntCommandRoute
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/ots'
       fullPath: '/ots'
       preLoaderRoute: typeof OtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mnt-command': {
+      id: '/mnt-command'
+      path: '/mnt-command'
+      fullPath: '/mnt-command'
+      preLoaderRoute: typeof MntCommandRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab': {
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   HierarchyRoute: HierarchyRoute,
   LabRoute: LabRoute,
+  MntCommandRoute: MntCommandRoute,
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,

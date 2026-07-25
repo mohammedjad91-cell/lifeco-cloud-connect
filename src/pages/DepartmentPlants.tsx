@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Factory, LayoutDashboard, Plus } from "lucide-react";
+import { ArrowLeft, Factory, LayoutDashboard, Plus, Wrench } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 
 interface Plant {
