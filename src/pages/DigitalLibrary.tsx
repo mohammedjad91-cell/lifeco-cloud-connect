@@ -8,6 +8,7 @@ import {
   Wrench, FlaskConical, ClipboardList, Search, Upload, Star,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import LibraryUploadDialog from "@/components/LibraryUploadDialog";
 
 interface Category {
   key: string;
