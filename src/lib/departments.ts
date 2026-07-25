@@ -117,6 +117,34 @@ export const DEPARTMENTS: Department[] = [
     color: "from-orange-500/20 to-red-600/20",
     tags: [],
   },
+  {
+    id: "ENGINEERING",
+    label: "ENGINEERING",
+    pin: "1006",
+    color: "from-sky-500/20 to-indigo-600/20",
+    tags: [],
+  },
+  {
+    id: "HSE",
+    label: "HSE (SAFETY)",
+    pin: "1007",
+    color: "from-red-500/20 to-rose-600/20",
+    tags: [],
+  },
+  {
+    id: "MATERIALS",
+    label: "MATERIALS MGMT",
+    pin: "1008",
+    color: "from-yellow-500/20 to-amber-600/20",
+    tags: [],
+  },
+  {
+    id: "TECHAFFAIRS",
+    label: "TECHNICAL AFFAIRS",
+    pin: "1009",
+    color: "from-fuchsia-500/20 to-pink-600/20",
+    tags: [],
+  },
 ];
 
 export function getDepartmentByPin(pin: string): Department | undefined {
