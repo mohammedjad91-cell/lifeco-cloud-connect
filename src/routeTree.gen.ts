@@ -13,6 +13,7 @@ import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
+import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
@@ -37,6 +38,11 @@ const LabRoute = LabRouteImport.update({
 const HierarchyRoute = HierarchyRouteImport.update({
   id: '/hierarchy',
   path: '/hierarchy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
   '/ots': typeof OtsRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/documents'
     | '/hierarchy'
     | '/lab'
     | '/ots'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/documents'
     | '/hierarchy'
     | '/lab'
     | '/ots'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/documents'
     | '/hierarchy'
     | '/lab'
     | '/ots'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
+  DocumentsRoute: typeof DocumentsRoute
   HierarchyRoute: typeof HierarchyRoute
   LabRoute: typeof LabRoute
   OtsRoute: typeof OtsRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/hierarchy'
       fullPath: '/hierarchy'
       preLoaderRoute: typeof HierarchyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
+  DocumentsRoute: DocumentsRoute,
   HierarchyRoute: HierarchyRoute,
   LabRoute: LabRoute,
   OtsRoute: OtsRoute,
