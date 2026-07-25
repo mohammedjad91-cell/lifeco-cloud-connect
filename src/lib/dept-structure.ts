@@ -154,24 +154,6 @@ export const DEPT_STRUCTURE: Record<string, DeptPlant[]> = {
     { key: "ELECTRONIC", label: "Electronic Spare Parts Request", icon: "Cpu", modules: [{ key: "request", label: "New Request" }] },
     { key: "SUPPLIERS", label: "Suppliers", icon: "Users", modules: [{ key: "list", label: "Suppliers" }] },
   ],
-  ENGINEERING: [
-    { key: "PROCESS_ENG", label: "Process Engineering", icon: "GitBranch", modules: [
-      { key: "pfd", label: "PFD" }, { key: "pid", label: "P&ID" }, { key: "sop", label: "SOP" },
-      { key: "calc", label: "Calculations" }, { key: "reports", label: "Engineering Reports" },
-    ]},
-    { key: "MECH_ENG", label: "Mechanical Engineering", icon: "Cog", modules: [
-      { key: "drawings", label: "Drawings" }, { key: "specs", label: "Specifications" }, { key: "reports", label: "Reports" },
-    ]},
-    { key: "ELEC_ENG", label: "Electrical Engineering", icon: "Zap", modules: [
-      { key: "sld", label: "Single Line Diagrams" }, { key: "loads", label: "Load Studies" }, { key: "reports", label: "Reports" },
-    ]},
-    { key: "INST_ENG", label: "Instrumentation & Control", icon: "Gauge", modules: [
-      { key: "loops", label: "Control Loops" }, { key: "dcs", label: "DCS Config" }, { key: "reports", label: "Reports" },
-    ]},
-    { key: "PROJECTS", label: "Projects", icon: "Hammer", modules: [
-      { key: "active", label: "Active Projects" }, { key: "planning", label: "Planning" }, { key: "reports", label: "Reports" },
-    ]},
-  ],
   HSE: [
     { key: "SAFETY", label: "Occupational Safety", icon: "ShieldCheck", modules: [
       { key: "incidents", label: "Incidents" }, { key: "audits", label: "Audits" },
