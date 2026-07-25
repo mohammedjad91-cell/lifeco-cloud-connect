@@ -127,6 +127,39 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_points: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          notes: string | null
+          plant_code: string
+          point_type: string
+          x_pct: number
+          y_pct: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          notes?: string | null
+          plant_code?: string
+          point_type: string
+          x_pct: number
+          y_pct: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          notes?: string | null
+          plant_code?: string
+          point_type?: string
+          x_pct?: number
+          y_pct?: number
+        }
+        Relationships: []
+      }
       equipment: {
         Row: {
           area_id: string
@@ -715,6 +748,102 @@ export type Database = {
         }
         Relationships: []
       }
+      ppe_issuances: {
+        Row: {
+          condition: string | null
+          created_at: string
+          department: string | null
+          employee_id: string
+          employee_name: string
+          id: string
+          issued_at: string
+          notes: string | null
+          ppe_type: string
+          replacement_due: string | null
+          status: string | null
+        }
+        Insert: {
+          condition?: string | null
+          created_at?: string
+          department?: string | null
+          employee_id: string
+          employee_name: string
+          id?: string
+          issued_at?: string
+          notes?: string | null
+          ppe_type: string
+          replacement_due?: string | null
+          status?: string | null
+        }
+        Update: {
+          condition?: string | null
+          created_at?: string
+          department?: string | null
+          employee_id?: string
+          employee_name?: string
+          id?: string
+          issued_at?: string
+          notes?: string | null
+          ppe_type?: string
+          replacement_due?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      safety_incidents: {
+        Row: {
+          assigned_to: string | null
+          closed_at: string | null
+          corrective_action: string | null
+          created_at: string
+          description: string | null
+          entry_type: string
+          id: string
+          incident_no: string
+          location: string | null
+          photo_url: string | null
+          plant_code: string | null
+          reported_by: string | null
+          severity: string
+          status: string
+          suggested_action: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          corrective_action?: string | null
+          created_at?: string
+          description?: string | null
+          entry_type?: string
+          id?: string
+          incident_no?: string
+          location?: string | null
+          photo_url?: string | null
+          plant_code?: string | null
+          reported_by?: string | null
+          severity?: string
+          status?: string
+          suggested_action?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          corrective_action?: string | null
+          created_at?: string
+          description?: string | null
+          entry_type?: string
+          id?: string
+          incident_no?: string
+          location?: string | null
+          photo_url?: string | null
+          plant_code?: string | null
+          reported_by?: string | null
+          severity?: string
+          status?: string
+          suggested_action?: string | null
+        }
+        Relationships: []
+      }
       samples: {
         Row: {
           analysis_type: string
@@ -817,6 +946,81 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      work_permits: {
+        Row: {
+          closed_at: string | null
+          controls: string | null
+          created_at: string
+          description: string | null
+          end_at: string | null
+          hazards: string | null
+          hse_approved_at: string | null
+          hse_approved_by: string | null
+          hse_officer: string | null
+          id: string
+          location: string | null
+          permit_no: string
+          permit_type: string
+          plant_code: string | null
+          rejected_reason: string | null
+          requested_by: string | null
+          start_at: string | null
+          status: string
+          supervisor: string | null
+          supervisor_approved_at: string | null
+          supervisor_approved_by: string | null
+          workers_count: number | null
+        }
+        Insert: {
+          closed_at?: string | null
+          controls?: string | null
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          hazards?: string | null
+          hse_approved_at?: string | null
+          hse_approved_by?: string | null
+          hse_officer?: string | null
+          id?: string
+          location?: string | null
+          permit_no?: string
+          permit_type: string
+          plant_code?: string | null
+          rejected_reason?: string | null
+          requested_by?: string | null
+          start_at?: string | null
+          status?: string
+          supervisor?: string | null
+          supervisor_approved_at?: string | null
+          supervisor_approved_by?: string | null
+          workers_count?: number | null
+        }
+        Update: {
+          closed_at?: string | null
+          controls?: string | null
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          hazards?: string | null
+          hse_approved_at?: string | null
+          hse_approved_by?: string | null
+          hse_officer?: string | null
+          id?: string
+          location?: string | null
+          permit_no?: string
+          permit_type?: string
+          plant_code?: string | null
+          rejected_reason?: string | null
+          requested_by?: string | null
+          start_at?: string | null
+          status?: string
+          supervisor?: string | null
+          supervisor_approved_at?: string | null
+          supervisor_approved_by?: string | null
+          workers_count?: number | null
         }
         Relationships: []
       }
