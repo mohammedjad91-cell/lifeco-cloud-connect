@@ -134,6 +134,74 @@ const AMMONIA_LOADING_MODULES: PlantModule[] = [
   { key: "documents", label: "Documents", labelAr: "الوثائق" },
 ];
 
+const LAB_AMMONIA_MODULES: PlantModule[] = [
+  { key: "dashboard", label: "Laboratory Dashboard", labelAr: "لوحة المختبر", route: "/lab" },
+  { key: "sample-reg", label: "Sample Registration", labelAr: "تسجيل العينات" },
+  { key: "sample-track", label: "Sample Tracking", labelAr: "تتبع العينات" },
+  { key: "chem-analysis", label: "Chemical Analysis", labelAr: "التحليل الكيميائي" },
+  { key: "gas-analysis", label: "Gas Analysis", labelAr: "تحليل الغازات" },
+  { key: "water-analysis", label: "Water Analysis", labelAr: "تحليل المياه" },
+  { key: "qc", label: "Quality Control", labelAr: "ضبط الجودة" },
+  { key: "equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
+  { key: "calibration", label: "Calibration", labelAr: "المعايرة" },
+  { key: "certificates", label: "Certificates", labelAr: "الشهادات" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+  { key: "pdf", label: "PDF Archive", labelAr: "أرشيف PDF" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+];
+
+const LAB_UREA_MODULES: PlantModule[] = [
+  { key: "dashboard", label: "Laboratory Dashboard", labelAr: "لوحة المختبر", route: "/lab" },
+  { key: "sample-reg", label: "Sample Registration", labelAr: "تسجيل العينات" },
+  { key: "sample-track", label: "Sample Tracking", labelAr: "تتبع العينات" },
+  { key: "prod-analysis", label: "Product Analysis", labelAr: "تحليل المنتج" },
+  { key: "water-analysis", label: "Water Analysis", labelAr: "تحليل المياه" },
+  { key: "qc", label: "Quality Control", labelAr: "ضبط الجودة" },
+  { key: "equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
+  { key: "calibration", label: "Calibration", labelAr: "المعايرة" },
+  { key: "certificates", label: "Certificates", labelAr: "الشهادات" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+  { key: "pdf", label: "PDF Archive", labelAr: "أرشيف PDF" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+];
+
+const LAB_EQUIPMENT_MODULES: PlantModule[] = [
+  { key: "list", label: "Equipment List", labelAr: "قائمة المعدات" },
+  { key: "cards", label: "Equipment Cards", labelAr: "بطاقات المعدات" },
+  { key: "cal-sched", label: "Calibration Schedule", labelAr: "جدول المعايرة" },
+  { key: "cal-hist", label: "Calibration History", labelAr: "سجل المعايرة" },
+  { key: "pm", label: "Preventive Maintenance", labelAr: "الصيانة الوقائية" },
+  { key: "cm", label: "Corrective Maintenance", labelAr: "الصيانة التصحيحية" },
+  { key: "manuals", label: "Equipment Manuals", labelAr: "أدلة المعدات" },
+  { key: "pdf", label: "PDF Documents", labelAr: "وثائق PDF" },
+  { key: "spares", label: "Spare Parts", labelAr: "قطع الغيار" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const LAB_CHEM_STORE_MODULES: PlantModule[] = [
+  { key: "inventory", label: "Chemical Inventory", labelAr: "مخزون الكيماويات" },
+  { key: "categories", label: "Chemical Categories", labelAr: "فئات الكيماويات" },
+  { key: "msds", label: "MSDS / SDS", labelAr: "صحائف السلامة" },
+  { key: "receive", label: "Chemical Receiving", labelAr: "استلام الكيماويات" },
+  { key: "issue", label: "Chemical Issuing", labelAr: "صرف الكيماويات" },
+  { key: "stock", label: "Stock Monitoring", labelAr: "مراقبة المخزون" },
+  { key: "expiry", label: "Expiry Date Tracking", labelAr: "تتبع تاريخ الانتهاء" },
+  { key: "suppliers", label: "Suppliers", labelAr: "الموردون" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const LAB_REPORTS_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Reports", labelAr: "التقارير اليومية" },
+  { key: "weekly", label: "Weekly Reports", labelAr: "التقارير الأسبوعية" },
+  { key: "monthly", label: "Monthly Reports", labelAr: "التقارير الشهرية" },
+  { key: "quality", label: "Quality Reports", labelAr: "تقارير الجودة" },
+  { key: "sample", label: "Sample Reports", labelAr: "تقارير العينات" },
+  { key: "cert", label: "Certificate Reports", labelAr: "تقارير الشهادات" },
+  { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
+];
+
 export const SHARED_FEATURES: PlantModule[] = [
   { key: "overview", label: "Overview", labelAr: "نظرة عامة" },
   { key: "live", label: "Live Status", labelAr: "الحالة المباشرة", route: "/dashboard" },
@@ -155,6 +223,11 @@ export const SHARED_FEATURES: PlantModule[] = [
 
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("LAB-AMM")) return LAB_AMMONIA_MODULES;
+  if (c.startsWith("LAB-UREA")) return LAB_UREA_MODULES;
+  if (c.startsWith("LAB-EQ")) return LAB_EQUIPMENT_MODULES;
+  if (c.startsWith("LAB-CHEM")) return LAB_CHEM_STORE_MODULES;
+  if (c.startsWith("LAB-REP")) return LAB_REPORTS_MODULES;
   if (c.startsWith("AMM-STORAGE") || c.includes("STORAGE")) return AMMONIA_STORAGE_MODULES;
   if (c.startsWith("UREA-LOAD")) return UREA_LOADING_MODULES;
   if (c.startsWith("AMM-LOAD")) return AMMONIA_LOADING_MODULES;
