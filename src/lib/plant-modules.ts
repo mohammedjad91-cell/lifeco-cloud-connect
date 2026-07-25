@@ -66,6 +66,74 @@ const PROC_ENG_MODULES: PlantModule[] = [
   { key: "archive", label: "Engineering Archive", labelAr: "الأرشيف الهندسي" },
 ];
 
+const UREA_MODULES: PlantModule[] = [
+  { key: "overview", label: "Plant Overview", labelAr: "نظرة عامة" },
+  { key: "live", label: "Live Dashboard", labelAr: "لوحة مباشرة", route: "/dashboard" },
+  { key: "operations", label: "Operations", labelAr: "التشغيل", route: "/dashboard" },
+  { key: "equipment", label: "Equipment", labelAr: "المعدات" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "lab", label: "Laboratory", labelAr: "المختبر", route: "/lab" },
+  { key: "process", label: "Process Engineering", labelAr: "هندسة العمليات" },
+  { key: "utilities", label: "Utilities", labelAr: "المرافق" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "spares", label: "Spare Parts", labelAr: "قطع الغيار" },
+  { key: "shutdown", label: "Shutdown History", labelAr: "سجل التوقفات" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+  { key: "videos", label: "Videos", labelAr: "الفيديو" },
+  { key: "pfd", label: "PFD", labelAr: "PFD", route: "/ots" },
+  { key: "pid", label: "P&ID", labelAr: "P&ID", route: "/ots" },
+  { key: "sop", label: "SOP", labelAr: "SOP" },
+  { key: "manuals", label: "Manuals", labelAr: "الأدلة" },
+  { key: "datasheets", label: "Datasheets", labelAr: "الجداول الفنية" },
+];
+
+const WATER_MODULES: PlantModule[] = [
+  { key: "overview", label: "Plant Overview", labelAr: "نظرة عامة" },
+  { key: "water", label: "Water Quality", labelAr: "جودة المياه" },
+  { key: "operations", label: "Operations", labelAr: "التشغيل", route: "/dashboard" },
+  { key: "equipment", label: "Equipment", labelAr: "المعدات" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "lab", label: "Laboratory", labelAr: "المختبر", route: "/lab" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "manuals", label: "Manuals", labelAr: "الأدلة" },
+];
+
+const AMMONIA_STORAGE_MODULES: PlantModule[] = [
+  { key: "overview", label: "Tank Overview", labelAr: "نظرة عامة على الخزان" },
+  { key: "status", label: "Tank Status", labelAr: "حالة الخزان" },
+  { key: "level", label: "Tank Level", labelAr: "مستوى الخزان" },
+  { key: "pressure", label: "Pressure Monitoring", labelAr: "مراقبة الضغط" },
+  { key: "temperature", label: "Temperature Monitoring", labelAr: "مراقبة الحرارة" },
+  { key: "safety", label: "Safety Inspection", labelAr: "تفتيش السلامة" },
+  { key: "equipment", label: "Equipment", labelAr: "المعدات" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+];
+
+const UREA_LOADING_MODULES: PlantModule[] = [
+  { key: "schedule", label: "Loading Schedule", labelAr: "جدول التحميل" },
+  { key: "trucks", label: "Truck Management", labelAr: "إدارة الشاحنات" },
+  { key: "weighbridge", label: "Weighbridge Records", labelAr: "سجلات الميزان" },
+  { key: "dispatch", label: "Dispatch Reports", labelAr: "تقارير الإرسال" },
+  { key: "equipment", label: "Loading Equipment", labelAr: "معدات التحميل" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const AMMONIA_LOADING_MODULES: PlantModule[] = [
+  { key: "schedule", label: "Loading Schedule", labelAr: "جدول التحميل" },
+  { key: "trucks", label: "Truck Management", labelAr: "إدارة الشاحنات" },
+  { key: "tanker", label: "Tanker Information", labelAr: "معلومات الناقلة" },
+  { key: "equipment", label: "Loading Equipment", labelAr: "معدات التحميل" },
+  { key: "safety", label: "Safety Procedures", labelAr: "إجراءات السلامة" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+  { key: "documents", label: "Documents", labelAr: "الوثائق" },
+];
+
 export const SHARED_FEATURES: PlantModule[] = [
   { key: "overview", label: "Overview", labelAr: "نظرة عامة" },
   { key: "live", label: "Live Status", labelAr: "الحالة المباشرة", route: "/dashboard" },
