@@ -16,6 +16,7 @@ import { Route as LabRouteImport } from './routes/lab'
 import { Route as HseCenterRouteImport } from './routes/hse-center'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DigitalLibraryRouteImport } from './routes/digital-library'
+import { Route as DeveloperRouteImport } from './routes/developer'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
@@ -57,6 +58,11 @@ const HierarchyRoute = HierarchyRouteImport.update({
 const DigitalLibraryRoute = DigitalLibraryRouteImport.update({
   id: '/digital-library',
   path: '/digital-library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeveloperRoute = DeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
+  '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/bi'
     | '/dashboard'
+    | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
+  DeveloperRoute: typeof DeveloperRoute
   DigitalLibraryRoute: typeof DigitalLibraryRoute
   HierarchyRoute: typeof HierarchyRoute
   HseCenterRoute: typeof HseCenterRoute
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DigitalLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/developer': {
+      id: '/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof DeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
+  DeveloperRoute: DeveloperRoute,
   DigitalLibraryRoute: DigitalLibraryRoute,
   HierarchyRoute: HierarchyRoute,
   HseCenterRoute: HseCenterRoute,
