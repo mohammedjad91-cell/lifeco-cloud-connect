@@ -131,7 +131,7 @@ const DepartmentPlants = ({ deptId }: { deptId: string }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  onClick={openDashboard}
+                  onClick={() => navigate(`/modules/${p.code}`)}
                   className="glass-card p-5 text-center transition-all duration-300 cursor-pointer group relative overflow-hidden hover:neon-border"
                 >
                   <div
