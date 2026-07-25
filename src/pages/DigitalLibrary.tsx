@@ -35,6 +35,8 @@ const DigitalLibrary = () => {
   const navigate = useNavigate();
   const { lang } = useI18n();
   const [search, setSearch] = useState("");
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<string | undefined>();
 
   const filtered = CATEGORIES.filter((c) => {
     if (!search.trim()) return true;
