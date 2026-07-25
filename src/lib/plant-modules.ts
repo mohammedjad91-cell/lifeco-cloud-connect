@@ -613,6 +613,21 @@ const MAT_REPORTS_MODULES: PlantModule[] = [
 
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("MAT-DASH")) return MAT_DASHBOARD_MODULES;
+  if (c.startsWith("MAT-PR")) return MAT_PR_MODULES;
+  if (c.startsWith("MAT-PO")) return MAT_PO_MODULES;
+  if (c.startsWith("MAT-SUP")) return MAT_SUPPLIER_MODULES;
+  if (c.startsWith("MAT-RECV")) return MAT_RECEIVING_MODULES;
+  if (c.startsWith("MAT-INSP")) return MAT_INSPECTION_MODULES;
+  if (c.startsWith("MAT-INV")) return MAT_INVENTORY_MODULES;
+  if (c.startsWith("MAT-CAT")) return MAT_CATEGORIES_MODULES;
+  if (c.startsWith("MAT-CARD")) return MAT_CARD_MODULES;
+  if (c.startsWith("MAT-PLAN")) return MAT_PLANNING_MODULES;
+  if (c.startsWith("MAT-TRANS")) return MAT_TRANSFER_MODULES;
+  if (c.startsWith("MAT-ISSUE")) return MAT_ISSUE_MODULES;
+  if (c.startsWith("MAT-RET")) return MAT_RETURN_MODULES;
+  if (c.startsWith("MAT-COST")) return MAT_COST_MODULES;
+  if (c.startsWith("MAT-REP")) return MAT_REPORTS_MODULES;
   if (c.startsWith("HSE-DASH")) return HSE_DASHBOARD_MODULES;
   if (c.startsWith("HSE-PTW")) return HSE_PTW_MODULES;
   if (c.startsWith("HSE-INC")) return HSE_INCIDENT_MODULES;
