@@ -221,8 +221,109 @@ export const SHARED_FEATURES: PlantModule[] = [
   { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
 ];
 
+const MAINT_PLANT_MODULES: PlantModule[] = [
+  { key: "dashboard", label: "Maintenance Dashboard", labelAr: "لوحة الصيانة", route: "/dashboard" },
+  { key: "mech", label: "Mechanical Maintenance", labelAr: "الصيانة الميكانيكية" },
+  { key: "elec", label: "Electrical Maintenance", labelAr: "الصيانة الكهربائية" },
+  { key: "inst", label: "Instrumentation Maintenance", labelAr: "صيانة الأجهزة" },
+  { key: "civil", label: "Civil Maintenance", labelAr: "الصيانة المدنية" },
+  { key: "utility", label: "Utility Maintenance", labelAr: "صيانة المرافق" },
+  { key: "workshop", label: "Workshop", labelAr: "الورشة" },
+  { key: "wo", label: "Work Orders", labelAr: "أوامر العمل" },
+  { key: "pm", label: "Preventive Maintenance", labelAr: "الصيانة الوقائية" },
+  { key: "pdm", label: "Predictive Maintenance", labelAr: "الصيانة التنبؤية" },
+  { key: "cm", label: "Corrective Maintenance", labelAr: "الصيانة التصحيحية" },
+  { key: "bm", label: "Breakdown Maintenance", labelAr: "صيانة الأعطال" },
+  { key: "shutdown", label: "Shutdown Management", labelAr: "إدارة التوقفات" },
+  { key: "inspection", label: "Inspection", labelAr: "التفتيش" },
+  { key: "lube", label: "Lubrication", labelAr: "التزييت" },
+  { key: "history", label: "Equipment History", labelAr: "سجل المعدات" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const MAINT_PLANNING_MODULES: PlantModule[] = [
+  { key: "annual", label: "Annual Maintenance Plan", labelAr: "الخطة السنوية" },
+  { key: "monthly", label: "Monthly Plan", labelAr: "الخطة الشهرية" },
+  { key: "weekly", label: "Weekly Plan", labelAr: "الخطة الأسبوعية" },
+  { key: "daily", label: "Daily Schedule", labelAr: "الجدول اليومي" },
+  { key: "shutdown", label: "Shutdown Planning", labelAr: "تخطيط التوقفات" },
+  { key: "resource", label: "Resource Planning", labelAr: "تخطيط الموارد" },
+  { key: "manpower", label: "Manpower Planning", labelAr: "تخطيط القوى العاملة" },
+  { key: "material", label: "Material Planning", labelAr: "تخطيط المواد" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const MAINT_WORKSHOP_MODULES: PlantModule[] = [
+  { key: "machine", label: "Machine Shop", labelAr: "ورشة المكائن" },
+  { key: "welding", label: "Welding Shop", labelAr: "ورشة اللحام" },
+  { key: "fab", label: "Fabrication Shop", labelAr: "ورشة التصنيع" },
+  { key: "req", label: "Repair Requests", labelAr: "طلبات الإصلاح" },
+  { key: "jobs", label: "Workshop Jobs", labelAr: "مهام الورشة" },
+  { key: "done", label: "Completed Jobs", labelAr: "المهام المنجزة" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const MAINT_WO_MODULES: PlantModule[] = [
+  { key: "create", label: "Create Work Order", labelAr: "إنشاء أمر عمل" },
+  { key: "assign", label: "Assign Technician", labelAr: "تعيين فني" },
+  { key: "status", label: "Work Status", labelAr: "حالة العمل" },
+  { key: "priority", label: "Priority", labelAr: "الأولوية" },
+  { key: "approval", label: "Approval", labelAr: "الاعتماد" },
+  { key: "completion", label: "Completion", labelAr: "الإنجاز" },
+  { key: "history", label: "History", labelAr: "السجل" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const MAINT_EQUIPMENT_MODULES: PlantModule[] = [
+  { key: "list", label: "Equipment List", labelAr: "قائمة المعدات" },
+  { key: "card", label: "Equipment Card", labelAr: "بطاقة المعدة" },
+  { key: "specs", label: "Technical Specifications", labelAr: "المواصفات الفنية" },
+  { key: "schedule", label: "Maintenance Schedule", labelAr: "جدول الصيانة" },
+  { key: "maint-hist", label: "Maintenance History", labelAr: "سجل الصيانة" },
+  { key: "insp-hist", label: "Inspection History", labelAr: "سجل التفتيش" },
+  { key: "fail-hist", label: "Failure History", labelAr: "سجل الأعطال" },
+  { key: "spares", label: "Spare Parts", labelAr: "قطع الغيار" },
+  { key: "lube", label: "Lubrication", labelAr: "التزييت" },
+  { key: "oil", label: "Oil Information", labelAr: "معلومات الزيت" },
+  { key: "bearings", label: "Bearings", labelAr: "الكراسي" },
+  { key: "manuals", label: "Manuals", labelAr: "الأدلة" },
+  { key: "datasheets", label: "Datasheets", labelAr: "الجداول الفنية" },
+  { key: "pid", label: "P&ID", labelAr: "P&ID", route: "/ots" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+  { key: "videos", label: "Videos", labelAr: "الفيديو" },
+  { key: "pdf", label: "PDF Archive", labelAr: "أرشيف PDF" },
+];
+
+const MAINT_SPARES_MODULES: PlantModule[] = [
+  { key: "inventory", label: "Spare Parts Inventory", labelAr: "مخزون قطع الغيار" },
+  { key: "available", label: "Available Quantity", labelAr: "الكمية المتاحة" },
+  { key: "reserved", label: "Reserved Parts", labelAr: "القطع المحجوزة" },
+  { key: "requested", label: "Requested Parts", labelAr: "القطع المطلوبة" },
+  { key: "purchase", label: "Purchase Requests", labelAr: "طلبات الشراء" },
+  { key: "suppliers", label: "Suppliers", labelAr: "الموردون" },
+  { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const MAINT_REPORTS_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Reports", labelAr: "التقارير اليومية" },
+  { key: "weekly", label: "Weekly Reports", labelAr: "التقارير الأسبوعية" },
+  { key: "monthly", label: "Monthly Reports", labelAr: "التقارير الشهرية" },
+  { key: "equipment", label: "Equipment Reports", labelAr: "تقارير المعدات" },
+  { key: "failure", label: "Failure Reports", labelAr: "تقارير الأعطال" },
+  { key: "shutdown", label: "Shutdown Reports", labelAr: "تقارير التوقفات" },
+  { key: "kpi", label: "KPI Reports", labelAr: "تقارير مؤشرات الأداء" },
+  { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
+];
+
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("MNT-PLAN")) return MAINT_PLANNING_MODULES;
+  if (c.startsWith("MNT-WORKSHOP")) return MAINT_WORKSHOP_MODULES;
+  if (c.startsWith("MNT-WO")) return MAINT_WO_MODULES;
+  if (c.startsWith("MNT-EQ")) return MAINT_EQUIPMENT_MODULES;
+  if (c.startsWith("MNT-SPARES")) return MAINT_SPARES_MODULES;
+  if (c.startsWith("MNT-REP")) return MAINT_REPORTS_MODULES;
+  if (c.startsWith("MNT-")) return MAINT_PLANT_MODULES;
   if (c.startsWith("LAB-AMM")) return LAB_AMMONIA_MODULES;
   if (c.startsWith("LAB-UREA")) return LAB_UREA_MODULES;
   if (c.startsWith("LAB-EQ")) return LAB_EQUIPMENT_MODULES;
