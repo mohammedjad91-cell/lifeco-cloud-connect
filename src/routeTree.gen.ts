@@ -18,6 +18,7 @@ import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ModulesPlantCodeRouteImport } from './routes/modules.$plantCode'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 
 const PlantRoute = PlantRouteImport.update({
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesPlantCodeRoute = ModulesPlantCodeRouteImport.update({
+  id: '/modules/$plantCode',
+  path: '/modules/$plantCode',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeptDeptIdRoute = DeptDeptIdRouteImport.update({
   id: '/dept/$deptId',
   path: '/dept/$deptId',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
+  '/modules/$plantCode': typeof ModulesPlantCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
+  '/modules/$plantCode': typeof ModulesPlantCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
+  '/modules/$plantCode': typeof ModulesPlantCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/modules/$plantCode'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/modules/$plantCode'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/modules/$plantCode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
+  ModulesPlantCodeRoute: typeof ModulesPlantCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/$plantCode': {
+      id: '/modules/$plantCode'
+      path: '/modules/$plantCode'
+      fullPath: '/modules/$plantCode'
+      preLoaderRoute: typeof ModulesPlantCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dept/$deptId': {
       id: '/dept/$deptId'
       path: '/dept/$deptId'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
+  ModulesPlantCodeRoute: ModulesPlantCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -23,7 +23,7 @@ interface Plant {
   department_key: string;
 }
 
-const ICONS: Record<string, JSX.Element> = {
+const ICONS: Record<string, React.ReactNode> = {
   overview: <Factory className="w-6 h-6" />,
   live: <Activity className="w-6 h-6" />,
   operations: <Gauge className="w-6 h-6" />,
