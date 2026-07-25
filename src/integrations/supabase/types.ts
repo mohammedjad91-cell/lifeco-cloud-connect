@@ -490,6 +490,48 @@ export type Database = {
         }
         Relationships: []
       }
+      library_files: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          equipment_id: string | null
+          file_name: string
+          id: string
+          mime_type: string | null
+          plant_code: string | null
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          equipment_id?: string | null
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          plant_code?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          equipment_id?: string | null
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          plant_code?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       locked_dates: {
         Row: {
           id: string

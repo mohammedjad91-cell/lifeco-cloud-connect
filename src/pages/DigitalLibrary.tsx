@@ -8,6 +8,7 @@ import {
   Wrench, FlaskConical, ClipboardList, Search, Upload, Star,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import LibraryUploadDialog from "@/components/LibraryUploadDialog";
 
 interface Category {
   key: string;
@@ -34,6 +35,8 @@ const DigitalLibrary = () => {
   const navigate = useNavigate();
   const { lang } = useI18n();
   const [search, setSearch] = useState("");
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<string | undefined>();
 
   const filtered = CATEGORIES.filter((c) => {
     if (!search.trim()) return true;
@@ -57,11 +60,16 @@ const DigitalLibrary = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           {lang === "ar" ? "الرئيسية" : "Home"}
         </Button>
-        <Button className="bg-primary/90 hover:bg-primary text-primary-foreground">
+        <Button
+          onClick={() => { setUploadCategory(undefined); setUploadOpen(true); }}
+          className="bg-primary/90 hover:bg-primary text-primary-foreground"
+        >
           <Upload className="w-4 h-4 mr-2" />
           {lang === "ar" ? "رفع ملف" : "Upload"}
         </Button>
       </div>
+
+      <LibraryUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} defaultCategory={uploadCategory} />
 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -102,6 +110,15 @@ const DigitalLibrary = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
+                onClick={() => {
+                  const map: Record<string, string> = {
+                    manuals: "manuals", datasheets: "equipment", pfd: "drawings",
+                    pid: "drawings", sop: "sop", maintenance: "equipment",
+                    lab: "reports", photos: "photos", videos: "videos",
+                  };
+                  setUploadCategory(map[c.key] ?? "process");
+                  setUploadOpen(true);
+                }}
                 className="glass-card p-5 text-center transition-all duration-300 cursor-pointer group relative overflow-hidden hover:neon-border"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
