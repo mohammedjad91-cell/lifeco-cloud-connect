@@ -173,25 +173,58 @@ export type Database = {
           asset_code: string
           asset_name: string
           created_at: string
+          criticality: string
           department: string
           id: string
+          image_url: string | null
+          install_year: number | null
           is_custom: boolean
+          last_maintenance_at: string | null
+          location: string | null
+          manufacturer: string | null
+          next_maintenance_at: string | null
+          plant_code: string | null
+          running_hours: number
+          status: string
+          tag: string | null
         }
         Insert: {
           asset_code: string
           asset_name: string
           created_at?: string
+          criticality?: string
           department: string
           id?: string
+          image_url?: string | null
+          install_year?: number | null
           is_custom?: boolean
+          last_maintenance_at?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          next_maintenance_at?: string | null
+          plant_code?: string | null
+          running_hours?: number
+          status?: string
+          tag?: string | null
         }
         Update: {
           asset_code?: string
           asset_name?: string
           created_at?: string
+          criticality?: string
           department?: string
           id?: string
+          image_url?: string | null
+          install_year?: number | null
           is_custom?: boolean
+          last_maintenance_at?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          next_maintenance_at?: string | null
+          plant_code?: string | null
+          running_hours?: number
+          status?: string
+          tag?: string | null
         }
         Relationships: []
       }
@@ -482,25 +515,49 @@ export type Database = {
       }
       maintenance_records: {
         Row: {
+          after_photo: string | null
           asset_id: string
+          before_photo: string | null
+          cost_labor: number
+          cost_parts: number
+          failure_cause: string | null
+          hours: number
           id: string
           notes: string
           recorded_at: string
           recorded_by: string | null
+          technician: string | null
+          type: string
         }
         Insert: {
+          after_photo?: string | null
           asset_id: string
+          before_photo?: string | null
+          cost_labor?: number
+          cost_parts?: number
+          failure_cause?: string | null
+          hours?: number
           id?: string
           notes: string
           recorded_at?: string
           recorded_by?: string | null
+          technician?: string | null
+          type?: string
         }
         Update: {
+          after_photo?: string | null
           asset_id?: string
+          before_photo?: string | null
+          cost_labor?: number
+          cost_parts?: number
+          failure_cause?: string | null
+          hours?: number
           id?: string
           notes?: string
           recorded_at?: string
           recorded_by?: string | null
+          technician?: string | null
+          type?: string
         }
         Relationships: [
           {
