@@ -201,11 +201,11 @@ function StatTile({ label, value, sub, tone = "blue" }: any) {
 }
 
 async function loadSetting<T = any>(key: string, fallback: T): Promise<T> {
-  const { data } = await supabase.from("system_settings" as any).select("value").eq("key", key).maybeSingle();
-  return (data?.value as T) ?? fallback;
+  const { data } = await (supabase.from("system_settings" as any) as any).select("value").eq("key", key).maybeSingle();
+  return ((data as any)?.value as T) ?? fallback;
 }
 async function saveSetting(key: string, value: any) {
-  return supabase.from("system_settings" as any).upsert({ key, value, updated_at: new Date().toISOString() });
+  return (supabase.from("system_settings" as any) as any).upsert({ key, value, updated_at: new Date().toISOString() });
 }
 
 /* ---------------- Dashboard ---------------- */
