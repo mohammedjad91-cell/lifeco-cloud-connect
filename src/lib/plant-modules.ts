@@ -315,8 +315,155 @@ const MAINT_REPORTS_MODULES: PlantModule[] = [
   { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
 ];
 
+// ============= HSE (Safety & OHS) modules =============
+const HSE_DASHBOARD_MODULES: PlantModule[] = [
+  { key: "live", label: "Live Safety Dashboard", labelAr: "لوحة السلامة المباشرة", route: "/dashboard" },
+  { key: "kpi", label: "Safety KPIs", labelAr: "مؤشرات السلامة" },
+  { key: "lti", label: "Days Without LTI", labelAr: "أيام بدون إصابات" },
+  { key: "permits", label: "Active Work Permits", labelAr: "تصاريح العمل النشطة" },
+  { key: "incidents", label: "Open Incidents", labelAr: "الحوادث المفتوحة" },
+  { key: "alerts", label: "Safety Alerts", labelAr: "تنبيهات السلامة" },
+  { key: "emergency", label: "Emergency Status", labelAr: "حالة الطوارئ" },
+  { key: "stats", label: "Safety Statistics", labelAr: "إحصائيات السلامة" },
+];
+
+const HSE_PTW_MODULES: PlantModule[] = [
+  { key: "hot", label: "Hot Work Permit", labelAr: "تصريح عمل ساخن" },
+  { key: "cold", label: "Cold Work Permit", labelAr: "تصريح عمل بارد" },
+  { key: "confined", label: "Confined Space Permit", labelAr: "تصريح الأماكن المغلقة" },
+  { key: "electrical", label: "Electrical Work Permit", labelAr: "تصريح عمل كهربائي" },
+  { key: "excavation", label: "Excavation Permit", labelAr: "تصريح حفر" },
+  { key: "height", label: "Working at Height Permit", labelAr: "تصريح العمل على ارتفاع" },
+  { key: "lifting", label: "Lifting Operation Permit", labelAr: "تصريح رفع" },
+  { key: "line-break", label: "Line Breaking Permit", labelAr: "تصريح فتح خطوط" },
+  { key: "approval", label: "Permit Approval", labelAr: "اعتماد التصاريح" },
+  { key: "history", label: "Permit History", labelAr: "سجل التصاريح" },
+  { key: "archive", label: "Permit Archive", labelAr: "أرشيف التصاريح" },
+];
+
+const HSE_INCIDENT_MODULES: PlantModule[] = [
+  { key: "report", label: "Incident Reporting", labelAr: "تبليغ الحوادث" },
+  { key: "nearmiss", label: "Near Miss Reporting", labelAr: "تبليغ الحوادث الوشيكة" },
+  { key: "investigation", label: "Accident Investigation", labelAr: "التحقيق في الحوادث" },
+  { key: "rca", label: "Root Cause Analysis", labelAr: "تحليل السبب الجذري" },
+  { key: "corrective", label: "Corrective Actions", labelAr: "الإجراءات التصحيحية" },
+  { key: "preventive", label: "Preventive Actions", labelAr: "الإجراءات الوقائية" },
+  { key: "stats", label: "Incident Statistics", labelAr: "إحصائيات الحوادث" },
+];
+
+const HSE_RISK_MODULES: PlantModule[] = [
+  { key: "hazid", label: "Hazard Identification", labelAr: "تحديد المخاطر" },
+  { key: "assessment", label: "Risk Assessment", labelAr: "تقييم المخاطر" },
+  { key: "jsa", label: "Job Safety Analysis (JSA)", labelAr: "تحليل سلامة العمل" },
+  { key: "matrix", label: "Risk Matrix", labelAr: "مصفوفة المخاطر" },
+  { key: "controls", label: "Control Measures", labelAr: "إجراءات التحكم" },
+  { key: "register", label: "Risk Register", labelAr: "سجل المخاطر" },
+];
+
+const HSE_LOTO_MODULES: PlantModule[] = [
+  { key: "lockout", label: "Lockout Procedures", labelAr: "إجراءات الإقفال" },
+  { key: "tagout", label: "Tagout Procedures", labelAr: "إجراءات الوسم" },
+  { key: "isolation", label: "Isolation Records", labelAr: "سجلات العزل" },
+  { key: "checklists", label: "LOTO Checklists", labelAr: "قوائم التحقق" },
+  { key: "history", label: "LOTO History", labelAr: "سجل LOTO" },
+];
+
+const HSE_FIRE_MODULES: PlantModule[] = [
+  { key: "extinguishers", label: "Fire Extinguishers", labelAr: "طفايات الحريق" },
+  { key: "hydrants", label: "Fire Hydrants", labelAr: "حنفيات الحريق" },
+  { key: "pumps", label: "Fire Pumps", labelAr: "مضخات الحريق" },
+  { key: "alarm", label: "Fire Alarm System", labelAr: "نظام إنذار الحريق" },
+  { key: "schedule", label: "Inspection Schedule", labelAr: "جدول التفتيش" },
+  { key: "maint-hist", label: "Maintenance History", labelAr: "سجل الصيانة" },
+  { key: "certs", label: "Certificates", labelAr: "الشهادات" },
+];
+
+const HSE_GAS_MODULES: PlantModule[] = [
+  { key: "fixed", label: "Fixed Gas Detectors", labelAr: "كاشفات ثابتة" },
+  { key: "portable", label: "Portable Gas Detectors", labelAr: "كاشفات محمولة" },
+  { key: "calibration", label: "Calibration Records", labelAr: "سجلات المعايرة" },
+  { key: "results", label: "Gas Test Results", labelAr: "نتائج فحص الغاز" },
+  { key: "alarms", label: "Alarm History", labelAr: "سجل الإنذارات" },
+];
+
+const HSE_PPE_MODULES: PlantModule[] = [
+  { key: "inventory", label: "PPE Inventory", labelAr: "مخزون معدات الوقاية" },
+  { key: "distribution", label: "PPE Distribution", labelAr: "توزيع معدات الوقاية" },
+  { key: "inspection", label: "PPE Inspection", labelAr: "تفتيش المعدات" },
+  { key: "replacement", label: "PPE Replacement", labelAr: "استبدال المعدات" },
+  { key: "reports", label: "PPE Reports", labelAr: "التقارير", route: "/bi" },
+];
+
+const HSE_EMERGENCY_MODULES: PlantModule[] = [
+  { key: "plans", label: "Emergency Plans", labelAr: "خطط الطوارئ" },
+  { key: "contacts", label: "Emergency Contacts", labelAr: "جهات اتصال الطوارئ" },
+  { key: "maps", label: "Evacuation Maps", labelAr: "خرائط الإخلاء" },
+  { key: "drills", label: "Emergency Drills", labelAr: "التدريبات" },
+  { key: "assembly", label: "Assembly Points", labelAr: "نقاط التجمع" },
+  { key: "reports", label: "Emergency Reports", labelAr: "التقارير" },
+];
+
+const HSE_INSPECTION_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Inspection", labelAr: "تفتيش يومي" },
+  { key: "weekly", label: "Weekly Inspection", labelAr: "تفتيش أسبوعي" },
+  { key: "monthly", label: "Monthly Inspection", labelAr: "تفتيش شهري" },
+  { key: "audit", label: "Audit Checklist", labelAr: "قائمة التدقيق" },
+  { key: "findings", label: "Findings", labelAr: "الملاحظات" },
+  { key: "corrective", label: "Corrective Actions", labelAr: "الإجراءات التصحيحية" },
+];
+
+const HSE_ENV_MODULES: PlantModule[] = [
+  { key: "air", label: "Air Monitoring", labelAr: "مراقبة الهواء" },
+  { key: "water", label: "Water Monitoring", labelAr: "مراقبة المياه" },
+  { key: "waste", label: "Waste Management", labelAr: "إدارة النفايات" },
+  { key: "reports", label: "Environmental Reports", labelAr: "التقارير البيئية" },
+  { key: "compliance", label: "Compliance Records", labelAr: "سجلات الامتثال" },
+];
+
+const HSE_TRAINING_MODULES: PlantModule[] = [
+  { key: "schedule", label: "Training Schedule", labelAr: "جدول التدريب" },
+  { key: "records", label: "Training Records", labelAr: "سجلات التدريب" },
+  { key: "certs", label: "Certificates", labelAr: "الشهادات" },
+  { key: "matrix", label: "Competency Matrix", labelAr: "مصفوفة الكفاءات" },
+  { key: "expired", label: "Expired Certificates", labelAr: "الشهادات المنتهية" },
+];
+
+const HSE_MEDICAL_MODULES: PlantModule[] = [
+  { key: "exam", label: "Medical Examination", labelAr: "الفحص الطبي" },
+  { key: "firstaid", label: "First Aid Cases", labelAr: "حالات الإسعاف الأولي" },
+  { key: "reports", label: "Medical Reports", labelAr: "التقارير الطبية" },
+  { key: "fitness", label: "Fitness for Work", labelAr: "اللياقة للعمل" },
+  { key: "vaccination", label: "Vaccination Records", labelAr: "سجلات التطعيم" },
+];
+
+const HSE_REPORTS_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Reports", labelAr: "التقارير اليومية" },
+  { key: "weekly", label: "Weekly Reports", labelAr: "التقارير الأسبوعية" },
+  { key: "monthly", label: "Monthly Reports", labelAr: "التقارير الشهرية" },
+  { key: "incident", label: "Incident Reports", labelAr: "تقارير الحوادث" },
+  { key: "audit", label: "Audit Reports", labelAr: "تقارير التدقيق" },
+  { key: "inspection", label: "Inspection Reports", labelAr: "تقارير التفتيش" },
+  { key: "env", label: "Environmental Reports", labelAr: "التقارير البيئية" },
+  { key: "kpi", label: "KPI Reports", labelAr: "تقارير المؤشرات" },
+  { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
+];
+
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("HSE-DASH")) return HSE_DASHBOARD_MODULES;
+  if (c.startsWith("HSE-PTW")) return HSE_PTW_MODULES;
+  if (c.startsWith("HSE-INC")) return HSE_INCIDENT_MODULES;
+  if (c.startsWith("HSE-RISK")) return HSE_RISK_MODULES;
+  if (c.startsWith("HSE-LOTO")) return HSE_LOTO_MODULES;
+  if (c.startsWith("HSE-FIRE")) return HSE_FIRE_MODULES;
+  if (c.startsWith("HSE-GAS")) return HSE_GAS_MODULES;
+  if (c.startsWith("HSE-PPE")) return HSE_PPE_MODULES;
+  if (c.startsWith("HSE-EMER")) return HSE_EMERGENCY_MODULES;
+  if (c.startsWith("HSE-INSP")) return HSE_INSPECTION_MODULES;
+  if (c.startsWith("HSE-ENV")) return HSE_ENV_MODULES;
+  if (c.startsWith("HSE-TRAIN")) return HSE_TRAINING_MODULES;
+  if (c.startsWith("HSE-MED")) return HSE_MEDICAL_MODULES;
+  if (c.startsWith("HSE-REP")) return HSE_REPORTS_MODULES;
   if (c.startsWith("MNT-PLAN")) return MAINT_PLANNING_MODULES;
   if (c.startsWith("MNT-WORKSHOP")) return MAINT_WORKSHOP_MODULES;
   if (c.startsWith("MNT-WO")) return MAINT_WO_MODULES;
@@ -340,3 +487,4 @@ export function getModulesForPlant(code: string): PlantModule[] {
   if (c.startsWith("PROC")) return PROC_ENG_MODULES;
   return AMMONIA_MODULES;
 }
+
