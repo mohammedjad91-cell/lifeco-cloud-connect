@@ -223,6 +223,11 @@ export const SHARED_FEATURES: PlantModule[] = [
 
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("LAB-AMM")) return LAB_AMMONIA_MODULES;
+  if (c.startsWith("LAB-UREA")) return LAB_UREA_MODULES;
+  if (c.startsWith("LAB-EQ")) return LAB_EQUIPMENT_MODULES;
+  if (c.startsWith("LAB-CHEM")) return LAB_CHEM_STORE_MODULES;
+  if (c.startsWith("LAB-REP")) return LAB_REPORTS_MODULES;
   if (c.startsWith("AMM-STORAGE") || c.includes("STORAGE")) return AMMONIA_STORAGE_MODULES;
   if (c.startsWith("UREA-LOAD")) return UREA_LOADING_MODULES;
   if (c.startsWith("AMM-LOAD")) return AMMONIA_LOADING_MODULES;
