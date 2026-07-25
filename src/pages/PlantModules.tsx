@@ -87,14 +87,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const bgImage = bg || heroPlant;
 
   const openModule = (m: PlantModule) => {
-    if (!plant) return;
-
     const key = m.key.toLowerCase();
     const name = m.label.toLowerCase();
     const text = `${key} ${name}`;
+    const departmentKey = plant?.department_key || sessionStorage.getItem("lifeco_dept") || "AMMONIA";
 
     sessionStorage.setItem("lifeco_plant", plantCode);
-    sessionStorage.setItem("lifeco_dept", plant.department_key);
+    sessionStorage.setItem("lifeco_dept", departmentKey);
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
@@ -121,13 +120,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
-    if (plant.department_key === "SAFETY" || key.startsWith("hse")) {
+    if (departmentKey === "SAFETY" || key.startsWith("hse")) {
       navigate("/hse-center");
       return;
     }
 
     if (
-      plant.department_key === "MAINTENANCE" || text.includes("maintenance") ||
+      departmentKey === "MAINTENANCE" || text.includes("maintenance") ||
       text.includes("work order") || text.includes("workshop") || text.includes("repair")
     ) {
       navigate("/mnt-command");
