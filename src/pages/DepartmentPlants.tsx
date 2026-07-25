@@ -86,6 +86,15 @@ const DepartmentPlants = ({ deptId }: { deptId: string }) => {
               {lang === "ar" ? "مركز قيادة الصيانة" : "Command Center"}
             </Button>
           )}
+          {department.id === "SAFETY" && (
+            <Button
+              onClick={() => navigate("/hse-center")}
+              className="bg-emerald-500/90 hover:bg-emerald-500 text-slate-900 font-semibold"
+            >
+              <Wrench className="w-4 h-4 mr-2" />
+              {lang === "ar" ? "مركز HSE" : "HSE Center"}
+            </Button>
+          )}
           <Button
             onClick={openDashboard}
             className="bg-primary/90 hover:bg-primary text-primary-foreground"

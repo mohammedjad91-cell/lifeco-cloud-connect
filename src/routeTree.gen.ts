@@ -13,6 +13,7 @@ import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
 import { Route as MntCommandRouteImport } from './routes/mnt-command'
 import { Route as LabRouteImport } from './routes/lab'
+import { Route as HseCenterRouteImport } from './routes/hse-center'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
@@ -40,6 +41,11 @@ const MntCommandRoute = MntCommandRouteImport.update({
 const LabRoute = LabRouteImport.update({
   id: '/lab',
   path: '/lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HseCenterRoute = HseCenterRouteImport.update({
+  id: '/hse-center',
+  path: '/hse-center',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HierarchyRoute = HierarchyRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
+  '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
+  '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
   '/hierarchy': typeof HierarchyRoute
+  '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/bi'
     | '/dashboard'
     | '/hierarchy'
+    | '/hse-center'
     | '/lab'
     | '/mnt-command'
     | '/ots'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/bi'
     | '/dashboard'
     | '/hierarchy'
+    | '/hse-center'
     | '/lab'
     | '/mnt-command'
     | '/ots'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/bi'
     | '/dashboard'
     | '/hierarchy'
+    | '/hse-center'
     | '/lab'
     | '/mnt-command'
     | '/ots'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
   HierarchyRoute: typeof HierarchyRoute
+  HseCenterRoute: typeof HseCenterRoute
   LabRoute: typeof LabRoute
   MntCommandRoute: typeof MntCommandRoute
   OtsRoute: typeof OtsRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/lab'
       fullPath: '/lab'
       preLoaderRoute: typeof LabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hse-center': {
+      id: '/hse-center'
+      path: '/hse-center'
+      fullPath: '/hse-center'
+      preLoaderRoute: typeof HseCenterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hierarchy': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
   HierarchyRoute: HierarchyRoute,
+  HseCenterRoute: HseCenterRoute,
   LabRoute: LabRoute,
   MntCommandRoute: MntCommandRoute,
   OtsRoute: OtsRoute,
