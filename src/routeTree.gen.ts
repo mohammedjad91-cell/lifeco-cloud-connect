@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DocumentsRouteImport } from './routes/documents'
@@ -19,6 +20,10 @@ import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EquipmentEquipmentIdRouteImport } from './routes/equipment.$equipmentId'
+import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
+import { Route as DeptDeptIdPlantPlantIdRouteImport } from './routes/dept.$deptId.plant.$plantId'
+import { Route as DeptDeptIdPlantPlantIdSectionSectionIdRouteImport } from './routes/dept.$deptId.plant.$plantId.section.$sectionId'
 
 const PlantRoute = PlantRouteImport.update({
   id: '/plant',
@@ -28,6 +33,11 @@ const PlantRoute = PlantRouteImport.update({
 const OtsRoute = OtsRouteImport.update({
   id: '/ots',
   path: '/ots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -70,6 +80,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipmentEquipmentIdRoute = EquipmentEquipmentIdRouteImport.update({
+  id: '/equipment/$equipmentId',
+  path: '/equipment/$equipmentId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeptDeptIdRoute = DeptDeptIdRouteImport.update({
+  id: '/dept/$deptId',
+  path: '/dept/$deptId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeptDeptIdPlantPlantIdRoute = DeptDeptIdPlantPlantIdRouteImport.update({
+  id: '/plant/$plantId',
+  path: '/plant/$plantId',
+  getParentRoute: () => DeptDeptIdRoute,
+} as any)
+const DeptDeptIdPlantPlantIdSectionSectionIdRoute =
+  DeptDeptIdPlantPlantIdSectionSectionIdRouteImport.update({
+    id: '/section/$sectionId',
+    path: '/section/$sectionId',
+    getParentRoute: () => DeptDeptIdPlantPlantIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,8 +111,13 @@ export interface FileRoutesByFullPath {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
+  '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
+  '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +128,13 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
+  '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
+  '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,8 +146,13 @@ export interface FileRoutesById {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
+  '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
+  '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
+  '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,8 +165,13 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
+    | '/equipment/$equipmentId'
+    | '/dept/$deptId/plant/$plantId'
+    | '/dept/$deptId/plant/$plantId/section/$sectionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +182,13 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
+    | '/equipment/$equipmentId'
+    | '/dept/$deptId/plant/$plantId'
+    | '/dept/$deptId/plant/$plantId/section/$sectionId'
   id:
     | '__root__'
     | '/'
@@ -143,8 +199,13 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
+    | '/dept/$deptId'
+    | '/equipment/$equipmentId'
+    | '/dept/$deptId/plant/$plantId'
+    | '/dept/$deptId/plant/$plantId/section/$sectionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -156,8 +217,11 @@ export interface RootRouteChildren {
   DocumentsRoute: typeof DocumentsRoute
   HierarchyRoute: typeof HierarchyRoute
   LabRoute: typeof LabRoute
+  LoginRoute: typeof LoginRoute
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
+  DeptDeptIdRoute: typeof DeptDeptIdRouteWithChildren
+  EquipmentEquipmentIdRoute: typeof EquipmentEquipmentIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -174,6 +238,13 @@ declare module '@tanstack/react-router' {
       path: '/ots'
       fullPath: '/ots'
       preLoaderRoute: typeof OtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab': {
@@ -232,8 +303,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment/$equipmentId': {
+      id: '/equipment/$equipmentId'
+      path: '/equipment/$equipmentId'
+      fullPath: '/equipment/$equipmentId'
+      preLoaderRoute: typeof EquipmentEquipmentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dept/$deptId': {
+      id: '/dept/$deptId'
+      path: '/dept/$deptId'
+      fullPath: '/dept/$deptId'
+      preLoaderRoute: typeof DeptDeptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dept/$deptId/plant/$plantId': {
+      id: '/dept/$deptId/plant/$plantId'
+      path: '/plant/$plantId'
+      fullPath: '/dept/$deptId/plant/$plantId'
+      preLoaderRoute: typeof DeptDeptIdPlantPlantIdRouteImport
+      parentRoute: typeof DeptDeptIdRoute
+    }
+    '/dept/$deptId/plant/$plantId/section/$sectionId': {
+      id: '/dept/$deptId/plant/$plantId/section/$sectionId'
+      path: '/section/$sectionId'
+      fullPath: '/dept/$deptId/plant/$plantId/section/$sectionId'
+      preLoaderRoute: typeof DeptDeptIdPlantPlantIdSectionSectionIdRouteImport
+      parentRoute: typeof DeptDeptIdPlantPlantIdRoute
+    }
   }
 }
+
+interface DeptDeptIdPlantPlantIdRouteChildren {
+  DeptDeptIdPlantPlantIdSectionSectionIdRoute: typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
+}
+
+const DeptDeptIdPlantPlantIdRouteChildren: DeptDeptIdPlantPlantIdRouteChildren =
+  {
+    DeptDeptIdPlantPlantIdSectionSectionIdRoute:
+      DeptDeptIdPlantPlantIdSectionSectionIdRoute,
+  }
+
+const DeptDeptIdPlantPlantIdRouteWithChildren =
+  DeptDeptIdPlantPlantIdRoute._addFileChildren(
+    DeptDeptIdPlantPlantIdRouteChildren,
+  )
+
+interface DeptDeptIdRouteChildren {
+  DeptDeptIdPlantPlantIdRoute: typeof DeptDeptIdPlantPlantIdRouteWithChildren
+}
+
+const DeptDeptIdRouteChildren: DeptDeptIdRouteChildren = {
+  DeptDeptIdPlantPlantIdRoute: DeptDeptIdPlantPlantIdRouteWithChildren,
+}
+
+const DeptDeptIdRouteWithChildren = DeptDeptIdRoute._addFileChildren(
+  DeptDeptIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -244,8 +370,11 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentsRoute: DocumentsRoute,
   HierarchyRoute: HierarchyRoute,
   LabRoute: LabRoute,
+  LoginRoute: LoginRoute,
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
+  DeptDeptIdRoute: DeptDeptIdRouteWithChildren,
+  EquipmentEquipmentIdRoute: EquipmentEquipmentIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
