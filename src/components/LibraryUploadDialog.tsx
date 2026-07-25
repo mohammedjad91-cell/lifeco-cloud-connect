@@ -64,7 +64,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
     (async () => {
       const { data } = await supabase
         .from("equipment_assets")
-        .select("id, tag, name")
+        .select("id, tag, asset_name")
         .eq("plant_code", plantCode)
         .order("tag");
       setEquipment((data as Equipment[]) || []);
