@@ -20,6 +20,7 @@ import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EquipmentEquipmentIdRouteImport } from './routes/equipment.$equipmentId'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 import { Route as DeptDeptIdPlantPlantIdRouteImport } from './routes/dept.$deptId.plant.$plantId'
 import { Route as DeptDeptIdPlantPlantIdSectionSectionIdRouteImport } from './routes/dept.$deptId.plant.$plantId.section.$sectionId'
@@ -79,6 +80,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipmentEquipmentIdRoute = EquipmentEquipmentIdRouteImport.update({
+  id: '/equipment/$equipmentId',
+  path: '/equipment/$equipmentId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeptDeptIdRoute = DeptDeptIdRouteImport.update({
   id: '/dept/$deptId',
   path: '/dept/$deptId',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
   '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
   '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
   '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
   '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
   '/dept/$deptId': typeof DeptDeptIdRouteWithChildren
+  '/equipment/$equipmentId': typeof EquipmentEquipmentIdRoute
   '/dept/$deptId/plant/$plantId': typeof DeptDeptIdPlantPlantIdRouteWithChildren
   '/dept/$deptId/plant/$plantId/section/$sectionId': typeof DeptDeptIdPlantPlantIdSectionSectionIdRoute
 }
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/equipment/$equipmentId'
     | '/dept/$deptId/plant/$plantId'
     | '/dept/$deptId/plant/$plantId/section/$sectionId'
   fileRoutesByTo: FileRoutesByTo
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/equipment/$equipmentId'
     | '/dept/$deptId/plant/$plantId'
     | '/dept/$deptId/plant/$plantId/section/$sectionId'
   id:
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/ots'
     | '/plant'
     | '/dept/$deptId'
+    | '/equipment/$equipmentId'
     | '/dept/$deptId/plant/$plantId'
     | '/dept/$deptId/plant/$plantId/section/$sectionId'
   fileRoutesById: FileRoutesById
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
   DeptDeptIdRoute: typeof DeptDeptIdRouteWithChildren
+  EquipmentEquipmentIdRoute: typeof EquipmentEquipmentIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment/$equipmentId': {
+      id: '/equipment/$equipmentId'
+      path: '/equipment/$equipmentId'
+      fullPath: '/equipment/$equipmentId'
+      preLoaderRoute: typeof EquipmentEquipmentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dept/$deptId': {
       id: '/dept/$deptId'
       path: '/dept/$deptId'
@@ -354,7 +374,18 @@ const rootRouteChildren: RootRouteChildren = {
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
   DeptDeptIdRoute: DeptDeptIdRouteWithChildren,
+  EquipmentEquipmentIdRoute: EquipmentEquipmentIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
