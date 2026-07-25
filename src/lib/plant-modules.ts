@@ -611,8 +611,124 @@ const MAT_REPORTS_MODULES: PlantModule[] = [
   { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
 ];
 
+// ============= Technical Affairs Department =============
+const TA_DASHBOARD_MODULES: PlantModule[] = [
+  { key: "dashboard", label: "Technical Dashboard", labelAr: "لوحة القيادة الفنية" },
+  { key: "projects", label: "Active Projects", labelAr: "المشاريع النشطة" },
+  { key: "requests", label: "Engineering Requests", labelAr: "الطلبات الهندسية" },
+  { key: "mods", label: "Plant Modifications", labelAr: "تعديلات المصنع" },
+  { key: "studies", label: "Technical Studies", labelAr: "الدراسات الفنية" },
+  { key: "kpi", label: "Engineering KPIs", labelAr: "المؤشرات الهندسية" },
+  { key: "tasks", label: "Open Tasks", labelAr: "المهام المفتوحة" },
+  { key: "notifications", label: "Notifications", labelAr: "التنبيهات" },
+];
+
+const TA_PROCESS_MODULES: PlantModule[] = [
+  { key: "calc", label: "Process Calculations", labelAr: "حسابات العمليات" },
+  { key: "monitor", label: "Process Monitoring", labelAr: "مراقبة العمليات" },
+  { key: "optimize", label: "Process Optimization", labelAr: "تحسين العمليات" },
+  { key: "performance", label: "Plant Performance", labelAr: "أداء المصنع" },
+  { key: "mass", label: "Mass Balance", labelAr: "توازن الكتلة" },
+  { key: "energy", label: "Energy Balance", labelAr: "توازن الطاقة" },
+  { key: "utility", label: "Utility Analysis", labelAr: "تحليل المرافق" },
+  { key: "reports", label: "Process Reports", labelAr: "تقارير العمليات" },
+];
+
+const TA_DOCS_MODULES: PlantModule[] = [
+  { key: "pfd", label: "PFD Library", labelAr: "مكتبة PFD" },
+  { key: "pid", label: "P&ID Library", labelAr: "مكتبة P&ID" },
+  { key: "iso", label: "Isometric Drawings", labelAr: "الرسومات الأيزومترية" },
+  { key: "ga", label: "General Arrangement Drawings", labelAr: "رسومات الترتيب العام" },
+  { key: "equipment", label: "Equipment Drawings", labelAr: "رسومات المعدات" },
+  { key: "instrument", label: "Instrument Drawings", labelAr: "رسومات الأجهزة" },
+  { key: "electrical", label: "Electrical Drawings", labelAr: "الرسومات الكهربائية" },
+  { key: "civil", label: "Civil Drawings", labelAr: "الرسومات المدنية" },
+  { key: "standards", label: "Engineering Standards", labelAr: "المعايير الهندسية" },
+];
+
+const TA_LIBRARY_MODULES: PlantModule[] = [
+  { key: "operating", label: "Operating Manuals", labelAr: "أدلة التشغيل" },
+  { key: "maintenance", label: "Maintenance Manuals", labelAr: "أدلة الصيانة" },
+  { key: "vendor", label: "Vendor Manuals", labelAr: "أدلة الموردين" },
+  { key: "datasheets", label: "Datasheets", labelAr: "الجداول الفنية" },
+  { key: "specs", label: "Technical Specifications", labelAr: "المواصفات الفنية" },
+  { key: "design", label: "Design Documents", labelAr: "وثائق التصميم" },
+  { key: "intl", label: "International Standards", labelAr: "المعايير الدولية" },
+  { key: "procedures", label: "Engineering Procedures", labelAr: "الإجراءات الهندسية" },
+];
+
+const TA_MOC_MODULES: PlantModule[] = [
+  { key: "new", label: "New MOC", labelAr: "طلب تعديل جديد" },
+  { key: "approve", label: "MOC Approval", labelAr: "اعتماد التعديل" },
+  { key: "workflow", label: "MOC Workflow", labelAr: "سير العمل" },
+  { key: "risk", label: "Risk Assessment", labelAr: "تقييم المخاطر" },
+  { key: "review", label: "Engineering Review", labelAr: "المراجعة الهندسية" },
+  { key: "implement", label: "Implementation Status", labelAr: "حالة التنفيذ" },
+  { key: "history", label: "MOC History", labelAr: "سجل التعديلات" },
+];
+
+const TA_PROJECTS_MODULES: PlantModule[] = [
+  { key: "planning", label: "Project Planning", labelAr: "تخطيط المشروع" },
+  { key: "schedule", label: "Project Schedule", labelAr: "الجدول الزمني" },
+  { key: "budget", label: "Budget", labelAr: "الميزانية" },
+  { key: "resources", label: "Resources", labelAr: "الموارد" },
+  { key: "progress", label: "Progress Monitoring", labelAr: "متابعة التقدم" },
+  { key: "milestones", label: "Milestones", labelAr: "المعالم" },
+  { key: "reports", label: "Technical Reports", labelAr: "التقارير الفنية" },
+];
+
+const TA_PERFORMANCE_MODULES: PlantModule[] = [
+  { key: "production", label: "Production Efficiency", labelAr: "كفاءة الإنتاج" },
+  { key: "energy", label: "Energy Consumption", labelAr: "استهلاك الطاقة" },
+  { key: "utility", label: "Utility Consumption", labelAr: "استهلاك المرافق" },
+  { key: "equipment", label: "Equipment Performance", labelAr: "أداء المعدات" },
+  { key: "kpi", label: "Process KPIs", labelAr: "مؤشرات العمليات" },
+  { key: "improve", label: "Improvement Opportunities", labelAr: "فرص التحسين" },
+];
+
+const TA_CALC_MODULES: PlantModule[] = [
+  { key: "hydraulic", label: "Hydraulic Calculations", labelAr: "الحسابات الهيدروليكية" },
+  { key: "pipe", label: "Pipe Sizing", labelAr: "تحجيم الأنابيب" },
+  { key: "pump", label: "Pump Calculations", labelAr: "حسابات المضخات" },
+  { key: "compressor", label: "Compressor Calculations", labelAr: "حسابات الضواغط" },
+  { key: "hx", label: "Heat Exchanger Calculations", labelAr: "حسابات المبادلات الحرارية" },
+  { key: "dp", label: "Pressure Drop", labelAr: "هبوط الضغط" },
+  { key: "valve", label: "Valve Sizing", labelAr: "تحجيم الصمامات" },
+];
+
+const TA_REPORTS_MODULES: PlantModule[] = [
+  { key: "daily", label: "Daily Reports", labelAr: "التقارير اليومية" },
+  { key: "weekly", label: "Weekly Reports", labelAr: "التقارير الأسبوعية" },
+  { key: "monthly", label: "Monthly Reports", labelAr: "التقارير الشهرية" },
+  { key: "studies", label: "Engineering Studies", labelAr: "الدراسات الهندسية" },
+  { key: "evaluation", label: "Technical Evaluation", labelAr: "التقييم الفني" },
+  { key: "mods", label: "Modification Reports", labelAr: "تقارير التعديلات" },
+  { key: "performance", label: "Performance Reports", labelAr: "تقارير الأداء" },
+  { key: "bi", label: "BI Dashboard", labelAr: "لوحة BI", route: "/bi" },
+];
+
+const TA_DOCMGMT_MODULES: PlantModule[] = [
+  { key: "pdf", label: "PDF Archive", labelAr: "أرشيف PDF" },
+  { key: "drawings", label: "Drawings", labelAr: "الرسومات" },
+  { key: "photos", label: "Photos", labelAr: "الصور" },
+  { key: "videos", label: "Videos", labelAr: "الفيديو" },
+  { key: "files", label: "Technical Files", labelAr: "الملفات الفنية" },
+  { key: "revision", label: "Revision Control", labelAr: "التحكم في الإصدارات" },
+  { key: "history", label: "Version History", labelAr: "سجل الإصدارات" },
+];
+
 export function getModulesForPlant(code: string): PlantModule[] {
   const c = code.toUpperCase();
+  if (c.startsWith("TA-DASH")) return TA_DASHBOARD_MODULES;
+  if (c.startsWith("TA-PROC")) return TA_PROCESS_MODULES;
+  if (c.startsWith("TA-DOCS")) return TA_DOCS_MODULES;
+  if (c.startsWith("TA-LIB")) return TA_LIBRARY_MODULES;
+  if (c.startsWith("TA-MOC")) return TA_MOC_MODULES;
+  if (c.startsWith("TA-PROJ")) return TA_PROJECTS_MODULES;
+  if (c.startsWith("TA-PERF")) return TA_PERFORMANCE_MODULES;
+  if (c.startsWith("TA-CALC")) return TA_CALC_MODULES;
+  if (c.startsWith("TA-REP")) return TA_REPORTS_MODULES;
+  if (c.startsWith("TA-DOCMGMT")) return TA_DOCMGMT_MODULES;
   if (c.startsWith("MAT-DASH")) return MAT_DASHBOARD_MODULES;
   if (c.startsWith("MAT-PR")) return MAT_PR_MODULES;
   if (c.startsWith("MAT-PO")) return MAT_PO_MODULES;
