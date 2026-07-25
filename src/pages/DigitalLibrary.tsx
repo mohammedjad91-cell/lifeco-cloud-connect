@@ -34,7 +34,11 @@ const CATEGORIES: Category[] = [
 const DigitalLibrary = () => {
   const navigate = useNavigate();
   const { lang } = useI18n();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const category = sessionStorage.getItem("lifeco_library_category");
+    return category === "documents" || category === "docs" ? "" : category || "";
+  });
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<string | undefined>();
 

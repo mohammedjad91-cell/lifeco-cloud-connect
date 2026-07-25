@@ -87,17 +87,68 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const bgImage = bg || heroPlant;
 
   const openModule = (m: PlantModule) => {
-    if (m.route) {
-      sessionStorage.setItem("lifeco_plant", plantCode);
-      navigate(m.route);
-    } else {
-      toast({
-        title: m.label,
-        description: lang === "ar"
-          ? `الوحدة "${m.labelAr || m.label}" ستكون متاحة قريباً`
-          : `The "${m.label}" module will be available soon.`,
-      });
+    const key = m.key.toLowerCase();
+    const name = m.label.toLowerCase();
+    const text = `${key} ${name}`;
+    const departmentKey = plant?.department_key || sessionStorage.getItem("lifeco_dept") || "AMMONIA";
+
+    sessionStorage.setItem("lifeco_plant", plantCode);
+    sessionStorage.setItem("lifeco_dept", departmentKey);
+    sessionStorage.setItem("lifeco_module", m.key);
+    sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
+
+    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || key === "lab" || m.route?.startsWith("/lab")) {
+      sessionStorage.setItem("lifeco_lab_tab", text.includes("sample") || text.includes("analysis") ? "samples" : "classic");
+      navigate("/lab");
+      return;
     }
+
+    if (
+      text.includes("document") || text.includes("manual") || text.includes("drawing") ||
+      text.includes("archive") || text.includes("library") || text.includes("photo") ||
+      text.includes("video") || text.includes("certificate") || text.includes("datasheet") ||
+      text.includes("procedure") || text.includes("standard") || text.includes("msds") ||
+      key === "sop" || key === "pfd" || key === "pid" || key === "pdf"
+    ) {
+      sessionStorage.setItem("lifeco_library_category", key);
+      navigate("/digital-library");
+      return;
+    }
+
+    if (text.includes("report") || text.includes("analytics") || key === "bi") {
+      navigate("/bi");
+      return;
+    }
+
+    if (departmentKey === "SAFETY" || key.startsWith("hse")) {
+      navigate("/hse-center");
+      return;
+    }
+
+    if (
+      departmentKey === "MAINTENANCE" || text.includes("maintenance") ||
+      text.includes("work order") || text.includes("workshop") || text.includes("repair")
+    ) {
+      navigate("/mnt-command");
+      return;
+    }
+
+    if (
+      text.includes("equipment") || text.includes("asset") || text.includes("spare") ||
+      text.includes("calibration") || text.includes("inspection") || text.includes("lubrication")
+    ) {
+      sessionStorage.setItem("lifeco_dashboard_tab", "assets");
+      navigate("/dashboard");
+      return;
+    }
+
+    if (m.route) {
+      navigate(m.route.split("#")[0]);
+      return;
+    }
+
+    sessionStorage.setItem("lifeco_dashboard_tab", "logs");
+    navigate("/dashboard");
   };
 
   const share = (key: string) => {

@@ -85,17 +85,17 @@ const LabDashboard = () => {
   const [sampleNotes, setSampleNotes] = useState("");
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
-  const [activeTab, setActiveTab] = useState<"classic" | "samples">(
-    typeof window !== "undefined" && window.location.hash === "#samples" ? "samples" : "classic"
-  );
+  const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
+    if (typeof window === "undefined") return "classic";
+    const savedTab = sessionStorage.getItem("lifeco_lab_tab");
+    return savedTab === "samples" || window.location.hash === "#samples" ? "samples" : "classic";
+  });
   const [previewData, setPreviewData] = useState<ExportPreviewData | null>(null);
 
   const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
   const parameters = plant && LAB_PARAMETERS[plant] ? LAB_PARAMETERS[plant][sampleType] || [] : [];
 
   useEffect(() => {
-    const dept = sessionStorage.getItem("lifeco_dept");
-    if (dept && dept !== "LAB" && dept !== "LABORATORY") { navigate("/"); return; }
     fetchDynamicFields();
     // Realtime — keep results & samples in sync with other modules
     const ch = supabase.channel("lab_realtime")
