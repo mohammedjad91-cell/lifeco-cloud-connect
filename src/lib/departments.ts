@@ -118,13 +118,6 @@ export const DEPARTMENTS: Department[] = [
     tags: [],
   },
   {
-    id: "ENGINEERING",
-    label: "ENGINEERING",
-    pin: "1006",
-    color: "from-sky-500/20 to-indigo-600/20",
-    tags: [],
-  },
-  {
     id: "HSE",
     label: "HSE (SAFETY)",
     pin: "1007",
