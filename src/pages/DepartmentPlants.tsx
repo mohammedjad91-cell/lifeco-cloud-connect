@@ -76,13 +76,24 @@ const DepartmentPlants = ({ deptId }: { deptId: string }) => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           {lang === "ar" ? "الرئيسية" : "Home"}
         </Button>
-        <Button
-          onClick={openDashboard}
-          className="bg-primary/90 hover:bg-primary text-primary-foreground"
-        >
-          <LayoutDashboard className="w-4 h-4 mr-2" />
-          {lang === "ar" ? "لوحة التحكم" : "Dashboard"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {department.id === "MAINTENANCE" && (
+            <Button
+              onClick={() => navigate("/mnt-command")}
+              className="bg-amber-500/90 hover:bg-amber-500 text-slate-900 font-semibold"
+            >
+              <Wrench className="w-4 h-4 mr-2" />
+              {lang === "ar" ? "مركز قيادة الصيانة" : "Command Center"}
+            </Button>
+          )}
+          <Button
+            onClick={openDashboard}
+            className="bg-primary/90 hover:bg-primary text-primary-foreground"
+          >
+            <LayoutDashboard className="w-4 h-4 mr-2" />
+            {lang === "ar" ? "لوحة التحكم" : "Dashboard"}
+          </Button>
+        </div>
       </div>
 
       {/* Header */}
