@@ -186,7 +186,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
               </SelectTrigger>
               <SelectContent>
                 {equipment.map((e) => (
-                  <SelectItem key={e.id} value={e.id}>{e.tag} — {e.name}</SelectItem>
+                  <SelectItem key={e.id} value={e.id}>{e.tag ?? "—"} — {e.asset_name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
