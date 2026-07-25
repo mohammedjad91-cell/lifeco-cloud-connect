@@ -60,11 +60,16 @@ const DigitalLibrary = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           {lang === "ar" ? "الرئيسية" : "Home"}
         </Button>
-        <Button className="bg-primary/90 hover:bg-primary text-primary-foreground">
+        <Button
+          onClick={() => { setUploadCategory(undefined); setUploadOpen(true); }}
+          className="bg-primary/90 hover:bg-primary text-primary-foreground"
+        >
           <Upload className="w-4 h-4 mr-2" />
           {lang === "ar" ? "رفع ملف" : "Upload"}
         </Button>
       </div>
+
+      <LibraryUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} defaultCategory={uploadCategory} />
 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
