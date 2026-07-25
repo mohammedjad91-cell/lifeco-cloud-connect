@@ -29,7 +29,7 @@ const CATEGORIES = [
 ];
 
 interface Plant { id: string; code: string; name: string; }
-interface Equipment { id: string; tag: string; name: string; }
+interface Equipment { id: string; tag: string | null; asset_name: string; }
 
 interface Props {
   open: boolean;
