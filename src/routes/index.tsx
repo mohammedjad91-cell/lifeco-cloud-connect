@@ -1,6 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Login from "@/pages/Login";
+import Home from "@/pages/Home";
 
 export const Route = createFileRoute("/")({
-  component: Login,
+  head: () => ({
+    meta: [
+      { title: "LIFECO Digital Transformation Platform" },
+      { name: "description", content: "Hierarchical plant, equipment, and operations management for LIFECO plants." },
+      { property: "og:title", content: "LIFECO Digital Transformation Platform" },
+      { property: "og:description", content: "Hierarchical plant, equipment, and operations management for LIFECO plants." },
+    ],
+  }),
+  component: Home,
 });
