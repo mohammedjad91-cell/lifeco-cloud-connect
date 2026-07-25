@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OtsRouteImport } from './routes/ots'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DocumentsRouteImport } from './routes/documents'
@@ -28,6 +29,11 @@ const PlantRoute = PlantRouteImport.update({
 const OtsRoute = OtsRouteImport.update({
   id: '/ots',
   path: '/ots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/documents': typeof DocumentsRoute
   '/hierarchy': typeof HierarchyRoute
   '/lab': typeof LabRoute
+  '/login': typeof LoginRoute
   '/ots': typeof OtsRoute
   '/plant': typeof PlantRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/hierarchy'
     | '/lab'
+    | '/login'
     | '/ots'
     | '/plant'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   DocumentsRoute: typeof DocumentsRoute
   HierarchyRoute: typeof HierarchyRoute
   LabRoute: typeof LabRoute
+  LoginRoute: typeof LoginRoute
   OtsRoute: typeof OtsRoute
   PlantRoute: typeof PlantRoute
 }
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/ots'
       fullPath: '/ots'
       preLoaderRoute: typeof OtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab': {
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentsRoute: DocumentsRoute,
   HierarchyRoute: HierarchyRoute,
   LabRoute: LabRoute,
+  LoginRoute: LoginRoute,
   OtsRoute: OtsRoute,
   PlantRoute: PlantRoute,
 }
