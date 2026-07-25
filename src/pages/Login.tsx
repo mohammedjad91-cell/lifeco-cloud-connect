@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network } from "lucide-react";
+import { Shield, Lock, Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network, FileText, Bot, Code2, Package } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import UserCaptureModal from "@/components/UserCaptureModal";
 import lifecoLogo from "@/assets/lifeco-logo.png";
@@ -110,50 +110,33 @@ const Login = () => {
         {t.language}
       </motion.button>
 
-      {/* Admin Link - prominent settings button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1, rotate: 90 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/admin")}
-        className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-        title={lang === "ar" ? "إعدادات المنظومة" : "System Settings"}
-        aria-label="Admin Settings"
-      >
-        <Settings className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الإعدادات" : "Admin"}</span>
-      </motion.button>
-
-      {/* Live BI Link - public access */}
-      <motion.button
+      {/* Quick-access centers */}
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/bi")}
-        className="absolute top-4 left-32 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-        title="Live BI"
-        aria-label="Live BI Dashboard"
+        className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-8rem)]"
       >
-        <BarChart3 className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "لوحة التحكم" : "Live BI"}</span>
-      </motion.button>
+        {[
+          { icon: Settings, label: lang === "ar" ? "الإعدادات" : "Admin", to: "/admin" },
+          { icon: BarChart3, label: lang === "ar" ? "التقارير" : "Reports", to: "/bi" },
+          { icon: Network, label: lang === "ar" ? "الهيكل" : "Hierarchy", to: "/hierarchy" },
+          { icon: Package, label: lang === "ar" ? "المعدات" : "Equipment", to: "/hierarchy" },
+          { icon: FileText, label: lang === "ar" ? "الوثائق" : "Documents", to: "/documents" },
+          { icon: Bot, label: lang === "ar" ? "الذكاء" : "AI Center", to: "/assistant" },
+          { icon: Code2, label: lang === "ar" ? "المطور" : "Developer", to: "/admin" },
+        ].map((b) => (
+          <button
+            key={b.label}
+            onClick={() => navigate(b.to)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg text-xs md:text-sm"
+            title={b.label}
+          >
+            <b.icon className="w-4 h-4" />
+            <span className="font-medium tracking-wide hidden sm:inline">{b.label}</span>
+          </button>
+        ))}
+      </motion.div>
 
-      {/* Hierarchy Link */}
-      <motion.button
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/hierarchy")}
-        className="absolute top-4 left-60 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-        title="Hierarchy"
-        aria-label="Plant Hierarchy"
-      >
-        <Network className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
-      </motion.button>
 
       {/* Background — LIFECO hero imagery */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
