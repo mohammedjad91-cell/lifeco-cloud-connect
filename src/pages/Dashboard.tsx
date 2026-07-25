@@ -81,6 +81,10 @@ const Dashboard = () => {
   const valueRef = useRef<HTMLInputElement>(null);
   const [previewData, setPreviewData] = useState<ExportPreviewData | null>(null);
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window === "undefined") return "logs";
+    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
+  });
 
   const isOperations = department?.id === "OPERATIONS";
   const todayStr = format(new Date(), "yyyy-MM-dd");
@@ -483,7 +487,7 @@ const Dashboard = () => {
           labParameters={LAB_PARAMETERS[department.id]?.daily ?? []}
         />
 
-        <Tabs defaultValue="logs" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="glass-card border border-border">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
