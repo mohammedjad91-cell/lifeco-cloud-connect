@@ -15,6 +15,7 @@ const AMMONIA_MODULES: PlantModule[] = [
   { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
   { key: "lab", label: "Laboratory", labelAr: "المختبر", route: "/lab" },
   { key: "process", label: "Process Engineering", labelAr: "هندسة العمليات" },
+  { key: "digital-library", label: "Digital Library ⭐", labelAr: "المكتبة الرقمية ⭐", route: "/digital-library" },
   { key: "utilities", label: "Utilities", labelAr: "المرافق" },
   { key: "documents", label: "Documents", labelAr: "الوثائق" },
   { key: "reports", label: "Reports", labelAr: "التقارير", route: "/bi" },
