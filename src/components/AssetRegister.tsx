@@ -190,6 +190,17 @@ export default function AssetRegister({ department }: Props) {
                 animate={{ opacity: 1, height: "auto" }}
                 className="mt-3 space-y-3 overflow-hidden"
               >
+                {(() => {
+                  const spec = getAmmoniaSpec(a.asset_code, a.asset_code);
+                  if (!spec) return null;
+                  return (
+                    <div className="space-y-3">
+                      <TechSpecPanel spec={spec} ar={false} />
+                      <SparesRequisition spec={spec} ar={false} />
+                    </div>
+                  );
+                })()}
+
                 <div className="space-y-2">
                   <FormField
                     label="Add Maintenance Record"
