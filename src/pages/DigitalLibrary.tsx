@@ -23,7 +23,10 @@ interface Category {
   cats: string[];
 }
 
+const ALL_CATS = ["manuals", "equipment", "drawings", "sop", "process", "certificates", "reports", "photos", "videos"];
+
 const CATEGORIES: Category[] = [
+  { key: "all",        label: "All Plant Files",      labelAr: "كل ملفات المصنع",     icon: Folder,        gradient: "from-amber-500/25 to-yellow-500/10",  cats: ALL_CATS },
   { key: "manuals",    label: "Manuals",              labelAr: "الأدلة",              icon: BookOpen,      gradient: "from-cyan-500/20 to-blue-500/10",     cats: ["manuals"] },
   { key: "datasheets", label: "Datasheets",           labelAr: "الجداول الفنية",       icon: FileText,      gradient: "from-emerald-500/20 to-teal-500/10",  cats: ["equipment"] },
   { key: "pfd",        label: "PFD Library",          labelAr: "مكتبة PFD",           icon: FileCode,      gradient: "from-violet-500/20 to-indigo-500/10", cats: ["drawings"] },
@@ -36,6 +39,7 @@ const CATEGORIES: Category[] = [
 ];
 
 const UPLOAD_CATEGORY: Record<string, string> = {
+  all: "equipment",
   manuals: "manuals", datasheets: "equipment", pfd: "drawings", pid: "drawings",
   sop: "sop", maintenance: "equipment", lab: "reports", photos: "photos", videos: "videos",
 };
