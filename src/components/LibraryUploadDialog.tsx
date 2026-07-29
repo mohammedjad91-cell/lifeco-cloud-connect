@@ -61,6 +61,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
   const [plantCode, setPlantCode] = useState<string>("");
   const [linkType, setLinkType] = useState<"equipment" | "process">("equipment");
   const [equipmentId, setEquipmentId] = useState<string>("");
+  const [manualEquipment, setManualEquipment] = useState("");
   const [processName, setProcessName] = useState("");
   const [description, setDescription] = useState("");
   const [plants, setPlants] = useState<Plant[]>([]);
@@ -107,6 +108,8 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
     return () => { cancelled = true; };
   }, [plantCode, selectedPlant?.department_key]);
 
+  useEffect(() => { setManualEquipment(""); }, [plantCode]);
+
   const groupedPlants = plants.reduce<Record<string, Plant[]>>((acc, p) => {
     (acc[p.department_key] ||= []).push(p);
     return acc;
@@ -114,7 +117,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
 
   const reset = () => {
     setFileName(""); setFile(null); setDescription("");
-    setPlantCode(""); setEquipmentId(""); setProcessName(""); setLinkType("equipment");
+    setPlantCode(""); setEquipmentId(""); setManualEquipment(""); setProcessName(""); setLinkType("equipment");
   };
 
 
@@ -123,7 +126,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
     if (!file) return toast({ title: lang === "ar" ? "اختر ملفًا" : "Choose a file", variant: "destructive" });
     if (file.size > 20 * 1024 * 1024) return toast({ title: lang === "ar" ? "الحد الأقصى 20 ميغابايت" : "Max 20 MB", variant: "destructive" });
     if (!plantCode) return toast({ title: lang === "ar" ? "اختر المصنع" : "Select a plant", variant: "destructive" });
-    if (linkType === "equipment" && !equipmentId)
+    if (linkType === "equipment" && !equipmentId && !manualEquipment.trim())
       return toast({ title: lang === "ar" ? "اختر اسم المعدة" : "Select the equipment", variant: "destructive" });
     if (linkType === "process" && !processName.trim())
       return toast({ title: lang === "ar" ? "أدخل اسم عملية التشغيل" : "Enter the operating process", variant: "destructive" });
@@ -144,7 +147,10 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         plant_code: plantCode || null,
         department_key: selectedPlant?.department_key ?? null,
         equipment_id: linkType === "equipment" ? equipmentId || null : null,
-        process_name: linkType === "process" ? processName.trim() : null,
+        process_name:
+          linkType === "process"
+            ? processName.trim()
+            : (!equipmentId && manualEquipment.trim() ? manualEquipment.trim() : null),
         description: description.trim() || null,
         storage_path: path,
         mime_type: file.type || null,
@@ -315,31 +321,41 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
                   : loadingEq
                     ? (lang === "ar" ? "جارٍ تحميل المعدات…" : "Loading equipment…")
                     : equipment.length === 0
-                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اختر «عملية تشغيل» بدلًا من ذلك." : "No equipment registered for this plant — use \"Operating process\" instead.")
+                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اكتب اسم المعدة يدويًا." : "No equipment registered for this plant — type the equipment name manually.")
                       : (lang === "ar" ? `${equipment.length} معدة متاحة` : `${equipment.length} items available`)
               }
             >
-              {(id) => (
-                <Select
-                  value={equipmentId}
-                  onValueChange={setEquipmentId}
-                  disabled={!plantCode || loadingEq || equipment.length === 0}
-                >
-                  <SelectTrigger id={id}>
-                    <SelectValue placeholder={
-                      !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
-                                 : (lang === "ar" ? "اختر المعدة" : "Select equipment")
-                    } />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72">
-                    {equipment.map((e) => (
-                      <SelectItem key={e.id} value={e.id}>
-                        {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              {(id) =>
+                plantCode && !loadingEq && equipment.length === 0 ? (
+                  <Input
+                    id={id}
+                    value={manualEquipment}
+                    onChange={(e) => setManualEquipment(e.target.value)}
+                    maxLength={150}
+                    placeholder={lang === "ar" ? "مثال: ضاغط الهواء 101-J" : "e.g. Air compressor 101-J"}
+                  />
+                ) : (
+                  <Select
+                    value={equipmentId}
+                    onValueChange={setEquipmentId}
+                    disabled={!plantCode || loadingEq}
+                  >
+                    <SelectTrigger id={id}>
+                      <SelectValue placeholder={
+                        !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
+                                   : (lang === "ar" ? "اختر المعدة" : "Select equipment")
+                      } />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      {equipment.map((e) => (
+                        <SelectItem key={e.id} value={e.id}>
+                          {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              }
             </FormField>
           ) : (
             <FormField
