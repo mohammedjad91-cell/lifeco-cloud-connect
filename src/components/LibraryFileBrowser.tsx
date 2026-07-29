@@ -136,7 +136,7 @@ const LibraryFileBrowser = ({ open, onOpenChange, categories, title, plantCode, 
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold truncate">{f.file_name}</div>
                   <div className="text-xs text-muted-foreground truncate">
-                    {[f.plant_code, f.process_name, humanSize(f.size_bytes),
+                    {[f.category, f.plant_code, f.process_name, humanSize(f.size_bytes),
                       new Date(f.created_at).toLocaleDateString(lang === "ar" ? "ar-LY" : "en-GB"),
                       f.uploaded_by].filter(Boolean).join(" • ")}
                   </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ArrowLeft, BookOpen, FileText, FileImage, Video, FileCode,
-  Wrench, FlaskConical, ClipboardList, Search, Upload, Star,
+  Wrench, FlaskConical, ClipboardList, Search, Upload, Star, Folder,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { getBackTarget } from "@/lib/nav-back";
@@ -23,7 +23,10 @@ interface Category {
   cats: string[];
 }
 
+const ALL_CATS = ["manuals", "equipment", "drawings", "sop", "process", "certificates", "reports", "photos", "videos"];
+
 const CATEGORIES: Category[] = [
+  { key: "all",        label: "All Plant Files",      labelAr: "كل ملفات المصنع",     icon: Folder,        gradient: "from-amber-500/25 to-yellow-500/10",  cats: ALL_CATS },
   { key: "manuals",    label: "Manuals",              labelAr: "الأدلة",              icon: BookOpen,      gradient: "from-cyan-500/20 to-blue-500/10",     cats: ["manuals"] },
   { key: "datasheets", label: "Datasheets",           labelAr: "الجداول الفنية",       icon: FileText,      gradient: "from-emerald-500/20 to-teal-500/10",  cats: ["equipment"] },
   { key: "pfd",        label: "PFD Library",          labelAr: "مكتبة PFD",           icon: FileCode,      gradient: "from-violet-500/20 to-indigo-500/10", cats: ["drawings"] },
@@ -36,6 +39,7 @@ const CATEGORIES: Category[] = [
 ];
 
 const UPLOAD_CATEGORY: Record<string, string> = {
+  all: "equipment",
   manuals: "manuals", datasheets: "equipment", pfd: "drawings", pid: "drawings",
   sop: "sop", maintenance: "equipment", lab: "reports", photos: "photos", videos: "videos",
 };
@@ -57,18 +61,22 @@ const DigitalLibrary = () => {
   useEffect(() => {
     if (uploadOpen) return;
     (async () => {
-      const { data } = await supabase.from("library_files").select("category");
+      let q = supabase.from("library_files").select("category, plant_code");
+      if (plantCode) q = q.eq("plant_code", plantCode);
+      const { data } = await q;
       const byCat: Record<string, number> = {};
       (data || []).forEach((r: { category: string }) => {
         byCat[r.category] = (byCat[r.category] || 0) + 1;
       });
       const result: Record<string, number> = {};
       CATEGORIES.forEach((c) => {
-        result[c.key] = c.cats.reduce((sum, k) => sum + (byCat[k] || 0), 0);
+        result[c.key] = c.key === "all"
+          ? (data || []).length
+          : c.cats.reduce((sum, k) => sum + (byCat[k] || 0), 0);
       });
       setCounts(result);
     })();
-  }, [uploadOpen]);
+  }, [uploadOpen, plantCode]);
 
   const filtered = CATEGORIES.filter((c) => {
     if (!search.trim()) return true;
