@@ -128,7 +128,7 @@ const Login = () => {
                     {DEPT_ICONS[dept.id] || <Gauge className="w-8 h-8" />}
                   </div>
                   <h3 className="font-semibold text-sm md:text-base tracking-wide transition-colors text-foreground group-hover:text-primary">
-                    {dept.label}
+                    {lang === "ar" ? dept.labelAr || dept.label : dept.label}
                   </h3>
                 </div>
               </motion.button>

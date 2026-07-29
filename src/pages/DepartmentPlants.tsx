@@ -113,7 +113,7 @@ const DepartmentPlants = ({ deptId }: { deptId: string }) => {
         className="text-center pt-4 pb-6 relative z-10"
       >
         <h1 className="font-display text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] tracking-wider">
-          {department.label}
+          {lang === "ar" ? department.labelAr || department.label : department.label}
         </h1>
         <p className="text-white/85 mt-2 text-sm tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
           {lang === "ar" ? "مصانع الإدارة" : "Department Plants"}
