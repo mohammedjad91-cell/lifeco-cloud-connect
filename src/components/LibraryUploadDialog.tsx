@@ -61,6 +61,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
   const [plantCode, setPlantCode] = useState<string>("");
   const [linkType, setLinkType] = useState<"equipment" | "process">("equipment");
   const [equipmentId, setEquipmentId] = useState<string>("");
+  const [manualEquipment, setManualEquipment] = useState("");
   const [processName, setProcessName] = useState("");
   const [description, setDescription] = useState("");
   const [plants, setPlants] = useState<Plant[]>([]);
