@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ArrowLeft, BookOpen, FileText, FileImage, Video, FileCode,
-  Wrench, FlaskConical, ClipboardList, Search, Upload, Star,
+  Wrench, FlaskConical, ClipboardList, Search, Upload, Star, Folder,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { getBackTarget } from "@/lib/nav-back";
