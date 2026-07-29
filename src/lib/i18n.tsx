@@ -232,18 +232,18 @@ interface I18nContextType {
 }
 
 const I18nContext = createContext<I18nContextType>({
-  lang: "en",
+  lang: "ar",
   setLang: () => {},
-  t: translations.en,
-  dir: "ltr",
+  t: translations.ar,
+  dir: "rtl",
 });
 
 export const useI18n = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Lang>(() => {
-    if (typeof window === "undefined") return "en";
-    return (localStorage.getItem("lifeco_lang") as Lang) || "en";
+    if (typeof window === "undefined") return "ar";
+    return (localStorage.getItem("lifeco_lang") as Lang) || "ar";
   });
 
   useEffect(() => {

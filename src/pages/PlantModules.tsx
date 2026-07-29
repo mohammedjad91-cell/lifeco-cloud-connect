@@ -202,7 +202,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
           </span>
           {dept && (
             <span className="px-3 py-1 rounded-md bg-white/10 border border-white/30 text-white/90 text-xs tracking-widest">
-              {dept.label}
+              {lang === "ar" ? dept.labelAr || dept.label : dept.label}
             </span>
           )}
         </div>
@@ -229,13 +229,11 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
                     </div>
                     <div className="min-w-0">
                       <div className="text-foreground font-semibold text-sm leading-tight">
-                        {m.label}
+                        {lang === "ar" ? m.labelAr || m.label : m.label}
                       </div>
-                      {m.labelAr && (
-                        <div className="text-muted-foreground text-xs mt-0.5" dir="rtl">
-                          {m.labelAr}
-                        </div>
-                      )}
+                      <div className="text-muted-foreground text-xs mt-0.5" dir={lang === "ar" ? "ltr" : "rtl"}>
+                        {lang === "ar" ? m.label : m.labelAr}
+                      </div>
                     </div>
                   </div>
                 </motion.button>
@@ -254,7 +252,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
                   onClick={() => openModule(m)}
                   className="glass-card px-3 py-2 text-xs text-foreground/90 hover:text-primary hover:neon-border transition-all"
                 >
-                  {m.label}
+                  {lang === "ar" ? m.labelAr || m.label : m.label}
                 </button>
               ))}
             </div>
