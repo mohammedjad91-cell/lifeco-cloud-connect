@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
@@ -159,7 +160,7 @@ export default function MaintenanceCommand() {
 
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-4 py-4">
-        <Button variant="secondary" onClick={() => navigate("/dept/MAINTENANCE")}
+        <Button variant="secondary" onClick={() => navigate(getBackTarget())}
           className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
           <ArrowLeft className="w-4 h-4 mr-2" />{ar ? "رجوع" : "Back"}
         </Button>

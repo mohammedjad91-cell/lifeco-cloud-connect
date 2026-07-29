@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDepartmentById } from "@/lib/departments";
 import { supabase } from "@/integrations/supabase/client";
@@ -438,7 +439,7 @@ const Dashboard = () => {
           <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
+          <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} className="gap-1.5 text-muted-foreground">
             <LogOut className="w-4 h-4" /> {lang === "ar" ? "العودة للرئيسية" : "Back to Main"}
           </Button>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,7 +82,7 @@ export default function HSECenter() {
       {/* Header */}
       <div className="sticky top-0 z-20 backdrop-blur-xl bg-slate-950/70 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate("/dept/SAFETY")} className="text-white hover:bg-white/10">
+          <Button variant="ghost" onClick={() => navigate(getBackTarget())} className="text-white hover:bg-white/10">
             <ArrowLeft className="w-4 h-4 mr-2" /> رجوع
           </Button>
           <div className="flex items-center gap-2">
