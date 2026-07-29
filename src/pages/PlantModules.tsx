@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { getDepartmentById } from "@/lib/departments";
-import { getModulesForPlant, SHARED_FEATURES, type PlantModule } from "@/lib/plant-modules";
+import { getModulesForPlant, type PlantModule } from "@/lib/plant-modules";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import {
@@ -241,22 +241,6 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
             </div>
           </section>
 
-          <section>
-            <h2 className="text-white/90 text-sm uppercase tracking-widest mb-3">
-              {lang === "ar" ? "المميزات المشتركة" : "Shared Features"}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {SHARED_FEATURES.map((m) => (
-                <button
-                  key={m.key}
-                  onClick={() => openModule(m)}
-                  className="glass-card px-3 py-2 text-xs text-foreground/90 hover:text-primary hover:neon-border transition-all"
-                >
-                  {lang === "ar" ? m.labelAr || m.label : m.label}
-                </button>
-              ))}
-            </div>
-          </section>
 
           <section>
             <h2 className="text-white/90 text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
