@@ -22,25 +22,25 @@ type SectionKey =
   | "audit" | "devtools" | "about";
 
 const SECTIONS: { key: SectionKey; label: string; icon: any }[] = [
-  { key: "dashboard",     label: "Dashboard",              icon: LayoutDashboard },
-  { key: "org",           label: "Organization",           icon: Building2 },
-  { key: "equipment",     label: "Equipment",              icon: Wrench },
-  { key: "library",       label: "Digital Library",        icon: FolderOpen },
-  { key: "users",         label: "Users",                  icon: Users },
-  { key: "roles",         label: "Roles & Permissions",    icon: ShieldCheck },
-  { key: "reports",       label: "Reports",                icon: FileText },
-  { key: "notifications", label: "Notifications",          icon: Bell },
-  { key: "builder",       label: "Dashboard Builder",      icon: BarChart3 },
-  { key: "branding",      label: "Branding",               icon: Palette },
-  { key: "language",      label: "Language",               icon: Languages },
-  { key: "database",      label: "Database",               icon: Database },
-  { key: "security",      label: "Security",               icon: Lock },
-  { key: "settings",      label: "System Settings",        icon: Settings },
-  { key: "ai",            label: "AI Settings",            icon: Bot },
-  { key: "monitoring",    label: "System Monitoring",      icon: Activity },
-  { key: "audit",         label: "Audit Center",           icon: ClipboardList },
-  { key: "devtools",      label: "Developer Tools",        icon: Terminal },
-  { key: "about",         label: "About System",           icon: Info },
+  { key: "dashboard",     label: "لوحة التحكم",              icon: LayoutDashboard },
+  { key: "org",           label: "الهيكل التنظيمي",           icon: Building2 },
+  { key: "equipment",     label: "المعدات",              icon: Wrench },
+  { key: "library",       label: "المكتبة الرقمية",        icon: FolderOpen },
+  { key: "users",         label: "المستخدمون",                  icon: Users },
+  { key: "roles",         label: "الأدوار والصلاحيات",    icon: ShieldCheck },
+  { key: "reports",       label: "التقارير",                icon: FileText },
+  { key: "notifications", label: "الإشعارات",          icon: Bell },
+  { key: "builder",       label: "منشئ لوحات التحكم",      icon: BarChart3 },
+  { key: "branding",      label: "الهوية البصرية",               icon: Palette },
+  { key: "language",      label: "اللغة",               icon: Languages },
+  { key: "database",      label: "قاعدة البيانات",               icon: Database },
+  { key: "security",      label: "الأمان",               icon: Lock },
+  { key: "settings",      label: "إعدادات النظام",        icon: Settings },
+  { key: "ai",            label: "إعدادات الذكاء الاصطناعي",            icon: Bot },
+  { key: "monitoring",    label: "مراقبة النظام",      icon: Activity },
+  { key: "audit",         label: "مركز التدقيق",           icon: ClipboardList },
+  { key: "devtools",      label: "أدوات المطور",        icon: Terminal },
+  { key: "about",         label: "حول النظام",           icon: Info },
 ];
 
 const AUTH_KEY = "lifeco.devpanel.auth";
@@ -62,7 +62,7 @@ export default function DeveloperPanel() {
       sessionStorage.setItem(AUTH_KEY, "1");
       setAuthed(true);
     } else {
-      toast({ title: "Access denied", description: "Invalid developer PIN", variant: "destructive" });
+      toast({ title: "تم رفض الوصول", description: "رمز المطور غير صحيح", variant: "destructive" });
       setPin("");
     }
   };
@@ -76,16 +76,16 @@ export default function DeveloperPanel() {
             <div className="p-3 rounded-full bg-blue-500/20 border border-blue-400/30">
               <Terminal className="w-8 h-8 text-blue-300" />
             </div>
-            <h1 className="text-xl font-bold text-white">Developer Panel</h1>
-            <p className="text-xs text-blue-200/70">Authorized access only</p>
+            <h1 className="text-xl font-bold text-white">لوحة المطور</h1>
+            <p className="text-xs text-blue-200/70">للدخول المصرح به فقط</p>
           </div>
-          <Input type="password" placeholder="Developer PIN" value={pin}
+          <Input type="password" placeholder="رمز المطور" value={pin}
             onChange={(e) => setPin(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && tryLogin()}
             className="bg-white/5 border-white/10 text-white text-center tracking-widest" autoFocus />
-          <Button onClick={tryLogin} className="w-full mt-4 bg-blue-600 hover:bg-blue-500">Unlock</Button>
+          <Button onClick={tryLogin} className="w-full mt-4 bg-blue-600 hover:bg-blue-500">فتح القفل</Button>
           <Button variant="ghost" onClick={() => navigate("/")} className="w-full mt-2 text-white/60">
-            <ArrowLeft className="w-4 h-4 mr-2" />Back
+            <ArrowLeft className="w-4 h-4 mr-2" />رجوع
           </Button>
         </motion.div>
       </div>
@@ -99,8 +99,8 @@ export default function DeveloperPanel() {
           <div className="flex items-center gap-2">
             <Terminal className="w-5 h-5 text-blue-300" />
             <div>
-              <div className="text-sm font-bold">Developer Panel</div>
-              <div className="text-[10px] text-blue-200/60">LIFECO Master Console</div>
+              <div className="text-sm font-bold">لوحة المطور</div>
+              <div className="text-[10px] text-blue-200/60">وحدة تحكم LIFECO الرئيسية</div>
             </div>
           </div>
         </div>
@@ -122,11 +122,11 @@ export default function DeveloperPanel() {
         </nav>
         <div className="p-3 border-t border-white/10 space-y-2">
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="w-full text-white/70">
-            <ArrowLeft className="w-4 h-4 mr-2" />Exit
+            <ArrowLeft className="w-4 h-4 mr-2" />خروج
           </Button>
           <Button variant="ghost" size="sm" onClick={() => { sessionStorage.removeItem(AUTH_KEY); setAuthed(false); }}
             className="w-full text-red-300/80">
-            <Lock className="w-4 h-4 mr-2" />Lock
+            <Lock className="w-4 h-4 mr-2" />قفل
           </Button>
         </div>
       </aside>
