@@ -17,6 +17,8 @@ import {
   Zap, ShieldAlert, Timer, Gauge,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { getAmmoniaSpec } from "@/lib/ammonia-equipment";
+import { TechSpecPanel, SparesRequisition } from "@/components/maintenance/EquipmentTechCard";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import {
   LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip,
@@ -286,7 +288,7 @@ export default function MaintenanceCommand() {
 
       {/* Digital Equipment Passport */}
       <Dialog open={!!selected} onOpenChange={o => !o && setSelected(null)}>
-        <DialogContent className="max-w-3xl bg-slate-900/95 border-white/10 text-white">
+        <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto bg-slate-900/95 border-white/10 text-white">
           {selected && (
             <>
               <DialogHeader>
@@ -298,13 +300,34 @@ export default function MaintenanceCommand() {
                 </DialogTitle>
               </DialogHeader>
 
-              <Tabs defaultValue="info">
-                <TabsList className="bg-white/5 border border-white/10">
+              <Tabs defaultValue={getAmmoniaSpec(selected.tag, selected.asset_code) ? "spec" : "info"}>
+                <TabsList className="bg-white/5 border border-white/10 flex-wrap h-auto">
+                  {getAmmoniaSpec(selected.tag, selected.asset_code) && (
+                    <TabsTrigger value="spec">{ar ? "بطاقة وصف المعدة" : "Description Card"}</TabsTrigger>
+                  )}
                   <TabsTrigger value="info">{ar ? "البطاقة" : "Passport"}</TabsTrigger>
+                  {getAmmoniaSpec(selected.tag, selected.asset_code) && (
+                    <TabsTrigger value="spares">{ar ? "طلب قطع غيار" : "Spares"}</TabsTrigger>
+                  )}
                   <TabsTrigger value="qr">QR</TabsTrigger>
                   <TabsTrigger value="timeline"><History className="w-3 h-3 mr-1" />{ar ? "السجل الزمني" : "Timeline"}</TabsTrigger>
                   <TabsTrigger value="cost"><DollarSign className="w-3 h-3 mr-1" />{ar ? "التكاليف" : "Costs"}</TabsTrigger>
                 </TabsList>
+
+                {(() => {
+                  const spec = getAmmoniaSpec(selected.tag, selected.asset_code);
+                  if (!spec) return null;
+                  return (
+                    <>
+                      <TabsContent value="spec" className="mt-4">
+                        <TechSpecPanel spec={spec} ar={ar} />
+                      </TabsContent>
+                      <TabsContent value="spares" className="mt-4">
+                        <SparesRequisition spec={spec} ar={ar} />
+                      </TabsContent>
+                    </>
+                  );
+                })()}
 
                 <TabsContent value="info" className="mt-4">
                   <div className="grid grid-cols-2 gap-3 text-sm">
@@ -322,6 +345,7 @@ export default function MaintenanceCommand() {
                     <Field label={ar ? "عدد سجلات الصيانة" : "Records"} value={selectedRecords.length} />
                   </div>
                 </TabsContent>
+
 
                 <TabsContent value="qr" className="mt-4 flex flex-col items-center gap-3">
                   <div className="bg-white p-4 rounded-lg">

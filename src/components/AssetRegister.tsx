@@ -10,6 +10,8 @@ import { FormField } from "@/components/form/FormField";
 import { Plus, Wrench, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
+import { getAmmoniaSpec } from "@/lib/ammonia-equipment";
+import { TechSpecPanel, SparesRequisition } from "@/components/maintenance/EquipmentTechCard";
 
 interface Asset {
   id: string;
@@ -190,6 +192,17 @@ export default function AssetRegister({ department }: Props) {
                 animate={{ opacity: 1, height: "auto" }}
                 className="mt-3 space-y-3 overflow-hidden"
               >
+                {(() => {
+                  const spec = getAmmoniaSpec(a.asset_code, a.asset_code);
+                  if (!spec) return null;
+                  return (
+                    <div className="space-y-3">
+                      <TechSpecPanel spec={spec} ar={false} />
+                      <SparesRequisition spec={spec} ar={false} />
+                    </div>
+                  );
+                })()}
+
                 <div className="space-y-2">
                   <FormField
                     label="Add Maintenance Record"
