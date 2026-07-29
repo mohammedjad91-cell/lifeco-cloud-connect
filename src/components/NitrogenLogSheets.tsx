@@ -84,9 +84,9 @@ const LOCAL2_INSTRUMENTS = [
 ];
 
 const SHIFTS = [
-  { key: "morning", label: "Morning Shift", range: "06:00 — 14:00" },
-  { key: "afternoon", label: "Afternoon Shift", range: "14:00 — 22:00" },
-  { key: "night", label: "Night Shift", range: "22:00 — 06:00" },
+  { key: "morning", label: "الوردية الصباحية", range: "06:00 — 14:00" },
+  { key: "afternoon", label: "وردية بعد الظهر", range: "14:00 — 22:00" },
+  { key: "night", label: "الوردية الليلية", range: "22:00 — 06:00" },
 ];
 
 const SHEET_PREFIX = "N2";
@@ -166,7 +166,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
     if (!raw) return;
     const num = parseFloat(raw);
     if (isNaN(num)) {
-      toast({ title: "Invalid number", description: `${instrument} @ ${hour}:00`, variant: "destructive" });
+      toast({ title: "رقم غير صالح", description: `${instrument} @ ${hour}:00`, variant: "destructive" });
       return;
     }
     setSaving(tag);
@@ -188,7 +188,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
     });
     setSaving(null);
     if (error) {
-      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+      toast({ title: "فشل الحفظ", description: error.message, variant: "destructive" });
       return;
     }
     const stamp = getStamp();
@@ -204,12 +204,12 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
       const tag = buildTag(sheet, instrument, h);
       if (cells[tag]?.trim()) await saveCell(sheet, instrument, h);
     }
-    toast({ title: "Row saved", description: instrument });
+    toast({ title: "تم حفظ الصف", description: instrument });
   };
 
   const signShift = async (shiftKey: string) => {
     if (!operator) {
-      toast({ title: "Operator required", description: "Please log in as operator first.", variant: "destructive" });
+      toast({ title: "مطلوب تسجيل المشغّل", description: "الرجاء تسجيل الدخول كمشغّل أولًا.", variant: "destructive" });
       return;
     }
     const stamp = getStamp(operator);
@@ -221,7 +221,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
       details,
     });
     setSignatures((s) => ({ ...s, [action]: details }));
-    toast({ title: "Shift signed", description: stamp.formatted });
+    toast({ title: "تم توقيع الوردية", description: stamp.formatted });
   };
 
   if (loading) {
@@ -240,9 +240,9 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
         <div className="flex items-center gap-3">
           <FileText className="w-5 h-5 text-primary" />
           <div>
-            <h2 className="font-display text-lg neon-text tracking-wider">NITROGEN PLANT — Digital Log Sheets</h2>
+            <h2 className="font-display text-lg neon-text tracking-wider">مصنع النيتروجين — سجلات القراءات الرقمية</h2>
             <p className="text-xs text-muted-foreground">
-              {format(selectedDate, "EEEE, dd MMM yyyy")} — Operator: {operator ? `${operator.name} (${operator.employeeId})` : "—"}
+              {format(selectedDate, "EEEE, dd MMM yyyy")} — المشغّل: {operator ? `${operator.name} (${operator.employeeId})` : "—"}
             </p>
           </div>
         </div>
@@ -268,7 +268,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
 
       {/* Sheet 1 — DCS PANEL */}
       <SheetTable
-        title="Table 1 — D.C.S. PANEL SHEET"
+        title="جدول 1 — لوحة نظام التحكم الموزع (DCS)"
         sheetKey="DCS"
         instruments={DCS_INSTRUMENTS}
         hours={DCS_TIMES}
@@ -282,11 +282,11 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
 
       {/* Sheet 2 — LOCAL Compressors */}
       <div className="space-y-4">
-        <h3 className="font-display text-md neon-text tracking-wider">Table 2 — LOCAL SHEET (Compressors)</h3>
+        <h3 className="font-display text-md neon-text tracking-wider">جدول 2 — السجل المحلي (الضواغط)</h3>
         {COMPRESSOR_UNITS.map((unit) => (
           <SheetTable
             key={unit}
-            title={`Compressor ${unit}`}
+            title={`الضاغط ${unit}`}
             sheetKey={`COMP-${unit}`}
             instruments={COMPRESSOR_INSTRUMENTS}
             hours={LOCAL_TIMES}
@@ -303,7 +303,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
 
       {/* Sheet 3 — LOCAL General */}
       <SheetTable
-        title="Table 3 — LOCAL SHEET (General System)"
+        title="جدول 3 — السجل المحلي (النظام العام)"
         sheetKey="LOCAL-GEN"
         instruments={LOCAL2_INSTRUMENTS}
         hours={LOCAL_TIMES}
@@ -344,13 +344,13 @@ function SheetTable({
       className="glass-card neon-border overflow-hidden">
       <div className="px-4 py-3 border-b border-border bg-secondary/30 flex items-center justify-between">
         <h3 className={`font-semibold text-foreground ${compact ? "text-sm" : ""}`}>{title}</h3>
-        <span className="text-[10px] text-muted-foreground">All values auto-stamped on save</span>
+        <span className="text-[10px] text-muted-foreground">جميع القيم تُختم تلقائيًا عند الحفظ</span>
       </div>
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-secondary/40">
-              <TableHead className="sticky left-0 bg-secondary/80 z-10 min-w-[260px]">Instrument</TableHead>
+              <TableHead className="sticky left-0 bg-secondary/80 z-10 min-w-[260px]">الجهاز</TableHead>
               {hours.map((h) => {
                 const hr = parseInt(h, 10);
                 const active = hr === currentHour || (h === "24" && currentHour === 0);
@@ -360,7 +360,7 @@ function SheetTable({
                   </TableHead>
                 );
               })}
-              <TableHead className="text-center text-xs">Save</TableHead>
+              <TableHead className="text-center text-xs">حفظ</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -395,7 +395,7 @@ function SheetTable({
                       size="sm" variant="ghost"
                       onClick={() => onSaveRow(sheetKey, ins, hours)}
                       className="h-7 px-2"
-                      title="Save all values in this row"
+                      title="حفظ جميع القيم في هذا الصف"
                     >
                       <Save className="w-3.5 h-3.5" />
                     </Button>

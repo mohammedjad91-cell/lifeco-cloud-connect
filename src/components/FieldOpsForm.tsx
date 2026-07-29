@@ -69,7 +69,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
     const f = e.target.files?.[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) {
-      toast({ title: "Photo too large (max 5MB)", variant: "destructive" });
+      toast({ title: "الصورة كبيرة جدًا (الحد الأقصى 5 ميغابايت)", variant: "destructive" });
       return;
     }
     setPhotoFile(f);
@@ -93,7 +93,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       .upload(path, photoFile, { upsert: false, contentType: photoFile.type });
     setUploading(false);
     if (error) {
-      toast({ title: "Photo upload failed", description: error.message, variant: "destructive" });
+      toast({ title: "فشل رفع الصورة", description: error.message, variant: "destructive" });
       return null;
     }
     const { data } = supabase.storage.from("field-ops-photos").getPublicUrl(path);
@@ -104,11 +104,11 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
     const f = e.target.files?.[0];
     if (!f) return;
     if (f.type !== "application/pdf") {
-      toast({ title: "Only PDF files are allowed", variant: "destructive" });
+      toast({ title: "يُسمح فقط بملفات PDF", variant: "destructive" });
       return;
     }
     if (f.size > 15 * 1024 * 1024) {
-      toast({ title: "PDF too large (max 15MB)", variant: "destructive" });
+      toast({ title: "ملف PDF كبير جدًا (الحد الأقصى 15 ميغابايت)", variant: "destructive" });
       return;
     }
     setPdfFile(f);
@@ -129,7 +129,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       .upload(path, pdfFile, { upsert: false, contentType: "application/pdf" });
     setUploading(false);
     if (error) {
-      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      toast({ title: "فشل رفع ملف PDF", description: error.message, variant: "destructive" });
       return null;
     }
     const { data } = supabase.storage.from("field-ops-photos").getPublicUrl(path);
@@ -237,12 +237,12 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
               className="shrink-0"
               onClick={() => setEditIdentity((s) => !s)}
             >
-              {editIdentity ? "Done" : "Change"}
+              {editIdentity ? "تم" : "تغيير"}
             </Button>
           </div>
           <p className="mt-1 text-xs text-muted-foreground/80">
-            Auto-filled from your session and stamped on this reading. Edit only if another
-            technician is recording on your behalf.
+            يُملأ تلقائيًا من جلستك ويُختم على هذه القراءة. عدّل فقط إذا كان فني آخر
+            يسجّل نيابةً عنك.
           </p>
 
           {editIdentity && (
@@ -250,7 +250,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
               <FormField
                 label={t.technicianName}
                 required
-                hint="Name shown on the log entry and daily report."
+                hint="الاسم الذي يظهر في إدخال السجل والتقرير اليومي."
               >
                 {(id) => (
                   <Input
@@ -265,7 +265,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
               <FormField
                 label={t.employeeId}
                 required
-                hint="Payroll ID used to trace who took the reading."
+                hint="الرقم الوظيفي المستخدم لتتبع من أخذ القراءة."
               >
                 {(id) => (
                   <Input
@@ -284,7 +284,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
         <FormField
           label={t.equipmentTag}
           required
-          tooltip="Choosing a tag loads the parameter set and safe operating limits for that machine."
+          tooltip="اختيار علامة يحمّل مجموعة المعاملات وحدود التشغيل الآمنة لتلك الآلة."
         >
           {(id) => (
             <Select value={equipmentTag} onValueChange={setEquipmentTag}>
@@ -335,10 +335,10 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
             >
               <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
               <div>
-                <strong>Process warning:</strong>{" "}
+                <strong>تحذير عملية:</strong>{" "}
                 {outOfRangeParams.map((p) => p.label).join(", ")}{" "}
-                {outOfRangeParams.length === 1 ? "is" : "are"} outside the design limits — verify
-                the reading and notify the shift supervisor.
+                {outOfRangeParams.length === 1 ? "خارج" : "خارجة عن"} حدود التصميم — تحقق
+                من القراءة وأبلغ مشرف الوردية.
               </div>
             </motion.div>
           )}
@@ -348,7 +348,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       <div className="mt-4">
         <FormField
           label={t.notes}
-          hint="Observations, abnormal sounds, actions taken. Visible in the shift and daily reports."
+          hint="الملاحظات، الأصوات غير الطبيعية، الإجراءات المتخذة. تظهر في تقارير الوردية واليومية."
         >
           {(id) => (
             <Textarea
@@ -379,7 +379,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
             className="gap-2"
           >
             <Camera className="w-4 h-4" />
-            {photoFile ? "Change Photo" : "Attach Photo"}
+            {photoFile ? "تغيير الصورة" : "إرفاق صورة"}
           </Button>
           {photoPreview && (
             <div className="relative inline-block">
@@ -392,7 +392,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
                 type="button"
                 onClick={clearPhoto}
                 className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-0.5"
-                aria-label="remove photo"
+                aria-label="إزالة الصورة"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -414,7 +414,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
             className="gap-2"
           >
             <FileText className="w-4 h-4" />
-            {pdfFile ? "Change PDF" : "Attach PDF"}
+            {pdfFile ? "تغيير PDF" : "إرفاق PDF"}
           </Button>
           {pdfFile && (
             <div className="flex items-center gap-2 px-2 py-1 rounded border border-border bg-secondary/40 text-xs">
@@ -429,7 +429,7 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
                 type="button"
                 onClick={clearPdf}
                 className="bg-destructive text-destructive-foreground rounded-full p-0.5"
-                aria-label="remove pdf"
+                aria-label="إزالة PDF"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -472,10 +472,10 @@ const DynamicField = ({
       badge={spec.range ? `${spec.range.min}–${spec.range.max}` : undefined}
       tooltip={
         spec.range
-          ? `Safe operating window: ${spec.range.min}–${spec.range.max}${spec.unit ? ` ${spec.unit}` : ""}. Values outside this range raise a process warning.`
+          ? `نطاق التشغيل الآمن: ${spec.range.min}–${spec.range.max}${spec.unit ? ` ${spec.unit}` : ""}. القيم خارج هذا النطاق تؤدي إلى تحذير عملية.`
           : undefined
       }
-      error={!ok ? "Outside design limits — verify the reading." : undefined}
+      error={!ok ? "خارج حدود التصميم — تحقق من القراءة." : undefined}
     >
       {(id) => (
         <Input

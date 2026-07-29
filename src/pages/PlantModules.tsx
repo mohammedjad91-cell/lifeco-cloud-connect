@@ -49,13 +49,13 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 const SHARE_ACTIONS = [
-  { key: "pdf", label: "Export PDF", icon: <FileDown className="w-4 h-4" /> },
-  { key: "excel", label: "Export Excel", icon: <FileSpreadsheet className="w-4 h-4" /> },
-  { key: "word", label: "Export Word", icon: <FileText className="w-4 h-4" /> },
-  { key: "print", label: "Print", icon: <Printer className="w-4 h-4" /> },
-  { key: "email", label: "Send Email", icon: <Mail className="w-4 h-4" /> },
-  { key: "outlook", label: "Send Outlook", icon: <Mail className="w-4 h-4" /> },
-  { key: "whatsapp", label: "Send WhatsApp", icon: <MessageCircle className="w-4 h-4" /> },
+  { key: "pdf", label: "تصدير PDF", icon: <FileDown className="w-4 h-4" /> },
+  { key: "excel", label: "تصدير Excel", icon: <FileSpreadsheet className="w-4 h-4" /> },
+  { key: "word", label: "تصدير Word", icon: <FileText className="w-4 h-4" /> },
+  { key: "print", label: "طباعة", icon: <Printer className="w-4 h-4" /> },
+  { key: "email", label: "إرسال بريد إلكتروني", icon: <Mail className="w-4 h-4" /> },
+  { key: "outlook", label: "إرسال عبر Outlook", icon: <Mail className="w-4 h-4" /> },
+  { key: "whatsapp", label: "إرسال عبر واتساب", icon: <MessageCircle className="w-4 h-4" /> },
 ];
 
 const PlantModules = ({ plantCode }: { plantCode: string }) => {

@@ -101,17 +101,17 @@ const AnalyticsDashboard = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-2">
         <BarChart3 className="w-5 h-5 text-primary" />
-        <h2 className="text-foreground font-semibold">Comparison Analytics</h2>
+        <h2 className="text-foreground font-semibold">تحليلات المقارنة</h2>
       </div>
 
       {/* Date selectors */}
       <div className="glass-card p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <DatePicker date={date1} onSelect={setDate1} label="Date A" />
-        <DatePicker date={date2} onSelect={setDate2} label="Date B" />
+        <DatePicker date={date1} onSelect={setDate1} label="التاريخ أ" />
+        <DatePicker date={date2} onSelect={setDate2} label="التاريخ ب" />
         <div>
-          <label className="text-xs text-muted-foreground mb-1 block">Trend Unit/Tag</label>
+          <label className="text-xs text-muted-foreground mb-1 block">وحدة/علامة الاتجاه</label>
           <Select value={selectedTag} onValueChange={setSelectedTag}>
-            <SelectTrigger><SelectValue placeholder="Select tag..." /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="اختر العلامة..." /></SelectTrigger>
             <SelectContent>{allTags.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
           </Select>
         </div>
@@ -121,7 +121,7 @@ const AnalyticsDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Pie Chart */}
         <div className="glass-card p-4">
-          <h3 className="text-sm font-semibold text-foreground mb-3">Department Distribution (Date A)</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3">توزيع الإدارات (التاريخ أ)</h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie data={pieData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}>
@@ -135,7 +135,7 @@ const AnalyticsDashboard = () => {
         {/* Line Chart */}
         <div className="glass-card p-4">
           <h3 className="text-sm font-semibold text-foreground mb-3">
-            Trend: {selectedTag || "Select a tag"}
+            الاتجاه: {selectedTag || "اختر علامة"}
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={trendData}>
@@ -151,7 +151,7 @@ const AnalyticsDashboard = () => {
         {/* Radar Chart */}
         <div className="glass-card p-4 lg:col-span-2">
           <h3 className="text-sm font-semibold text-foreground mb-3">
-            Multi-Variable Comparison: {format(date1, "dd/MM")} vs {format(date2, "dd/MM")}
+            مقارنة متعددة المتغيرات: {format(date1, "dd/MM")} مقابل {format(date2, "dd/MM")}
           </h3>
           <ResponsiveContainer width="100%" height={320}>
             <RadarChart data={radarData}>
@@ -170,19 +170,19 @@ const AnalyticsDashboard = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="glass-card p-3 text-center">
-          <p className="text-xs text-muted-foreground">Date A Entries</p>
+          <p className="text-xs text-muted-foreground">إدخالات التاريخ أ</p>
           <p className="text-2xl font-bold text-primary">{logsDate1.length}</p>
         </div>
         <div className="glass-card p-3 text-center">
-          <p className="text-xs text-muted-foreground">Date B Entries</p>
+          <p className="text-xs text-muted-foreground">إدخالات التاريخ ب</p>
           <p className="text-2xl font-bold text-primary">{logsDate2.length}</p>
         </div>
         <div className="glass-card p-3 text-center">
-          <p className="text-xs text-muted-foreground">Date A Avg</p>
+          <p className="text-xs text-muted-foreground">متوسط التاريخ أ</p>
           <p className="text-2xl font-bold text-primary">{logsDate1.length ? (logsDate1.reduce((s, l) => s + l.value, 0) / logsDate1.length).toFixed(1) : "—"}</p>
         </div>
         <div className="glass-card p-3 text-center">
-          <p className="text-xs text-muted-foreground">Date B Avg</p>
+          <p className="text-xs text-muted-foreground">متوسط التاريخ ب</p>
           <p className="text-2xl font-bold text-primary">{logsDate2.length ? (logsDate2.reduce((s, l) => s + l.value, 0) / logsDate2.length).toFixed(1) : "—"}</p>
         </div>
       </div>

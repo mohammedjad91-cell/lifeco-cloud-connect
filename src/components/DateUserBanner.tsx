@@ -23,7 +23,7 @@ export default function DateUserBanner() {
       <div className="flex items-center gap-2">
         <User className="w-4 h-4 text-primary" />
         <span className="text-foreground">
-          {op ? <>Operator: <span className="font-semibold">{op.name}</span> <span className="text-muted-foreground">({op.employeeId})</span></> : <span className="text-muted-foreground">No operator identified</span>}
+          {op ? <>المشغّل: <span className="font-semibold">{op.name}</span> <span className="text-muted-foreground">({op.employeeId})</span></> : <span className="text-muted-foreground">لم يتم تعريف المشغّل</span>}
         </span>
       </div>
     </div>

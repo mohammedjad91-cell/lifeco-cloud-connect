@@ -90,7 +90,7 @@ export default function ShiftCharts() {
       <div className="glass-card neon-border p-4">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
           <Activity className="w-4 h-4 text-primary" />
-          24-Hour Trend — Discharge Pressure & Temperature
+          اتجاه 24 ساعة — ضغط التصريف ودرجة الحرارة
         </h3>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -108,9 +108,9 @@ export default function ShiftCharts() {
                 }}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line yAxisId="left" type="monotone" dataKey="pressure" name="Pressure (barg)"
+              <Line yAxisId="left" type="monotone" dataKey="pressure" name="الضغط (بار)"
                     stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-              <Line yAxisId="right" type="monotone" dataKey="temperature" name="Temp (°C)"
+              <Line yAxisId="right" type="monotone" dataKey="temperature" name="الحرارة (°م)"
                     stroke="hsl(var(--accent))" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -120,7 +120,7 @@ export default function ShiftCharts() {
       <div className="glass-card neon-border p-4">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
           <BarChart3 className="w-4 h-4 text-primary" />
-          Running Hours — Compressors 60-1001 A / B / C
+          ساعات التشغيل — الضواغط 60-1001 A / B / C
         </h3>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -136,7 +136,7 @@ export default function ShiftCharts() {
                   fontSize: 12,
                 }}
               />
-              <Bar dataKey="hours" name="Running Hours" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="hours" name="ساعات التشغيل" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

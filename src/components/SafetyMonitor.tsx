@@ -78,7 +78,7 @@ export default function SafetyMonitor() {
       return {
         id: row.id ?? String(Date.now()),
         tag: row.equipment_tag ?? "—",
-        metric: "Discharge Pressure",
+        metric: "ضغط التصريف",
         value: dp,
         limit: PRESSURE_LIMIT,
         ts: row.timestamp ?? new Date().toISOString(),
@@ -88,7 +88,7 @@ export default function SafetyMonitor() {
       return {
         id: row.id ?? String(Date.now()),
         tag: row.equipment_tag ?? "—",
-        metric: "Temperature",
+        metric: "درجة الحرارة",
         value: tmp,
         limit: TEMP_LIMIT,
         ts: row.timestamp ?? new Date().toISOString(),
@@ -164,10 +164,10 @@ export default function SafetyMonitor() {
             >
               <AlertTriangle className="w-8 h-8 text-destructive animate-pulse shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="font-display text-destructive text-lg font-bold tracking-widest">⚠ DANGER — SAFETY LIMIT BREACHED</div>
+                <div className="font-display text-destructive text-lg font-bold tracking-widest">⚠ خطر — تجاوز حد السلامة</div>
                 <div className="text-sm text-foreground mt-0.5 truncate">
                   <span className="font-semibold">{breach.tag}</span> · {breach.metric}:{" "}
-                  <span className="text-destructive font-bold">{breach.value}</span> (limit {breach.limit})
+                  <span className="text-destructive font-bold">{breach.value}</span> (الحد {breach.limit})
                 </div>
               </div>
               <Button
@@ -175,12 +175,12 @@ export default function SafetyMonitor() {
                 variant="outline"
                 onClick={() => setMuted((m) => !m)}
                 className="gap-1.5"
-                title={muted ? "Unmute alarm" : "Mute alarm"}
+                title={muted ? "إلغاء كتم الإنذار" : "كتم الإنذار"}
               >
                 {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </Button>
               <Button size="sm" variant="destructive" onClick={acknowledge} className="gap-1.5">
-                <X className="w-4 h-4" /> Acknowledge
+                <X className="w-4 h-4" /> إقرار
               </Button>
             </motion.div>
           </div>

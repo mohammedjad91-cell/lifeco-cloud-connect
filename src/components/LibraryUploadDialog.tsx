@@ -165,7 +165,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
                 value={fileName}
                 onChange={(e) => setFileName(e.target.value)}
                 maxLength={150}
-                placeholder="e.g. Ammonia Reactor P&ID Rev.3"
+                placeholder="مثال: مخطط مفاعل الأمونيا P&ID مراجعة 3"
               />
             )}
           </FormField>

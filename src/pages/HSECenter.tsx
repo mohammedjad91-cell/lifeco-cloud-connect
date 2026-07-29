@@ -86,7 +86,7 @@ export default function HSECenter() {
           </Button>
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-emerald-400" />
-            <h1 className="text-xl font-bold tracking-wide">HSE Command Center</h1>
+            <h1 className="text-xl font-bold tracking-wide">مركز قيادة السلامة والصحة المهنية</h1>
           </div>
           <Button size="sm" onClick={loadAll} disabled={loading} className="bg-emerald-500/80 hover:bg-emerald-500">
             <Activity className="w-4 h-4 mr-1" /> تحديث
@@ -100,15 +100,15 @@ export default function HSECenter() {
           <KPI icon={CheckCircle2} label="تصاريح نشطة" value={kpi.activePermits} color="from-emerald-500 to-emerald-700" />
           <KPI icon={Clock} label="تصاريح بالانتظار" value={kpi.pendingPermits} color="from-amber-500 to-amber-700" />
           <KPI icon={AlertTriangle} label="حوادث مفتوحة" value={kpi.openIncidents} color="from-red-500 to-red-700" />
-          <KPI icon={Eye} label="Near Miss" value={kpi.nearMiss} color="from-orange-500 to-orange-700" />
+          <KPI icon={Eye} label="حالات وشيكة" value={kpi.nearMiss} color="from-orange-500 to-orange-700" />
           <KPI icon={ShieldCheck} label="أيام بلا إصابات" value={kpi.daysNoLTI} color="from-blue-500 to-blue-700" />
           <KPI icon={Flame} label="أعمال ساخنة" value={kpi.hotWork} color="from-rose-500 to-rose-700" />
           <KPI icon={HardHat} label="عمل على ارتفاع" value={kpi.heightWork} color="from-purple-500 to-purple-700" />
           <KPI icon={Activity} label="اختبارات غاز" value={kpi.todayGas} color="from-cyan-500 to-cyan-700" />
           <KPI icon={FileCheck2} label="تفتيشات" value={kpi.inspectionsDone} color="from-teal-500 to-teal-700" />
-          <KPI icon={AlertTriangle} label="Total Incidents" value={kpi.totalRec} color="from-pink-500 to-pink-700" />
+          <KPI icon={AlertTriangle} label="إجمالي الحوادث" value={kpi.totalRec} color="from-pink-500 to-pink-700" />
           <KPI icon={Eye} label="ملاحظات سلامة" value={kpi.observations} color="from-indigo-500 to-indigo-700" />
-          <KPI icon={CheckCircle2} label="PTW Compliance" value={`${kpi.ptwCompliance}%`} color="from-green-500 to-green-700" />
+          <KPI icon={CheckCircle2} label="نسبة الامتثال لتصاريح العمل" value={`${kpi.ptwCompliance}%`} color="from-green-500 to-green-700" />
         </div>
 
         <Tabs defaultValue="ptw" className="w-full">
@@ -206,7 +206,7 @@ function PermitPanel({ permits, onChange }: any) {
   return (
     <Card className="p-4 bg-white/5 backdrop-blur-md border-white/10">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-bold text-lg">Digital Permit to Work</h3>
+        <h3 className="font-bold text-lg">تصريح العمل الرقمي</h3>
         <Button size="sm" onClick={() => setCreating(!creating)} className="bg-emerald-500/80">
           <Plus className="w-4 h-4 mr-1" /> تصريح جديد
         </Button>
@@ -309,7 +309,7 @@ function ObservationPanel({ incidents, onChange }: any) {
   return (
     <Card className="p-4 bg-white/5 backdrop-blur-md border-white/10">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-bold text-lg">Safety Observations & Incidents</h3>
+        <h3 className="font-bold text-lg">ملاحظات وحوادث السلامة</h3>
         <Button size="sm" onClick={() => setCreating(!creating)} className="bg-orange-500/80">
           <Plus className="w-4 h-4 mr-1" /> تسجيل جديد
         </Button>
@@ -321,7 +321,7 @@ function ObservationPanel({ incidents, onChange }: any) {
             <SelectTrigger className="bg-slate-800/50 border-white/20"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="observation">ملاحظة سلامة</SelectItem>
-              <SelectItem value="near_miss">Near Miss</SelectItem>
+              <SelectItem value="near_miss">حالة وشيكة</SelectItem>
               <SelectItem value="incident">حادث</SelectItem>
               <SelectItem value="inspection">تفتيش</SelectItem>
             </SelectContent>
@@ -410,7 +410,7 @@ function EmergencyMap({ points, onChange }: any) {
   return (
     <Card className="p-4 bg-white/5 backdrop-blur-md border-white/10">
       <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
-        <h3 className="font-bold text-lg">Interactive Emergency Map</h3>
+        <h3 className="font-bold text-lg">خريطة الطوارئ التفاعلية</h3>
         <div className="flex flex-wrap gap-1">
           {types.map((t) => (
             <Button key={t.k} size="sm" variant={addMode === t.k ? "default" : "outline"} onClick={() => setAddMode(addMode === t.k ? null : t.k)} className={`h-7 text-xs ${addMode === t.k ? "bg-emerald-500" : "border-white/30 text-white bg-white/5"}`}>
@@ -479,7 +479,7 @@ function PPEPanel({ items, onChange }: any) {
   return (
     <Card className="p-4 bg-white/5 backdrop-blur-md border-white/10">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-bold text-lg">PPE Tracking</h3>
+        <h3 className="font-bold text-lg">تتبع معدات الوقاية الشخصية</h3>
         <Button size="sm" onClick={() => setCreating(!creating)} className="bg-purple-500/80">
           <Plus className="w-4 h-4 mr-1" /> تسليم PPE
         </Button>
@@ -541,22 +541,22 @@ function PPEPanel({ items, onChange }: any) {
 // ================ KPI Panel ================
 function KPIPanel({ k }: any) {
   const rows = [
-    { label: "Days Without LTI", value: k.daysNoLTI, target: 365, unit: "يوم" },
-    { label: "Total Recordable Incidents", value: k.totalRec, target: 0, unit: "" },
-    { label: "Near Miss Reports", value: k.nearMiss, target: 10, unit: "" },
-    { label: "Open Corrective Actions", value: k.openCorrective, target: 0, unit: "" },
-    { label: "PTW Compliance", value: k.ptwCompliance, target: 100, unit: "%" },
-    { label: "Safety Training Completion", value: 85, target: 100, unit: "%" },
-    { label: "Inspection Completion Rate", value: k.inspectionsDone, target: 30, unit: "" },
-    { label: "Emergency Drill Performance", value: 92, target: 100, unit: "%" },
+    { label: "أيام بلا إصابات مسجلة", value: k.daysNoLTI, target: 365, unit: "يوم" },
+    { label: "إجمالي الحوادث المسجلة", value: k.totalRec, target: 0, unit: "" },
+    { label: "تقارير الحالات الوشيكة", value: k.nearMiss, target: 10, unit: "" },
+    { label: "الإجراءات التصحيحية المفتوحة", value: k.openCorrective, target: 0, unit: "" },
+    { label: "نسبة الامتثال لتصاريح العمل", value: k.ptwCompliance, target: 100, unit: "%" },
+    { label: "إتمام التدريب على السلامة", value: 85, target: 100, unit: "%" },
+    { label: "معدل إتمام التفتيشات", value: k.inspectionsDone, target: 30, unit: "" },
+    { label: "أداء تمارين الطوارئ", value: 92, target: 100, unit: "%" },
   ];
   return (
     <Card className="p-4 bg-white/5 backdrop-blur-md border-white/10">
-      <h3 className="font-bold text-lg mb-4">HSE KPI Dashboard</h3>
+      <h3 className="font-bold text-lg mb-4">لوحة مؤشرات أداء السلامة</h3>
       <div className="grid md:grid-cols-2 gap-3">
         {rows.map((r) => {
           const pct = Math.min(100, (r.value / (r.target || 1)) * 100);
-          const good = r.label.includes("Incidents") || r.label.includes("Open Corrective")
+          const good = r.label.includes("الحوادث") || r.label.includes("التصحيحية")
             ? r.value <= r.target : pct >= 80;
           return (
             <div key={r.label} className="p-3 rounded-lg bg-slate-900/50 border border-white/10">

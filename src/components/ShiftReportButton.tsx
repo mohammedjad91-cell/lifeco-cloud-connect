@@ -137,9 +137,9 @@ export default function ShiftReportButton({ department, date }: Props) {
       }
 
       doc.save(`LIFECO_Shift_Report_${department}_${format(date, "yyyy-MM-dd")}.pdf`);
-      toast({ title: "Shift report generated" });
+      toast({ title: "تم إنشاء تقرير الوردية" });
     } catch (e: any) {
-      toast({ title: "Report failed", description: String(e?.message ?? e), variant: "destructive" });
+      toast({ title: "فشل إنشاء التقرير", description: String(e?.message ?? e), variant: "destructive" });
     } finally {
       setBusy(false);
     }
@@ -148,7 +148,7 @@ export default function ShiftReportButton({ department, date }: Props) {
   return (
     <Button onClick={generate} disabled={busy} className="gap-2">
       {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
-      Generate Shift Report (PDF)
+      إنشاء تقرير الوردية (PDF)
     </Button>
   );
 }

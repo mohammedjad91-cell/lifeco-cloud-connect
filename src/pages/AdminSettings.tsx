@@ -45,9 +45,9 @@ interface DynamicField {
 
 const MASTER_PIN = "9999";
 const FIELD_TYPES = [
-  { value: "number", label: "Number" },
-  { value: "text", label: "Text" },
-  { value: "dropdown", label: "Dropdown" },
+  { value: "number", label: "رقم" },
+  { value: "text", label: "نص" },
+  { value: "dropdown", label: "قائمة منسدلة" },
 ];
 
 const AdminSettings = () => {
@@ -306,7 +306,7 @@ const AdminSettings = () => {
           <p className="text-xs text-muted-foreground">{t.adminPortal}</p>
         </div>
         <Button variant="default" size="sm" onClick={() => navigate("/bi")} className="gap-1.5">
-          <Activity className="w-4 h-4" /> Live BI
+          <Activity className="w-4 h-4" /> ذكاء الأعمال المباشر
         </Button>
         <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
           <Globe className="w-4 h-4" /> {t.language}
@@ -531,9 +531,9 @@ const AdminSettings = () => {
                   {DEPARTMENTS.filter(d => d.id !== "OPERATIONS" && d.id !== "PLANTVIEW").map(d => (
                     <SelectItem key={d.id} value={d.id}>{d.label}</SelectItem>
                   ))}
-                  <SelectItem value="UREA">Urea</SelectItem>
-                  <SelectItem value="UTILITIES">Utilities</SelectItem>
-                  <SelectItem value="OFFSITE">Offsite</SelectItem>
+                  <SelectItem value="UREA">اليوريا</SelectItem>
+                  <SelectItem value="UTILITIES">المرافق</SelectItem>
+                  <SelectItem value="OFFSITE">خارج الموقع</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={newFieldSampleType} onValueChange={setNewFieldSampleType}>

@@ -13,7 +13,7 @@ export default function Assistant() {
   const ask = useServerFn(askAssistant);
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Hello! I'm the LIFECO PMS Assistant. Ask me about plant equipment, lab parameters, or how to use the system." },
+    { role: "assistant", content: "مرحباً! أنا مساعد نظام LIFECO PMS. اسألني عن معدات المصنع أو معايير المختبر أو كيفية استخدام النظام." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -34,7 +34,7 @@ export default function Assistant() {
       const res = await ask({ data: { messages: next } });
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch {
-      setMessages([...next, { role: "assistant", content: "Sorry, I couldn't reach the AI service." }]);
+      setMessages([...next, { role: "assistant", content: "عذراً، لم أتمكن من الوصول إلى خدمة الذكاء الاصطناعي." }]);
     } finally {
       setBusy(false);
     }
@@ -46,12 +46,12 @@ export default function Assistant() {
         <div className="flex items-center gap-3">
           <Sparkles className="w-6 h-6 text-primary" />
           <div>
-            <h1 className="font-display text-xl font-bold neon-text tracking-wider">AI Assistant</h1>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">LIFECO PMS Helper</p>
+            <h1 className="font-display text-xl font-bold neon-text tracking-wider">المساعد الذكي</h1>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">مساعد نظام LIFECO PMS</p>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5">
-          <ArrowLeft className="w-4 h-4" /> Back to Main
+          <ArrowLeft className="w-4 h-4" /> رجوع للرئيسية
         </Button>
       </header>
 
@@ -79,7 +79,7 @@ export default function Assistant() {
           ))}
           {busy && (
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <Loader2 className="w-4 h-4 animate-spin" /> Thinking…
+              <Loader2 className="w-4 h-4 animate-spin" /> جارٍ التفكير…
             </div>
           )}
           <div ref={endRef} />
@@ -90,12 +90,12 @@ export default function Assistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Ask about equipment, parameters, procedures…"
+            placeholder="اسأل عن المعدات أو المعايير أو الإجراءات…"
             disabled={busy}
             autoFocus
           />
           <Button onClick={send} disabled={busy || !input.trim()} className="gap-1.5">
-            <Send className="w-4 h-4" /> Send
+            <Send className="w-4 h-4" /> إرسال
           </Button>
         </div>
       </main>
