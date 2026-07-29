@@ -352,9 +352,9 @@ const PlantView = () => {
               <SelectTrigger className="w-32 bg-secondary/50"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{lang === "ar" ? "كل الحالات" : "All Status"}</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="alert">Alert</SelectItem>
+                <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
+                <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
+                <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
               </SelectContent>
             </Select>
 

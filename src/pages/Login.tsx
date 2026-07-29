@@ -105,7 +105,7 @@ const Login = () => {
           {t.opsLoggingSystem}
         </p>
         <p className="text-white/85 mt-2 text-sm drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
-          Prepared by Eng. Mohamed Gadalla
+          {lang === "ar" ? "إعداد: المهندس محمد جاد الله" : "Prepared by Eng. Mohamed Gadalla"}
         </p>
       </motion.div>
 

@@ -665,9 +665,9 @@ const LabDashboard = () => {
                           <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
                             <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="alert">Alert</SelectItem>
+                              <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
+                              <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
+                              <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
                             </SelectContent>
                           </Select>
                           <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>

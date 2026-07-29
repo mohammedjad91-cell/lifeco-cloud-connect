@@ -80,7 +80,7 @@ export default function OTS() {
           <div className="flex items-center gap-3">
             <Link to="/dashboard" className="text-cyan-300 hover:text-cyan-100"><Home size={18} /></Link>
             <div className="font-mono text-cyan-300 font-black text-lg tracking-widest">
-              LIFECO OTS · YOKOGAWA-STYLE DCS
+              LIFECO OTS · نظام تحكم موزع بطراز يوكوغاوا
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export default function OTS() {
               onClick={() => setMuted((m) => !m)}
               className="px-3 py-1.5 border-2 border-slate-600 bg-slate-800 font-mono text-xs flex items-center gap-1"
             >
-              {muted ? <VolumeX size={14} /> : <Volume2 size={14} />} {muted ? "MUTED" : "AUDIO ON"}
+              {muted ? <VolumeX size={14} /> : <Volume2 size={14} />} {muted ? "صامت" : "الصوت مفعّل"}
             </button>
           </div>
         </div>
@@ -117,15 +117,15 @@ export default function OTS() {
           <div className="max-w-[1600px] mx-auto px-4 py-2 flex items-center gap-3">
             <AlertTriangle className="flex-shrink-0" />
             <div className="flex-1 font-mono text-sm">
-              <span className="font-black">ALARM ({activeAlarms.length}):</span>{" "}
+              <span className="font-black">إنذار ({activeAlarms.length}):</span>{" "}
               {activeAlarms.slice(0, 3).map((a) => (
                 <span key={a.tag} className="mr-3">
-                  {a.tag} {a.kind} {a.value.toFixed(1)} (limit {a.limit})
+                  {a.tag} {a.kind} {a.value.toFixed(1)} (الحد {a.limit})
                 </span>
               ))}
             </div>
             <button onClick={() => setAcknowledged(true)}
-              className="px-3 py-1 bg-white text-red-700 font-mono font-black text-xs">ACK</button>
+              className="px-3 py-1 bg-white text-red-700 font-mono font-black text-xs">تأكيد</button>
           </div>
         </div>
       )}
@@ -143,7 +143,7 @@ export default function OTS() {
 
         <div className="space-y-3">
           <div className="font-mono text-cyan-300 text-sm font-bold tracking-wider">
-            CONTROLLER FACEPLATES
+            لوحات وحدات التحكم
           </div>
           {active.loops.map((l) => (
             <Faceplate key={l.tag} loop={l} onChange={(patch) => updateLoop(l.tag, patch)} />
@@ -152,7 +152,7 @@ export default function OTS() {
       </div>
 
       <div className="max-w-[1600px] mx-auto px-4 pb-6 text-[10px] text-slate-500 font-mono">
-        Training simulator — not connected to live process. Click any plant tab to switch. Use LOAD/UNLOAD, valve sliders, and setpoints to drive PVs into alarm bands and test response.
+        محاكي تدريبي — غير متصل بعملية حقيقية. انقر أي تبويب مصنع للتبديل. استخدم أزرار التحميل/التفريغ ومنزلقات الصمامات ونقاط الضبط لدفع القيم إلى نطاقات الإنذار واختبار الاستجابة.
       </div>
     </div>
   );

@@ -427,7 +427,7 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
-            <Sparkles className="w-4 h-4" /> AI Assistant
+            <Sparkles className="w-4 h-4" /> {lang === "ar" ? "المساعد الذكي" : "AI Assistant"}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
@@ -439,7 +439,7 @@ const Dashboard = () => {
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
-            <LogOut className="w-4 h-4" /> Back to Main
+            <LogOut className="w-4 h-4" /> {lang === "ar" ? "العودة للرئيسية" : "Back to Main"}
           </Button>
         </div>
       </header>
@@ -499,18 +499,18 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             <TabsTrigger value="assets" className="gap-1.5">
-              <Wrench className="w-3.5 h-3.5" /> Assets
+              <Wrench className="w-3.5 h-3.5" /> {lang === "ar" ? "الأصول" : "Assets"}
             </TabsTrigger>
             {department.id === "NITROGEN" && (
               <TabsTrigger value="nitrogen" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> N2 Log Sheets
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
               </TabsTrigger>
             )}
             <TabsTrigger value="report" className="gap-1.5">
-              <FileText className="w-3.5 h-3.5" /> Report
+              <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "التقرير" : "Report"}
             </TabsTrigger>
             <TabsTrigger value="ots" className="gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> OTS Simulator
+              <Sparkles className="w-3.5 h-3.5" /> {lang === "ar" ? "محاكي التدريب" : "OTS Simulator"}
             </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
@@ -715,8 +715,8 @@ const Dashboard = () => {
           <TabsContent value="report" className="mt-4 space-y-4">
             <div className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 className="font-display text-sm font-bold neon-text tracking-wider">SHIFT REPORT</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">Branded PDF — entries, personnel & activity for {format(selectedDate, "dd MMM yyyy")}</p>
+                <h3 className="font-display text-sm font-bold neon-text tracking-wider">{lang === "ar" ? "تقرير الوردية" : "SHIFT REPORT"}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">{lang === "ar" ? `تقرير PDF رسمي — السجلات والموظفون والنشاط ليوم ${format(selectedDate, "dd MMM yyyy")}` : `Branded PDF — entries, personnel & activity for ${format(selectedDate, "dd MMM yyyy")}`}</p>
               </div>
               <ShiftReportButton department={department.id} date={selectedDate} />
             </div>

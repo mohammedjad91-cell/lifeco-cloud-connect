@@ -224,7 +224,7 @@ const BIDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border px-4 md:px-6 py-3 glass-card rounded-none flex items-center gap-3 sticky top-0 z-30">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="Back to Main">
+        <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="العودة للرئيسية">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1 min-w-0">
@@ -235,7 +235,7 @@ const BIDashboard = () => {
             <Clock className="w-3 h-3" />
             آخر تحديث: {format(lastSync, "HH:mm:ss")}
             <span className="inline-flex items-center gap-1 ml-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> مباشر
             </span>
           </p>
         </div>
@@ -267,13 +267,13 @@ const BIDashboard = () => {
       <main className="p-4 md:p-6 space-y-5 max-w-[1600px] mx-auto">
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <KpiCard icon={Activity} label="Operations Logs" value={opsF.length}
+          <KpiCard icon={Activity} label="سجلات العمليات" value={opsF.length}
             delta={computeDelta(opsK.c, opsK.p)} color="hsl(190 100% 55%)" />
-          <KpiCard icon={FlaskConical} label="Lab Results" value={labF.length}
+          <KpiCard icon={FlaskConical} label="نتائج المختبر" value={labF.length}
             delta={computeDelta(labK.c, labK.p)} color="hsl(280 80% 65%)" />
-          <KpiCard icon={ClipboardList} label="Samples" value={sampF.length}
+          <KpiCard icon={ClipboardList} label="العينات" value={sampF.length}
             delta={computeDelta(sampK.c, sampK.p)} color="hsl(340 80% 60%)" />
-          <KpiCard icon={Wrench} label="Field Ops" value={fOpsF.length}
+          <KpiCard icon={Wrench} label="العمليات الميدانية" value={fOpsF.length}
             delta={computeDelta(fOpsK.c, fOpsK.p)} color="hsl(45 90% 60%)" />
         </div>
 
