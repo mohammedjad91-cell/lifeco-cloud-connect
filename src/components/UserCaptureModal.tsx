@@ -48,13 +48,13 @@ export default function UserCaptureModal({ open, department, onComplete }: Props
           >
             <div className="flex items-center gap-2 mb-4">
               <User className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold neon-text">Operator Identification</h2>
+              <h2 className="text-lg font-semibold neon-text">تعريف المشغّل</h2>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Confirm your name and employee ID. Every entry will be stamped with this information.
+              أكّد اسمك ورقمك الوظيفي. سيتم ختم كل إدخال بهذه المعلومات.
             </p>
             <div className="space-y-3">
-              <FormField label="Operator Name" required hint="Shown on every entry you record in this session.">
+              <FormField label="اسم المشغّل" required hint="يظهر في كل إدخال تسجّله خلال هذه الجلسة.">
                 {(id) => (
                   <Input
                     id={id}
@@ -62,18 +62,18 @@ export default function UserCaptureModal({ open, department, onComplete }: Props
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && submit()}
-                    placeholder="e.g. Mohammed Gadallah"
+                    placeholder="مثال: محمد جاد الله"
                   />
                 )}
               </FormField>
-              <FormField label="Employee ID" required hint="Used to trace entries back to you in audits and reports.">
+              <FormField label="الرقم الوظيفي" required hint="يُستخدم لتتبع الإدخالات المرتبطة بك في التدقيق والتقارير.">
                 {(id) => (
                   <Input
                     id={id}
                     value={empId}
                     onChange={(e) => setEmpId(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && submit()}
-                    placeholder="e.g. 12345"
+                    placeholder="مثال: 12345"
                   />
                 )}
               </FormField>
@@ -83,7 +83,7 @@ export default function UserCaptureModal({ open, department, onComplete }: Props
               disabled={!name.trim() || !empId.trim()}
               onClick={submit}
             >
-              Continue <ArrowRight className="w-4 h-4" />
+              متابعة <ArrowRight className="w-4 h-4" />
             </Button>
           </motion.div>
         </motion.div>

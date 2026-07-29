@@ -149,7 +149,7 @@ export default function PlantTrainingSimulator() {
         setPipeStart(null);
       }
     } else if (tool === "label") {
-      const text = window.prompt("Label text:", "TAG");
+      const text = window.prompt("نص التسمية:", "TAG");
       if (text) {
         const id = "l_" + Date.now();
         setLayer((l) => ({ ...l, labels: [...l.labels, { id, x: p.x, y: p.y, text }] }));
@@ -189,7 +189,7 @@ export default function PlantTrainingSimulator() {
   };
 
   const handleMouseUp = () => setDrag(null);
-  const clearLayer = () => { if (window.confirm("Clear all custom items?")) setLayer(EMPTY_LAYER); };
+  const clearLayer = () => { if (window.confirm("مسح جميع العناصر المخصصة؟")) setLayer(EMPTY_LAYER); };
 
 
   useEffect(() => {
@@ -256,46 +256,46 @@ export default function PlantTrainingSimulator() {
         <div className="flex items-center gap-2">
           <button onClick={() => setZoom((z) => Math.min(1.6, z + 0.1))}
             className="px-2 py-0.5 bg-[#e0e0e0] border border-[#888] text-black hover:bg-white flex items-center gap-1">
-            <ZoomIn className="w-3 h-3" /> Zoom +
+            <ZoomIn className="w-3 h-3" /> تكبير +
           </button>
           <button onClick={() => setZoom((z) => Math.max(0.6, z - 0.1))}
             className="px-2 py-0.5 bg-[#e0e0e0] border border-[#888] text-black hover:bg-white flex items-center gap-1">
-            <ZoomOut className="w-3 h-3" /> Zoom −
+            <ZoomOut className="w-3 h-3" /> تصغير −
           </button>
           <span className="text-[#555]">{Math.round(zoom * 100)}%</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => { setEditMode((e) => !e); setTool("select"); setPipeStart(null); }}
             className={`px-3 py-0.5 border flex items-center gap-1.5 ${editMode ? "bg-[#fff4b8] border-[#a07a00] text-[#604a00] font-bold" : "bg-[#e0e0e0] border-[#888] text-black"}`}>
-            <Pencil className="w-3 h-3" /> {editMode ? "EDIT: ON" : "EDIT MODE"}
+            <Pencil className="w-3 h-3" /> {editMode ? "التحرير: يعمل" : "وضع التحرير"}
           </button>
           <button onClick={() => setMuted((m) => !m)}
             className={`px-3 py-0.5 border flex items-center gap-1.5 ${muted ? "bg-[#e0e0e0] border-[#888] text-[#444]" : "bg-[#ffd0d0] border-[#d61f1f] text-[#a01010]"}`}>
-            {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} MUTE ALARM
+            {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />} كتم الإنذار
           </button>
           <button onClick={reset}
             className="px-3 py-0.5 bg-[#d0e0ff] border border-[#1b4fa6] text-[#1b4fa6] hover:bg-[#e0eaff] flex items-center gap-1.5">
-            <RotateCcw className="w-3 h-3" /> RESET SIMULATOR
+            <RotateCcw className="w-3 h-3" /> إعادة تعيين المحاكي
           </button>
         </div>
       </div>
 
       {editMode && (
         <div className="flex flex-wrap items-center gap-2 px-2 py-1.5 bg-[#fff4b8] border border-[#a07a00] font-sans text-[11px] text-[#604a00]">
-          <span className="font-bold tracking-widest">TOOLS:</span>
+          <span className="font-bold tracking-widest">الأدوات:</span>
           {([
-            { k: "select" as EditTool, label: "Select / Drag", icon: MousePointer2 },
-            { k: "valve" as EditTool, label: "+ Valve", icon: Plus },
-            { k: "pipe" as EditTool, label: "+ Pipe", icon: Spline },
-            { k: "label" as EditTool, label: "+ Label", icon: Plus },
-            { k: "delete" as EditTool, label: "Delete", icon: Trash2 },
+            { k: "select" as EditTool, label: "تحديد / سحب", icon: MousePointer2 },
+            { k: "valve" as EditTool, label: "+ صمام", icon: Plus },
+            { k: "pipe" as EditTool, label: "+ أنبوب", icon: Spline },
+            { k: "label" as EditTool, label: "+ تسمية", icon: Plus },
+            { k: "delete" as EditTool, label: "حذف", icon: Trash2 },
           ]).map(({ k, label, icon: Ic }) => (
             <button key={k} onClick={() => { setTool(k); setPipeStart(null); }}
               className={`px-2 py-0.5 border flex items-center gap-1 ${tool === k ? "bg-[#604a00] text-white border-[#604a00]" : "bg-white border-[#a07a00] hover:bg-[#fff8d8]"}`}>
               <Ic className="w-3 h-3" /> {label}
             </button>
           ))}
-          <span className="ml-2">Pipe color:</span>
+          <span className="ml-2">لون الأنبوب:</span>
           {["#1a1a1a", "#0aa3c2", "#1b4fa6", "#1b8a2e", "#d61f1f", "#d96a18"].map((c) => (
             <button key={c} onClick={() => setPipeColor(c)}
               className={`w-5 h-5 border-2 ${pipeColor === c ? "border-black" : "border-[#888]"}`}
@@ -303,14 +303,14 @@ export default function PlantTrainingSimulator() {
           ))}
           <button onClick={clearLayer}
             className="ml-auto px-2 py-0.5 bg-[#ffd0d0] border border-[#d61f1f] text-[#a01010] flex items-center gap-1">
-            <Trash2 className="w-3 h-3" /> Clear custom
+            <Trash2 className="w-3 h-3" /> مسح المخصص
           </button>
           <span className="px-2 py-0.5 bg-white border border-[#a07a00] flex items-center gap-1">
-            <Save className="w-3 h-3" /> Auto-saved
+            <Save className="w-3 h-3" /> حفظ تلقائي
           </span>
           {tool === "pipe" && pipeStart && (
             <span className="px-2 py-0.5 bg-[#cce0ff] border border-[#1b4fa6] text-[#1b4fa6]">
-              Click second point to finish ({pipeStart.x},{pipeStart.y})
+              انقر على النقطة الثانية للإنهاء ({pipeStart.x},{pipeStart.y})
             </span>
           )}
         </div>

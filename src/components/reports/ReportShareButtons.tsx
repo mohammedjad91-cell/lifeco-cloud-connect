@@ -43,23 +43,23 @@ export const ReportShareButtons: React.FC<ReportShareButtonsProps> = ({
       <button
         onClick={handleCopyLink}
         className="btn btn-secondary"
-        title="Copy sharing link"
+        title="نسخ رابط المشاركة"
       >
-        {copied ? '✓ Copied' : '📋 Copy Link'}
+        {copied ? '✓ تم النسخ' : '📋 نسخ الرابط'}
       </button>
       <button
         onClick={handleShareEmail}
         className="btn btn-secondary"
-        title="Share via email"
+        title="مشاركة عبر البريد الإلكتروني"
       >
-        📧 Email
+        📧 البريد الإلكتروني
       </button>
       <button
         onClick={handleDownload}
         className="btn btn-secondary"
-        title="Download report"
+        title="تنزيل التقرير"
       >
-        📥 Download
+        📥 تنزيل
       </button>
     </div>
   );

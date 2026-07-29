@@ -11,7 +11,7 @@ interface Msg { role: "user" | "assistant"; content: string; }
 const GREETING: Msg = {
   role: "assistant",
   content:
-    "LIFECO Technical AI online. Ask me about plant procedures, maintenance tips, equipment limits or troubleshooting steps for the Nitrogen, Ammonia or Demin units.",
+    "الذكاء الاصطناعي الفني لـ LIFECO متصل الآن. اسألني عن إجراءات المصنع، نصائح الصيانة، حدود المعدات، أو خطوات استكشاف الأعطال وإصلاحها لوحدات النيتروجين أو الأمونيا أو الديمن.",
 };
 
 export default function AIChatSidebar() {
@@ -37,7 +37,7 @@ export default function AIChatSidebar() {
       const res = await ask({ data: { messages: next } });
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch {
-      setMessages([...next, { role: "assistant", content: "⚠ Unable to reach AI service. Check connectivity and retry." }]);
+      setMessages([...next, { role: "assistant", content: "⚠ تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقّق من الاتصال وأعد المحاولة." }]);
     } finally {
       setBusy(false);
     }
@@ -53,7 +53,7 @@ export default function AIChatSidebar() {
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen((o) => !o)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full glass-card neon-border flex items-center justify-center text-primary shadow-[0_0_25px_hsl(var(--primary)/0.5)]"
-        title="LIFECO Technical AI"
+        title="الذكاء الاصطناعي الفني لـ LIFECO"
       >
         {open ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
       </motion.button>
@@ -71,7 +71,7 @@ export default function AIChatSidebar() {
               <Bot className="w-5 h-5 text-primary" />
               <div className="flex-1 min-w-0">
                 <h2 className="font-display text-sm font-bold neon-text tracking-wider">LIFECO TECHNICAL AI</h2>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Process Expert · Online</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground">خبير العمليات · متصل</p>
               </div>
               <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => setOpen(false)}>
                 <X className="w-4 h-4" />
@@ -94,7 +94,7 @@ export default function AIChatSidebar() {
               ))}
               {busy && (
                 <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Analyzing…
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> جارٍ التحليل…
                 </div>
               )}
               <div ref={endRef} />
@@ -105,7 +105,7 @@ export default function AIChatSidebar() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="Ask procedure, tip, limit…"
+                placeholder="اسأل عن إجراء، نصيحة، أو حد تشغيلي…"
                 disabled={busy}
                 className="bg-background/60"
               />

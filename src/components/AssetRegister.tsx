@@ -82,9 +82,9 @@ export default function AssetRegister({ department }: Props) {
       is_custom: true,
     });
     if (error) {
-      toast({ title: "Failed to add", variant: "destructive" });
+      toast({ title: "فشل الإضافة", variant: "destructive" });
     } else {
-      toast({ title: "Equipment added" });
+      toast({ title: "تمت إضافة المعدة" });
       setNewCode("");
       setNewName("");
       setAdding(false);
@@ -103,7 +103,7 @@ export default function AssetRegister({ department }: Props) {
       recorded_by: stamp.formatted,
     });
     if (!error) {
-      toast({ title: "Maintenance record saved" });
+      toast({ title: "تم حفظ سجل الصيانة" });
       setNoteDraft((p) => ({ ...p, [assetId]: "" }));
       fetchRecords(assetId);
     }
@@ -112,7 +112,7 @@ export default function AssetRegister({ department }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading asset register…
+        <Loader2 className="w-5 h-5 animate-spin mr-2" /> جارٍ تحميل سجل المعدات…
       </div>
     );
   }
@@ -121,10 +121,10 @@ export default function AssetRegister({ department }: Props) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold neon-text flex items-center gap-2">
-          <Wrench className="w-5 h-5" /> Asset Register — {department}
+          <Wrench className="w-5 h-5" /> سجل المعدات — {department}
         </h3>
         <Button size="sm" onClick={() => setAdding((s) => !s)} className="gap-1.5">
-          <Plus className="w-4 h-4" /> Add Equipment
+          <Plus className="w-4 h-4" /> إضافة معدة
         </Button>
       </div>
 
@@ -136,35 +136,35 @@ export default function AssetRegister({ department }: Props) {
         >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormField
-              label="Asset Code / Tag"
+              label="رمز/علامة المعدة"
               required
-              hint="Plant tag exactly as it appears on the equipment nameplate."
+              hint="العلامة كما تظهر بالضبط على لوحة بيانات المعدة."
             >
               {(id) => (
-                <Input id={id} value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="e.g. P-201" />
+                <Input id={id} value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="مثال: P-201" />
               )}
             </FormField>
             <FormField
-              label="Asset Name"
+              label="اسم المعدة"
               required
-              hint="Plain description used in lists and reports."
+              hint="وصف مبسط يُستخدم في القوائم والتقارير."
             >
               {(id) => (
-                <Input id={id} value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Booster Pump" />
+                <Input id={id} value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="مثال: مضخة معززة" />
               )}
             </FormField>
           </div>
 
           <div className="flex gap-2 justify-end">
-            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>Cancel</Button>
-            <Button size="sm" onClick={addAsset}>Save</Button>
+            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>إلغاء</Button>
+            <Button size="sm" onClick={addAsset}>حفظ</Button>
           </div>
         </motion.div>
       )}
 
       <div className="space-y-2">
         {assets.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-6">No equipment registered yet.</p>
+          <p className="text-sm text-muted-foreground text-center py-6">لا توجد معدات مسجلة بعد.</p>
         )}
         {assets.map((a) => (
           <div key={a.id} className="glass-card p-3">
@@ -178,7 +178,7 @@ export default function AssetRegister({ department }: Props) {
                   <span className="text-foreground font-medium">{a.asset_name}</span>
                   {a.is_custom && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-muted-foreground uppercase">
-                      Custom
+                      مخصص
                     </span>
                   )}
                 </div>
@@ -205,29 +205,29 @@ export default function AssetRegister({ department }: Props) {
 
                 <div className="space-y-2">
                   <FormField
-                    label="Add Maintenance Record"
-                    hint="Stamped automatically with your name, employee ID, and the current date."
+                    label="إضافة سجل صيانة"
+                    hint="يُختم تلقائيًا باسمك ورقمك الوظيفي والتاريخ الحالي."
                   >
                     {(id) => (
                       <Textarea
                         id={id}
                         value={noteDraft[a.id] || ""}
                         onChange={(e) => setNoteDraft((p) => ({ ...p, [a.id]: e.target.value }))}
-                        placeholder="Describe inspection, repair, lubrication, parts replaced…"
+                        placeholder="صف الفحص أو الإصلاح أو التزييت أو القطع المستبدلة…"
                         rows={2}
                       />
                     )}
                   </FormField>
 
                   <div className="flex justify-end">
-                    <Button size="sm" onClick={() => addNote(a.id)}>Save Record</Button>
+                    <Button size="sm" onClick={() => addNote(a.id)}>حفظ السجل</Button>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">History</Label>
+                  <Label className="text-xs text-muted-foreground">السجل</Label>
                   {(records[a.id] || []).length === 0 && (
-                    <p className="text-xs text-muted-foreground italic">No records yet.</p>
+                    <p className="text-xs text-muted-foreground italic">لا توجد سجلات بعد.</p>
                   )}
                   {(records[a.id] || []).map((r) => (
                     <div key={r.id} className="text-xs p-2 rounded bg-secondary/40 border border-border">

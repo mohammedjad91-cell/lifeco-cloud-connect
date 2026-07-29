@@ -229,23 +229,23 @@ function DashboardSection() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatTile label="Platform Status"  value="Online" sub="All services healthy" tone="green" />
-        <StatTile label="Database"         value="Connected" sub="Lovable Cloud" tone="blue" />
-        <StatTile label="Backup"           value="Auto"      sub="Daily snapshots" tone="blue" />
-        <StatTile label="Server"           value="Edge"      sub="Cloudflare Workers" tone="green" />
+        <StatTile label="حالة المنصة"  value="متصلة" sub="جميع الخدمات تعمل بشكل جيد" tone="green" />
+        <StatTile label="قاعدة البيانات"         value="متصلة" sub="Lovable Cloud" tone="blue" />
+        <StatTile label="النسخ الاحتياطي"           value="تلقائي"      sub="نسخ يومية" tone="blue" />
+        <StatTile label="الخادم"           value="Edge"      sub="Cloudflare Workers" tone="green" />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <StatTile label="Users"      value={stats.users} tone="blue" />
-        <StatTile label="Plants"     value={stats.plants} tone="blue" />
-        <StatTile label="Equipment"  value={stats.equipment} tone="orange" />
-        <StatTile label="Files"      value={stats.files} tone="green" />
-        <StatTile label="Activity Logs" value={stats.logs} tone="orange" />
+        <StatTile label="المستخدمون"      value={stats.users} tone="blue" />
+        <StatTile label="المصانع"     value={stats.plants} tone="blue" />
+        <StatTile label="المعدات"  value={stats.equipment} tone="orange" />
+        <StatTile label="الملفات"      value={stats.files} tone="green" />
+        <StatTile label="سجلات النشاط" value={stats.logs} tone="orange" />
       </div>
-      <Card title="System Notifications" icon={Bell}>
+      <Card title="إشعارات النظام" icon={Bell}>
         <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2 text-emerald-300"><CheckCircle2 className="w-4 h-4"/>All modules operational</div>
-          <div className="flex items-center gap-2 text-blue-200"><CheckCircle2 className="w-4 h-4"/>Storage under quota</div>
-          <div className="flex items-center gap-2 text-amber-300"><AlertCircle className="w-4 h-4"/>Review security findings weekly</div>
+          <div className="flex items-center gap-2 text-emerald-300"><CheckCircle2 className="w-4 h-4"/>جميع الوحدات تعمل بشكل طبيعي</div>
+          <div className="flex items-center gap-2 text-blue-200"><CheckCircle2 className="w-4 h-4"/>مساحة التخزين ضمن الحد المسموح</div>
+          <div className="flex items-center gap-2 text-amber-300"><AlertCircle className="w-4 h-4"/>راجع نتائج الأمان أسبوعياً</div>
         </div>
       </Card>
     </div>
@@ -266,18 +266,18 @@ function OrgSection() {
   useEffect(() => { load(); }, [load]);
 
   const addPlant = async () => {
-    if (!form.code || !form.name) return toast({ title: "Fill code and name", variant: "destructive" });
+    if (!form.code || !form.name) return toast({ title: "يرجى إدخال الرمز والاسم", variant: "destructive" });
     const { error } = await supabase.from("plants").insert(form as any);
-    if (error) return toast({ title: "Insert failed", description: error.message, variant: "destructive" });
-    toast({ title: "Plant added" });
+    if (error) return toast({ title: "فشل الإضافة", description: error.message, variant: "destructive" });
+    toast({ title: "تمت إضافة المصنع" });
     setForm({ code: "", name: "", department: DEPARTMENTS[0].id });
     load();
   };
   const removePlant = async (id: string) => {
-    if (!confirm("Delete this plant?")) return;
+    if (!confirm("هل تريد حذف هذا المصنع؟")) return;
     const { error } = await supabase.from("plants").delete().eq("id", id);
-    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-    toast({ title: "Plant deleted" });
+    if (error) return toast({ title: "فشل الحذف", description: error.message, variant: "destructive" });
+    toast({ title: "تم حذف المصنع" });
     load();
   };
 
@@ -286,7 +286,7 @@ function OrgSection() {
 
   return (
     <div className="space-y-6">
-      <Card title="Departments" icon={Building2}>
+      <Card title="الإدارات" icon={Building2}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {DEPARTMENTS.map((d) => (
             <div key={d.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
@@ -297,23 +297,23 @@ function OrgSection() {
         </div>
       </Card>
 
-      <Card title="Add Plant" icon={Plus}>
+      <Card title="إضافة مصنع" icon={Plus}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-          <Input placeholder="Code (e.g. AMM-3)" value={form.code} onChange={(e)=>setForm({...form, code:e.target.value})} className="bg-white/5 border-white/10 text-white" />
-          <Input placeholder="Name" value={form.name} onChange={(e)=>setForm({...form, name:e.target.value})} className="bg-white/5 border-white/10 text-white" />
+          <Input placeholder="الرمز (مثال: AMM-3)" value={form.code} onChange={(e)=>setForm({...form, code:e.target.value})} className="bg-white/5 border-white/10 text-white" />
+          <Input placeholder="الاسم" value={form.name} onChange={(e)=>setForm({...form, name:e.target.value})} className="bg-white/5 border-white/10 text-white" />
           <select value={form.department} onChange={(e)=>setForm({...form, department:e.target.value})}
             className="bg-slate-800 border border-white/10 rounded-md px-3 text-sm">
             {DEPARTMENTS.map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
           </select>
-          <Button onClick={addPlant} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>Add</Button>
+          <Button onClick={addPlant} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>إضافة</Button>
         </div>
       </Card>
 
-      <Card title={`Plants (${plants.length})`} icon={Building2}
+      <Card title={`المصانع (${plants.length})`} icon={Building2}
         action={<Button size="sm" variant="ghost" onClick={load}><RefreshCw className="w-4 h-4"/></Button>}>
         <div className="flex items-center gap-2 mb-3">
           <Search className="w-4 h-4 text-white/40" />
-          <Input placeholder="Search..." value={filter} onChange={(e)=>setFilter(e.target.value)}
+          <Input placeholder="بحث..." value={filter} onChange={(e)=>setFilter(e.target.value)}
             className="bg-white/5 border-white/10 text-white" />
         </div>
         <div className="max-h-96 overflow-y-auto space-y-1">
@@ -350,32 +350,32 @@ function EquipmentSection() {
   useEffect(() => { load(); }, [load]);
 
   const add = async () => {
-    if (!form.tag_number) return toast({ title: "Tag number required", variant: "destructive" });
+    if (!form.tag_number) return toast({ title: "رقم العلامة مطلوب", variant: "destructive" });
     const { error } = await supabase.from("equipment_assets").insert(form as any);
-    if (error) return toast({ title: "Insert failed", description: error.message, variant: "destructive" });
-    toast({ title: "Equipment added" });
+    if (error) return toast({ title: "فشل الإضافة", description: error.message, variant: "destructive" });
+    toast({ title: "تمت إضافة المعدة" });
     setForm({ tag_number: "", name: "", category: "", location: "", status: "active" });
     load();
   };
   const remove = async (id: string) => {
-    if (!confirm("Delete this equipment?")) return;
+    if (!confirm("هل تريد حذف هذه المعدة؟")) return;
     const { error } = await supabase.from("equipment_assets").delete().eq("id", id);
-    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    if (error) return toast({ title: "فشل الحذف", description: error.message, variant: "destructive" });
     load();
   };
 
   return (
     <div className="space-y-6">
-      <Card title="Add Equipment" icon={Plus}>
+      <Card title="إضافة معدة" icon={Plus}>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
-          <Input placeholder="Tag #" value={form.tag_number} onChange={(e)=>setForm({...form, tag_number:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
-          <Input placeholder="Name" value={form.name} onChange={(e)=>setForm({...form, name:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
-          <Input placeholder="Category" value={form.category} onChange={(e)=>setForm({...form, category:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
-          <Input placeholder="Location" value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
-          <Button onClick={add} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>Add</Button>
+          <Input placeholder="رقم العلامة" value={form.tag_number} onChange={(e)=>setForm({...form, tag_number:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
+          <Input placeholder="الاسم" value={form.name} onChange={(e)=>setForm({...form, name:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
+          <Input placeholder="الفئة" value={form.category} onChange={(e)=>setForm({...form, category:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
+          <Input placeholder="الموقع" value={form.location} onChange={(e)=>setForm({...form, location:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
+          <Button onClick={add} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>إضافة</Button>
         </div>
       </Card>
-      <Card title={`Equipment Registry (${rows.length})`} icon={Wrench}
+      <Card title={`سجل المعدات (${rows.length})`} icon={Wrench}
         action={<Button size="sm" variant="ghost" onClick={load}><RefreshCw className="w-4 h-4"/></Button>}>
         <div className="max-h-[600px] overflow-y-auto space-y-1">
           {rows.map((e) => (
@@ -390,7 +390,7 @@ function EquipmentSection() {
               </div>
             </div>
           ))}
-          {rows.length === 0 && <div className="text-white/50 text-sm p-6 text-center">No equipment records.</div>}
+          {rows.length === 0 && <div className="text-white/50 text-sm p-6 text-center">لا توجد سجلات معدات.</div>}
         </div>
       </Card>
     </div>
@@ -412,7 +412,7 @@ function LibrarySection() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {Object.entries(byCategory).map(([k, v]) => (<StatTile key={k} label={k} value={v} tone="blue" />))}
       </div>
-      <Card title={`Recent Files (${files.length})`} icon={FolderOpen}>
+      <Card title={`الملفات الحديثة (${files.length})`} icon={FolderOpen}>
         <div className="max-h-[500px] overflow-y-auto space-y-1">
           {files.map((f) => (
             <div key={f.id} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm">
@@ -443,44 +443,44 @@ function UsersSection() {
   useEffect(() => { load(); }, [load]);
 
   const add = async () => {
-    if (!form.user_id) return toast({ title: "User ID required", variant: "destructive" });
+    if (!form.user_id) return toast({ title: "معرّف المستخدم مطلوب", variant: "destructive" });
     const { error } = await supabase.from("user_roles").insert(form as any);
-    if (error) return toast({ title: "Insert failed", description: error.message, variant: "destructive" });
-    toast({ title: "Role assigned" });
+    if (error) return toast({ title: "فشل الإضافة", description: error.message, variant: "destructive" });
+    toast({ title: "تم تعيين الصلاحية" });
     setForm({ user_id: "", role: "engineer" });
     load();
   };
   const updateRole = async (id: string, role: string) => {
     const { error } = await supabase.from("user_roles").update({ role: role as any }).eq("id", id);
-    if (error) return toast({ title: "Update failed", description: error.message, variant: "destructive" });
-    toast({ title: "Role updated" });
+    if (error) return toast({ title: "فشل التحديث", description: error.message, variant: "destructive" });
+    toast({ title: "تم تحديث الصلاحية" });
     load();
   };
   const remove = async (id: string) => {
-    if (!confirm("Remove this role assignment?")) return;
+    if (!confirm("هل تريد إزالة تعيين الصلاحية هذا؟")) return;
     await supabase.from("user_roles").delete().eq("id", id);
     load();
   };
 
   return (
     <div className="space-y-6">
-      <Card title="Assign Role" icon={Plus}>
+      <Card title="تعيين صلاحية" icon={Plus}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <Input placeholder="User UUID" value={form.user_id} onChange={(e)=>setForm({...form, user_id:e.target.value})} className="bg-white/5 border-white/10 text-white font-mono text-xs"/>
+          <Input placeholder="معرّف المستخدم" value={form.user_id} onChange={(e)=>setForm({...form, user_id:e.target.value})} className="bg-white/5 border-white/10 text-white font-mono text-xs"/>
           <select value={form.role} onChange={(e)=>setForm({...form, role:e.target.value})} className="bg-slate-800 border border-white/10 rounded-md px-3 text-sm">
             {APP_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <Button onClick={add} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>Assign</Button>
+          <Button onClick={add} className="bg-emerald-600 hover:bg-emerald-500"><Plus className="w-4 h-4 mr-1"/>تعيين</Button>
         </div>
       </Card>
-      <Card title={`User Roles (${roles.length})`} icon={Users}
+      <Card title={`صلاحيات المستخدمين (${roles.length})`} icon={Users}
         action={<Button size="sm" variant="ghost" onClick={load}><RefreshCw className="w-4 h-4"/></Button>}>
         <div className="space-y-1 max-h-[600px] overflow-y-auto">
           {roles.map((r) => (
             <div key={r.id} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm">
               <div>
                 <div className="font-mono text-xs text-white/70">{r.user_id}</div>
-                <div className="text-xs text-white/50">Assigned {new Date(r.created_at).toLocaleDateString()}</div>
+                <div className="text-xs text-white/50">تم التعيين بتاريخ {new Date(r.created_at).toLocaleDateString()}</div>
               </div>
               <div className="flex items-center gap-2">
                 <select value={r.role} onChange={(e)=>updateRole(r.id, e.target.value)}
@@ -491,7 +491,7 @@ function UsersSection() {
               </div>
             </div>
           ))}
-          {roles.length === 0 && <div className="text-white/50 text-sm p-6 text-center">No user roles assigned yet.</div>}
+          {roles.length === 0 && <div className="text-white/50 text-sm p-6 text-center">لم يتم تعيين أي صلاحيات بعد.</div>}
         </div>
       </Card>
     </div>
@@ -501,17 +501,17 @@ function UsersSection() {
 /* ---------------- Roles Info ---------------- */
 function RolesSection() {
   const roles = [
-    { key: "super_admin",  label: "Super Administrator", desc: "Full platform control" },
-    { key: "dept_manager", label: "Department Manager",  desc: "Manage a single department" },
-    { key: "engineer",     label: "Engineer",            desc: "Technical operations & reports" },
-    { key: "supervisor",   label: "Supervisor",          desc: "Shift and permit approvals" },
-    { key: "technician",   label: "Technician",          desc: "Execute maintenance tasks" },
-    { key: "lab_user",     label: "Laboratory User",     desc: "Sample & result entry" },
-    { key: "warehouse",    label: "Warehouse User",      desc: "Materials & spares" },
-    { key: "read_only",    label: "Read Only",           desc: "View-only access" },
+    { key: "super_admin",  label: "مدير عام", desc: "تحكم كامل بالمنصة" },
+    { key: "dept_manager", label: "مدير قسم",  desc: "إدارة قسم واحد" },
+    { key: "engineer",     label: "مهندس",            desc: "العمليات الفنية والتقارير" },
+    { key: "supervisor",   label: "مشرف",          desc: "اعتماد الورديات وتصاريح العمل" },
+    { key: "technician",   label: "فني",          desc: "تنفيذ مهام الصيانة" },
+    { key: "lab_user",     label: "مستخدم مختبر",     desc: "إدخال العينات والنتائج" },
+    { key: "warehouse",    label: "مستخدم مستودع",      desc: "المواد وقطع الغيار" },
+    { key: "read_only",    label: "قراءة فقط",           desc: "صلاحية عرض فقط" },
   ];
   return (
-    <Card title="Role Definitions" icon={ShieldCheck}>
+    <Card title="تعريفات الصلاحيات" icon={ShieldCheck}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {roles.map((r) => (
           <div key={r.key} className="p-3 rounded-lg bg-white/5 border border-white/10">
@@ -530,7 +530,7 @@ function RolesSection() {
 /* ---------------- Branding (editable) ---------------- */
 function BrandingSection() {
   const { toast } = useToast();
-  const [b, setB] = useState({ company_name: "LIFECO", primary_color: "#3B82F6", accent_color: "#06B6D4", footer_text: "Prepared by Eng. Mohamed Gadalla" });
+  const [b, setB] = useState({ company_name: "LIFECO", primary_color: "#3B82F6", accent_color: "#06B6D4", footer_text: "إعداد م. محمد جاد الله" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -540,35 +540,35 @@ function BrandingSection() {
 
   const save = async () => {
     const { error } = await saveSetting("branding", b);
-    if (error) return toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    if (error) return toast({ title: "فشل الحفظ", description: error.message, variant: "destructive" });
     localStorage.setItem("lifeco.branding", JSON.stringify(b));
     document.documentElement.style.setProperty("--brand-primary", b.primary_color);
     document.documentElement.style.setProperty("--brand-accent", b.accent_color);
-    toast({ title: "Branding saved", description: "Applied across the platform." });
+    toast({ title: "تم حفظ الهوية البصرية", description: "تم تطبيقها على مستوى المنصة." });
   };
 
-  if (loading) return <div className="text-white/60">Loading...</div>;
+  if (loading) return <div className="text-white/60">جارٍ التحميل...</div>;
   return (
-    <Card title="Branding" icon={Palette}
-      action={<Button onClick={save} size="sm" className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>Save</Button>}>
+    <Card title="الهوية البصرية" icon={Palette}
+      action={<Button onClick={save} size="sm" className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>حفظ</Button>}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="text-sm space-y-1">
-          <div className="text-white/70">Company Name</div>
+          <div className="text-white/70">اسم الشركة</div>
           <Input value={b.company_name} onChange={(e)=>setB({...b, company_name:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
         </label>
         <label className="text-sm space-y-1">
-          <div className="text-white/70">Footer Text</div>
+          <div className="text-white/70">نص التذييل</div>
           <Input value={b.footer_text} onChange={(e)=>setB({...b, footer_text:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
         </label>
         <label className="text-sm space-y-1">
-          <div className="text-white/70">Primary Color</div>
+          <div className="text-white/70">اللون الأساسي</div>
           <div className="flex gap-2">
             <input type="color" value={b.primary_color} onChange={(e)=>setB({...b, primary_color:e.target.value})} className="w-12 h-10 rounded bg-transparent border border-white/10"/>
             <Input value={b.primary_color} onChange={(e)=>setB({...b, primary_color:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
           </div>
         </label>
         <label className="text-sm space-y-1">
-          <div className="text-white/70">Accent Color</div>
+          <div className="text-white/70">لون التمييز</div>
           <div className="flex gap-2">
             <input type="color" value={b.accent_color} onChange={(e)=>setB({...b, accent_color:e.target.value})} className="w-12 h-10 rounded bg-transparent border border-white/10"/>
             <Input value={b.accent_color} onChange={(e)=>setB({...b, accent_color:e.target.value})} className="bg-white/5 border-white/10 text-white"/>
@@ -578,7 +578,7 @@ function BrandingSection() {
       <div className="mt-6 p-4 rounded-lg border border-white/10" style={{ background: `linear-gradient(135deg, ${b.primary_color}33, ${b.accent_color}22)` }}>
         <div className="text-lg font-bold">{b.company_name}</div>
         <div className="text-xs text-white/70">{b.footer_text}</div>
-        <div className="text-[10px] text-white/50 mt-2">Live preview</div>
+        <div className="text-[10px] text-white/50 mt-2">معاينة حية</div>
       </div>
     </Card>
   );
@@ -597,20 +597,20 @@ function SystemSettingsSection() {
 
   const save = async () => {
     const { error } = await saveSetting("company", s);
-    if (error) return toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    if (error) return toast({ title: "فشل الحفظ", description: error.message, variant: "destructive" });
     localStorage.setItem("lifeco.company", JSON.stringify(s));
-    toast({ title: "Settings saved" });
+    toast({ title: "تم حفظ الإعدادات" });
   };
 
-  if (loading) return <div className="text-white/60">Loading...</div>;
+  if (loading) return <div className="text-white/60">جارٍ التحميل...</div>;
   return (
-    <Card title="System Settings" icon={Settings}
-      action={<Button size="sm" onClick={save} className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>Save</Button>}>
+    <Card title="إعدادات النظام" icon={Settings}
+      action={<Button size="sm" onClick={save} className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>حفظ</Button>}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          ["Company Name","company_name","text"],["Contact Email","email","email"],["Contact Phone","phone","text"],
-          ["Time Zone","timezone","text"],["Date Format","date_format","text"],
-          ["Language","language","text"],["File Upload Limit (MB)","file_upload_limit_mb","number"],
+          ["اسم الشركة","company_name","text"],["البريد الإلكتروني للتواصل","email","email"],["رقم التواصل","phone","text"],
+          ["المنطقة الزمنية","timezone","text"],["تنسيق التاريخ","date_format","text"],
+          ["اللغة","language","text"],["حد رفع الملفات (ميجابايت)","file_upload_limit_mb","number"],
         ].map(([label, key, type]) => (
           <label key={key} className="text-sm space-y-1">
             <div className="text-white/70">{label}</div>
@@ -649,20 +649,20 @@ function DatabaseSection() {
     const a = document.createElement("a");
     a.href = url; a.download = `lifeco-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
     URL.revokeObjectURL(url);
-    toast({ title: "Backup exported" });
+    toast({ title: "تم تصدير النسخة الاحتياطية" });
   };
 
   return (
     <div className="space-y-6">
-      <Card title="Database Health" icon={Database}
+      <Card title="حالة قاعدة البيانات" icon={Database}
         action={<Button size="sm" variant="ghost" onClick={refresh}><RefreshCw className="w-4 h-4"/></Button>}>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(counts).map(([k, v]) => (<StatTile key={k} label={k} value={v} tone="blue" />))}
         </div>
       </Card>
-      <Card title="Backup / Export" icon={Database}>
-        <Button onClick={exportJSON} className="bg-emerald-600 hover:bg-emerald-500">Export JSON Snapshot</Button>
-        <div className="text-xs text-white/50 mt-2">Downloads a JSON dump of the top 1,000 rows per table.</div>
+      <Card title="النسخ الاحتياطي / التصدير" icon={Database}>
+        <Button onClick={exportJSON} className="bg-emerald-600 hover:bg-emerald-500">تصدير نسخة JSON</Button>
+        <div className="text-xs text-white/50 mt-2">تنزيل نسخة JSON لأول 1000 سجل من كل جدول.</div>
       </Card>
     </div>
   );
@@ -672,17 +672,17 @@ function DatabaseSection() {
 function MonitoringSection() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <StatTile label="CPU"     value="—"  sub="Edge worker" tone="blue" />
-      <StatTile label="Memory"  value="—"  sub="Managed"     tone="blue" />
-      <StatTile label="Storage" value="OK" sub="Supabase"    tone="green" />
-      <StatTile label="Network" value="Up" sub="Global CDN"  tone="green" />
-      <Card title="Active Services" icon={Server}>
+      <StatTile label="المعالج"     value="—"  sub="Edge worker" tone="blue" />
+      <StatTile label="الذاكرة"  value="—"  sub="مُدارة"     tone="blue" />
+      <StatTile label="التخزين" value="سليم" sub="Supabase"    tone="green" />
+      <StatTile label="الشبكة" value="متصلة" sub="شبكة CDN عالمية"  tone="green" />
+      <Card title="الخدمات الفعالة" icon={Server}>
         <ul className="text-sm space-y-1">
-          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>Auth</li>
-          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>Database</li>
-          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>Storage</li>
-          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>Edge Functions</li>
-          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>AI Gateway</li>
+          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>المصادقة</li>
+          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>قاعدة البيانات</li>
+          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>التخزين</li>
+          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>وظائف Edge</li>
+          <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400"/>بوابة الذكاء الاصطناعي</li>
         </ul>
       </Card>
     </div>
@@ -692,15 +692,15 @@ function MonitoringSection() {
 /* ---------------- About ---------------- */
 function AboutSection() {
   return (
-    <Card title="Platform Information" icon={Info}>
+    <Card title="معلومات المنصة" icon={Info}>
       <dl className="grid grid-cols-2 gap-y-3 text-sm">
-        <dt className="text-white/60">Platform</dt><dd>LIFECO Digital Transformation</dd>
-        <dt className="text-white/60">Version</dt><dd>2.6.0</dd>
-        <dt className="text-white/60">Build</dt><dd>{new Date().toISOString().slice(0,10)}</dd>
-        <dt className="text-white/60">Runtime</dt><dd>TanStack Start · Cloudflare Workers</dd>
-        <dt className="text-white/60">Database</dt><dd>Lovable Cloud (Postgres)</dd>
-        <dt className="text-white/60">Prepared by</dt><dd>Eng. Mohamed Gadalla</dd>
-        <dt className="text-white/60">License</dt><dd>Internal — LIFECO</dd>
+        <dt className="text-white/60">المنصة</dt><dd>التحول الرقمي لـ LIFECO</dd>
+        <dt className="text-white/60">الإصدار</dt><dd>2.6.0</dd>
+        <dt className="text-white/60">تاريخ الإصدار</dt><dd>{new Date().toISOString().slice(0,10)}</dd>
+        <dt className="text-white/60">بيئة التشغيل</dt><dd>TanStack Start · Cloudflare Workers</dd>
+        <dt className="text-white/60">قاعدة البيانات</dt><dd>Lovable Cloud (Postgres)</dd>
+        <dt className="text-white/60">إعداد</dt><dd>م. محمد جاد الله</dd>
+        <dt className="text-white/60">الترخيص</dt><dd>داخلي — LIFECO</dd>
       </dl>
     </Card>
   );
@@ -719,34 +719,34 @@ function PlaceholderSection({ sectionKey }: { sectionKey: SectionKey }) {
 
   const save = async () => {
     const { error } = await saveSetting(key, { text: note });
-    if (error) return toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    toast({ title: "Saved" });
+    if (error) return toast({ title: "فشل الحفظ", description: error.message, variant: "destructive" });
+    toast({ title: "تم الحفظ" });
   };
 
   const items: Record<string, string[]> = {
-    reports:       ["Create Reports", "Edit Reports", "Schedule Reports", "Export Templates"],
-    notifications: ["Email", "Outlook", "WhatsApp", "System Alerts"],
-    builder:       ["Create Dashboard", "Edit Dashboard", "KPI Widgets", "Charts", "Live Cards"],
-    language:      ["English", "Arabic", "Translation Manager"],
-    security:      ["Login History", "Audit Logs", "Access Logs", "Session Management", "2FA"],
-    ai:            ["AI Assistant", "AI Knowledge Base", "AI Document Search"],
-    audit:         ["User Logs", "File Logs", "Equipment Changes", "System Changes", "Error Logs"],
-    devtools:      ["API Keys", "System Diagnostics", "Cache Management", "Maintenance Mode", "Application Logs"],
+    reports:       ["إنشاء التقارير", "تعديل التقارير", "جدولة التقارير", "قوالب التصدير"],
+    notifications: ["البريد الإلكتروني", "Outlook", "واتساب", "تنبيهات النظام"],
+    builder:       ["إنشاء لوحة تحكم", "تعديل لوحة تحكم", "أدوات مؤشرات الأداء", "الرسوم البيانية", "بطاقات مباشرة"],
+    language:      ["الإنجليزية", "العربية", "إدارة الترجمة"],
+    security:      ["سجل تسجيل الدخول", "سجلات التدقيق", "سجلات الوصول", "إدارة الجلسات", "المصادقة الثنائية"],
+    ai:            ["المساعد الذكي", "قاعدة المعرفة", "بحث المستندات بالذكاء الاصطناعي"],
+    audit:         ["سجلات المستخدمين", "سجلات الملفات", "تغييرات المعدات", "تغييرات النظام", "سجلات الأخطاء"],
+    devtools:      ["مفاتيح API", "تشخيص النظام", "إدارة التخزين المؤقت", "وضع الصيانة", "سجلات التطبيق"],
   };
   const list = items[sectionKey] || [];
 
   return (
     <div className="space-y-4">
-      <Card title="Module Notes" icon={Pencil}
-        action={<Button size="sm" onClick={save} className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>Save</Button>}>
-        {loading ? <div className="text-white/60">Loading...</div> : (
+      <Card title="ملاحظات الوحدة" icon={Pencil}
+        action={<Button size="sm" onClick={save} className="bg-blue-600 hover:bg-blue-500"><Save className="w-4 h-4 mr-1"/>حفظ</Button>}>
+        {loading ? <div className="text-white/60">جارٍ التحميل...</div> : (
           <Textarea value={note} onChange={(e)=>setNote(e.target.value)} rows={5}
-            placeholder="Write configuration notes or plans for this module..."
+            placeholder="اكتب ملاحظات التهيئة أو الخطط لهذه الوحدة..."
             className="bg-white/5 border-white/10 text-white"/>
         )}
       </Card>
       {list.length > 0 && (
-        <Card title="Sub-modules">
+        <Card title="الوحدات الفرعية">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {list.map((i) => (
               <div key={i} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm">{i}</div>
