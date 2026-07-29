@@ -1,6 +1,7 @@
 export interface Department {
   id: string;
   label: string;
+  labelAr?: string;
   pin: string;
   tags: string[];
   icon?: string;
@@ -78,6 +79,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "AMMONIA",
     label: "AMMONIA",
+    labelAr: "إدارة الأمونيا",
     pin: "1001",
     color: "from-cyan-500/20 to-blue-600/20",
     tags: [
@@ -90,6 +92,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "UREA",
     label: "UREA",
+    labelAr: "إدارة اليوريا",
     pin: "1002",
     color: "from-emerald-500/20 to-teal-600/20",
     tags: ["UREA REACTOR", "PRILLING TOWER", "CO2 COMPRESSOR", "UREA PUMP"],
@@ -97,6 +100,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "LAB",
     label: "LABORATORY",
+    labelAr: "إدارة المختبرات",
     pin: "1003",
     color: "from-violet-500/20 to-purple-600/20",
     tags: [],
@@ -104,6 +108,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "MAINTENANCE",
     label: "MAINTENANCE",
+    labelAr: "إدارة الصيانة",
     pin: "1004",
     color: "from-amber-500/20 to-orange-600/20",
     tags: [
@@ -113,6 +118,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "WAREHOUSE",
     label: "WAREHOUSE",
+    labelAr: "إدارة المخازن",
     pin: "1005",
     color: "from-orange-500/20 to-red-600/20",
     tags: [],
@@ -120,6 +126,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "MATERIALS",
     label: "MATERIALS MGMT",
+    labelAr: "إدارة المواد",
     pin: "1006",
     color: "from-yellow-500/20 to-amber-600/20",
     tags: [],
@@ -127,6 +134,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "SAFETY",
     label: "SAFETY & OHS",
+    labelAr: "إدارة السلامة والصحة المهنية",
     pin: "1007",
     color: "from-red-500/20 to-rose-600/20",
     tags: [],
@@ -134,6 +142,7 @@ export const DEPARTMENTS: Department[] = [
   {
     id: "TECHNICAL",
     label: "TECHNICAL AFFAIRS",
+    labelAr: "إدارة الشؤون الفنية",
     pin: "1008",
     color: "from-sky-500/20 to-indigo-600/20",
     tags: [],
