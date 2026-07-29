@@ -61,18 +61,22 @@ const DigitalLibrary = () => {
   useEffect(() => {
     if (uploadOpen) return;
     (async () => {
-      const { data } = await supabase.from("library_files").select("category");
+      let q = supabase.from("library_files").select("category, plant_code");
+      if (plantCode) q = q.eq("plant_code", plantCode);
+      const { data } = await q;
       const byCat: Record<string, number> = {};
       (data || []).forEach((r: { category: string }) => {
         byCat[r.category] = (byCat[r.category] || 0) + 1;
       });
       const result: Record<string, number> = {};
       CATEGORIES.forEach((c) => {
-        result[c.key] = c.cats.reduce((sum, k) => sum + (byCat[k] || 0), 0);
+        result[c.key] = c.key === "all"
+          ? (data || []).length
+          : c.cats.reduce((sum, k) => sum + (byCat[k] || 0), 0);
       });
       setCounts(result);
     })();
-  }, [uploadOpen]);
+  }, [uploadOpen, plantCode]);
 
   const filtered = CATEGORIES.filter((c) => {
     if (!search.trim()) return true;
