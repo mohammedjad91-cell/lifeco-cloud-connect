@@ -130,16 +130,27 @@ export default function AssetRegister({ department }: Props) {
           animate={{ opacity: 1, y: 0 }}
           className="glass-card p-4 space-y-3"
         >
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Asset Code / Tag</Label>
-              <Input value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="e.g. P-201" />
-            </div>
-            <div>
-              <Label>Asset Name</Label>
-              <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Booster Pump" />
-            </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <FormField
+              label="Asset Code / Tag"
+              required
+              hint="Plant tag exactly as it appears on the equipment nameplate."
+            >
+              {(id) => (
+                <Input id={id} value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="e.g. P-201" />
+              )}
+            </FormField>
+            <FormField
+              label="Asset Name"
+              required
+              hint="Plain description used in lists and reports."
+            >
+              {(id) => (
+                <Input id={id} value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Booster Pump" />
+              )}
+            </FormField>
           </div>
+
           <div className="flex gap-2 justify-end">
             <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>Cancel</Button>
             <Button size="sm" onClick={addAsset}>Save</Button>
