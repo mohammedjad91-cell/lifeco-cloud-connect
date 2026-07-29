@@ -16,6 +16,8 @@ import { FIELD_OPS_EQUIPMENT } from "@/lib/departments";
 import { isInRange, statusColorClasses } from "@/lib/ranges";
 import { getEquipmentProfile, type ParamSpec } from "@/lib/equipment-profiles";
 import { getOperator, getStamp } from "@/lib/session";
+import { FormField } from "@/components/form/FormField";
+
 
 interface Props {
   department: string;
@@ -32,7 +34,9 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
   const [notes, setNotes] = useState("");
   const [employeeId, setEmployeeId] = useState(operator?.employeeId ?? "");
   const [technicianName, setTechnicianName] = useState(operator?.name ?? "");
+  const [editIdentity, setEditIdentity] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
