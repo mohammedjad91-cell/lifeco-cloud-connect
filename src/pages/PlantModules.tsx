@@ -147,8 +147,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
-    sessionStorage.setItem("lifeco_dashboard_tab", "logs");
-    navigate("/dashboard");
+    navigate(`/module/${plantCode}/${encodeURIComponent(m.key)}`);
   };
 
   const share = (key: string) => {
