@@ -9,7 +9,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
@@ -28,8 +28,22 @@ const CATEGORIES = [
   { key: "manuals",     label: "Manuals",             labelAr: "الأدلة" },
 ];
 
-interface Plant { id: string; code: string; name: string; }
-interface Equipment { id: string; tag: string | null; asset_name: string; }
+interface Plant { id: string; code: string; name: string; department_key: string; }
+interface Equipment { id: string; tag: string | null; asset_name: string; asset_code: string | null; }
+
+const DEPT_LABELS: Record<string, { ar: string; en: string }> = {
+  AMMONIA:     { ar: "إدارة الأمونيا",            en: "Ammonia" },
+  UREA:        { ar: "إدارة اليوريا",             en: "Urea" },
+  LAB:         { ar: "إدارة المختبر",             en: "Laboratory" },
+  MAINTENANCE: { ar: "إدارة الصيانة",             en: "Maintenance" },
+  SAFETY:      { ar: "إدارة السلامة والصحة",      en: "Safety & OHS" },
+  MATERIALS:   { ar: "إدارة المواد",              en: "Materials" },
+  TECHNICAL:   { ar: "إدارة الشؤون الفنية",       en: "Technical Affairs" },
+  WAREHOUSE:   { ar: "المخازن",                   en: "Warehouse" },
+};
+
+/** AMM-1 / amm_1 → AMM1 so plant codes match equipment department codes. */
+const norm = (v: string) => v.replace(/[^a-z0-9]/gi, "").toUpperCase();
 
 interface Props {
   open: boolean;
@@ -45,41 +59,74 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
   const [file, setFile] = useState<File | null>(null);
   const [category, setCategory] = useState(defaultCategory ?? "process");
   const [plantCode, setPlantCode] = useState<string>("");
+  const [linkType, setLinkType] = useState<"equipment" | "process">("equipment");
   const [equipmentId, setEquipmentId] = useState<string>("");
+  const [processName, setProcessName] = useState("");
   const [description, setDescription] = useState("");
   const [plants, setPlants] = useState<Plant[]>([]);
   const [equipment, setEquipment] = useState<Equipment[]>([]);
+  const [loadingEq, setLoadingEq] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     (async () => {
-      const { data } = await supabase.from("plants").select("id, code, name").order("code");
+      const { data } = await supabase
+        .from("plants")
+        .select("id, code, name, department_key")
+        .order("department_key")
+        .order("code");
       setPlants((data as Plant[]) || []);
     })();
   }, [open]);
 
+  const selectedPlant = plants.find((p) => p.code === plantCode);
+
   useEffect(() => {
     if (!plantCode) { setEquipment([]); return; }
+    let cancelled = false;
     (async () => {
+      setLoadingEq(true);
+      const key = norm(plantCode);
+      const dept = selectedPlant?.department_key ?? "";
+      // Equipment is stored either by plant_code or by a department code
+      // (e.g. plant "AMM-1" ↔ equipment department "AMM1"), so match both.
       const { data } = await supabase
         .from("equipment_assets")
-        .select("id, tag, asset_name")
-        .eq("plant_code", plantCode)
-        .order("tag");
-      setEquipment((data as Equipment[]) || []);
+        .select("id, tag, asset_name, asset_code, plant_code, department")
+        .order("asset_name");
+      if (cancelled) return;
+      const rows = ((data as any[]) || []).filter((e) => {
+        const pc = norm(e.plant_code ?? "");
+        const dp = norm(e.department ?? "");
+        return pc === key || dp === key || (!e.plant_code && dp === norm(dept));
+      });
+      setEquipment(rows as Equipment[]);
+      setLoadingEq(false);
     })();
-  }, [plantCode]);
+    return () => { cancelled = true; };
+  }, [plantCode, selectedPlant?.department_key]);
+
+  const groupedPlants = plants.reduce<Record<string, Plant[]>>((acc, p) => {
+    (acc[p.department_key] ||= []).push(p);
+    return acc;
+  }, {});
 
   const reset = () => {
     setFileName(""); setFile(null); setDescription("");
-    setPlantCode(""); setEquipmentId("");
+    setPlantCode(""); setEquipmentId(""); setProcessName(""); setLinkType("equipment");
   };
+
 
   const handleSave = async () => {
     if (!fileName.trim()) return toast({ title: lang === "ar" ? "أدخل اسم الملف" : "Enter file name", variant: "destructive" });
     if (!file) return toast({ title: lang === "ar" ? "اختر ملفًا" : "Choose a file", variant: "destructive" });
     if (file.size > 20 * 1024 * 1024) return toast({ title: lang === "ar" ? "الحد الأقصى 20 ميغابايت" : "Max 20 MB", variant: "destructive" });
+    if (!plantCode) return toast({ title: lang === "ar" ? "اختر المصنع" : "Select a plant", variant: "destructive" });
+    if (linkType === "equipment" && !equipmentId)
+      return toast({ title: lang === "ar" ? "اختر اسم المعدة" : "Select the equipment", variant: "destructive" });
+    if (linkType === "process" && !processName.trim())
+      return toast({ title: lang === "ar" ? "أدخل اسم عملية التشغيل" : "Enter the operating process", variant: "destructive" });
 
     setSaving(true);
     try {
@@ -95,7 +142,9 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         file_name: fileName.trim(),
         category,
         plant_code: plantCode || null,
-        equipment_id: equipmentId || null,
+        department_key: selectedPlant?.department_key ?? null,
+        equipment_id: linkType === "equipment" ? equipmentId || null : null,
+        process_name: linkType === "process" ? processName.trim() : null,
         description: description.trim() || null,
         storage_path: path,
         mime_type: file.type || null,
@@ -103,6 +152,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         uploaded_by: session?.name || session?.employeeId || null,
       });
       if (insErr) throw insErr;
+
 
       toast({ title: lang === "ar" ? "تم الحفظ" : "Saved" });
       reset();
@@ -198,42 +248,82 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
             )}
           </FormField>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              label={lang === "ar" ? "المصنع" : "Plant"}
-              hint={
-                lang === "ar"
-                  ? "اختياري — يربط الملف بمصنع محدد."
-                  : "Optional — links the file to one plant."
-              }
-            >
-              {(id) => (
-                <Select value={plantCode} onValueChange={setPlantCode}>
-                  <SelectTrigger id={id}>
-                    <SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {plants.map((p) => (
-                      <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </FormField>
+          <FormField
+            label={lang === "ar" ? "المصنع / الوحدة" : "Plant / Unit"}
+            required
+            hint={
+              lang === "ar"
+                ? "كل مصانع المنظومة مرتبة حسب الإدارة."
+                : "Every plant in the system, grouped by department."
+            }
+          >
+            {(id) => (
+              <Select value={plantCode} onValueChange={(v) => { setPlantCode(v); setEquipmentId(""); }}>
+                <SelectTrigger id={id}>
+                  <SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {Object.entries(groupedPlants).map(([dept, list]) => (
+                    <SelectGroup key={dept}>
+                      <SelectLabel>
+                        {DEPT_LABELS[dept] ? (lang === "ar" ? DEPT_LABELS[dept].ar : DEPT_LABELS[dept].en) : dept}
+                      </SelectLabel>
+                      {list.map((p) => (
+                        <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </FormField>
 
+          <FormField
+            label={lang === "ar" ? "الملف يخص" : "This file relates to"}
+            required
+            hint={
+              lang === "ar"
+                ? "اختر إمّا معدة محددة أو عملية تشغيل."
+                : "Choose either a specific equipment item or an operating process."
+            }
+          >
+            {() => (
+              <RadioGroup
+                value={linkType}
+                onValueChange={(v) => setLinkType(v as "equipment" | "process")}
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+              >
+                <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition">
+                  <RadioGroupItem value="equipment" />
+                  <span className="text-sm">{lang === "ar" ? "معدة" : "Equipment"}</span>
+                </label>
+                <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition">
+                  <RadioGroupItem value="process" />
+                  <span className="text-sm">{lang === "ar" ? "عملية تشغيل" : "Operating process"}</span>
+                </label>
+              </RadioGroup>
+            )}
+          </FormField>
+
+          {linkType === "equipment" ? (
             <FormField
-              label={lang === "ar" ? "المعدة" : "Equipment"}
+              label={lang === "ar" ? "اسم المعدة" : "Equipment name"}
+              required
               hint={
-                lang === "ar"
-                  ? "متاح بعد اختيار المصنع."
-                  : "Available after a plant is selected."
+                !plantCode
+                  ? (lang === "ar" ? "اختر المصنع أولًا لعرض معداته." : "Select a plant first to list its equipment.")
+                  : loadingEq
+                    ? (lang === "ar" ? "جارٍ تحميل المعدات…" : "Loading equipment…")
+                    : equipment.length === 0
+                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اختر «عملية تشغيل» بدلًا من ذلك." : "No equipment registered for this plant — use \"Operating process\" instead.")
+                      : (lang === "ar" ? `${equipment.length} معدة متاحة` : `${equipment.length} items available`)
               }
             >
               {(id) => (
                 <Select
                   value={equipmentId}
                   onValueChange={setEquipmentId}
-                  disabled={!plantCode || equipment.length === 0}
+                  disabled={!plantCode || loadingEq || equipment.length === 0}
                 >
                   <SelectTrigger id={id}>
                     <SelectValue placeholder={
@@ -241,15 +331,38 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
                                  : (lang === "ar" ? "اختر المعدة" : "Select equipment")
                     } />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-72">
                     {equipment.map((e) => (
-                      <SelectItem key={e.id} value={e.id}>{e.tag ?? "—"} — {e.asset_name}</SelectItem>
+                      <SelectItem key={e.id} value={e.id}>
+                        {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
             </FormField>
-          </div>
+          ) : (
+            <FormField
+              label={lang === "ar" ? "اسم عملية التشغيل" : "Operating process name"}
+              required
+              hint={
+                lang === "ar"
+                  ? "مثال: بدء تشغيل قسم التحويل، إيقاف طارئ لوحدة PSA."
+                  : "e.g. Reforming section start-up, PSA unit emergency shutdown."
+              }
+            >
+              {(id) => (
+                <Input
+                  id={id}
+                  value={processName}
+                  onChange={(e) => setProcessName(e.target.value)}
+                  maxLength={150}
+                  placeholder={lang === "ar" ? "مثال: إجراء بدء تشغيل ضاغط الهواء" : "e.g. Air compressor start-up procedure"}
+                />
+              )}
+            </FormField>
+          )}
+
 
           <FormField
             label={lang === "ar" ? "الوصف" : "Description"}
