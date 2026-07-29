@@ -168,7 +168,22 @@ const DigitalLibrary = () => {
           })}
         </div>
       </div>
+
+      <LibraryFileBrowser
+        open={!!browseCat}
+        onOpenChange={(v) => !v && setBrowseCat(null)}
+        categories={browseCat?.cats || []}
+        title={browseCat ? (lang === "ar" ? browseCat.labelAr : browseCat.label) : ""}
+        plantCode={plantCode || undefined}
+        onUpload={() => {
+          if (!browseCat) return;
+          setUploadCategory(UPLOAD_CATEGORY[browseCat.key] ?? "process");
+          setBrowseCat(null);
+          setUploadOpen(true);
+        }}
+      />
     </div>
+
   );
 };
 
