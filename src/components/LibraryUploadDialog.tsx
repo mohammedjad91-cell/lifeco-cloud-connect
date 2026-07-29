@@ -28,8 +28,22 @@ const CATEGORIES = [
   { key: "manuals",     label: "Manuals",             labelAr: "الأدلة" },
 ];
 
-interface Plant { id: string; code: string; name: string; }
-interface Equipment { id: string; tag: string | null; asset_name: string; }
+interface Plant { id: string; code: string; name: string; department_key: string; }
+interface Equipment { id: string; tag: string | null; asset_name: string; asset_code: string | null; }
+
+const DEPT_LABELS: Record<string, { ar: string; en: string }> = {
+  AMMONIA:     { ar: "إدارة الأمونيا",            en: "Ammonia" },
+  UREA:        { ar: "إدارة اليوريا",             en: "Urea" },
+  LAB:         { ar: "إدارة المختبر",             en: "Laboratory" },
+  MAINTENANCE: { ar: "إدارة الصيانة",             en: "Maintenance" },
+  SAFETY:      { ar: "إدارة السلامة والصحة",      en: "Safety & OHS" },
+  MATERIALS:   { ar: "إدارة المواد",              en: "Materials" },
+  TECHNICAL:   { ar: "إدارة الشؤون الفنية",       en: "Technical Affairs" },
+  WAREHOUSE:   { ar: "المخازن",                   en: "Warehouse" },
+};
+
+/** AMM-1 / amm_1 → AMM1 so plant codes match equipment department codes. */
+const norm = (v: string) => v.replace(/[^a-z0-9]/gi, "").toUpperCase();
 
 interface Props {
   open: boolean;
