@@ -145,15 +145,7 @@ const DigitalLibrary = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                onClick={() => {
-                  const map: Record<string, string> = {
-                    manuals: "manuals", datasheets: "equipment", pfd: "drawings",
-                    pid: "drawings", sop: "sop", maintenance: "equipment",
-                    lab: "reports", photos: "photos", videos: "videos",
-                  };
-                  setUploadCategory(map[c.key] ?? "process");
-                  setUploadOpen(true);
-                }}
+                onClick={() => setBrowseCat(c)}
                 className="glass-card p-5 text-center transition-all duration-300 cursor-pointer group relative overflow-hidden hover:neon-border"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -166,11 +158,12 @@ const DigitalLibrary = () => {
                   </h3>
                   <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/30">
                     <span className="text-[11px] uppercase tracking-widest text-primary font-mono">
-                      {c.count ?? 0} {lang === "ar" ? "ملف" : "files"}
+                      {counts[c.key] ?? 0} {lang === "ar" ? "ملف" : "files"}
                     </span>
                   </div>
                 </div>
               </motion.button>
+
             );
           })}
         </div>
