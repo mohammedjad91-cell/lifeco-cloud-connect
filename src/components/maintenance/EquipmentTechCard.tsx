@@ -7,35 +7,47 @@ import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
 import type { AmmoniaEquipment } from "@/lib/ammonia-equipment";
 import {
+  AMMONIA_SPEC_AR, SUBSYSTEM_AR, SPARE_NAME_AR, UOM_AR, NOT_APPLICABLE_AR,
+} from "@/lib/ammonia-equipment-ar";
+import {
   Gauge, Thermometer, Waves, FlaskConical, CalendarClock, Droplets, Zap,
   Package, Send, Loader2,
 } from "lucide-react";
 
 /** Technical parameters panel — بطاقة وصف المعدة */
 export function TechSpecPanel({ spec, ar }: { spec: AmmoniaEquipment; ar: boolean }) {
+  const t = ar ? AMMONIA_SPEC_AR[spec.tag] : undefined;
+  const v = (arValue: string | undefined, enValue: string) => (ar && arValue ? arValue : enValue);
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge variant="outline" className="border-primary/50 text-primary">{spec.subsystem}</Badge>
-        <Badge variant="outline" className="border-white/20 text-white/80">{spec.type}</Badge>
-        <span className="text-xs text-white/60">{spec.nameAr}</span>
+        <Badge variant="outline" className="border-primary/50 text-primary">
+          {ar ? SUBSYSTEM_AR[spec.subsystem] || spec.subsystem : spec.subsystem}
+        </Badge>
+        <Badge variant="outline" className="border-white/20 text-white/80">
+          {v(t?.type, spec.type)}
+        </Badge>
+        <span className="text-xs text-white/60">{ar ? spec.name : spec.nameAr}</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <SpecRow icon={<Gauge className="w-4 h-4" />} label={ar ? "ضغط التصميم / التشغيل" : "Design / Operating Pressure"}
-          value={`${spec.designPressureBar} bar (design) • ${spec.operatingPressureBar} bar (operating)`} />
+          value={ar
+            ? `${spec.designPressureBar} بار (تصميم) • ${spec.operatingPressureBar} بار (تشغيل)`
+            : `${spec.designPressureBar} bar (design) • ${spec.operatingPressureBar} bar (operating)`} />
         <SpecRow icon={<Thermometer className="w-4 h-4" />} label={ar ? "درجة حرارة التشغيل" : "Operating Temperature"}
-          value={`${spec.operatingTempC} °C`} />
+          value={`${v(t?.operatingTempC, spec.operatingTempC)} ${ar ? "°م" : "°C"}`} />
         <SpecRow icon={<Waves className="w-4 h-4" />} label={ar ? "معدل التدفق / السعة" : "Flow Rate / Capacity"}
-          value={spec.flowRate} />
+          value={v(t?.flowRate, spec.flowRate)} />
         <SpecRow icon={<FlaskConical className="w-4 h-4" />} label={ar ? "نوع الحفاز" : "Catalyst Type"}
-          value={spec.catalyst || (ar ? "لا ينطبق" : "Not applicable")} />
+          value={v(t?.catalyst, spec.catalyst || (ar ? NOT_APPLICABLE_AR : "Not applicable"))} />
         <SpecRow icon={<CalendarClock className="w-4 h-4" />} label={ar ? "دورية الصيانة الموصى بها" : "Recommended Maintenance Interval"}
-          value={spec.maintenanceInterval} />
+          value={v(t?.maintenanceInterval, spec.maintenanceInterval)} />
         <SpecRow icon={<Droplets className="w-4 h-4" />} label={ar ? "الزيوت / الشحوم" : "Lubricant Specification"}
-          value={spec.lubricant} />
+          value={v(t?.lubricant, spec.lubricant)} />
         <SpecRow icon={<Zap className="w-4 h-4" />} label={ar ? "المواصفات الكهربائية" : "Electrical Specification"}
-          value={spec.electrical} />
+          value={v(t?.electrical, spec.electrical)} />
         <SpecRow icon={<Package className="w-4 h-4" />} label={ar ? "الشركة المصنعة" : "Manufacturer"}
           value={spec.manufacturer} />
       </div>
@@ -44,7 +56,7 @@ export function TechSpecPanel({ spec, ar }: { spec: AmmoniaEquipment; ar: boolea
         <div className="text-[10px] uppercase tracking-widest text-white/50">
           {ar ? "ملاحظات تشغيلية" : "Operating Notes"}
         </div>
-        <p className="text-sm text-white/85 mt-1">{spec.notes}</p>
+        <p className="text-sm text-white/85 mt-1">{v(t?.notes, spec.notes)}</p>
       </div>
     </div>
   );
@@ -150,11 +162,11 @@ export function SparesRequisition({ spec, ar }: { spec: AmmoniaEquipment; ar: bo
                   <Badge variant="outline" className={low
                     ? "text-[10px] border-red-500/40 text-red-300"
                     : "text-[10px] border-emerald-500/40 text-emerald-300"}>
-                    {ar ? "المخزون" : "Stock"}: {row.stock_qty} {row.uom || ""}
+                    {ar ? "المخزون" : "Stock"}: {row.stock_qty} {(ar ? UOM_AR[row.uom || ""] : row.uom) || row.uom || ""}
                   </Badge>
                 )}
               </div>
-              <div className="text-sm text-white truncate">{s.name}</div>
+              <div className="text-sm text-white truncate">{(ar && SPARE_NAME_AR[s.partNo]) || s.name}</div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Input
