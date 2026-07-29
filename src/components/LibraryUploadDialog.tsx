@@ -122,6 +122,11 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
     if (!fileName.trim()) return toast({ title: lang === "ar" ? "أدخل اسم الملف" : "Enter file name", variant: "destructive" });
     if (!file) return toast({ title: lang === "ar" ? "اختر ملفًا" : "Choose a file", variant: "destructive" });
     if (file.size > 20 * 1024 * 1024) return toast({ title: lang === "ar" ? "الحد الأقصى 20 ميغابايت" : "Max 20 MB", variant: "destructive" });
+    if (!plantCode) return toast({ title: lang === "ar" ? "اختر المصنع" : "Select a plant", variant: "destructive" });
+    if (linkType === "equipment" && !equipmentId)
+      return toast({ title: lang === "ar" ? "اختر اسم المعدة" : "Select the equipment", variant: "destructive" });
+    if (linkType === "process" && !processName.trim())
+      return toast({ title: lang === "ar" ? "أدخل اسم عملية التشغيل" : "Enter the operating process", variant: "destructive" });
 
     setSaving(true);
     try {
@@ -137,7 +142,9 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         file_name: fileName.trim(),
         category,
         plant_code: plantCode || null,
-        equipment_id: equipmentId || null,
+        department_key: selectedPlant?.department_key ?? null,
+        equipment_id: linkType === "equipment" ? equipmentId || null : null,
+        process_name: linkType === "process" ? processName.trim() : null,
         description: description.trim() || null,
         storage_path: path,
         mime_type: file.type || null,
@@ -145,6 +152,7 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         uploaded_by: session?.name || session?.employeeId || null,
       });
       if (insErr) throw insErr;
+
 
       toast({ title: lang === "ar" ? "تم الحفظ" : "Saved" });
       reset();
