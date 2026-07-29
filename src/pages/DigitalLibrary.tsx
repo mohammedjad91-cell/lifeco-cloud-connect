@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import {
 import { useI18n } from "@/lib/i18n";
 import { getBackTarget } from "@/lib/nav-back";
 import LibraryUploadDialog from "@/components/LibraryUploadDialog";
+import LibraryFileBrowser from "@/components/LibraryFileBrowser";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Category {
   key: string;
@@ -17,20 +19,26 @@ interface Category {
   labelAr: string;
   icon: React.ElementType;
   gradient: string;
-  count?: number;
+  /** storage categories that feed this card */
+  cats: string[];
 }
 
 const CATEGORIES: Category[] = [
-  { key: "manuals",    label: "Manuals",              labelAr: "الأدلة",              icon: BookOpen,      gradient: "from-cyan-500/20 to-blue-500/10" },
-  { key: "datasheets", label: "Datasheets",           labelAr: "الجداول الفنية",       icon: FileText,      gradient: "from-emerald-500/20 to-teal-500/10" },
-  { key: "pfd",        label: "PFD Library",          labelAr: "مكتبة PFD",           icon: FileCode,      gradient: "from-violet-500/20 to-indigo-500/10" },
-  { key: "pid",        label: "P&ID Library",         labelAr: "مكتبة P&ID",          icon: FileCode,      gradient: "from-fuchsia-500/20 to-pink-500/10" },
-  { key: "sop",        label: "SOP & Procedures",     labelAr: "إجراءات التشغيل",     icon: ClipboardList, gradient: "from-amber-500/20 to-orange-500/10" },
-  { key: "maintenance",label: "Maintenance Guides",   labelAr: "أدلة الصيانة",        icon: Wrench,        gradient: "from-red-500/20 to-rose-500/10" },
-  { key: "lab",        label: "Lab References",       labelAr: "مراجع المختبر",       icon: FlaskConical,  gradient: "from-lime-500/20 to-green-500/10" },
-  { key: "photos",     label: "Photo Archive",        labelAr: "أرشيف الصور",         icon: FileImage,     gradient: "from-sky-500/20 to-cyan-500/10" },
-  { key: "videos",     label: "Video Library",        labelAr: "مكتبة الفيديو",       icon: Video,         gradient: "from-purple-500/20 to-violet-500/10" },
+  { key: "manuals",    label: "Manuals",              labelAr: "الأدلة",              icon: BookOpen,      gradient: "from-cyan-500/20 to-blue-500/10",     cats: ["manuals"] },
+  { key: "datasheets", label: "Datasheets",           labelAr: "الجداول الفنية",       icon: FileText,      gradient: "from-emerald-500/20 to-teal-500/10",  cats: ["equipment"] },
+  { key: "pfd",        label: "PFD Library",          labelAr: "مكتبة PFD",           icon: FileCode,      gradient: "from-violet-500/20 to-indigo-500/10", cats: ["drawings"] },
+  { key: "pid",        label: "P&ID Library",         labelAr: "مكتبة P&ID",          icon: FileCode,      gradient: "from-fuchsia-500/20 to-pink-500/10",  cats: ["drawings"] },
+  { key: "sop",        label: "SOP & Procedures",     labelAr: "إجراءات التشغيل",     icon: ClipboardList, gradient: "from-amber-500/20 to-orange-500/10",  cats: ["sop", "process"] },
+  { key: "maintenance",label: "Maintenance Guides",   labelAr: "أدلة الصيانة",        icon: Wrench,        gradient: "from-red-500/20 to-rose-500/10",      cats: ["equipment", "certificates"] },
+  { key: "lab",        label: "Lab References",       labelAr: "مراجع المختبر",       icon: FlaskConical,  gradient: "from-lime-500/20 to-green-500/10",    cats: ["reports"] },
+  { key: "photos",     label: "Photo Archive",        labelAr: "أرشيف الصور",         icon: FileImage,     gradient: "from-sky-500/20 to-cyan-500/10",      cats: ["photos"] },
+  { key: "videos",     label: "Video Library",        labelAr: "مكتبة الفيديو",       icon: Video,         gradient: "from-purple-500/20 to-violet-500/10", cats: ["videos"] },
 ];
+
+const UPLOAD_CATEGORY: Record<string, string> = {
+  manuals: "manuals", datasheets: "equipment", pfd: "drawings", pid: "drawings",
+  sop: "sop", maintenance: "equipment", lab: "reports", photos: "photos", videos: "videos",
+};
 
 const DigitalLibrary = () => {
   const navigate = useNavigate();
@@ -43,12 +51,31 @@ const DigitalLibrary = () => {
   const plantCode = typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_plant") || "";
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<string | undefined>();
+  const [browseCat, setBrowseCat] = useState<Category | null>(null);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (uploadOpen) return;
+    (async () => {
+      const { data } = await supabase.from("library_files").select("category");
+      const byCat: Record<string, number> = {};
+      (data || []).forEach((r: { category: string }) => {
+        byCat[r.category] = (byCat[r.category] || 0) + 1;
+      });
+      const result: Record<string, number> = {};
+      CATEGORIES.forEach((c) => {
+        result[c.key] = c.cats.reduce((sum, k) => sum + (byCat[k] || 0), 0);
+      });
+      setCounts(result);
+    })();
+  }, [uploadOpen]);
 
   const filtered = CATEGORIES.filter((c) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return c.label.toLowerCase().includes(q) || c.labelAr.includes(search);
   });
+
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -118,15 +145,7 @@ const DigitalLibrary = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                onClick={() => {
-                  const map: Record<string, string> = {
-                    manuals: "manuals", datasheets: "equipment", pfd: "drawings",
-                    pid: "drawings", sop: "sop", maintenance: "equipment",
-                    lab: "reports", photos: "photos", videos: "videos",
-                  };
-                  setUploadCategory(map[c.key] ?? "process");
-                  setUploadOpen(true);
-                }}
+                onClick={() => setBrowseCat(c)}
                 className="glass-card p-5 text-center transition-all duration-300 cursor-pointer group relative overflow-hidden hover:neon-border"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -139,16 +158,32 @@ const DigitalLibrary = () => {
                   </h3>
                   <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/30">
                     <span className="text-[11px] uppercase tracking-widest text-primary font-mono">
-                      {c.count ?? 0} {lang === "ar" ? "ملف" : "files"}
+                      {counts[c.key] ?? 0} {lang === "ar" ? "ملف" : "files"}
                     </span>
                   </div>
                 </div>
               </motion.button>
+
             );
           })}
         </div>
       </div>
+
+      <LibraryFileBrowser
+        open={!!browseCat}
+        onOpenChange={(v) => !v && setBrowseCat(null)}
+        categories={browseCat?.cats || []}
+        title={browseCat ? (lang === "ar" ? browseCat.labelAr : browseCat.label) : ""}
+        plantCode={plantCode || undefined}
+        onUpload={() => {
+          if (!browseCat) return;
+          setUploadCategory(UPLOAD_CATEGORY[browseCat.key] ?? "process");
+          setBrowseCat(null);
+          setUploadOpen(true);
+        }}
+      />
     </div>
+
   );
 };
 
