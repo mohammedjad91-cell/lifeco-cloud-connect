@@ -248,42 +248,82 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
             )}
           </FormField>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              label={lang === "ar" ? "المصنع" : "Plant"}
-              hint={
-                lang === "ar"
-                  ? "اختياري — يربط الملف بمصنع محدد."
-                  : "Optional — links the file to one plant."
-              }
-            >
-              {(id) => (
-                <Select value={plantCode} onValueChange={setPlantCode}>
-                  <SelectTrigger id={id}>
-                    <SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {plants.map((p) => (
-                      <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </FormField>
+          <FormField
+            label={lang === "ar" ? "المصنع / الوحدة" : "Plant / Unit"}
+            required
+            hint={
+              lang === "ar"
+                ? "كل مصانع المنظومة مرتبة حسب الإدارة."
+                : "Every plant in the system, grouped by department."
+            }
+          >
+            {(id) => (
+              <Select value={plantCode} onValueChange={(v) => { setPlantCode(v); setEquipmentId(""); }}>
+                <SelectTrigger id={id}>
+                  <SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {Object.entries(groupedPlants).map(([dept, list]) => (
+                    <SelectGroup key={dept}>
+                      <SelectLabel>
+                        {DEPT_LABELS[dept] ? (lang === "ar" ? DEPT_LABELS[dept].ar : DEPT_LABELS[dept].en) : dept}
+                      </SelectLabel>
+                      {list.map((p) => (
+                        <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </FormField>
 
+          <FormField
+            label={lang === "ar" ? "الملف يخص" : "This file relates to"}
+            required
+            hint={
+              lang === "ar"
+                ? "اختر إمّا معدة محددة أو عملية تشغيل."
+                : "Choose either a specific equipment item or an operating process."
+            }
+          >
+            {() => (
+              <RadioGroup
+                value={linkType}
+                onValueChange={(v) => setLinkType(v as "equipment" | "process")}
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+              >
+                <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition">
+                  <RadioGroupItem value="equipment" />
+                  <span className="text-sm">{lang === "ar" ? "معدة" : "Equipment"}</span>
+                </label>
+                <label className="flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition">
+                  <RadioGroupItem value="process" />
+                  <span className="text-sm">{lang === "ar" ? "عملية تشغيل" : "Operating process"}</span>
+                </label>
+              </RadioGroup>
+            )}
+          </FormField>
+
+          {linkType === "equipment" ? (
             <FormField
-              label={lang === "ar" ? "المعدة" : "Equipment"}
+              label={lang === "ar" ? "اسم المعدة" : "Equipment name"}
+              required
               hint={
-                lang === "ar"
-                  ? "متاح بعد اختيار المصنع."
-                  : "Available after a plant is selected."
+                !plantCode
+                  ? (lang === "ar" ? "اختر المصنع أولًا لعرض معداته." : "Select a plant first to list its equipment.")
+                  : loadingEq
+                    ? (lang === "ar" ? "جارٍ تحميل المعدات…" : "Loading equipment…")
+                    : equipment.length === 0
+                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اختر «عملية تشغيل» بدلًا من ذلك." : "No equipment registered for this plant — use \"Operating process\" instead.")
+                      : (lang === "ar" ? `${equipment.length} معدة متاحة` : `${equipment.length} items available`)
               }
             >
               {(id) => (
                 <Select
                   value={equipmentId}
                   onValueChange={setEquipmentId}
-                  disabled={!plantCode || equipment.length === 0}
+                  disabled={!plantCode || loadingEq || equipment.length === 0}
                 >
                   <SelectTrigger id={id}>
                     <SelectValue placeholder={
@@ -291,15 +331,38 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
                                  : (lang === "ar" ? "اختر المعدة" : "Select equipment")
                     } />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-72">
                     {equipment.map((e) => (
-                      <SelectItem key={e.id} value={e.id}>{e.tag ?? "—"} — {e.asset_name}</SelectItem>
+                      <SelectItem key={e.id} value={e.id}>
+                        {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
             </FormField>
-          </div>
+          ) : (
+            <FormField
+              label={lang === "ar" ? "اسم عملية التشغيل" : "Operating process name"}
+              required
+              hint={
+                lang === "ar"
+                  ? "مثال: بدء تشغيل قسم التحويل، إيقاف طارئ لوحدة PSA."
+                  : "e.g. Reforming section start-up, PSA unit emergency shutdown."
+              }
+            >
+              {(id) => (
+                <Input
+                  id={id}
+                  value={processName}
+                  onChange={(e) => setProcessName(e.target.value)}
+                  maxLength={150}
+                  placeholder={lang === "ar" ? "مثال: إجراء بدء تشغيل ضاغط الهواء" : "e.g. Air compressor start-up procedure"}
+                />
+              )}
+            </FormField>
+          )}
+
 
           <FormField
             label={lang === "ar" ? "الوصف" : "Description"}
