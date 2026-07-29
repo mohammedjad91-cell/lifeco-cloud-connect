@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/form/FormField";
+
 import { Plus, Wrench, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
@@ -130,16 +132,27 @@ export default function AssetRegister({ department }: Props) {
           animate={{ opacity: 1, y: 0 }}
           className="glass-card p-4 space-y-3"
         >
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Asset Code / Tag</Label>
-              <Input value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="e.g. P-201" />
-            </div>
-            <div>
-              <Label>Asset Name</Label>
-              <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Booster Pump" />
-            </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <FormField
+              label="Asset Code / Tag"
+              required
+              hint="Plant tag exactly as it appears on the equipment nameplate."
+            >
+              {(id) => (
+                <Input id={id} value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="e.g. P-201" />
+              )}
+            </FormField>
+            <FormField
+              label="Asset Name"
+              required
+              hint="Plain description used in lists and reports."
+            >
+              {(id) => (
+                <Input id={id} value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Booster Pump" />
+              )}
+            </FormField>
           </div>
+
           <div className="flex gap-2 justify-end">
             <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>Cancel</Button>
             <Button size="sm" onClick={addAsset}>Save</Button>
@@ -178,13 +191,21 @@ export default function AssetRegister({ department }: Props) {
                 className="mt-3 space-y-3 overflow-hidden"
               >
                 <div className="space-y-2">
-                  <Label className="text-xs">Add Maintenance Record</Label>
-                  <Textarea
-                    value={noteDraft[a.id] || ""}
-                    onChange={(e) => setNoteDraft((p) => ({ ...p, [a.id]: e.target.value }))}
-                    placeholder="Describe inspection, repair, lubrication, parts replaced…"
-                    rows={2}
-                  />
+                  <FormField
+                    label="Add Maintenance Record"
+                    hint="Stamped automatically with your name, employee ID, and the current date."
+                  >
+                    {(id) => (
+                      <Textarea
+                        id={id}
+                        value={noteDraft[a.id] || ""}
+                        onChange={(e) => setNoteDraft((p) => ({ ...p, [a.id]: e.target.value }))}
+                        placeholder="Describe inspection, repair, lubrication, parts replaced…"
+                        rows={2}
+                      />
+                    )}
+                  </FormField>
+
                   <div className="flex justify-end">
                     <Button size="sm" onClick={() => addNote(a.id)}>Save Record</Button>
                   </div>

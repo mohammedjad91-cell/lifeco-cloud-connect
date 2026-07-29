@@ -16,6 +16,8 @@ import { FIELD_OPS_EQUIPMENT } from "@/lib/departments";
 import { isInRange, statusColorClasses } from "@/lib/ranges";
 import { getEquipmentProfile, type ParamSpec } from "@/lib/equipment-profiles";
 import { getOperator, getStamp } from "@/lib/session";
+import { FormField } from "@/components/form/FormField";
+
 
 interface Props {
   department: string;
@@ -32,7 +34,9 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
   const [notes, setNotes] = useState("");
   const [employeeId, setEmployeeId] = useState(operator?.employeeId ?? "");
   const [technicianName, setTechnicianName] = useState(operator?.name ?? "");
+  const [editIdentity, setEditIdentity] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -216,51 +220,87 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
         <h2 className="text-foreground font-semibold">{t.fieldOpsEntry}</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5" /> {t.employeeId}
-            {operator?.employeeId && (
-              <span className="text-[10px] text-primary/70 ml-1">(auto)</span>
-            )}
-          </label>
-          <Input
-            value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
-            placeholder={t.employeeIdPlaceholder}
-            className="bg-secondary/50 border-border"
-          />
+      {/* Operator identity — single consolidated block (was two duplicate inputs) */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_18rem] mb-4">
+        <div className="min-w-0 rounded-lg border border-border bg-secondary/30 p-3">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-foreground">
+              <User className="w-3.5 h-3.5 shrink-0 text-primary" />
+              <span className="truncate">
+                {technicianName || t.technicianName} · {employeeId || t.employeeId}
+              </span>
+            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="shrink-0"
+              onClick={() => setEditIdentity((s) => !s)}
+            >
+              {editIdentity ? "Done" : "Change"}
+            </Button>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground/80">
+            Auto-filled from your session and stamped on this reading. Edit only if another
+            technician is recording on your behalf.
+          </p>
+
+          {editIdentity && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <FormField
+                label={t.technicianName}
+                required
+                hint="Name shown on the log entry and daily report."
+              >
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={technicianName}
+                    onChange={(e) => setTechnicianName(e.target.value)}
+                    placeholder={t.technicianNamePlaceholder}
+                    className="bg-secondary/50 border-border"
+                  />
+                )}
+              </FormField>
+              <FormField
+                label={t.employeeId}
+                required
+                hint="Payroll ID used to trace who took the reading."
+              >
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={employeeId}
+                    onChange={(e) => setEmployeeId(e.target.value)}
+                    placeholder={t.employeeIdPlaceholder}
+                    className="bg-secondary/50 border-border"
+                  />
+                )}
+              </FormField>
+            </div>
+          )}
         </div>
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5" /> {t.technicianName}
-            {operator?.name && (
-              <span className="text-[10px] text-primary/70 ml-1">(auto)</span>
-            )}
-          </label>
-          <Input
-            value={technicianName}
-            onChange={(e) => setTechnicianName(e.target.value)}
-            placeholder={t.technicianNamePlaceholder}
-            className="bg-secondary/50 border-border"
-          />
-        </div>
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <Hash className="w-3.5 h-3.5" /> {t.equipmentTag}
-          </label>
-          <Select value={equipmentTag} onValueChange={setEquipmentTag}>
-            <SelectTrigger className="bg-secondary/50 border-border">
-              <SelectValue placeholder={t.selectEquipment} />
-            </SelectTrigger>
-            <SelectContent>
-              {equipmentList.map((tag) => (
-                <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+
+        <FormField
+          label={t.equipmentTag}
+          required
+          tooltip="Choosing a tag loads the parameter set and safe operating limits for that machine."
+        >
+          {(id) => (
+            <Select value={equipmentTag} onValueChange={setEquipmentTag}>
+              <SelectTrigger id={id} className="bg-secondary/50 border-border">
+                <SelectValue placeholder={t.selectEquipment} />
+              </SelectTrigger>
+              <SelectContent>
+                {equipmentList.map((tag) => (
+                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </FormField>
       </div>
+
 
       {equipmentTag && (
         <motion.div
@@ -306,13 +346,21 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       )}
 
       <div className="mt-4">
-        <label className="text-sm text-muted-foreground mb-1.5 block">{t.notes}</label>
-        <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder={t.notesPlaceholder}
-          className="bg-secondary/50 border-border min-h-[60px]"
-        />
+        <FormField
+          label={t.notes}
+          hint="Observations, abnormal sounds, actions taken. Visible in the shift and daily reports."
+        >
+          {(id) => (
+            <Textarea
+              id={id}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={t.notesPlaceholder}
+              className="bg-secondary/50 border-border min-h-[60px]"
+            />
+          )}
+        </FormField>
+
 
         <div className="mt-2 flex items-center gap-3">
           <input
@@ -419,32 +467,38 @@ const DynamicField = ({
   const ok = !value || isInRange(n, spec.range);
   const colors = statusColorClasses(ok);
   return (
-    <div>
-      <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-        {spec.label}
-        {spec.unit && <span className="opacity-60">({spec.unit})</span>}
-        {spec.range && (
-          <span className="text-[10px] opacity-50 ml-auto">
-            {spec.range.min}–{spec.range.max}
-          </span>
-        )}
-      </label>
-      <Input
-        type="number"
-        step="any"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="0.00"
-        className={`h-12 text-xl font-bold border transition-all ${
-          value
-            ? ok
-              ? `${colors.bg} ${colors.text} ${colors.border}`
-              : `bg-red-500/15 text-red-300 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.55)] animate-pulse`
-            : "bg-secondary/50 border-border"
-        }`}
-      />
-    </div>
+    <FormField
+      label={spec.unit ? `${spec.label} (${spec.unit})` : spec.label}
+      badge={spec.range ? `${spec.range.min}–${spec.range.max}` : undefined}
+      tooltip={
+        spec.range
+          ? `Safe operating window: ${spec.range.min}–${spec.range.max}${spec.unit ? ` ${spec.unit}` : ""}. Values outside this range raise a process warning.`
+          : undefined
+      }
+      error={!ok ? "Outside design limits — verify the reading." : undefined}
+    >
+      {(id) => (
+        <Input
+          id={id}
+          type="number"
+          step="any"
+          inputMode="decimal"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="0.00"
+          aria-invalid={!ok}
+          className={`h-12 text-xl font-bold border transition-all ${
+            value
+              ? ok
+                ? `${colors.bg} ${colors.text} ${colors.border}`
+                : `bg-red-500/15 text-red-300 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.55)] animate-pulse`
+              : "bg-secondary/50 border-border"
+          }`}
+        />
+      )}
+    </FormField>
   );
+
 };
 
 export default FieldOpsForm;

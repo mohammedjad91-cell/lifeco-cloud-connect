@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/form/FormField";
 import { User, ArrowRight } from "lucide-react";
 import { getOperator, setOperator } from "@/lib/session";
 
@@ -54,27 +54,29 @@ export default function UserCaptureModal({ open, department, onComplete }: Props
               Confirm your name and employee ID. Every entry will be stamped with this information.
             </p>
             <div className="space-y-3">
-              <div>
-                <Label htmlFor="op-name">Operator Name</Label>
-                <Input
-                  id="op-name"
-                  autoFocus
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submit()}
-                  placeholder="e.g. Mohammed Gadallah"
-                />
-              </div>
-              <div>
-                <Label htmlFor="op-id">Employee ID</Label>
-                <Input
-                  id="op-id"
-                  value={empId}
-                  onChange={(e) => setEmpId(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submit()}
-                  placeholder="e.g. 12345"
-                />
-              </div>
+              <FormField label="Operator Name" required hint="Shown on every entry you record in this session.">
+                {(id) => (
+                  <Input
+                    id={id}
+                    autoFocus
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && submit()}
+                    placeholder="e.g. Mohammed Gadallah"
+                  />
+                )}
+              </FormField>
+              <FormField label="Employee ID" required hint="Used to trace entries back to you in audits and reports.">
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={empId}
+                    onChange={(e) => setEmpId(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && submit()}
+                    placeholder="e.g. 12345"
+                  />
+                )}
+              </FormField>
             </div>
             <Button
               className="w-full mt-5 gap-2"

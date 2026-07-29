@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getOperator } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/form/FormField";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
@@ -126,77 +126,151 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
         </DialogHeader>
 
         <div className="space-y-4">
-          <div>
-            <Label>{lang === "ar" ? "اسم الملف" : "File Name"} *</Label>
-            <Input value={fileName} onChange={(e) => setFileName(e.target.value)} maxLength={150} placeholder="e.g. Ammonia Reactor P&ID Rev.3" />
-          </div>
-
-          <div>
-            <Label>{lang === "ar" ? "اختر ملف" : "Choose File"} *</Label>
-            <Input
-              type="file"
-              onChange={(e) => {
-                const f = e.target.files?.[0] ?? null;
-                setFile(f);
-                if (f && !fileName) setFileName(f.name.replace(/\.[^.]+$/, ""));
-              }}
-            />
-            {file && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB
-              </p>
+          <FormField
+            label={lang === "ar" ? "الملف" : "File"}
+            required
+            hint={
+              file
+                ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`
+                : lang === "ar"
+                  ? "الحد الأقصى 20 ميغابايت. يُملأ اسم الملف تلقائيًا بعد الاختيار."
+                  : "Max 20 MB. The display name below is filled in automatically after you choose a file."
+            }
+          >
+            {(id) => (
+              <Input
+                id={id}
+                type="file"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] ?? null;
+                  setFile(f);
+                  if (f && !fileName) setFileName(f.name.replace(/\.[^.]+$/, ""));
+                }}
+              />
             )}
-          </div>
+          </FormField>
 
-          <div>
-            <Label>{lang === "ar" ? "فئة الملف" : "File Category"} *</Label>
-            <RadioGroup value={category} onValueChange={setCategory} className="grid grid-cols-2 gap-2 mt-2">
-              {CATEGORIES.map((c) => (
-                <label
-                  key={c.key}
-                  className="flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition"
+          <FormField
+            label={lang === "ar" ? "اسم العرض" : "Display Name"}
+            required
+            tooltip={
+              lang === "ar"
+                ? "الاسم الذي يظهر في المكتبة والبحث — لا يغيّر اسم الملف الأصلي."
+                : "The name shown in the library and search results. It does not rename the stored file."
+            }
+          >
+            {(id) => (
+              <Input
+                id={id}
+                value={fileName}
+                onChange={(e) => setFileName(e.target.value)}
+                maxLength={150}
+                placeholder="e.g. Ammonia Reactor P&ID Rev.3"
+              />
+            )}
+          </FormField>
+
+          <FormField
+            label={lang === "ar" ? "فئة الملف" : "File Category"}
+            required
+            hint={
+              lang === "ar"
+                ? "تحدد الفئة مكان ظهور الملف داخل المكتبة الرقمية."
+                : "Determines where the file appears inside the Digital Library."
+            }
+          >
+            {() => (
+              <RadioGroup
+                value={category}
+                onValueChange={setCategory}
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+              >
+                {CATEGORIES.map((c) => (
+                  <label
+                    key={c.key}
+                    className="flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 cursor-pointer hover:border-primary/50 transition"
+                  >
+                    <RadioGroupItem value={c.key} />
+                    <span className="text-sm">{lang === "ar" ? c.labelAr : c.label}</span>
+                  </label>
+                ))}
+              </RadioGroup>
+            )}
+          </FormField>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              label={lang === "ar" ? "المصنع" : "Plant"}
+              hint={
+                lang === "ar"
+                  ? "اختياري — يربط الملف بمصنع محدد."
+                  : "Optional — links the file to one plant."
+              }
+            >
+              {(id) => (
+                <Select value={plantCode} onValueChange={setPlantCode}>
+                  <SelectTrigger id={id}>
+                    <SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {plants.map((p) => (
+                      <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </FormField>
+
+            <FormField
+              label={lang === "ar" ? "المعدة" : "Equipment"}
+              hint={
+                lang === "ar"
+                  ? "متاح بعد اختيار المصنع."
+                  : "Available after a plant is selected."
+              }
+            >
+              {(id) => (
+                <Select
+                  value={equipmentId}
+                  onValueChange={setEquipmentId}
+                  disabled={!plantCode || equipment.length === 0}
                 >
-                  <RadioGroupItem value={c.key} />
-                  <span className="text-sm">{lang === "ar" ? c.labelAr : c.label}</span>
-                </label>
-              ))}
-            </RadioGroup>
+                  <SelectTrigger id={id}>
+                    <SelectValue placeholder={
+                      !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
+                                 : (lang === "ar" ? "اختر المعدة" : "Select equipment")
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {equipment.map((e) => (
+                      <SelectItem key={e.id} value={e.id}>{e.tag ?? "—"} — {e.asset_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </FormField>
           </div>
 
-          <div>
-            <Label>{lang === "ar" ? "المصنع" : "Plant"}</Label>
-            <Select value={plantCode} onValueChange={setPlantCode}>
-              <SelectTrigger><SelectValue placeholder={lang === "ar" ? "اختر المصنع" : "Select plant"} /></SelectTrigger>
-              <SelectContent>
-                {plants.map((p) => (
-                  <SelectItem key={p.id} value={p.code}>{p.code} — {p.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>{lang === "ar" ? "المعدة (اختياري)" : "Equipment (Optional)"}</Label>
-            <Select value={equipmentId} onValueChange={setEquipmentId} disabled={!plantCode || equipment.length === 0}>
-              <SelectTrigger>
-                <SelectValue placeholder={
-                  !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
-                             : (lang === "ar" ? "اختر المعدة" : "Select equipment")
-                } />
-              </SelectTrigger>
-              <SelectContent>
-                {equipment.map((e) => (
-                  <SelectItem key={e.id} value={e.id}>{e.tag ?? "—"} — {e.asset_name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>{lang === "ar" ? "الوصف" : "Description"}</Label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} maxLength={1000} rows={3} />
-          </div>
+          <FormField
+            label={lang === "ar" ? "الوصف" : "Description"}
+            hint={
+              lang === "ar"
+                ? "ملخص قصير يساعد زملاءك في العثور على الملف."
+                : "A short summary that helps colleagues find this file later."
+            }
+          >
+            {(id) => (
+              <Textarea
+                id={id}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={1000}
+                rows={3}
+              />
+            )}
+          </FormField>
         </div>
+
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={saving}>
