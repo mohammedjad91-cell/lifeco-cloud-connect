@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
