@@ -191,13 +191,21 @@ export default function AssetRegister({ department }: Props) {
                 className="mt-3 space-y-3 overflow-hidden"
               >
                 <div className="space-y-2">
-                  <Label className="text-xs">Add Maintenance Record</Label>
-                  <Textarea
-                    value={noteDraft[a.id] || ""}
-                    onChange={(e) => setNoteDraft((p) => ({ ...p, [a.id]: e.target.value }))}
-                    placeholder="Describe inspection, repair, lubrication, parts replaced…"
-                    rows={2}
-                  />
+                  <FormField
+                    label="Add Maintenance Record"
+                    hint="Stamped automatically with your name, employee ID, and the current date."
+                  >
+                    {(id) => (
+                      <Textarea
+                        id={id}
+                        value={noteDraft[a.id] || ""}
+                        onChange={(e) => setNoteDraft((p) => ({ ...p, [a.id]: e.target.value }))}
+                        placeholder="Describe inspection, repair, lubrication, parts replaced…"
+                        rows={2}
+                      />
+                    )}
+                  </FormField>
+
                   <div className="flex justify-end">
                     <Button size="sm" onClick={() => addNote(a.id)}>Save Record</Button>
                   </div>
