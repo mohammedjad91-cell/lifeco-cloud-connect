@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion } from "framer-motion";
 import { askAssistant } from "@/lib/assistant.functions";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,7 @@ export default function Assistant() {
             <p className="text-xs text-muted-foreground uppercase tracking-widest">مساعد نظام LIFECO PMS</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5">
+        <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} className="gap-1.5">
           <ArrowLeft className="w-4 h-4" /> رجوع للرئيسية
         </Button>
       </header>

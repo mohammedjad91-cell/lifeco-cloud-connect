@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { LAB_PARAMETERS } from "@/lib/departments";
@@ -373,7 +374,7 @@ const LabDashboard = () => {
           <Button variant="outline" size="sm" onClick={openPreview} className="gap-1.5">
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
+          <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} className="gap-1.5 text-muted-foreground">
             <LogOut className="w-4 h-4" /> {t.exit}
           </Button>
         </div>

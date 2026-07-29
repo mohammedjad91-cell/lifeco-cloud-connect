@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { motion } from "framer-motion";
 import { format, subDays, startOfDay } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -224,7 +225,7 @@ const BIDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border px-4 md:px-6 py-3 glass-card rounded-none flex items-center gap-3 sticky top-0 z-30">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/")} title="العودة للرئيسية">
+        <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} title="العودة للرئيسية">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div className="flex-1 min-w-0">

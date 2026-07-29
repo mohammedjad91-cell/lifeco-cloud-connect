@@ -8,6 +8,7 @@ import {
   Wrench, FlaskConical, ClipboardList, Search, Upload, Star,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { getBackTarget } from "@/lib/nav-back";
 import LibraryUploadDialog from "@/components/LibraryUploadDialog";
 
 interface Category {
@@ -39,6 +40,7 @@ const DigitalLibrary = () => {
     const category = sessionStorage.getItem("lifeco_library_category");
     return category === "documents" || category === "docs" ? "" : category || "";
   });
+  const plantCode = typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_plant") || "";
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<string | undefined>();
 
@@ -58,11 +60,11 @@ const DigitalLibrary = () => {
       <div className="relative z-10 flex items-center justify-between px-4 py-4">
         <Button
           variant="secondary"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getBackTarget())}
           className="bg-white/10 border border-white/30 text-white hover:bg-white/20"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          {lang === "ar" ? "الرئيسية" : "Home"}
+          {lang === "ar" ? "رجوع" : "Back"}
         </Button>
         <Button
           onClick={() => { setUploadCategory(undefined); setUploadOpen(true); }}
@@ -88,7 +90,9 @@ const DigitalLibrary = () => {
           <Star className="w-6 h-6 text-amber-400 fill-amber-400" />
         </div>
         <p className="text-white/85 mt-2 text-sm tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
-          {lang === "ar" ? "قسم الأمونيا — الوثائق والمراجع" : "Ammonia Department — Docs & References"}
+          {plantCode
+            ? `${plantCode} — ${lang === "ar" ? "الوثائق والمراجع" : "Docs & References"}`
+            : lang === "ar" ? "الوثائق والمراجع" : "Docs & References"}
         </p>
       </motion.div>
 
