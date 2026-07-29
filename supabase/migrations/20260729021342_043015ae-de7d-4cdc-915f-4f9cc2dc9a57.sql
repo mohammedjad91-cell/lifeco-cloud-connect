@@ -1,0 +1,1 @@
+ALTER TABLE public.library_files ADD COLUMN IF NOT EXISTS process_name text, ADD COLUMN IF NOT EXISTS department_key text;

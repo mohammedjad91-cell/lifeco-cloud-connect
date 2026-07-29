@@ -494,12 +494,14 @@ export type Database = {
         Row: {
           category: string
           created_at: string
+          department_key: string | null
           description: string | null
           equipment_id: string | null
           file_name: string
           id: string
           mime_type: string | null
           plant_code: string | null
+          process_name: string | null
           size_bytes: number | null
           storage_path: string
           uploaded_by: string | null
@@ -507,12 +509,14 @@ export type Database = {
         Insert: {
           category: string
           created_at?: string
+          department_key?: string | null
           description?: string | null
           equipment_id?: string | null
           file_name: string
           id?: string
           mime_type?: string | null
           plant_code?: string | null
+          process_name?: string | null
           size_bytes?: number | null
           storage_path: string
           uploaded_by?: string | null
@@ -520,12 +524,14 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string
+          department_key?: string | null
           description?: string | null
           equipment_id?: string | null
           file_name?: string
           id?: string
           mime_type?: string | null
           plant_code?: string | null
+          process_name?: string | null
           size_bytes?: number | null
           storage_path?: string
           uploaded_by?: string | null
