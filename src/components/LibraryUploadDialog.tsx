@@ -315,31 +315,41 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
                   : loadingEq
                     ? (lang === "ar" ? "جارٍ تحميل المعدات…" : "Loading equipment…")
                     : equipment.length === 0
-                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اختر «عملية تشغيل» بدلًا من ذلك." : "No equipment registered for this plant — use \"Operating process\" instead.")
+                      ? (lang === "ar" ? "لا توجد معدات مسجلة لهذا المصنع — اكتب اسم المعدة يدويًا." : "No equipment registered for this plant — type the equipment name manually.")
                       : (lang === "ar" ? `${equipment.length} معدة متاحة` : `${equipment.length} items available`)
               }
             >
-              {(id) => (
-                <Select
-                  value={equipmentId}
-                  onValueChange={setEquipmentId}
-                  disabled={!plantCode || loadingEq || equipment.length === 0}
-                >
-                  <SelectTrigger id={id}>
-                    <SelectValue placeholder={
-                      !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
-                                 : (lang === "ar" ? "اختر المعدة" : "Select equipment")
-                    } />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72">
-                    {equipment.map((e) => (
-                      <SelectItem key={e.id} value={e.id}>
-                        {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              {(id) =>
+                plantCode && !loadingEq && equipment.length === 0 ? (
+                  <Input
+                    id={id}
+                    value={manualEquipment}
+                    onChange={(e) => setManualEquipment(e.target.value)}
+                    maxLength={150}
+                    placeholder={lang === "ar" ? "مثال: ضاغط الهواء 101-J" : "e.g. Air compressor 101-J"}
+                  />
+                ) : (
+                  <Select
+                    value={equipmentId}
+                    onValueChange={setEquipmentId}
+                    disabled={!plantCode || loadingEq}
+                  >
+                    <SelectTrigger id={id}>
+                      <SelectValue placeholder={
+                        !plantCode ? (lang === "ar" ? "اختر مصنعًا أولًا" : "Select a plant first")
+                                   : (lang === "ar" ? "اختر المعدة" : "Select equipment")
+                      } />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      {equipment.map((e) => (
+                        <SelectItem key={e.id} value={e.id}>
+                          {(e.tag || e.asset_code) ? `${e.tag ?? e.asset_code} — ` : ""}{e.asset_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              }
             </FormField>
           ) : (
             <FormField
