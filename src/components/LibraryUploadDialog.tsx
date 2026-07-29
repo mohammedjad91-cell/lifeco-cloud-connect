@@ -59,36 +59,64 @@ export default function LibraryUploadDialog({ open, onOpenChange, defaultCategor
   const [file, setFile] = useState<File | null>(null);
   const [category, setCategory] = useState(defaultCategory ?? "process");
   const [plantCode, setPlantCode] = useState<string>("");
+  const [linkType, setLinkType] = useState<"equipment" | "process">("equipment");
   const [equipmentId, setEquipmentId] = useState<string>("");
+  const [processName, setProcessName] = useState("");
   const [description, setDescription] = useState("");
   const [plants, setPlants] = useState<Plant[]>([]);
   const [equipment, setEquipment] = useState<Equipment[]>([]);
+  const [loadingEq, setLoadingEq] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     (async () => {
-      const { data } = await supabase.from("plants").select("id, code, name").order("code");
+      const { data } = await supabase
+        .from("plants")
+        .select("id, code, name, department_key")
+        .order("department_key")
+        .order("code");
       setPlants((data as Plant[]) || []);
     })();
   }, [open]);
 
+  const selectedPlant = plants.find((p) => p.code === plantCode);
+
   useEffect(() => {
     if (!plantCode) { setEquipment([]); return; }
+    let cancelled = false;
     (async () => {
+      setLoadingEq(true);
+      const key = norm(plantCode);
+      const dept = selectedPlant?.department_key ?? "";
+      // Equipment is stored either by plant_code or by a department code
+      // (e.g. plant "AMM-1" ↔ equipment department "AMM1"), so match both.
       const { data } = await supabase
         .from("equipment_assets")
-        .select("id, tag, asset_name")
-        .eq("plant_code", plantCode)
-        .order("tag");
-      setEquipment((data as Equipment[]) || []);
+        .select("id, tag, asset_name, asset_code, plant_code, department")
+        .order("asset_name");
+      if (cancelled) return;
+      const rows = ((data as any[]) || []).filter((e) => {
+        const pc = norm(e.plant_code ?? "");
+        const dp = norm(e.department ?? "");
+        return pc === key || dp === key || (!e.plant_code && dp === norm(dept));
+      });
+      setEquipment(rows as Equipment[]);
+      setLoadingEq(false);
     })();
-  }, [plantCode]);
+    return () => { cancelled = true; };
+  }, [plantCode, selectedPlant?.department_key]);
+
+  const groupedPlants = plants.reduce<Record<string, Plant[]>>((acc, p) => {
+    (acc[p.department_key] ||= []).push(p);
+    return acc;
+  }, {});
 
   const reset = () => {
     setFileName(""); setFile(null); setDescription("");
-    setPlantCode(""); setEquipmentId("");
+    setPlantCode(""); setEquipmentId(""); setProcessName(""); setLinkType("equipment");
   };
+
 
   const handleSave = async () => {
     if (!fileName.trim()) return toast({ title: lang === "ar" ? "أدخل اسم الملف" : "Enter file name", variant: "destructive" });
