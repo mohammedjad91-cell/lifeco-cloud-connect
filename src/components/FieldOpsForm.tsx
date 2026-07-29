@@ -216,51 +216,87 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
         <h2 className="text-foreground font-semibold">{t.fieldOpsEntry}</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5" /> {t.employeeId}
-            {operator?.employeeId && (
-              <span className="text-[10px] text-primary/70 ml-1">(auto)</span>
-            )}
-          </label>
-          <Input
-            value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
-            placeholder={t.employeeIdPlaceholder}
-            className="bg-secondary/50 border-border"
-          />
+      {/* Operator identity — single consolidated block (was two duplicate inputs) */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_18rem] mb-4">
+        <div className="min-w-0 rounded-lg border border-border bg-secondary/30 p-3">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <p className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-foreground">
+              <User className="w-3.5 h-3.5 shrink-0 text-primary" />
+              <span className="truncate">
+                {technicianName || t.technicianName} · {employeeId || t.employeeId}
+              </span>
+            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="shrink-0"
+              onClick={() => setEditIdentity((s) => !s)}
+            >
+              {editIdentity ? "Done" : "Change"}
+            </Button>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground/80">
+            Auto-filled from your session and stamped on this reading. Edit only if another
+            technician is recording on your behalf.
+          </p>
+
+          {editIdentity && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <FormField
+                label={t.technicianName}
+                required
+                hint="Name shown on the log entry and daily report."
+              >
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={technicianName}
+                    onChange={(e) => setTechnicianName(e.target.value)}
+                    placeholder={t.technicianNamePlaceholder}
+                    className="bg-secondary/50 border-border"
+                  />
+                )}
+              </FormField>
+              <FormField
+                label={t.employeeId}
+                required
+                hint="Payroll ID used to trace who took the reading."
+              >
+                {(id) => (
+                  <Input
+                    id={id}
+                    value={employeeId}
+                    onChange={(e) => setEmployeeId(e.target.value)}
+                    placeholder={t.employeeIdPlaceholder}
+                    className="bg-secondary/50 border-border"
+                  />
+                )}
+              </FormField>
+            </div>
+          )}
         </div>
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5" /> {t.technicianName}
-            {operator?.name && (
-              <span className="text-[10px] text-primary/70 ml-1">(auto)</span>
-            )}
-          </label>
-          <Input
-            value={technicianName}
-            onChange={(e) => setTechnicianName(e.target.value)}
-            placeholder={t.technicianNamePlaceholder}
-            className="bg-secondary/50 border-border"
-          />
-        </div>
-        <div>
-          <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-            <Hash className="w-3.5 h-3.5" /> {t.equipmentTag}
-          </label>
-          <Select value={equipmentTag} onValueChange={setEquipmentTag}>
-            <SelectTrigger className="bg-secondary/50 border-border">
-              <SelectValue placeholder={t.selectEquipment} />
-            </SelectTrigger>
-            <SelectContent>
-              {equipmentList.map((tag) => (
-                <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+
+        <FormField
+          label={t.equipmentTag}
+          required
+          tooltip="Choosing a tag loads the parameter set and safe operating limits for that machine."
+        >
+          {(id) => (
+            <Select value={equipmentTag} onValueChange={setEquipmentTag}>
+              <SelectTrigger id={id} className="bg-secondary/50 border-border">
+                <SelectValue placeholder={t.selectEquipment} />
+              </SelectTrigger>
+              <SelectContent>
+                {equipmentList.map((tag) => (
+                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </FormField>
       </div>
+
 
       {equipmentTag && (
         <motion.div
