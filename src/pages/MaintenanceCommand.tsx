@@ -17,6 +17,8 @@ import {
   Zap, ShieldAlert, Timer, Gauge,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { getAmmoniaSpec } from "@/lib/ammonia-equipment";
+import { TechSpecPanel, SparesRequisition } from "@/components/maintenance/EquipmentTechCard";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import {
   LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip,
