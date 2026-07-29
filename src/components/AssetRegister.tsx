@@ -10,6 +10,8 @@ import { FormField } from "@/components/form/FormField";
 import { Plus, Wrench, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
+import { getAmmoniaSpec } from "@/lib/ammonia-equipment";
+import { TechSpecPanel, SparesRequisition } from "@/components/maintenance/EquipmentTechCard";
 
 interface Asset {
   id: string;
