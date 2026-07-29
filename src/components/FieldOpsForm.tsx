@@ -467,32 +467,38 @@ const DynamicField = ({
   const ok = !value || isInRange(n, spec.range);
   const colors = statusColorClasses(ok);
   return (
-    <div>
-      <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-        {spec.label}
-        {spec.unit && <span className="opacity-60">({spec.unit})</span>}
-        {spec.range && (
-          <span className="text-[10px] opacity-50 ml-auto">
-            {spec.range.min}–{spec.range.max}
-          </span>
-        )}
-      </label>
-      <Input
-        type="number"
-        step="any"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="0.00"
-        className={`h-12 text-xl font-bold border transition-all ${
-          value
-            ? ok
-              ? `${colors.bg} ${colors.text} ${colors.border}`
-              : `bg-red-500/15 text-red-300 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.55)] animate-pulse`
-            : "bg-secondary/50 border-border"
-        }`}
-      />
-    </div>
+    <FormField
+      label={spec.unit ? `${spec.label} (${spec.unit})` : spec.label}
+      badge={spec.range ? `${spec.range.min}–${spec.range.max}` : undefined}
+      tooltip={
+        spec.range
+          ? `Safe operating window: ${spec.range.min}–${spec.range.max}${spec.unit ? ` ${spec.unit}` : ""}. Values outside this range raise a process warning.`
+          : undefined
+      }
+      error={!ok ? "Outside design limits — verify the reading." : undefined}
+    >
+      {(id) => (
+        <Input
+          id={id}
+          type="number"
+          step="any"
+          inputMode="decimal"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="0.00"
+          aria-invalid={!ok}
+          className={`h-12 text-xl font-bold border transition-all ${
+            value
+              ? ok
+                ? `${colors.bg} ${colors.text} ${colors.border}`
+                : `bg-red-500/15 text-red-300 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.55)] animate-pulse`
+              : "bg-secondary/50 border-border"
+          }`}
+        />
+      )}
+    </FormField>
   );
+
 };
 
 export default FieldOpsForm;
