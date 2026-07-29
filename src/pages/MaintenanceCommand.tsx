@@ -288,7 +288,7 @@ export default function MaintenanceCommand() {
 
       {/* Digital Equipment Passport */}
       <Dialog open={!!selected} onOpenChange={o => !o && setSelected(null)}>
-        <DialogContent className="max-w-3xl bg-slate-900/95 border-white/10 text-white">
+        <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto bg-slate-900/95 border-white/10 text-white">
           {selected && (
             <>
               <DialogHeader>
