@@ -346,13 +346,21 @@ const FieldOpsForm = ({ department, onSaved }: Props) => {
       )}
 
       <div className="mt-4">
-        <label className="text-sm text-muted-foreground mb-1.5 block">{t.notes}</label>
-        <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder={t.notesPlaceholder}
-          className="bg-secondary/50 border-border min-h-[60px]"
-        />
+        <FormField
+          label={t.notes}
+          hint="Observations, abnormal sounds, actions taken. Visible in the shift and daily reports."
+        >
+          {(id) => (
+            <Textarea
+              id={id}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={t.notesPlaceholder}
+              className="bg-secondary/50 border-border min-h-[60px]"
+            />
+          )}
+        </FormField>
+
 
         <div className="mt-2 flex items-center gap-3">
           <input
