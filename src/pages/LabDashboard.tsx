@@ -84,6 +84,7 @@ const LabDashboard = () => {
   const [analysisType, setAnalysisType] = useState("routine");
   const [dynamicValues, setDynamicValues] = useState<Record<string, string>>({});
   const [sampleNotes, setSampleNotes] = useState("");
+  const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
@@ -180,6 +181,13 @@ const LabDashboard = () => {
         dynData[f.field_name] = f.field_type === "number" ? parseFloat(v) : v;
       }
     });
+    // Non-routine / ad-hoc parameters typed by the technician
+    customParams.forEach(p => {
+      if (p.name.trim() !== "" && p.value !== "") {
+        const num = parseFloat(p.value);
+        dynData[p.name.trim()] = Number.isNaN(num) ? p.value : num;
+      }
+    });
 
     const { error } = await supabase.from("samples").insert({
       sample_name: sampleName,
@@ -197,7 +205,7 @@ const LabDashboard = () => {
       toast({ title: t.errorSaving, variant: "destructive" });
     } else {
       toast({ title: lang === "ar" ? "تم حفظ العينة" : "Sample saved" });
-      setDynamicValues({}); setSampleName(""); setSampleNotes("");
+      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setCustomParams([]);
       fetchSamples();
     }
     setSavingSample(false);
