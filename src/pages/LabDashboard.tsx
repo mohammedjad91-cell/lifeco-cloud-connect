@@ -555,13 +555,7 @@ const LabDashboard = () => {
           </>
         ) : (
           <>
-            <QuickSampleEntry
-              plants={PLANTS}
-              defaultPlant={plant}
-              technicianName={technicianName}
-              employeeId={employeeId}
-              onSaved={fetchSamples}
-            />
+
 
             {/* Dynamic Sample Entry */}
 
@@ -616,6 +610,14 @@ const LabDashboard = () => {
                       <SelectItem value="troubleshooting">{lang === "ar" ? "تشخيص مشكلة" : "Troubleshooting"}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1.5">
+                    {lang === "ar" ? "نتائج العينة" : "Sample Results"}
+                  </label>
+                  <Input value={sampleResults} onChange={(e) => setSampleResults(e.target.value)}
+                    placeholder={lang === "ar" ? "اكتب نتائج العينة..." : "Enter sample results..."}
+                    className="bg-secondary/50 border-border" />
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground mb-1.5">
