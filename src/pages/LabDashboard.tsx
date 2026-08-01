@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { getBackTarget } from "@/lib/nav-back";
-import QuickSampleEntry from "@/components/lab/QuickSampleEntry";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -88,6 +87,7 @@ const LabDashboard = () => {
   const [analysisType, setAnalysisType] = useState("routine");
   const [dynamicValues, setDynamicValues] = useState<Record<string, string>>({});
   const [sampleNotes, setSampleNotes] = useState("");
+  const [sampleResults, setSampleResults] = useState("");
   const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
@@ -198,6 +198,9 @@ const LabDashboard = () => {
         dynData[p.name.trim()] = Number.isNaN(num) ? p.value : num;
       }
     });
+    if (sampleResults.trim() !== "") {
+      dynData["نتائج العينة"] = sampleResults.trim();
+    }
 
     const { error } = await supabase.from("samples").insert({
       sample_name: sampleName,
@@ -208,14 +211,14 @@ const LabDashboard = () => {
       sample_date: format(selectedDate, "yyyy-MM-dd"),
       dynamic_data: dynData,
       notes: sampleNotes || null,
-      status: "pending",
+      status: sampleResults.trim() !== "" ? "completed" : "pending",
     });
 
     if (error) {
       toast({ title: t.errorSaving, variant: "destructive" });
     } else {
       toast({ title: lang === "ar" ? "تم حفظ العينة" : "Sample saved" });
-      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setCustomParams([]);
+      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setSampleResults(""); setCustomParams([]);
       fetchSamples();
     }
     setSavingSample(false);
@@ -551,13 +554,7 @@ const LabDashboard = () => {
           </>
         ) : (
           <>
-            <QuickSampleEntry
-              plants={PLANTS}
-              defaultPlant={plant}
-              technicianName={technicianName}
-              employeeId={employeeId}
-              onSaved={fetchSamples}
-            />
+
 
             {/* Dynamic Sample Entry */}
 
@@ -612,6 +609,14 @@ const LabDashboard = () => {
                       <SelectItem value="troubleshooting">{lang === "ar" ? "تشخيص مشكلة" : "Troubleshooting"}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1.5">
+                    {lang === "ar" ? "نتائج العينة" : "Sample Results"}
+                  </label>
+                  <Input value={sampleResults} onChange={(e) => setSampleResults(e.target.value)}
+                    placeholder={lang === "ar" ? "اكتب نتائج العينة..." : "Enter sample results..."}
+                    className="bg-secondary/50 border-border" />
                 </div>
                 <div>
                   <label className="text-sm text-muted-foreground mb-1.5">
