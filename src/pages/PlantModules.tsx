@@ -49,9 +49,11 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 const SIMPLE_MODULES: PlantModule[] = [
-  { key: "operations", label: "Operations", labelAr: "التشغيل" },
+  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "lab", label: "Laboratory Readings", labelAr: "المعمل والقراءات" },
   { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
 ];
+
 
 
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
