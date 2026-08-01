@@ -740,6 +740,7 @@ const LabDashboard = () => {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-primary font-semibold">{sample.sample_name}</span>
                           <Badge variant="outline" className="text-[10px]">{sample.department}</Badge>
+                          <Badge variant="outline" className="text-[10px]">{sample.sample_date}</Badge>
                           <Badge variant="secondary" className="text-[10px]">{sample.analysis_type}</Badge>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusColors[sample.status]}`}>
                             {sample.status}
