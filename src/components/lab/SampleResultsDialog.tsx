@@ -97,7 +97,7 @@ const SampleResultsDialog = ({ sample, onClose, onSaved, labelOf }: Props) => {
             {rows.map((r, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <Input
-                  value={labelOf && r.name && !rows[idx].name.includes(" ") ? r.name : r.name}
+                  value={r.name}
                   onChange={(e) => setRows(prev => prev.map((c, i) => i === idx ? { ...c, name: e.target.value } : c))}
                   placeholder={ar ? "اسم المعامل (مثال: pH)" : "Parameter name"}
                   className="bg-secondary/50 border-border"
