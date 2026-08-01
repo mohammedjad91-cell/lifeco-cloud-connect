@@ -56,7 +56,6 @@ const SIMPLE_MODULES: PlantModule[] = [
 
 // خانات خاصة بإدارة المعمل فقط
 const LAB_MODULES: PlantModule[] = [
-  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
   { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
 ];
 
