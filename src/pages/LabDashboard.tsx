@@ -506,7 +506,16 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={(v) => { setPlant(v); setParamValues({}); }}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANTS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                    <SelectContent>{PLANT_GROUPS.map(g => (
+                      <SelectGroup key={g.dept}>
+                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
+                        {g.plants.map(pl => (
+                          <SelectItem key={pl.code} value={pl.code}>
+                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}</SelectContent>
                   </Select>
                 </div>
                 <div>
@@ -645,7 +654,16 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={setPlant}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANTS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                    <SelectContent>{PLANT_GROUPS.map(g => (
+                      <SelectGroup key={g.dept}>
+                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
+                        {g.plants.map(pl => (
+                          <SelectItem key={pl.code} value={pl.code}>
+                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}</SelectContent>
                   </Select>
                 </div>
                 <div>
