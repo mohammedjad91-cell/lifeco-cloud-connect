@@ -12,6 +12,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  SelectGroup, SelectLabel,
 } from "@/components/ui/select";
 import {
   LogOut, FlaskConical, Clock, Loader2, Trash2,
@@ -64,7 +65,34 @@ interface SampleEntry {
   created_at: string;
 }
 
-const PLANTS = ["AMM1", "AMM2", "NITROGEN", "DEMIN1", "DEMIN2", "UTILITIES"];
+// كل مصانع إدارة الأمونيا واليوريا متاحة داخل عينات المعمل
+const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string }[] }[] = [
+  {
+    dept: "AMMONIA", deptAr: "إدارة الأمونيا",
+    plants: [
+      { code: "AMM1", ar: "مصنع الأمونيا 1" },
+      { code: "AMM2", ar: "مصنع الأمونيا 2" },
+      { code: "NITROGEN", ar: "مصنع النيتروجين" },
+      { code: "DEMIN1", ar: "مصنع الديمن 1" },
+      { code: "DEMIN2", ar: "مصنع الديمن 2" },
+      { code: "UTILITIES", ar: "الخدمات (Utilities)" },
+      { code: "PROC-ENG", ar: "هندسة العمليات" },
+    ],
+  },
+  {
+    dept: "UREA", deptAr: "إدارة اليوريا",
+    plants: [
+      { code: "UREA-1", ar: "مصنع اليوريا 1" },
+      { code: "UREA-2", ar: "مصنع اليوريا 2" },
+      { code: "AMM-STORAGE", ar: "خزانات الأمونيا" },
+      { code: "AMM-LOAD", ar: "تحميل الأمونيا" },
+      { code: "UREA-LOAD", ar: "تحميل اليوريا" },
+      { code: "WATER-1", ar: "وحدة معالجة المياه" },
+    ],
+  },
+];
+const PLANTS = PLANT_GROUPS.flatMap(g => g.plants.map(p => p.code));
+
 
 const LabDashboard = () => {
   const navigate = useNavigate();
@@ -108,7 +136,12 @@ const LabDashboard = () => {
   const [resultsSample, setResultsSample] = useState<SampleEntry | null>(null);
 
   const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-  const parameters = plant && LAB_PARAMETERS[plant] ? LAB_PARAMETERS[plant][sampleType] || [] : [];
+  const GENERIC_PARAMS = {
+    daily: ["pH", "Conductivity", "Hardness", "Temp", "Pressure", "TDS", "Chlorides"],
+    weekly: ["Iron", "Silica", "Sulfates", "Alkalinity", "Oil & Grease"],
+  } as const;
+  const parameters = !plant ? []
+    : LAB_PARAMETERS[plant]?.[sampleType] || [...GENERIC_PARAMS[sampleType]];
 
   useEffect(() => {
     fetchDynamicFields();
@@ -473,7 +506,16 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={(v) => { setPlant(v); setParamValues({}); }}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANTS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                    <SelectContent>{PLANT_GROUPS.map(g => (
+                      <SelectGroup key={g.dept}>
+                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
+                        {g.plants.map(pl => (
+                          <SelectItem key={pl.code} value={pl.code}>
+                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}</SelectContent>
                   </Select>
                 </div>
                 <div>
@@ -612,7 +654,16 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={setPlant}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANTS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+                    <SelectContent>{PLANT_GROUPS.map(g => (
+                      <SelectGroup key={g.dept}>
+                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
+                        {g.plants.map(pl => (
+                          <SelectItem key={pl.code} value={pl.code}>
+                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}</SelectContent>
                   </Select>
                 </div>
                 <div>
