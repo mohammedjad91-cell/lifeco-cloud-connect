@@ -115,7 +115,7 @@ const LabDashboard = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates]);
+  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates, plantFilter]);
 
   const fetchDynamicFields = async () => {
     const { data } = await supabase.from("dynamic_fields").select("*")
