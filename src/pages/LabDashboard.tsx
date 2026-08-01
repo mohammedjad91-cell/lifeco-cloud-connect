@@ -430,16 +430,19 @@ const LabDashboard = () => {
         </motion.div>
 
         {/* Tab Selector */}
-        <div className="flex gap-2">
-          <Button variant={activeTab === "classic" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("classic")}>
-            {lang === "ar" ? "الإدخال الكلاسيكي" : "Classic Entry"}
-          </Button>
-          <Button variant={activeTab === "samples" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("samples")}>
-            {lang === "ar" ? "العينات الديناميكية" : "Dynamic Samples"}
-          </Button>
-        </div>
+        {!readOnly && (
+          <div className="flex gap-2">
+            <Button variant={activeTab === "classic" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("classic")}>
+              {lang === "ar" ? "الإدخال الكلاسيكي" : "Classic Entry"}
+            </Button>
+            <Button variant={activeTab === "samples" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("samples")}>
+              {lang === "ar" ? "العينات الديناميكية" : "Dynamic Samples"}
+            </Button>
+          </div>
+        )}
 
-        {activeTab === "classic" ? (
+        {activeTab === "classic" && !readOnly ? (
+
           <>
             {/* Classic Entry Form */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
