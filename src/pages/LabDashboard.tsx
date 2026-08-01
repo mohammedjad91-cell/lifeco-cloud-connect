@@ -89,6 +89,7 @@ const LabDashboard = () => {
   const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
+  const [allDates, setAllDates] = useState(true);
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
     const savedTab = sessionStorage.getItem("lifeco_lab_tab");
@@ -110,7 +111,7 @@ const LabDashboard = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate]);
+  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates]);
 
   const fetchDynamicFields = async () => {
     const { data } = await supabase.from("dynamic_fields").select("*")
@@ -130,9 +131,10 @@ const LabDashboard = () => {
   };
 
   const fetchSamples = async () => {
-    const { data } = await supabase.from("samples").select("*")
-      .eq("sample_date", format(selectedDate, "yyyy-MM-dd"))
-      .order("created_at", { ascending: false });
+    let q = supabase.from("samples").select("*");
+    if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
+    const { data } = await q.order("sample_date", { ascending: false })
+      .order("created_at", { ascending: false }).limit(300);
     if (data) setSamples(data as SampleEntry[]);
   };
 
@@ -700,18 +702,34 @@ const LabDashboard = () => {
               <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
                 <h2 className="text-foreground font-semibold flex items-center gap-2">
                   <FlaskConical className="w-4 h-4 text-primary" />
-                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} — {format(selectedDate, "dd/MM/yyyy")}
+                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} —{" "}
+                  {allDates
+                    ? (lang === "ar" ? "كل العينات المسجّلة" : "All recorded samples")
+                    : format(selectedDate, "dd/MM/yyyy")}
+                  <span className="text-xs text-muted-foreground">({samples.length})</span>
                 </h2>
-                <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
-                  onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
-                  <FileDown className="w-4 h-4" />
-                  {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
-                </Button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button variant={allDates ? "default" : "outline"} size="sm"
+                    onClick={() => setAllDates(true)}>
+                    {lang === "ar" ? "كل التواريخ" : "All dates"}
+                  </Button>
+                  <Button variant={!allDates ? "default" : "outline"} size="sm"
+                    onClick={() => setAllDates(false)}>
+                    {lang === "ar" ? "تاريخ محدد" : "Selected date"}
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
+                    onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
+                    <FileDown className="w-4 h-4" />
+                    {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
+                  </Button>
+                </div>
               </div>
 
               {samples.length === 0 ? (
                 <div className="glass-card p-8 text-center text-muted-foreground">
-                  {lang === "ar" ? "لا توجد عينات لهذا التاريخ" : "No samples for this date"}
+                  {lang === "ar"
+                    ? (allDates ? "لا توجد عينات مسجّلة بعد" : "لا توجد عينات لهذا التاريخ")
+                    : (allDates ? "No samples recorded yet" : "No samples for this date")}
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -722,6 +740,7 @@ const LabDashboard = () => {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-primary font-semibold">{sample.sample_name}</span>
                           <Badge variant="outline" className="text-[10px]">{sample.department}</Badge>
+                          <Badge variant="outline" className="text-[10px]">{sample.sample_date}</Badge>
                           <Badge variant="secondary" className="text-[10px]">{sample.analysis_type}</Badge>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusColors[sample.status]}`}>
                             {sample.status}
