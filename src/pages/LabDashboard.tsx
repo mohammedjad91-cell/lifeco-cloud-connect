@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import {
   LogOut, FlaskConical, Clock, Loader2, Trash2,
-  CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save,
+  CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save, Plus,
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -84,6 +84,7 @@ const LabDashboard = () => {
   const [analysisType, setAnalysisType] = useState("routine");
   const [dynamicValues, setDynamicValues] = useState<Record<string, string>>({});
   const [sampleNotes, setSampleNotes] = useState("");
+  const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
@@ -180,6 +181,13 @@ const LabDashboard = () => {
         dynData[f.field_name] = f.field_type === "number" ? parseFloat(v) : v;
       }
     });
+    // Non-routine / ad-hoc parameters typed by the technician
+    customParams.forEach(p => {
+      if (p.name.trim() !== "" && p.value !== "") {
+        const num = parseFloat(p.value);
+        dynData[p.name.trim()] = Number.isNaN(num) ? p.value : num;
+      }
+    });
 
     const { error } = await supabase.from("samples").insert({
       sample_name: sampleName,
@@ -197,7 +205,7 @@ const LabDashboard = () => {
       toast({ title: t.errorSaving, variant: "destructive" });
     } else {
       toast({ title: lang === "ar" ? "تم حفظ العينة" : "Sample saved" });
-      setDynamicValues({}); setSampleName(""); setSampleNotes("");
+      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setCustomParams([]);
       fetchSamples();
     }
     setSavingSample(false);
@@ -579,8 +587,10 @@ const LabDashboard = () => {
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="routine">{lang === "ar" ? "روتيني" : "Routine"}</SelectItem>
+                      <SelectItem value="non_routine">{lang === "ar" ? "غير روتيني" : "Non-Routine"}</SelectItem>
                       <SelectItem value="special">{lang === "ar" ? "خاص" : "Special"}</SelectItem>
                       <SelectItem value="emergency">{lang === "ar" ? "طارئ" : "Emergency"}</SelectItem>
+                      <SelectItem value="troubleshooting">{lang === "ar" ? "تشخيص مشكلة" : "Troubleshooting"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -625,18 +635,59 @@ const LabDashboard = () => {
                       </div>
                     ))}
                   </div>
-                  <Button onClick={handleSaveSample} disabled={savingSample} className="w-full md:w-auto gap-2 mt-2">
-                    {savingSample ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    {lang === "ar" ? "حفظ العينة" : "Save Sample"}
-                  </Button>
                 </div>
               )}
-              {filteredDynamicFields.length === 0 && plant && (
-                <p className="text-muted-foreground text-sm text-center py-4">
-                  {lang === "ar" ? "لا توجد حقول ديناميكية. أضف حقول من لوحة الإعدادات." : "No dynamic fields configured. Add fields from Admin Settings."}
-                </p>
-              )}
+
+              {/* Non-routine / custom parameters */}
+              <div className="space-y-3 mt-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    {lang === "ar" ? "معاملات غير روتينية (إضافة يدوية)" : "Non-Routine Parameters (manual)"}
+                  </h3>
+                  <Button type="button" variant="outline" size="sm" className="gap-1.5"
+                    onClick={() => setCustomParams(prev => [...prev, { name: "", value: "" }])}>
+                    <Plus className="w-3.5 h-3.5" />
+                    {lang === "ar" ? "إضافة معامل" : "Add Parameter"}
+                  </Button>
+                </div>
+                {customParams.length === 0 ? (
+                  <p className="text-muted-foreground text-xs">
+                    {lang === "ar"
+                      ? "اضغط «إضافة معامل» لتسجيل أي تحليل غير روتيني غير موجود في القوائم."
+                      : "Click “Add Parameter” to record any non-routine analysis not listed above."}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {customParams.map((p, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <Input
+                          value={p.name}
+                          onChange={(e) => setCustomParams(prev => prev.map((c, i) => i === idx ? { ...c, name: e.target.value } : c))}
+                          placeholder={lang === "ar" ? "اسم المعامل (مثال: زيت وشحوم)" : "Parameter name"}
+                          className="bg-secondary/50 border-border"
+                        />
+                        <Input
+                          value={p.value}
+                          onChange={(e) => setCustomParams(prev => prev.map((c, i) => i === idx ? { ...c, value: e.target.value } : c))}
+                          placeholder={lang === "ar" ? "القيمة" : "Value"}
+                          className="bg-secondary/50 border-border w-32 font-bold text-primary"
+                        />
+                        <Button type="button" variant="ghost" size="icon"
+                          onClick={() => setCustomParams(prev => prev.filter((_, i) => i !== idx))}>
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <Button onClick={handleSaveSample} disabled={savingSample} className="w-full md:w-auto gap-2 mt-4">
+                {savingSample ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {lang === "ar" ? "حفظ العينة" : "Save Sample"}
+              </Button>
             </motion.div>
+
 
             {/* Samples List */}
             <div>
