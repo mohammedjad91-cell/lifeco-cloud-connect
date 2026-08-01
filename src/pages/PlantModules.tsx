@@ -11,10 +11,10 @@ import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History, FileSpreadsheet, Layers,
-  Share2, Printer, Mail, MessageCircle, FileDown, Files,
+  Files,
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
+
 
 interface Plant {
   id: string;
