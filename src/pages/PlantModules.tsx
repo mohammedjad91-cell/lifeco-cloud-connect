@@ -100,12 +100,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
-    // المعمل → قراءات المعمل
+    // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
-      sessionStorage.setItem("lifeco_dashboard_tab", "labReadings");
-      navigate("/dashboard");
+      sessionStorage.setItem("lifeco_lab_tab", "classic");
+      navigate("/lab");
       return;
     }
+
 
     if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || m.route?.startsWith("/lab")) {
       sessionStorage.setItem("lifeco_lab_tab", text.includes("sample") || text.includes("analysis") ? "samples" : "classic");
