@@ -146,19 +146,8 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     navigate(`/module/${plantCode}/${encodeURIComponent(m.key)}`);
   };
 
-  const share = (key: string) => {
-    const title = `${plant?.name || plantCode} — Module Report`;
-    if (key === "print") { window.print(); return; }
-    if (key === "email" || key === "outlook") {
-      window.location.href = `mailto:?subject=${encodeURIComponent(title)}`;
-      return;
-    }
-    if (key === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(title)}`, "_blank");
-      return;
-    }
-    toast({ title, description: lang === "ar" ? "قريباً" : "Export coming soon" });
-  };
+
+
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
