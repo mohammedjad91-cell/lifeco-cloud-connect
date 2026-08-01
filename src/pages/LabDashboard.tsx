@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import {
   LogOut, FlaskConical, Clock, Loader2, Trash2,
-  CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save,
+  CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save, Plus,
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
