@@ -777,27 +777,34 @@ const LabDashboard = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
-                            onClick={() => setResultsSample(sample)}>
-                            <Save className="w-3.5 h-3.5" />
-                            {lang === "ar" ? "كتابة النتائج" : "Write Results"}
-                          </Button>
+                          {!readOnly && (
+                            <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
+                              onClick={() => setResultsSample(sample)}>
+                              <Save className="w-3.5 h-3.5" />
+                              {lang === "ar" ? "كتابة النتائج" : "Write Results"}
+                            </Button>
+                          )}
                           <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
                             onClick={() => exportSampleResultsPDF(sample as any, labelOf)}>
                             <FileDown className="w-3.5 h-3.5" /> PDF
                           </Button>
-                          <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
-                            <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
-                              <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
-                              <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
+                          {!readOnly && (
+                            <>
+                              <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
+                                <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
+                                  <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
+                                  <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            </>
+                          )}
                         </div>
+
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                         {Object.entries(sample.dynamic_data || {}).map(([key, val]) => {
