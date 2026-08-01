@@ -50,8 +50,14 @@ const ICONS: Record<string, React.ReactNode> = {
 
 const SIMPLE_MODULES: PlantModule[] = [
   { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
-  
 ];
+
+// خانات خاصة بإدارة المعمل فقط
+const LAB_MODULES: PlantModule[] = [
+  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
+];
+
 
 
 
