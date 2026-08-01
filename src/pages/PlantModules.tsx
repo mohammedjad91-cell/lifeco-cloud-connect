@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { getDepartmentById } from "@/lib/departments";
-import { getModulesForPlant, type PlantModule } from "@/lib/plant-modules";
+import { type PlantModule } from "@/lib/plant-modules";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,7 +57,6 @@ const SIMPLE_MODULES: PlantModule[] = [
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const navigate = useNavigate();
   const { lang } = useI18n();
-  const { toast } = useToast();
   const [plant, setPlant] = useState<Plant | null>(null);
   const [bg, setBg] = useState<string | null>(null);
 
@@ -79,7 +78,6 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   }, [plant]);
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
-  const modules = getModulesForPlant(plantCode);
   const bgImage = bg || heroPlant;
 
   const openModule = (m: PlantModule) => {
