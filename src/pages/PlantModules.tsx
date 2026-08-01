@@ -48,15 +48,11 @@ const ICONS: Record<string, React.ReactNode> = {
   water: <Droplets className="w-6 h-6" />,
 };
 
-const SHARE_ACTIONS = [
-  { key: "pdf", label: "تصدير PDF", icon: <FileDown className="w-4 h-4" /> },
-  { key: "excel", label: "تصدير Excel", icon: <FileSpreadsheet className="w-4 h-4" /> },
-  { key: "word", label: "تصدير Word", icon: <FileText className="w-4 h-4" /> },
-  { key: "print", label: "طباعة", icon: <Printer className="w-4 h-4" /> },
-  { key: "email", label: "إرسال بريد إلكتروني", icon: <Mail className="w-4 h-4" /> },
-  { key: "outlook", label: "إرسال عبر Outlook", icon: <Mail className="w-4 h-4" /> },
-  { key: "whatsapp", label: "إرسال عبر واتساب", icon: <MessageCircle className="w-4 h-4" /> },
+const SIMPLE_MODULES: PlantModule[] = [
+  { key: "operations", label: "Operations", labelAr: "التشغيل" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
 ];
+
 
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const navigate = useNavigate();
