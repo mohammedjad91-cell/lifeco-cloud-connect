@@ -211,7 +211,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
       <div className="flex-1 px-4 pb-10 relative z-10">
         <div className="max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {SIMPLE_MODULES.map((m, i) => (
               <motion.button
                 key={m.key}
