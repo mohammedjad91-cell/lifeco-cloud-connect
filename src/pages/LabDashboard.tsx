@@ -587,8 +587,10 @@ const LabDashboard = () => {
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="routine">{lang === "ar" ? "روتيني" : "Routine"}</SelectItem>
+                      <SelectItem value="non_routine">{lang === "ar" ? "غير روتيني" : "Non-Routine"}</SelectItem>
                       <SelectItem value="special">{lang === "ar" ? "خاص" : "Special"}</SelectItem>
                       <SelectItem value="emergency">{lang === "ar" ? "طارئ" : "Emergency"}</SelectItem>
+                      <SelectItem value="troubleshooting">{lang === "ar" ? "تشخيص مشكلة" : "Troubleshooting"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
