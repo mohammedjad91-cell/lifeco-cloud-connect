@@ -549,7 +549,16 @@ const LabDashboard = () => {
           </>
         ) : (
           <>
+            <QuickSampleEntry
+              plants={PLANTS}
+              defaultPlant={plant}
+              technicianName={technicianName}
+              employeeId={employeeId}
+              onSaved={fetchSamples}
+            />
+
             {/* Dynamic Sample Entry */}
+
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-5 h-5 text-primary" />
