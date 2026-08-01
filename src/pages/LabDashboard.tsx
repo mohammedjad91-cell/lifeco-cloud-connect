@@ -726,7 +726,18 @@ const LabDashboard = () => {
                     ? (lang === "ar" ? "كل العينات المسجّلة" : "All recorded samples")
                     : format(selectedDate, "dd/MM/yyyy")}
                   <span className="text-xs text-muted-foreground">({samples.length})</span>
+                  {plantFilter && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-primary/15 border border-primary/40 text-primary">
+                      {plantFilter}
+                    </span>
+                  )}
                 </h2>
+                {plantFilter && (
+                  <Button variant="ghost" size="sm"
+                    onClick={() => { sessionStorage.removeItem("lifeco_lab_plant"); setPlantFilter(""); }}>
+                    {lang === "ar" ? "عرض كل المصانع" : "Show all plants"}
+                  </Button>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
                   <Button variant={allDates ? "default" : "outline"} size="sm"
                     onClick={() => setAllDates(true)}>
