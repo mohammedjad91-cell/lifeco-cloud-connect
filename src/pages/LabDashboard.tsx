@@ -88,6 +88,7 @@ const LabDashboard = () => {
   const [analysisType, setAnalysisType] = useState("routine");
   const [dynamicValues, setDynamicValues] = useState<Record<string, string>>({});
   const [sampleNotes, setSampleNotes] = useState("");
+  const [sampleResults, setSampleResults] = useState("");
   const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
@@ -198,6 +199,9 @@ const LabDashboard = () => {
         dynData[p.name.trim()] = Number.isNaN(num) ? p.value : num;
       }
     });
+    if (sampleResults.trim() !== "") {
+      dynData["نتائج العينة"] = sampleResults.trim();
+    }
 
     const { error } = await supabase.from("samples").insert({
       sample_name: sampleName,
@@ -208,14 +212,14 @@ const LabDashboard = () => {
       sample_date: format(selectedDate, "yyyy-MM-dd"),
       dynamic_data: dynData,
       notes: sampleNotes || null,
-      status: "pending",
+      status: sampleResults.trim() !== "" ? "completed" : "pending",
     });
 
     if (error) {
       toast({ title: t.errorSaving, variant: "destructive" });
     } else {
       toast({ title: lang === "ar" ? "تم حفظ العينة" : "Sample saved" });
-      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setCustomParams([]);
+      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setSampleResults(""); setCustomParams([]);
       fetchSamples();
     }
     setSavingSample(false);
