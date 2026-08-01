@@ -49,9 +49,11 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 const SIMPLE_MODULES: PlantModule[] = [
-  { key: "operations", label: "Operations", labelAr: "التشغيل" },
+  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "lab", label: "Laboratory Readings", labelAr: "المعمل والقراءات" },
   { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
 ];
+
 
 
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
@@ -91,11 +93,27 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || key === "lab" || m.route?.startsWith("/lab")) {
+    // التشغيل → لوحة التشغيل مع التقارير
+    if (key === "operations") {
+      sessionStorage.setItem("lifeco_dashboard_tab", "report");
+      navigate("/dashboard");
+      return;
+    }
+
+    // المعمل → شاشة المعمل مع القراءات
+    if (key === "lab") {
+      sessionStorage.setItem("lifeco_lab_tab", "classic");
+      navigate("/lab");
+      return;
+    }
+
+
+    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || m.route?.startsWith("/lab")) {
       sessionStorage.setItem("lifeco_lab_tab", text.includes("sample") || text.includes("analysis") ? "samples" : "classic");
       navigate("/lab");
       return;
     }
+
 
     if (
       text.includes("document") || text.includes("manual") || text.includes("drawing") ||
@@ -193,7 +211,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
       <div className="flex-1 px-4 pb-10 relative z-10">
         <div className="max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {SIMPLE_MODULES.map((m, i) => (
               <motion.button
                 key={m.key}
