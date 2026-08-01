@@ -422,7 +422,9 @@ const LabDashboard = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={selectedDate} onSelect={(d) => d && setSelectedDate(d)} className="p-3 pointer-events-auto" />
+              <Calendar mode="single" selected={selectedDate}
+                onSelect={(d) => { if (d) { setSelectedDate(d); setAllDates(false); } }}
+                className="p-3 pointer-events-auto" />
             </PopoverContent>
           </Popover>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
