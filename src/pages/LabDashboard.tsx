@@ -131,9 +131,10 @@ const LabDashboard = () => {
   };
 
   const fetchSamples = async () => {
-    const { data } = await supabase.from("samples").select("*")
-      .eq("sample_date", format(selectedDate, "yyyy-MM-dd"))
-      .order("created_at", { ascending: false });
+    let q = supabase.from("samples").select("*");
+    if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
+    const { data } = await q.order("sample_date", { ascending: false })
+      .order("created_at", { ascending: false }).limit(300);
     if (data) setSamples(data as SampleEntry[]);
   };
 
