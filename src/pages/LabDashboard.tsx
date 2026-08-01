@@ -19,6 +19,8 @@ import {
 import { format } from "date-fns";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { exportAllSampleResultsPDF, exportSampleResultsPDF } from "@/lib/lab-pdf";
+import SampleResultsDialog from "@/components/lab/SampleResultsDialog";
 import * as XLSX from "xlsx";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
@@ -93,6 +95,7 @@ const LabDashboard = () => {
     return savedTab === "samples" || window.location.hash === "#samples" ? "samples" : "classic";
   });
   const [previewData, setPreviewData] = useState<ExportPreviewData | null>(null);
+  const [resultsSample, setResultsSample] = useState<SampleEntry | null>(null);
 
   const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
   const parameters = plant && LAB_PARAMETERS[plant] ? LAB_PARAMETERS[plant][sampleType] || [] : [];
@@ -132,6 +135,9 @@ const LabDashboard = () => {
       .order("created_at", { ascending: false });
     if (data) setSamples(data as SampleEntry[]);
   };
+
+  const labelOf = (key: string) =>
+    dynamicFields.find(f => f.field_name === key)?.field_label || key;
 
   const filteredDynamicFields = dynamicFields.filter(f =>
     !f.department || f.department === "all" || f.department === plant
@@ -722,6 +728,15 @@ const LabDashboard = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
+                          <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
+                            onClick={() => setResultsSample(sample)}>
+                            <Save className="w-3.5 h-3.5" />
+                            {lang === "ar" ? "كتابة النتائج" : "Write Results"}
+                          </Button>
+                          <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
+                            onClick={() => exportSampleResultsPDF(sample as any, labelOf)}>
+                            <FileDown className="w-3.5 h-3.5" /> PDF
+                          </Button>
                           <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
                             <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
                             <SelectContent>
@@ -762,6 +777,13 @@ const LabDashboard = () => {
       <footer className="border-t border-border px-6 py-3 text-center">
         <p className="text-muted-foreground text-xs" dir="rtl">{t.footer}</p>
       </footer>
+
+      <SampleResultsDialog
+        sample={resultsSample as any}
+        onClose={() => setResultsSample(null)}
+        onSaved={fetchSamples}
+        labelOf={labelOf}
+      />
 
       {previewData && (
         <ExportPreviewDialog
