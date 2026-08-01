@@ -252,6 +252,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
               </motion.button>
             ))}
           </div>
+          {modules.length === 0 && (
+            <div className="glass-card p-6 text-center text-muted-foreground">
+              {lang === "ar"
+                ? "لا توجد خانات متاحة لهذا المصنع"
+                : "No modules available for this plant"}
+            </div>
+          )}
         </div>
       </div>
 
