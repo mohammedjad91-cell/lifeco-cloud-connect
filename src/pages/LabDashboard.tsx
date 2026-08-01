@@ -727,6 +727,7 @@ const LabDashboard = () => {
                 {lang === "ar" ? "حفظ العينة" : "Save Sample"}
               </Button>
             </motion.div>
+            )}
 
 
             {/* Samples List */}
