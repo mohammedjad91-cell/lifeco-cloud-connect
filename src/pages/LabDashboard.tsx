@@ -94,6 +94,9 @@ const LabDashboard = () => {
   const [allDates, setAllDates] = useState(true);
   const [plantFilter, setPlantFilter] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
+  // مهندس المصنع: عرض فقط (بدون إدخال عينات)
+  const readOnly = !!plantFilter;
+
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
     const savedTab = sessionStorage.getItem("lifeco_lab_tab");
@@ -427,16 +430,19 @@ const LabDashboard = () => {
         </motion.div>
 
         {/* Tab Selector */}
-        <div className="flex gap-2">
-          <Button variant={activeTab === "classic" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("classic")}>
-            {lang === "ar" ? "الإدخال الكلاسيكي" : "Classic Entry"}
-          </Button>
-          <Button variant={activeTab === "samples" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("samples")}>
-            {lang === "ar" ? "العينات الديناميكية" : "Dynamic Samples"}
-          </Button>
-        </div>
+        {!readOnly && (
+          <div className="flex gap-2">
+            <Button variant={activeTab === "classic" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("classic")}>
+              {lang === "ar" ? "الإدخال الكلاسيكي" : "Classic Entry"}
+            </Button>
+            <Button variant={activeTab === "samples" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("samples")}>
+              {lang === "ar" ? "العينات الديناميكية" : "Dynamic Samples"}
+            </Button>
+          </div>
+        )}
 
-        {activeTab === "classic" ? (
+        {activeTab === "classic" && !readOnly ? (
+
           <>
             {/* Classic Entry Form */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
@@ -560,8 +566,15 @@ const LabDashboard = () => {
 
 
             {/* Dynamic Sample Entry */}
-
+            {readOnly ? (
+              <div className="glass-card p-4 text-sm text-muted-foreground">
+                {lang === "ar"
+                  ? "وضع العرض فقط — إدخال العينات وكتابة النتائج من صلاحية المعمل."
+                  : "View-only mode — sample entry and results are handled by the laboratory."}
+              </div>
+            ) : (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
+
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-5 h-5 text-primary" />
                 <h2 className="text-foreground font-semibold">
@@ -714,6 +727,7 @@ const LabDashboard = () => {
                 {lang === "ar" ? "حفظ العينة" : "Save Sample"}
               </Button>
             </motion.div>
+            )}
 
 
             {/* Samples List */}
@@ -777,27 +791,34 @@ const LabDashboard = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
-                            onClick={() => setResultsSample(sample)}>
-                            <Save className="w-3.5 h-3.5" />
-                            {lang === "ar" ? "كتابة النتائج" : "Write Results"}
-                          </Button>
+                          {!readOnly && (
+                            <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
+                              onClick={() => setResultsSample(sample)}>
+                              <Save className="w-3.5 h-3.5" />
+                              {lang === "ar" ? "كتابة النتائج" : "Write Results"}
+                            </Button>
+                          )}
                           <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
                             onClick={() => exportSampleResultsPDF(sample as any, labelOf)}>
                             <FileDown className="w-3.5 h-3.5" /> PDF
                           </Button>
-                          <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
-                            <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
-                              <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
-                              <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
+                          {!readOnly && (
+                            <>
+                              <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
+                                <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
+                                  <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
+                                  <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            </>
+                          )}
                         </div>
+
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                         {Object.entries(sample.dynamic_data || {}).map(([key, val]) => {
