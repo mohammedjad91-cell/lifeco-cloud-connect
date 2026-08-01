@@ -94,8 +94,10 @@ const LabDashboard = () => {
   const [allDates, setAllDates] = useState(true);
   const [plantFilter, setPlantFilter] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
-  // مهندس المصنع: عرض فقط (بدون إدخال عينات)
-  const readOnly = !!plantFilter;
+  // مهندس المصنع: عرض فقط — يُحدَّد عند الدخول من شاشة المصنع ولا يتغير بتغيير الفلتر
+  const [readOnly] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : !!sessionStorage.getItem("lifeco_lab_plant"));
+
 
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
