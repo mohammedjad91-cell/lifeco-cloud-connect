@@ -86,6 +86,8 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
   const bgImage = bg || heroPlant;
+  const modules = plant?.department_key === "LAB" ? LAB_MODULES : SIMPLE_MODULES;
+
 
   const openModule = (m: PlantModule) => {
     const key = m.key.toLowerCase();
