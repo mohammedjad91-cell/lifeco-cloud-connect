@@ -691,10 +691,18 @@ const LabDashboard = () => {
 
             {/* Samples List */}
             <div>
-              <h2 className="text-foreground font-semibold mb-3 flex items-center gap-2">
-                <FlaskConical className="w-4 h-4 text-primary" />
-                {lang === "ar" ? "العينات" : "Samples"} — {format(selectedDate, "dd/MM/yyyy")}
-              </h2>
+              <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                <h2 className="text-foreground font-semibold flex items-center gap-2">
+                  <FlaskConical className="w-4 h-4 text-primary" />
+                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} — {format(selectedDate, "dd/MM/yyyy")}
+                </h2>
+                <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
+                  onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
+                  <FileDown className="w-4 h-4" />
+                  {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
+                </Button>
+              </div>
+
               {samples.length === 0 ? (
                 <div className="glass-card p-8 text-center text-muted-foreground">
                   {lang === "ar" ? "لا توجد عينات لهذا التاريخ" : "No samples for this date"}
