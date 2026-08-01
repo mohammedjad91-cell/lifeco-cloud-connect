@@ -92,6 +92,8 @@ const LabDashboard = () => {
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
   const [allDates, setAllDates] = useState(true);
+  const [plantFilter, setPlantFilter] = useState<string>(() =>
+    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
     const savedTab = sessionStorage.getItem("lifeco_lab_tab");
