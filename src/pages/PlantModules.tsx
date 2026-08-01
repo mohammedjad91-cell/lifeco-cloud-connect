@@ -125,22 +125,22 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+    // مركز الصيانة يُفتح فقط للوحدات الخاصة بسجل المعدات/بطاقات المعدات/أوامر العمل
     if (
-      departmentKey === "MAINTENANCE" || text.includes("maintenance") ||
-      text.includes("work order") || text.includes("workshop") || text.includes("repair")
+      key === "maintenance" || key === "cmms" || text.includes("passport") ||
+      text.includes("work order") || text.includes("أوامر العمل") ||
+      (text.includes("maintenance") && (text.includes("asset") || text.includes("equipment") || text.includes("command")))
     ) {
       navigate("/mnt-command");
       return;
     }
 
-    if (
-      text.includes("equipment") || text.includes("asset") || text.includes("spare") ||
-      text.includes("calibration") || text.includes("inspection") || text.includes("lubrication")
-    ) {
+    if (text.includes("equipment register") || key === "equipment" || key === "assets") {
       sessionStorage.setItem("lifeco_dashboard_tab", "assets");
       navigate("/dashboard");
       return;
     }
+
 
     if (m.route) {
       navigate(m.route.split("#")[0]);

@@ -150,11 +150,16 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string; moduleKe
 
     let chosen: Panel[];
     if (k.includes("spare") || k.includes("store") || k.includes("inventory")) chosen = [sparePanel, assetPanel];
+    else if (k.includes("plan") || k.includes("schedule") || k.includes("pm")) chosen = [maintPanel, assetPanel];
+    else if (k.includes("predict") || k.includes("vibration") || k.includes("condition")) chosen = [fieldPanel, maintPanel];
+    else if (k.includes("lubric") || k.includes("calibr") || k.includes("inspect")) chosen = [assetPanel, maintPanel, fieldPanel];
+    else if (k.includes("workshop") || k.includes("repair")) chosen = [maintPanel, sparePanel];
     else if (k.includes("shutdown") || k.includes("history") || k.includes("maint")) chosen = [maintPanel, assetPanel];
     else if (k.includes("equipment") || k.includes("asset")) chosen = [assetPanel, maintPanel];
     else if (k.includes("doc") || k.includes("manual") || k.includes("draw")) chosen = [docPanel];
     else if (k === "overview") chosen = [opsPanel, assetPanel, docPanel];
     else chosen = [opsPanel, fieldPanel];
+
 
     setPanels(chosen);
     setLoading(false);
