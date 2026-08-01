@@ -137,6 +137,7 @@ const LabDashboard = () => {
   const fetchSamples = async () => {
     let q = supabase.from("samples").select("*");
     if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
+    if (plantFilter) q = q.eq("department", plantFilter);
     const { data } = await q.order("sample_date", { ascending: false })
       .order("created_at", { ascending: false }).limit(300);
     if (data) setSamples(data as SampleEntry[]);
