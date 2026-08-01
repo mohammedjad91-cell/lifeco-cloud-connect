@@ -500,7 +500,7 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             <TabsTrigger value="assets" className="gap-1.5">
-              <Wrench className="w-3.5 h-3.5" /> {lang === "ar" ? "الأصول" : "Assets"}
+              <Wrench className="w-3.5 h-3.5" /> {lang === "ar" ? "الصيانة" : "Maintenance"}
             </TabsTrigger>
             {department.id === "NITROGEN" && (
               <TabsTrigger value="nitrogen" className="gap-1.5">

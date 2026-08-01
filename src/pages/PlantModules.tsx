@@ -4,17 +4,17 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { getDepartmentById } from "@/lib/departments";
-import { getModulesForPlant, type PlantModule } from "@/lib/plant-modules";
+import { type PlantModule } from "@/lib/plant-modules";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History, FileSpreadsheet, Layers,
-  Share2, Printer, Mail, MessageCircle, FileDown, Files,
+  Files,
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
+
 
 interface Plant {
   id: string;
@@ -48,20 +48,15 @@ const ICONS: Record<string, React.ReactNode> = {
   water: <Droplets className="w-6 h-6" />,
 };
 
-const SHARE_ACTIONS = [
-  { key: "pdf", label: "تصدير PDF", icon: <FileDown className="w-4 h-4" /> },
-  { key: "excel", label: "تصدير Excel", icon: <FileSpreadsheet className="w-4 h-4" /> },
-  { key: "word", label: "تصدير Word", icon: <FileText className="w-4 h-4" /> },
-  { key: "print", label: "طباعة", icon: <Printer className="w-4 h-4" /> },
-  { key: "email", label: "إرسال بريد إلكتروني", icon: <Mail className="w-4 h-4" /> },
-  { key: "outlook", label: "إرسال عبر Outlook", icon: <Mail className="w-4 h-4" /> },
-  { key: "whatsapp", label: "إرسال عبر واتساب", icon: <MessageCircle className="w-4 h-4" /> },
+const SIMPLE_MODULES: PlantModule[] = [
+  { key: "operations", label: "Operations", labelAr: "التشغيل" },
+  { key: "maintenance", label: "Maintenance", labelAr: "الصيانة" },
 ];
+
 
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const navigate = useNavigate();
   const { lang } = useI18n();
-  const { toast } = useToast();
   const [plant, setPlant] = useState<Plant | null>(null);
   const [bg, setBg] = useState<string | null>(null);
 
@@ -83,7 +78,6 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   }, [plant]);
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
-  const modules = getModulesForPlant(plantCode);
   const bgImage = bg || heroPlant;
 
   const openModule = (m: PlantModule) => {
@@ -150,19 +144,8 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     navigate(`/module/${plantCode}/${encodeURIComponent(m.key)}`);
   };
 
-  const share = (key: string) => {
-    const title = `${plant?.name || plantCode} — Module Report`;
-    if (key === "print") { window.print(); return; }
-    if (key === "email" || key === "outlook") {
-      window.location.href = `mailto:?subject=${encodeURIComponent(title)}`;
-      return;
-    }
-    if (key === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(title)}`, "_blank");
-      return;
-    }
-    toast({ title, description: lang === "ar" ? "قريباً" : "Export coming soon" });
-  };
+
+
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
@@ -209,56 +192,35 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       </motion.div>
 
       <div className="flex-1 px-4 pb-10 relative z-10">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <section>
-            <h2 className="text-white/90 text-sm uppercase tracking-widest mb-3">
-              {lang === "ar" ? "الوحدات الرئيسية" : "Main Modules"}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {modules.map((m, i) => (
-                <motion.button
-                  key={m.key}
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.03 }}
-                  onClick={() => openModule(m)}
-                  className="glass-card p-4 text-left hover:neon-border transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
-                      {ICONS[m.key] || <FileText className="w-6 h-6" />}
+        <div className="max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {SIMPLE_MODULES.map((m, i) => (
+              <motion.button
+                key={m.key}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                onClick={() => openModule(m)}
+                className="glass-card p-6 text-left hover:neon-border transition-all group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
+                    {ICONS[m.key] || <FileText className="w-7 h-7" />}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-foreground font-bold text-lg leading-tight">
+                      {lang === "ar" ? m.labelAr || m.label : m.label}
                     </div>
-                    <div className="min-w-0">
-                      <div className="text-foreground font-semibold text-sm leading-tight">
-                        {lang === "ar" ? m.labelAr || m.label : m.label}
-                      </div>
-                      <div className="text-muted-foreground text-xs mt-0.5" dir={lang === "ar" ? "ltr" : "rtl"}>
-                        {lang === "ar" ? m.label : m.labelAr}
-                      </div>
+                    <div className="text-muted-foreground text-xs mt-1" dir={lang === "ar" ? "ltr" : "rtl"}>
+                      {lang === "ar" ? m.label : m.labelAr}
                     </div>
                   </div>
-                </motion.button>
-              ))}
-            </div>
-          </section>
-
-
-          <section>
-            <h2 className="text-white/90 text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
-              <Share2 className="w-4 h-4" />
-              {lang === "ar" ? "تصدير ومشاركة" : "Export & Share"}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {SHARE_ACTIONS.map((a) => (
-                <Button key={a.key} variant="secondary"
-                  onClick={() => share(a.key)}
-                  className="bg-white/10 border border-white/30 text-white hover:bg-white/20 gap-2">
-                  {a.icon} {a.label}
-                </Button>
-              ))}
-            </div>
-          </section>
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </div>
+
     </div>
   );
 };
