@@ -86,7 +86,15 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
   const bgImage = bg || heroPlant;
-  const modules = plant?.department_key === "LAB" ? LAB_MODULES : SIMPLE_MODULES;
+  // خانة التشغيل متاحة فقط لمصانع الأمونيا واليوريا (والمعمل له خاناته)
+  const OPS_DEPTS = ["AMMONIA", "UREA"];
+  const deptKey = plant?.department_key || "";
+  const modules =
+    deptKey === "LAB"
+      ? LAB_MODULES
+      : OPS_DEPTS.includes(deptKey)
+        ? SIMPLE_MODULES
+        : [];
 
 
   const openModule = (m: PlantModule) => {
@@ -244,6 +252,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
               </motion.button>
             ))}
           </div>
+          {modules.length === 0 && (
+            <div className="glass-card p-6 text-center text-muted-foreground">
+              {lang === "ar"
+                ? "لا توجد خانات متاحة لهذا المصنع"
+                : "No modules available for this plant"}
+            </div>
+          )}
         </div>
       </div>
 
