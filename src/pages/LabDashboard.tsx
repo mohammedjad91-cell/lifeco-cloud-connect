@@ -94,8 +94,10 @@ const LabDashboard = () => {
   const [allDates, setAllDates] = useState(true);
   const [plantFilter, setPlantFilter] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
-  // مهندس المصنع: عرض فقط (بدون إدخال عينات)
-  const readOnly = !!plantFilter;
+  // مهندس المصنع: عرض فقط — يُحدَّد عند الدخول من شاشة المصنع ولا يتغير بتغيير الفلتر
+  const [readOnly] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : !!sessionStorage.getItem("lifeco_lab_plant"));
+
 
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
@@ -420,7 +422,9 @@ const LabDashboard = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={selectedDate} onSelect={(d) => d && setSelectedDate(d)} className="p-3 pointer-events-auto" />
+              <Calendar mode="single" selected={selectedDate}
+                onSelect={(d) => { if (d) { setSelectedDate(d); setAllDates(false); } }}
+                className="p-3 pointer-events-auto" />
             </PopoverContent>
           </Popover>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
