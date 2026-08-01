@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { getBackTarget } from "@/lib/nav-back";
-import QuickSampleEntry from "@/components/lab/QuickSampleEntry";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
