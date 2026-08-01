@@ -119,9 +119,20 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
+      sessionStorage.removeItem("lifeco_lab_plant");
       navigate("/lab");
       return;
     }
+
+    // قراءات المعمل الخاصة بهذا المصنع
+    if (key === "lab-readings") {
+      sessionStorage.setItem("lifeco_lab_tab", "samples");
+      sessionStorage.setItem("lifeco_lab_plant", plantCode);
+      navigate("/lab");
+      return;
+    }
+
+
 
 
 
