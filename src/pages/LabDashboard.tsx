@@ -702,18 +702,34 @@ const LabDashboard = () => {
               <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
                 <h2 className="text-foreground font-semibold flex items-center gap-2">
                   <FlaskConical className="w-4 h-4 text-primary" />
-                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} — {format(selectedDate, "dd/MM/yyyy")}
+                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} —{" "}
+                  {allDates
+                    ? (lang === "ar" ? "كل العينات المسجّلة" : "All recorded samples")
+                    : format(selectedDate, "dd/MM/yyyy")}
+                  <span className="text-xs text-muted-foreground">({samples.length})</span>
                 </h2>
-                <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
-                  onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
-                  <FileDown className="w-4 h-4" />
-                  {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
-                </Button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button variant={allDates ? "default" : "outline"} size="sm"
+                    onClick={() => setAllDates(true)}>
+                    {lang === "ar" ? "كل التواريخ" : "All dates"}
+                  </Button>
+                  <Button variant={!allDates ? "default" : "outline"} size="sm"
+                    onClick={() => setAllDates(false)}>
+                    {lang === "ar" ? "تاريخ محدد" : "Selected date"}
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
+                    onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
+                    <FileDown className="w-4 h-4" />
+                    {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
+                  </Button>
+                </div>
               </div>
 
               {samples.length === 0 ? (
                 <div className="glass-card p-8 text-center text-muted-foreground">
-                  {lang === "ar" ? "لا توجد عينات لهذا التاريخ" : "No samples for this date"}
+                  {lang === "ar"
+                    ? (allDates ? "لا توجد عينات مسجّلة بعد" : "لا توجد عينات لهذا التاريخ")
+                    : (allDates ? "No samples recorded yet" : "No samples for this date")}
                 </div>
               ) : (
                 <div className="space-y-3">
