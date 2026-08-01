@@ -30,6 +30,7 @@ const ICONS: Record<string, React.ReactNode> = {
   equipment: <Cog className="w-6 h-6" />,
   maintenance: <Wrench className="w-6 h-6" />,
   lab: <FlaskConical className="w-6 h-6" />,
+  "lab-readings": <FlaskConical className="w-6 h-6" />,
   process: <Layers className="w-6 h-6" />,
   utilities: <Droplets className="w-6 h-6" />,
   documents: <FileText className="w-6 h-6" />,
@@ -50,6 +51,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 const SIMPLE_MODULES: PlantModule[] = [
   { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
 ];
 
 // خانات خاصة بإدارة المعمل فقط
@@ -118,9 +120,20 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
+      sessionStorage.removeItem("lifeco_lab_plant");
       navigate("/lab");
       return;
     }
+
+    // قراءات المعمل الخاصة بهذا المصنع
+    if (key === "lab-readings") {
+      sessionStorage.setItem("lifeco_lab_tab", "samples");
+      sessionStorage.setItem("lifeco_lab_plant", plantCode);
+      navigate("/lab");
+      return;
+    }
+
+
 
 
 

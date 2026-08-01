@@ -92,6 +92,8 @@ const LabDashboard = () => {
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
   const [allDates, setAllDates] = useState(true);
+  const [plantFilter, setPlantFilter] = useState<string>(() =>
+    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
     if (typeof window === "undefined") return "classic";
     const savedTab = sessionStorage.getItem("lifeco_lab_tab");
@@ -113,7 +115,7 @@ const LabDashboard = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates]);
+  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates, plantFilter]);
 
   const fetchDynamicFields = async () => {
     const { data } = await supabase.from("dynamic_fields").select("*")
@@ -135,6 +137,7 @@ const LabDashboard = () => {
   const fetchSamples = async () => {
     let q = supabase.from("samples").select("*");
     if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
+    if (plantFilter) q = q.eq("department", plantFilter);
     const { data } = await q.order("sample_date", { ascending: false })
       .order("created_at", { ascending: false }).limit(300);
     if (data) setSamples(data as SampleEntry[]);
@@ -723,7 +726,18 @@ const LabDashboard = () => {
                     ? (lang === "ar" ? "كل العينات المسجّلة" : "All recorded samples")
                     : format(selectedDate, "dd/MM/yyyy")}
                   <span className="text-xs text-muted-foreground">({samples.length})</span>
+                  {plantFilter && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-primary/15 border border-primary/40 text-primary">
+                      {plantFilter}
+                    </span>
+                  )}
                 </h2>
+                {plantFilter && (
+                  <Button variant="ghost" size="sm"
+                    onClick={() => { sessionStorage.removeItem("lifeco_lab_plant"); setPlantFilter(""); }}>
+                    {lang === "ar" ? "عرض كل المصانع" : "Show all plants"}
+                  </Button>
+                )}
                 <div className="flex items-center gap-2 flex-wrap">
                   <Button variant={allDates ? "default" : "outline"} size="sm"
                     onClick={() => setAllDates(true)}>
