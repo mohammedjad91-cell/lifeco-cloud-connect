@@ -566,8 +566,15 @@ const LabDashboard = () => {
 
 
             {/* Dynamic Sample Entry */}
-
+            {readOnly ? (
+              <div className="glass-card p-4 text-sm text-muted-foreground">
+                {lang === "ar"
+                  ? "وضع العرض فقط — إدخال العينات وكتابة النتائج من صلاحية المعمل."
+                  : "View-only mode — sample entry and results are handled by the laboratory."}
+              </div>
+            ) : (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
+
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-5 h-5 text-primary" />
                 <h2 className="text-foreground font-semibold">
