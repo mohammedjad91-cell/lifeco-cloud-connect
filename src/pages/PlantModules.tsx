@@ -93,11 +93,26 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || key === "lab" || m.route?.startsWith("/lab")) {
+    // التشغيل → لوحة التشغيل مع التقارير
+    if (key === "operations") {
+      sessionStorage.setItem("lifeco_dashboard_tab", "report");
+      navigate("/dashboard");
+      return;
+    }
+
+    // المعمل → قراءات المعمل
+    if (key === "lab") {
+      sessionStorage.setItem("lifeco_dashboard_tab", "labReadings");
+      navigate("/dashboard");
+      return;
+    }
+
+    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || m.route?.startsWith("/lab")) {
       sessionStorage.setItem("lifeco_lab_tab", text.includes("sample") || text.includes("analysis") ? "samples" : "classic");
       navigate("/lab");
       return;
     }
+
 
     if (
       text.includes("document") || text.includes("manual") || text.includes("drawing") ||
