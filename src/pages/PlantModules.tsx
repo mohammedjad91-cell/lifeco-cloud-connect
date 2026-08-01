@@ -50,6 +50,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 const SIMPLE_MODULES: PlantModule[] = [
   { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "lab", label: "Laboratory & Samples", labelAr: "المعمل والعينات" },
 ];
 
 
@@ -100,10 +101,11 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
     // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
-      sessionStorage.setItem("lifeco_lab_tab", "classic");
+      sessionStorage.setItem("lifeco_lab_tab", "samples");
       navigate("/lab");
       return;
     }
+
 
 
     if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || m.route?.startsWith("/lab")) {
