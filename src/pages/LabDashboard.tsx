@@ -136,7 +136,12 @@ const LabDashboard = () => {
   const [resultsSample, setResultsSample] = useState<SampleEntry | null>(null);
 
   const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-  const parameters = plant && LAB_PARAMETERS[plant] ? LAB_PARAMETERS[plant][sampleType] || [] : [];
+  const GENERIC_PARAMS = {
+    daily: ["pH", "Conductivity", "Hardness", "Temp", "Pressure", "TDS", "Chlorides"],
+    weekly: ["Iron", "Silica", "Sulfates", "Alkalinity", "Oil & Grease"],
+  } as const;
+  const parameters = !plant ? []
+    : LAB_PARAMETERS[plant]?.[sampleType] || [...GENERIC_PARAMS[sampleType]];
 
   useEffect(() => {
     fetchDynamicFields();
