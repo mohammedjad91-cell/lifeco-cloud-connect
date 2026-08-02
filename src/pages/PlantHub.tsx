@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ReportBuilder from "@/components/ops/ReportBuilder";
 import ReportFeed from "@/components/ops/ReportFeed";
 import MetricCard from "@/components/ops/MetricCard";
+import ReportAiSummary from "@/components/ops/ReportAiSummary";
+
 import { useToast } from "@/hooks/use-toast";
 import { exportReportsPdf } from "@/lib/ops-report-pdf";
 import { cn } from "@/lib/utils";
@@ -103,15 +105,26 @@ export default function PlantHub({ plantKey }: { plantKey: PlantKey }) {
 
         <span className="text-xs text-muted-foreground" dir="ltr">{range.from} → {range.to}</span>
 
-        <Button
-          variant="secondary"
-          className="ms-auto gap-2"
-          disabled={!rows.length}
-          onClick={() => exportReportsPdf({ rows, plantKey, from: range.from, to: range.to, periodLabel: PERIOD_LABEL[period] })}
-        >
-          <FileDown className="h-4 w-4" /> تصدير PDF
-        </Button>
+        <div className="ms-auto flex flex-wrap items-center gap-2">
+          <ReportAiSummary
+            rows={rows}
+            section="OPS"
+            plantName={PLANTS[plantKey].name}
+            periodLabel={PERIOD_LABEL[period]}
+            from={range.from}
+            to={range.to}
+          />
+          <Button
+            variant="secondary"
+            className="gap-2"
+            disabled={!rows.length}
+            onClick={() => exportReportsPdf({ rows, plantKey, from: range.from, to: range.to, periodLabel: PERIOD_LABEL[period] })}
+          >
+            <FileDown className="h-4 w-4" /> تصدير PDF
+          </Button>
+        </div>
       </section>
+
 
       <ReportFeed
         rows={rows}
