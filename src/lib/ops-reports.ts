@@ -12,7 +12,7 @@ export type ReportSection = "OPS" | "LAB";
 export interface OperationalReport {
   id: string;
   plant_key: PlantKey;
-  plant_code: string | null;
+  section?: ReportSection;
   report_date: string;
   shift: Shift;
   period_type: PeriodType;
