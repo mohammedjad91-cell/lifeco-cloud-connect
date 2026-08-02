@@ -752,6 +752,7 @@ export type Database = {
           plant_code: string | null
           plant_key: string
           report_date: string
+          section: string
           severity: string
           shift: string
           signed: boolean
@@ -770,6 +771,7 @@ export type Database = {
           plant_code?: string | null
           plant_key: string
           report_date?: string
+          section?: string
           severity?: string
           shift?: string
           signed?: boolean
@@ -788,6 +790,7 @@ export type Database = {
           plant_code?: string | null
           plant_key?: string
           report_date?: string
+          section?: string
           severity?: string
           shift?: string
           signed?: boolean

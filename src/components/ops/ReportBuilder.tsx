@@ -23,11 +23,13 @@ import {
   CATEGORY_LABEL,
   PERIOD_LABEL,
   PLANTS,
+  LAB_UNITS,
   PLANT_UNITS,
   SEVERITY_LABEL,
   SHIFT_LABEL,
   STATUS_LABEL,
   createReport,
+  type ReportSection,
   type PeriodType,
   type PlantKey,
   type ReportStatus,
@@ -39,9 +41,12 @@ import {
 interface Props {
   plantKey: PlantKey;
   lockPlant?: boolean;
+  /** "OPS" = plant operations reports, "LAB" = laboratory supervisor reports. */
+  section?: ReportSection;
 }
 
-export default function ReportBuilder({ plantKey, lockPlant = true }: Props) {
+export default function ReportBuilder({ plantKey, lockPlant = true, section = "OPS" }: Props) {
+  const unitsFor = (k: PlantKey) => (section === "LAB" ? LAB_UNITS[k] : PLANT_UNITS[k]);
   const { toast } = useToast();
   const qc = useQueryClient();
   const op = getOperator();
@@ -53,7 +58,7 @@ export default function ReportBuilder({ plantKey, lockPlant = true }: Props) {
   const [shift, setShift] = useState<Shift>("morning");
   const [period, setPeriod] = useState<PeriodType>("daily");
   const [category, setCategory] = useState<WorkCategory>("routine");
-  const [unit, setUnit] = useState<string>(PLANT_UNITS[plantKey][0]);
+  const [unit, setUnit] = useState<string>((section === "LAB" ? LAB_UNITS : PLANT_UNITS)[plantKey][0]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [equipment, setEquipment] = useState("");
@@ -80,6 +85,7 @@ export default function ReportBuilder({ plantKey, lockPlant = true }: Props) {
     try {
       await createReport({
         plant_key: plant,
+        section,
         plant_code: unit,
         report_date: date,
         shift,
@@ -108,18 +114,18 @@ export default function ReportBuilder({ plantKey, lockPlant = true }: Props) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2">
-          <PlusCircle className="w-4 h-4" /> تقرير وردية جديد
+          <PlusCircle className="w-4 h-4" /> {section === "LAB" ? "تقرير معمل جديد" : "تقرير وردية جديد"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="neon-text">منشئ تقرير الوردية</DialogTitle>
+          <DialogTitle className="neon-text">{section === "LAB" ? "منشئ تقرير المعمل" : "منشئ تقرير الوردية"}</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <FormField label="المصنع" hint="عزل كامل للبيانات بين الأمونيا واليوريا.">
+          <FormField label={section === "LAB" ? "المعمل" : "المصنع"} hint="عزل كامل للبيانات بين الأمونيا واليوريا.">
             {(id) => (
-              <Select value={plant} onValueChange={(v) => { setPlant(v as PlantKey); setUnit(PLANT_UNITS[v as PlantKey][0]); }} disabled={lockPlant}>
+              <Select value={plant} onValueChange={(v) => { setPlant(v as PlantKey); setUnit(unitsFor(v as PlantKey)[0]); }} disabled={lockPlant}>
                 <SelectTrigger id={id}><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(Object.keys(PLANTS) as PlantKey[]).map((k) => (
@@ -130,12 +136,12 @@ export default function ReportBuilder({ plantKey, lockPlant = true }: Props) {
             )}
           </FormField>
 
-          <FormField label="الوحدة / الرمز">
+          <FormField label={section === "LAB" ? "قسم المعمل" : "الوحدة / الرمز"}>
             {(id) => (
               <Select value={unit} onValueChange={setUnit}>
                 <SelectTrigger id={id}><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {PLANT_UNITS[plant].map((u) => (<SelectItem key={u} value={u}>{u}</SelectItem>))}
+                  {unitsFor(plant).map((u) => (<SelectItem key={u} value={u}>{u}</SelectItem>))}
                 </SelectContent>
               </Select>
             )}

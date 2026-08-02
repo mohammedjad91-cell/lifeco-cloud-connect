@@ -57,6 +57,8 @@ const SIMPLE_MODULES: PlantModule[] = [
 // خانات خاصة بإدارة المعمل فقط
 const LAB_MODULES: PlantModule[] = [
   { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
+  { key: "lab-amm-reports", label: "Ammonia Laboratory", labelAr: "معمل الأمونيا — التقارير" },
+  { key: "lab-urea-reports", label: "Urea Laboratory", labelAr: "معمل اليوريا — التقارير" },
 ];
 
 
@@ -113,6 +115,16 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     if (key === "operations") {
       sessionStorage.setItem("lifeco_dashboard_tab", "report");
       navigate("/dashboard");
+      return;
+    }
+
+    // تقارير مشرف المعمل (إدارة المختبر فقط)
+    if (key === "lab-amm-reports") {
+      navigate("/lab-reports/ammonia");
+      return;
+    }
+    if (key === "lab-urea-reports") {
+      navigate("/lab-reports/urea");
       return;
     }
 
