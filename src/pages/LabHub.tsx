@@ -105,15 +105,26 @@ export default function LabHub({ plantKey }: { plantKey: PlantKey }) {
 
         <span className="text-xs text-muted-foreground" dir="ltr">{range.from} → {range.to}</span>
 
-        <Button
-          variant="secondary"
-          className="ms-auto gap-2"
-          disabled={!rows.length}
-          onClick={() => exportReportsPdf({ rows, plantKey, from: range.from, to: range.to, periodLabel: `LAB ${PERIOD_LABEL[period]}` })}
-        >
-          <FileDown className="h-4 w-4" /> تصدير PDF
-        </Button>
+        <div className="ms-auto flex flex-wrap items-center gap-2">
+          <ReportAiSummary
+            rows={rows}
+            section="LAB"
+            plantName={lab.name}
+            periodLabel={`LAB ${PERIOD_LABEL[period]}`}
+            from={range.from}
+            to={range.to}
+          />
+          <Button
+            variant="secondary"
+            className="gap-2"
+            disabled={!rows.length}
+            onClick={() => exportReportsPdf({ rows, plantKey, from: range.from, to: range.to, periodLabel: `LAB ${PERIOD_LABEL[period]}` })}
+          >
+            <FileDown className="h-4 w-4" /> تصدير PDF
+          </Button>
+        </div>
       </section>
+
 
       <ReportFeed
         rows={rows}
