@@ -86,6 +86,17 @@ export const PLANT_UNITS: Record<PlantKey, string[]> = {
   UREA: ["UREA-1", "UREA-2", "GRAN-1", "BAGGING", "UTIL-UREA"],
 };
 
+/** Laboratory sections — reports belonging to the lab department only. */
+export const LAB_UNITS: Record<PlantKey, string[]> = {
+  AMMONIA: ["LAB-AMM-WATER", "LAB-AMM-GAS", "LAB-AMM-CATALYST", "LAB-AMM-BOILER", "LAB-AMM-DEMIN", "LAB-AMM-N2"],
+  UREA: ["LAB-UREA-PRODUCT", "LAB-UREA-SOLUTION", "LAB-UREA-GRAN", "LAB-UREA-EFFLUENT", "LAB-UREA-BOILER"],
+};
+
+export const LAB_TITLES: Record<PlantKey, { name: string; nameEn: string }> = {
+  AMMONIA: { name: "معمل الأمونيا", nameEn: "Ammonia Laboratory" },
+  UREA: { name: "معمل اليوريا", nameEn: "Urea Laboratory" },
+};
+
 /** Inclusive date range (yyyy-MM-dd) for a period anchored on `anchor`. */
 export function periodRange(period: PeriodType, anchor: Date) {
   if (period === "weekly") {
@@ -105,12 +116,14 @@ export interface ReportFilters {
   category?: WorkCategory | "ALL";
   periodType?: PeriodType | "ALL";
   shift?: Shift | "ALL";
+  section?: ReportSection;
 }
 
 const table = () => (supabase as any).from("operational_reports");
 
 export async function fetchReports(f: ReportFilters): Promise<OperationalReport[]> {
   let q = table().select("*").order("report_date", { ascending: false }).order("created_at", { ascending: false }).limit(500);
+  q = q.eq("section", f.section ?? "OPS");
   if (f.plantKey && f.plantKey !== "ALL") q = q.eq("plant_key", f.plantKey);
   if (f.category && f.category !== "ALL") q = q.eq("work_category", f.category);
   if (f.periodType && f.periodType !== "ALL") q = q.eq("period_type", f.periodType);
