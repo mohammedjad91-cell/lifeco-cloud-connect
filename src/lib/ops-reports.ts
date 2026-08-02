@@ -7,6 +7,7 @@ export type PeriodType = "daily" | "weekly" | "monthly";
 export type WorkCategory = "routine" | "non_routine";
 export type Severity = "low" | "medium" | "high" | "critical";
 export type ReportStatus = "draft" | "submitted" | "approved";
+export type ReportSection = "OPS" | "LAB";
 
 export interface OperationalReport {
   id: string;
