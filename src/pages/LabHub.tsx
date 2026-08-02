@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ReportBuilder from "@/components/ops/ReportBuilder";
 import ReportFeed from "@/components/ops/ReportFeed";
 import MetricCard from "@/components/ops/MetricCard";
+import ReportAiSummary from "@/components/ops/ReportAiSummary";
+
 import { useToast } from "@/hooks/use-toast";
 import { exportReportsPdf } from "@/lib/ops-report-pdf";
 import { cn } from "@/lib/utils";
