@@ -13,6 +13,7 @@ export interface OperationalReport {
   id: string;
   plant_key: PlantKey;
   section?: ReportSection;
+  plant_code: string | null;
   report_date: string;
   shift: Shift;
   period_type: PeriodType;
