@@ -28,6 +28,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LabReportsIndexRouteImport } from './routes/lab-reports.index'
 import { Route as ModulesPlantCodeRouteImport } from './routes/modules.$plantCode'
+import { Route as LabReportsUreaRouteImport } from './routes/lab-reports.urea'
 import { Route as LabReportsAmmoniaRouteImport } from './routes/lab-reports.ammonia'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 import { Route as ModulePlantCodeModuleKeyRouteImport } from './routes/module.$plantCode.$moduleKey'
@@ -127,6 +128,11 @@ const ModulesPlantCodeRoute = ModulesPlantCodeRouteImport.update({
   path: '/modules/$plantCode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabReportsUreaRoute = LabReportsUreaRouteImport.update({
+  id: '/lab-reports/urea',
+  path: '/lab-reports/urea',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LabReportsAmmoniaRoute = LabReportsAmmoniaRouteImport.update({
   id: '/lab-reports/ammonia',
   path: '/lab-reports/ammonia',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
+  '/lab-reports/urea': typeof LabReportsUreaRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/lab-reports/': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
+  '/lab-reports/urea': typeof LabReportsUreaRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/lab-reports': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
+  '/lab-reports/urea': typeof LabReportsUreaRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/lab-reports/': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
+    | '/lab-reports/urea'
     | '/modules/$plantCode'
     | '/lab-reports/'
     | '/module/$plantCode/$moduleKey'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
+    | '/lab-reports/urea'
     | '/modules/$plantCode'
     | '/lab-reports'
     | '/module/$plantCode/$moduleKey'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
+    | '/lab-reports/urea'
     | '/modules/$plantCode'
     | '/lab-reports/'
     | '/module/$plantCode/$moduleKey'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   UreaRoute: typeof UreaRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
   LabReportsAmmoniaRoute: typeof LabReportsAmmoniaRoute
+  LabReportsUreaRoute: typeof LabReportsUreaRoute
   ModulesPlantCodeRoute: typeof ModulesPlantCodeRoute
   LabReportsIndexRoute: typeof LabReportsIndexRoute
   ModulePlantCodeModuleKeyRoute: typeof ModulePlantCodeModuleKeyRoute
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesPlantCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lab-reports/urea': {
+      id: '/lab-reports/urea'
+      path: '/lab-reports/urea'
+      fullPath: '/lab-reports/urea'
+      preLoaderRoute: typeof LabReportsUreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lab-reports/ammonia': {
       id: '/lab-reports/ammonia'
       path: '/lab-reports/ammonia'
@@ -496,6 +516,7 @@ const rootRouteChildren: RootRouteChildren = {
   UreaRoute: UreaRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
   LabReportsAmmoniaRoute: LabReportsAmmoniaRoute,
+  LabReportsUreaRoute: LabReportsUreaRoute,
   ModulesPlantCodeRoute: ModulesPlantCodeRoute,
   LabReportsIndexRoute: LabReportsIndexRoute,
   ModulePlantCodeModuleKeyRoute: ModulePlantCodeModuleKeyRoute,
