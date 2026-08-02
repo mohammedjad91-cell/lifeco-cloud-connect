@@ -26,6 +26,7 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AmmoniaRouteImport } from './routes/ammonia'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LabReportsIndexRouteImport } from './routes/lab-reports.index'
 import { Route as ModulesPlantCodeRouteImport } from './routes/modules.$plantCode'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 import { Route as ModulePlantCodeModuleKeyRouteImport } from './routes/module.$plantCode.$moduleKey'
@@ -115,6 +116,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabReportsIndexRoute = LabReportsIndexRouteImport.update({
+  id: '/lab-reports/',
+  path: '/lab-reports/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModulesPlantCodeRoute = ModulesPlantCodeRouteImport.update({
   id: '/modules/$plantCode',
   path: '/modules/$plantCode',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
+  '/lab-reports/': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
 }
 export interface FileRoutesByTo {
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
+  '/lab-reports': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
 }
 export interface FileRoutesById {
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
+  '/lab-reports/': typeof LabReportsIndexRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
 }
 export interface FileRouteTypes {
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
+    | '/lab-reports/'
     | '/module/$plantCode/$moduleKey'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
+    | '/lab-reports'
     | '/module/$plantCode/$moduleKey'
   id:
     | '__root__'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
+    | '/lab-reports/'
     | '/module/$plantCode/$moduleKey'
   fileRoutesById: FileRoutesById
 }
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   UreaRoute: typeof UreaRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
   ModulesPlantCodeRoute: typeof ModulesPlantCodeRoute
+  LabReportsIndexRoute: typeof LabReportsIndexRoute
   ModulePlantCodeModuleKeyRoute: typeof ModulePlantCodeModuleKeyRoute
 }
 
@@ -412,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lab-reports/': {
+      id: '/lab-reports/'
+      path: '/lab-reports'
+      fullPath: '/lab-reports/'
+      preLoaderRoute: typeof LabReportsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modules/$plantCode': {
       id: '/modules/$plantCode'
       path: '/modules/$plantCode'
@@ -456,6 +476,7 @@ const rootRouteChildren: RootRouteChildren = {
   UreaRoute: UreaRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
   ModulesPlantCodeRoute: ModulesPlantCodeRoute,
+  LabReportsIndexRoute: LabReportsIndexRoute,
   ModulePlantCodeModuleKeyRoute: ModulePlantCodeModuleKeyRoute,
 }
 export const routeTree = rootRouteImport
