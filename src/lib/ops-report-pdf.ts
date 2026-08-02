@@ -11,8 +11,11 @@ export function exportReportsPdf(opts: {
   from: string;
   to: string;
   periodLabel: string;
+  /** Optional AI analysis (English — core PDF fonts have no Arabic glyphs). */
+  aiSummary?: string;
 }) {
-  const { rows, plantKey, from, to, periodLabel } = opts;
+  const { rows, plantKey, from, to, periodLabel, aiSummary } = opts;
+
   const doc = new jsPDF({ orientation: "landscape" });
   const W = doc.internal.pageSize.width;
   const s = summarize(rows);
