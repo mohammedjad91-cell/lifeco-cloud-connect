@@ -111,6 +111,8 @@ export default function LabHub({ plantKey }: { plantKey: PlantKey }) {
           <ReportAiSummary
             rows={rows}
             section="LAB"
+            plantKey={plantKey}
+
             plantName={lab.name}
             periodLabel={`LAB ${PERIOD_LABEL[period]}`}
             from={range.from}
