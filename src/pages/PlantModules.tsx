@@ -119,14 +119,11 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     }
 
     // تقارير مشرف المعمل (إدارة المختبر فقط)
-    if (key === "lab-amm-reports") {
-      navigate("/lab-reports/ammonia");
+    if (key === "lab-reports") {
+      navigate("/lab-reports");
       return;
     }
-    if (key === "lab-urea-reports") {
-      navigate("/lab-reports/urea");
-      return;
-    }
+
 
     // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
