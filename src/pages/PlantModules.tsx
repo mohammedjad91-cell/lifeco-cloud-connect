@@ -57,9 +57,9 @@ const SIMPLE_MODULES: PlantModule[] = [
 // خانات خاصة بإدارة المعمل فقط
 const LAB_MODULES: PlantModule[] = [
   { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
-  { key: "lab-amm-reports", label: "Ammonia Laboratory", labelAr: "معمل الأمونيا — التقارير" },
-  { key: "lab-urea-reports", label: "Urea Laboratory", labelAr: "معمل اليوريا — التقارير" },
+  { key: "lab-reports", label: "Laboratory Reports", labelAr: "تقارير المعمل" },
 ];
+
 
 
 
