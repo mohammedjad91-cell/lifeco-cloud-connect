@@ -9,7 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UreaRouteImport } from './routes/urea'
+import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PlantRouteImport } from './routes/plant'
+import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as OtsRouteImport } from './routes/ots'
 import { Route as MntCommandRouteImport } from './routes/mnt-command'
 import { Route as LabRouteImport } from './routes/lab'
@@ -20,15 +23,31 @@ import { Route as DeveloperRouteImport } from './routes/developer'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as AmmoniaRouteImport } from './routes/ammonia'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesPlantCodeRouteImport } from './routes/modules.$plantCode'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 import { Route as ModulePlantCodeModuleKeyRouteImport } from './routes/module.$plantCode.$moduleKey'
 
+const UreaRoute = UreaRouteImport.update({
+  id: '/urea',
+  path: '/urea',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlantRoute = PlantRouteImport.update({
   id: '/plant',
   path: '/plant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OverviewRoute = OverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OtsRoute = OtsRouteImport.update({
@@ -81,6 +100,11 @@ const AssistantRoute = AssistantRouteImport.update({
   path: '/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AmmoniaRoute = AmmoniaRouteImport.update({
+  id: '/ammonia',
+  path: '/ammonia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -111,6 +135,7 @@ const ModulePlantCodeModuleKeyRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
@@ -121,7 +146,10 @@ export interface FileRoutesByFullPath {
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
+  '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/reports': typeof ReportsRoute
+  '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -129,6 +157,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
@@ -139,7 +168,10 @@ export interface FileRoutesByTo {
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
+  '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/reports': typeof ReportsRoute
+  '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -148,6 +180,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/dashboard': typeof DashboardRoute
@@ -158,7 +191,10 @@ export interface FileRoutesById {
   '/lab': typeof LabRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
+  '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/reports': typeof ReportsRoute
+  '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/modules/$plantCode': typeof ModulesPlantCodeRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
@@ -168,6 +204,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/ammonia'
     | '/assistant'
     | '/bi'
     | '/dashboard'
@@ -178,7 +215,10 @@ export interface FileRouteTypes {
     | '/lab'
     | '/mnt-command'
     | '/ots'
+    | '/overview'
     | '/plant'
+    | '/reports'
+    | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
     | '/module/$plantCode/$moduleKey'
@@ -186,6 +226,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/ammonia'
     | '/assistant'
     | '/bi'
     | '/dashboard'
@@ -196,7 +237,10 @@ export interface FileRouteTypes {
     | '/lab'
     | '/mnt-command'
     | '/ots'
+    | '/overview'
     | '/plant'
+    | '/reports'
+    | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
     | '/module/$plantCode/$moduleKey'
@@ -204,6 +248,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/ammonia'
     | '/assistant'
     | '/bi'
     | '/dashboard'
@@ -214,7 +259,10 @@ export interface FileRouteTypes {
     | '/lab'
     | '/mnt-command'
     | '/ots'
+    | '/overview'
     | '/plant'
+    | '/reports'
+    | '/urea'
     | '/dept/$deptId'
     | '/modules/$plantCode'
     | '/module/$plantCode/$moduleKey'
@@ -223,6 +271,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  AmmoniaRoute: typeof AmmoniaRoute
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
   DashboardRoute: typeof DashboardRoute
@@ -233,7 +282,10 @@ export interface RootRouteChildren {
   LabRoute: typeof LabRoute
   MntCommandRoute: typeof MntCommandRoute
   OtsRoute: typeof OtsRoute
+  OverviewRoute: typeof OverviewRoute
   PlantRoute: typeof PlantRoute
+  ReportsRoute: typeof ReportsRoute
+  UreaRoute: typeof UreaRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
   ModulesPlantCodeRoute: typeof ModulesPlantCodeRoute
   ModulePlantCodeModuleKeyRoute: typeof ModulePlantCodeModuleKeyRoute
@@ -241,11 +293,32 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/urea': {
+      id: '/urea'
+      path: '/urea'
+      fullPath: '/urea'
+      preLoaderRoute: typeof UreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plant': {
       id: '/plant'
       path: '/plant'
       fullPath: '/plant'
       preLoaderRoute: typeof PlantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/overview': {
+      id: '/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof OverviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ots': {
@@ -318,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ammonia': {
+      id: '/ammonia'
+      path: '/ammonia'
+      fullPath: '/ammonia'
+      preLoaderRoute: typeof AmmoniaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -359,6 +439,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  AmmoniaRoute: AmmoniaRoute,
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
   DashboardRoute: DashboardRoute,
@@ -369,7 +450,10 @@ const rootRouteChildren: RootRouteChildren = {
   LabRoute: LabRoute,
   MntCommandRoute: MntCommandRoute,
   OtsRoute: OtsRoute,
+  OverviewRoute: OverviewRoute,
   PlantRoute: PlantRoute,
+  ReportsRoute: ReportsRoute,
+  UreaRoute: UreaRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
   ModulesPlantCodeRoute: ModulesPlantCodeRoute,
   ModulePlantCodeModuleKeyRoute: ModulePlantCodeModuleKeyRoute,
