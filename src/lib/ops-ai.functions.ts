@@ -57,7 +57,11 @@ ${lines || "لا يوجد"}
 4. الحالات الحرجة/العالية والمعدات المتكررة
 5. التوصيات والمتابعة المطلوبة
 
-كن واقعيًا ولا تخترع بيانات غير موجودة.`;
+كن واقعيًا ولا تخترع بيانات غير موجودة.
+
+بعد إنهاء النسخة العربية، اكتب سطرًا يحتوي فقط على العلامة:
+===EN===
+ثم أعد نفس الشرح بالإنجليزية بنفس الأقسام (لأنه يُستخدم في ملف PDF).`;
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -66,21 +70,24 @@ ${lines || "لا يوجد"}
         body: JSON.stringify({
           model: "google/gemini-3.6-flash",
           messages: [
-            { role: "system", content: "أنت مهندس عمليات أول تكتب تقارير تحليلية احترافية بالعربية." },
+            { role: "system", content: "أنت مهندس عمليات أول تكتب تقارير تحليلية احترافية بالعربية والإنجليزية." },
             { role: "user", content: prompt },
           ],
         }),
       });
-      if (res.status === 429) return { text: "تم تجاوز حد الطلبات، حاول بعد قليل.", error: true };
-      if (res.status === 402) return { text: "انتهى رصيد الذكاء الاصطناعي.", error: true };
+      if (res.status === 429) return { text: "تم تجاوز حد الطلبات، حاول بعد قليل.", textEn: "", error: true };
+      if (res.status === 402) return { text: "انتهى رصيد الذكاء الاصطناعي.", textEn: "", error: true };
       if (!res.ok) {
         console.error("explainReports error", res.status, await res.text());
-        return { text: `فشل توليد الشرح (${res.status}).`, error: true };
+        return { text: `فشل توليد الشرح (${res.status}).`, textEn: "", error: true };
       }
       const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-      return { text: json?.choices?.[0]?.message?.content ?? "(لا يوجد رد)", error: false };
+      const raw = json?.choices?.[0]?.message?.content ?? "(لا يوجد رد)";
+      const [ar, en] = raw.split(/^\s*=+\s*EN\s*=+\s*$/mi);
+      return { text: (ar ?? raw).trim(), textEn: (en ?? "").trim(), error: false };
     } catch (e) {
       console.error("explainReports failed", e);
-      return { text: "تعذر الوصول لخدمة الذكاء الاصطناعي.", error: true };
+      return { text: "تعذر الوصول لخدمة الذكاء الاصطناعي.", textEn: "", error: true };
     }
   });
+

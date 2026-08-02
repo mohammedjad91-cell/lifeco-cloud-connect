@@ -109,6 +109,8 @@ export default function PlantHub({ plantKey }: { plantKey: PlantKey }) {
           <ReportAiSummary
             rows={rows}
             section="OPS"
+            plantKey={plantKey}
+
             plantName={PLANTS[plantKey].name}
             periodLabel={PERIOD_LABEL[period]}
             from={range.from}

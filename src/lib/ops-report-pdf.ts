@@ -11,8 +11,11 @@ export function exportReportsPdf(opts: {
   from: string;
   to: string;
   periodLabel: string;
+  /** Optional AI analysis (English — core PDF fonts have no Arabic glyphs). */
+  aiSummary?: string;
 }) {
-  const { rows, plantKey, from, to, periodLabel } = opts;
+  const { rows, plantKey, from, to, periodLabel, aiSummary } = opts;
+
   const doc = new jsPDF({ orientation: "landscape" });
   const W = doc.internal.pageSize.width;
   const s = summarize(rows);
@@ -71,9 +74,62 @@ export function exportReportsPdf(opts: {
     },
   });
 
+  // تفاصيل السجلات (الوصف الكامل) — جدول ثانٍ يمتد على عدة صفحات عند الحاجة
+  const detailed = rows.filter((r) => (r.description ?? "").trim().length > 0);
+  if (detailed.length) {
+    autoTable(doc, {
+      startY: ((doc as any).lastAutoTable?.finalY ?? 60) + 10,
+      head: [["#", "Date", "Category", "Severity", "Title", "Details / Description"]],
+      body: detailed.map((r, i) => [
+        i + 1,
+        r.report_date,
+        r.work_category === "routine" ? "Routine" : "NON-ROUTINE",
+        r.severity.toUpperCase(),
+        r.title ?? "-",
+        r.description ?? "-",
+      ]),
+      theme: "grid",
+      headStyles: { fillColor: [15, 23, 42], textColor: [212, 175, 55], fontSize: 9 },
+      styles: { fontSize: 8, cellPadding: 2, overflow: "linebreak" },
+      columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 22 }, 2: { cellWidth: 26 }, 3: { cellWidth: 22 }, 4: { cellWidth: 55 } },
+      margin: { left: 14, right: 14 },
+    });
+  }
+
+  // شرح الذكاء الاصطناعي — يبدأ في صفحة جديدة ويمتد على عدة صفحات
+  if (aiSummary && aiSummary.trim()) {
+    doc.addPage();
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, W, 20, "F");
+    doc.setTextColor(212, 175, 55);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("AI ANALYSIS & INTERPRETATION", 14, 13);
+
+    doc.setTextColor(30, 30, 30);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+
+    const H = doc.internal.pageSize.height;
+    let y = 32;
+    const lines = doc.splitTextToSize(aiSummary.replace(/\*\*/g, ""), W - 28) as string[];
+    for (const line of lines) {
+      if (y > H - 22) {
+        doc.addPage();
+        y = 22;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(30, 30, 30);
+      }
+      doc.text(line, 14, y);
+      y += 6;
+    }
+  }
+
   const pages = (doc as any).getNumberOfPages();
   for (let i = 1; i <= pages; i++) {
     doc.setPage(i);
+
     const H = doc.internal.pageSize.height;
     doc.setDrawColor(212, 175, 55);
     doc.line(14, H - 14, W - 14, H - 14);
