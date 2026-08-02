@@ -73,6 +73,20 @@ const Login = () => {
         <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
       </motion.button>
 
+      <motion.button
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 200 }}
+        onClick={() => navigate("/overview")}
+        className="absolute top-4 left-[22rem] z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
+      >
+        <Gauge className="w-5 h-5" />
+        <span className="font-semibold text-sm md:text-base tracking-wide">
+          {lang === "ar" ? "تقارير المشرفين" : "Supervisor Reports"}
+        </span>
+      </motion.button>
+
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img src={heroPlant} alt="" className="absolute inset-0 w-full h-full object-cover" />

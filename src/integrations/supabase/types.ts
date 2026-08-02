@@ -742,6 +742,63 @@ export type Database = {
           },
         ]
       }
+      operational_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          equipment_tag: string | null
+          id: string
+          period_type: string
+          plant_code: string | null
+          plant_key: string
+          report_date: string
+          severity: string
+          shift: string
+          signed: boolean
+          status: string
+          supervisor_name: string | null
+          title: string
+          updated_at: string
+          work_category: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          equipment_tag?: string | null
+          id?: string
+          period_type?: string
+          plant_code?: string | null
+          plant_key: string
+          report_date?: string
+          severity?: string
+          shift?: string
+          signed?: boolean
+          status?: string
+          supervisor_name?: string | null
+          title: string
+          updated_at?: string
+          work_category?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          equipment_tag?: string | null
+          id?: string
+          period_type?: string
+          plant_code?: string | null
+          plant_key?: string
+          report_date?: string
+          severity?: string
+          shift?: string
+          signed?: boolean
+          status?: string
+          supervisor_name?: string | null
+          title?: string
+          updated_at?: string
+          work_category?: string
+        }
+        Relationships: []
+      }
       operations_logs: {
         Row: {
           created_at: string
