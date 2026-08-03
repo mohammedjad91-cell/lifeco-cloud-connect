@@ -53,9 +53,24 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 const SIMPLE_MODULES: PlantModule[] = [
-  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "ops-logs", label: "Logs", labelAr: "السجلات" },
+  { key: "ops-fieldops", label: "Field Ops", labelAr: "العمل الميداني" },
+  { key: "ops-maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "ops-report", label: "Report", labelAr: "التقارير" },
+  { key: "ops-ots", label: "OTS", labelAr: "المحاكي التدريبي" },
+  { key: "ops-analytics", label: "Analytics", labelAr: "التحليلات" },
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
 ];
+
+const OPS_TAB: Record<string, string> = {
+  "ops-logs": "logs",
+  "ops-fieldops": "fieldOps",
+  "ops-maintenance": "assets",
+  "ops-report": "report",
+  "ops-ots": "ots",
+  "ops-analytics": "analytics",
+};
+
 
 // خانات خاصة بإدارة المعمل فقط
 const LAB_MODULES: PlantModule[] = [
