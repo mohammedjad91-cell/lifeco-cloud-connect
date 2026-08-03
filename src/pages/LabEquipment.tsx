@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Microscope, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, FileDown, Microscope, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { exportTableCsv } from "@/lib/table-export";
 
 const STATUS: Record<string, string> = {
   operational: "يعمل",
@@ -128,9 +129,29 @@ export default function LabEquipment() {
             <p className="text-xs text-muted-foreground">الأجهزة المستخدمة داخل المعمل فقط — إضافة وتتبع الحالة</p>
           </div>
         </div>
-        <Button asChild variant="outline" className="gap-2">
-          <Link to="/dept/LAB"><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            className="gap-2"
+            disabled={!rows.length}
+            onClick={() =>
+              exportTableCsv(
+                "lab-equipment",
+                ["الكود", "اسم المعدة", "الموقع", "الشركة المصنعة", "الحالة", "الصيانة القادمة"],
+                rows.map((r) => [
+                  r.asset_code, r.asset_name, r.location, r.manufacturer,
+                  STATUS[r.status] ?? r.status,
+                  r.next_maintenance_at ? r.next_maintenance_at.slice(0, 10) : "",
+                ]),
+              )
+            }
+          >
+            <FileDown className="h-4 w-4" /> تصدير الجدول
+          </Button>
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/dept/LAB"><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
+          </Button>
+        </div>
       </header>
 
       <section className="glass-card mb-6 rounded-2xl border p-5">
