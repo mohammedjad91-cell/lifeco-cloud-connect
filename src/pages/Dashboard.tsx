@@ -86,6 +86,12 @@ const Dashboard = () => {
     if (typeof window === "undefined") return "logs";
     return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
   });
+  // لما نفتح الشاشة من خانة مستقلة (سجلات، صيانة...) نخفي شريط التبويبات
+  const [singleTabMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!sessionStorage.getItem("lifeco_dashboard_tab");
+  });
+
 
   const isOperations = department?.id === "OPERATIONS";
   const todayStr = format(new Date(), "yyyy-MM-dd");
