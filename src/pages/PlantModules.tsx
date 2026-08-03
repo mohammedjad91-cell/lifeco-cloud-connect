@@ -140,6 +140,20 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+    // معدات المختبر
+    if (key === "lab-equipment") {
+      navigate("/lab-equipment");
+      return;
+    }
+
+    // المخزن الكيميائي
+    if (key === "chemical-store") {
+      navigate("/chemical-store");
+      return;
+    }
+
+
+
 
     // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
