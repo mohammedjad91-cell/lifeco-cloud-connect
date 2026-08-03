@@ -167,7 +167,7 @@ export default function ChemicalStore() {
             <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {Object.entries(CATEGORY).map(([k, v]) => <SelectItem key={k} value={v ? k : k}>{v}</SelectItem>)}
+                {Object.entries(CATEGORY).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
