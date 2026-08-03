@@ -63,6 +63,14 @@ const LAB_MODULES: PlantModule[] = [
   { key: "lab-reports", label: "Laboratory Reports", labelAr: "تقارير المعمل" },
 ];
 
+// معمل الأمونيا / معمل اليوريا — يفتح مباشرة على العينات والنتائج الخاصة بالإدارة
+const LAB_AMM_MODULES: PlantModule[] = [
+  { key: "lab-dept-ammonia", label: "Ammonia Samples & Results", labelAr: "عينات ونتائج الأمونيا" },
+];
+const LAB_UREA_MODULES: PlantModule[] = [
+  { key: "lab-dept-urea", label: "Urea Samples & Results", labelAr: "عينات ونتائج اليوريا" },
+];
+
 // معدات المختبر (المعدات المستخدمة داخل المعمل فقط)
 const LAB_EQUIPMENT_MODULES: PlantModule[] = [
   { key: "lab-equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
@@ -112,7 +120,11 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
         ? LAB_EQUIPMENT_MODULES
         : plantCode === "LAB-CHEM"
           ? LAB_CHEM_MODULES
-          : LAB_MODULES
+          : plantCode === "LAB-AMM"
+            ? LAB_AMM_MODULES
+            : plantCode === "LAB-UREA"
+              ? LAB_UREA_MODULES
+              : LAB_MODULES
       : OPS_DEPTS.includes(deptKey)
         ? SIMPLE_MODULES
         : [];
@@ -143,7 +155,15 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
-    // معدات المختبر
+    // معمل الأمونيا / معمل اليوريا — يفتح مباشرة على العينات والنتائج الخاصة بالإدارة
+const LAB_AMM_MODULES: PlantModule[] = [
+  { key: "lab-dept-ammonia", label: "Ammonia Samples & Results", labelAr: "عينات ونتائج الأمونيا" },
+];
+const LAB_UREA_MODULES: PlantModule[] = [
+  { key: "lab-dept-urea", label: "Urea Samples & Results", labelAr: "عينات ونتائج اليوريا" },
+];
+
+// معدات المختبر
     if (key === "lab-equipment") {
       navigate("/lab-equipment");
       return;
@@ -162,6 +182,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
       sessionStorage.removeItem("lifeco_lab_plant");
+      sessionStorage.removeItem("lifeco_lab_dept");
       navigate("/lab");
       return;
     }
@@ -170,6 +191,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     if (key === "lab-readings") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
       sessionStorage.setItem("lifeco_lab_plant", plantCode);
+      sessionStorage.removeItem("lifeco_lab_dept");
       navigate("/lab");
       return;
     }
