@@ -15,12 +15,14 @@ import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as OtsRouteImport } from './routes/ots'
 import { Route as MntCommandRouteImport } from './routes/mnt-command'
+import { Route as LabEquipmentRouteImport } from './routes/lab-equipment'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as HseCenterRouteImport } from './routes/hse-center'
 import { Route as HierarchyRouteImport } from './routes/hierarchy'
 import { Route as DigitalLibraryRouteImport } from './routes/digital-library'
 import { Route as DeveloperRouteImport } from './routes/developer'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ChemicalStoreRouteImport } from './routes/chemical-store'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AmmoniaRouteImport } from './routes/ammonia'
@@ -63,6 +65,11 @@ const MntCommandRoute = MntCommandRouteImport.update({
   path: '/mnt-command',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabEquipmentRoute = LabEquipmentRouteImport.update({
+  id: '/lab-equipment',
+  path: '/lab-equipment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LabRoute = LabRouteImport.update({
   id: '/lab',
   path: '/lab',
@@ -91,6 +98,11 @@ const DeveloperRoute = DeveloperRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChemicalStoreRoute = ChemicalStoreRouteImport.update({
+  id: '/chemical-store',
+  path: '/chemical-store',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BiRoute = BiRouteImport.update({
@@ -156,12 +168,14 @@ export interface FileRoutesByFullPath {
   '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
+  '/chemical-store': typeof ChemicalStoreRoute
   '/dashboard': typeof DashboardRoute
   '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
+  '/lab-equipment': typeof LabEquipmentRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
@@ -181,12 +195,14 @@ export interface FileRoutesByTo {
   '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
+  '/chemical-store': typeof ChemicalStoreRoute
   '/dashboard': typeof DashboardRoute
   '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
+  '/lab-equipment': typeof LabEquipmentRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
@@ -207,12 +223,14 @@ export interface FileRoutesById {
   '/ammonia': typeof AmmoniaRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
+  '/chemical-store': typeof ChemicalStoreRoute
   '/dashboard': typeof DashboardRoute
   '/developer': typeof DeveloperRoute
   '/digital-library': typeof DigitalLibraryRoute
   '/hierarchy': typeof HierarchyRoute
   '/hse-center': typeof HseCenterRoute
   '/lab': typeof LabRoute
+  '/lab-equipment': typeof LabEquipmentRoute
   '/mnt-command': typeof MntCommandRoute
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
@@ -234,12 +252,14 @@ export interface FileRouteTypes {
     | '/ammonia'
     | '/assistant'
     | '/bi'
+    | '/chemical-store'
     | '/dashboard'
     | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
     | '/lab'
+    | '/lab-equipment'
     | '/mnt-command'
     | '/ots'
     | '/overview'
@@ -259,12 +279,14 @@ export interface FileRouteTypes {
     | '/ammonia'
     | '/assistant'
     | '/bi'
+    | '/chemical-store'
     | '/dashboard'
     | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
     | '/lab'
+    | '/lab-equipment'
     | '/mnt-command'
     | '/ots'
     | '/overview'
@@ -284,12 +306,14 @@ export interface FileRouteTypes {
     | '/ammonia'
     | '/assistant'
     | '/bi'
+    | '/chemical-store'
     | '/dashboard'
     | '/developer'
     | '/digital-library'
     | '/hierarchy'
     | '/hse-center'
     | '/lab'
+    | '/lab-equipment'
     | '/mnt-command'
     | '/ots'
     | '/overview'
@@ -310,12 +334,14 @@ export interface RootRouteChildren {
   AmmoniaRoute: typeof AmmoniaRoute
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
+  ChemicalStoreRoute: typeof ChemicalStoreRoute
   DashboardRoute: typeof DashboardRoute
   DeveloperRoute: typeof DeveloperRoute
   DigitalLibraryRoute: typeof DigitalLibraryRoute
   HierarchyRoute: typeof HierarchyRoute
   HseCenterRoute: typeof HseCenterRoute
   LabRoute: typeof LabRoute
+  LabEquipmentRoute: typeof LabEquipmentRoute
   MntCommandRoute: typeof MntCommandRoute
   OtsRoute: typeof OtsRoute
   OverviewRoute: typeof OverviewRoute
@@ -374,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MntCommandRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lab-equipment': {
+      id: '/lab-equipment'
+      path: '/lab-equipment'
+      fullPath: '/lab-equipment'
+      preLoaderRoute: typeof LabEquipmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lab': {
       id: '/lab'
       path: '/lab'
@@ -414,6 +447,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chemical-store': {
+      id: '/chemical-store'
+      path: '/chemical-store'
+      fullPath: '/chemical-store'
+      preLoaderRoute: typeof ChemicalStoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bi': {
@@ -502,12 +542,14 @@ const rootRouteChildren: RootRouteChildren = {
   AmmoniaRoute: AmmoniaRoute,
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
+  ChemicalStoreRoute: ChemicalStoreRoute,
   DashboardRoute: DashboardRoute,
   DeveloperRoute: DeveloperRoute,
   DigitalLibraryRoute: DigitalLibraryRoute,
   HierarchyRoute: HierarchyRoute,
   HseCenterRoute: HseCenterRoute,
   LabRoute: LabRoute,
+  LabEquipmentRoute: LabEquipmentRoute,
   MntCommandRoute: MntCommandRoute,
   OtsRoute: OtsRoute,
   OverviewRoute: OverviewRoute,

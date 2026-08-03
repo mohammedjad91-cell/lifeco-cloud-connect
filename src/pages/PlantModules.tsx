@@ -31,6 +31,9 @@ const ICONS: Record<string, React.ReactNode> = {
   maintenance: <Wrench className="w-6 h-6" />,
   lab: <FlaskConical className="w-6 h-6" />,
   "lab-readings": <FlaskConical className="w-6 h-6" />,
+  "lab-equipment": <Cog className="w-6 h-6" />,
+  "chemical-store": <Package className="w-6 h-6" />,
+
   process: <Layers className="w-6 h-6" />,
   utilities: <Droplets className="w-6 h-6" />,
   documents: <FileText className="w-6 h-6" />,
@@ -59,6 +62,17 @@ const LAB_MODULES: PlantModule[] = [
   { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
   { key: "lab-reports", label: "Laboratory Reports", labelAr: "تقارير المعمل" },
 ];
+
+// معدات المختبر (المعدات المستخدمة داخل المعمل فقط)
+const LAB_EQUIPMENT_MODULES: PlantModule[] = [
+  { key: "lab-equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
+];
+
+// المخزن الكيميائي (قائمة تخزين المواد)
+const LAB_CHEM_MODULES: PlantModule[] = [
+  { key: "chemical-store", label: "Chemical Store", labelAr: "المخزن الكيميائي" },
+];
+
 
 
 
@@ -94,10 +108,15 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const deptKey = plant?.department_key || "";
   const modules =
     deptKey === "LAB"
-      ? LAB_MODULES
+      ? plantCode === "LAB-EQ"
+        ? LAB_EQUIPMENT_MODULES
+        : plantCode === "LAB-CHEM"
+          ? LAB_CHEM_MODULES
+          : LAB_MODULES
       : OPS_DEPTS.includes(deptKey)
         ? SIMPLE_MODULES
         : [];
+
 
 
   const openModule = (m: PlantModule) => {
@@ -123,6 +142,20 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       navigate("/lab-reports");
       return;
     }
+
+    // معدات المختبر
+    if (key === "lab-equipment") {
+      navigate("/lab-equipment");
+      return;
+    }
+
+    // المخزن الكيميائي
+    if (key === "chemical-store") {
+      navigate("/chemical-store");
+      return;
+    }
+
+
 
 
     // المعمل → شاشة المعمل مع القراءات

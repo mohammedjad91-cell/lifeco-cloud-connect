@@ -454,6 +454,69 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_chemicals: {
+        Row: {
+          batch_no: string | null
+          category: string
+          code: string | null
+          concentration: string | null
+          created_at: string
+          expiry_date: string | null
+          hazard: string | null
+          id: string
+          location: string | null
+          manufacturer: string | null
+          min_qty: number
+          name: string
+          notes: string | null
+          qty: number
+          received_at: string | null
+          recorded_by: string | null
+          uom: string
+          updated_at: string
+        }
+        Insert: {
+          batch_no?: string | null
+          category?: string
+          code?: string | null
+          concentration?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          hazard?: string | null
+          id?: string
+          location?: string | null
+          manufacturer?: string | null
+          min_qty?: number
+          name: string
+          notes?: string | null
+          qty?: number
+          received_at?: string | null
+          recorded_by?: string | null
+          uom?: string
+          updated_at?: string
+        }
+        Update: {
+          batch_no?: string | null
+          category?: string
+          code?: string | null
+          concentration?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          hazard?: string | null
+          id?: string
+          location?: string | null
+          manufacturer?: string | null
+          min_qty?: number
+          name?: string
+          notes?: string | null
+          qty?: number
+          received_at?: string | null
+          recorded_by?: string | null
+          uom?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lab_results: {
         Row: {
           created_at: string
