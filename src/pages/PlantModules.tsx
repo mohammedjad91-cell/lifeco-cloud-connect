@@ -60,6 +60,17 @@ const LAB_MODULES: PlantModule[] = [
   { key: "lab-reports", label: "Laboratory Reports", labelAr: "تقارير المعمل" },
 ];
 
+// معدات المختبر (المعدات المستخدمة داخل المعمل فقط)
+const LAB_EQUIPMENT_MODULES: PlantModule[] = [
+  { key: "lab-equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
+];
+
+// المخزن الكيميائي (قائمة تخزين المواد)
+const LAB_CHEM_MODULES: PlantModule[] = [
+  { key: "chemical-store", label: "Chemical Store", labelAr: "المخزن الكيميائي" },
+];
+
+
 
 
 
