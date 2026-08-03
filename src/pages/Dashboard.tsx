@@ -86,6 +86,12 @@ const Dashboard = () => {
     if (typeof window === "undefined") return "logs";
     return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
   });
+  // لما نفتح الشاشة من خانة مستقلة (سجلات، صيانة...) نخفي شريط التبويبات
+  const [singleTabMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!sessionStorage.getItem("lifeco_dashboard_tab");
+  });
+
 
   const isOperations = department?.id === "OPERATIONS";
   const todayStr = format(new Date(), "yyyy-MM-dd");
@@ -489,7 +495,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="glass-card border border-border">
+          <TabsList className={`glass-card border border-border ${singleTabMode ? "hidden" : ""}`}>
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
