@@ -31,6 +31,9 @@ const ICONS: Record<string, React.ReactNode> = {
   maintenance: <Wrench className="w-6 h-6" />,
   lab: <FlaskConical className="w-6 h-6" />,
   "lab-readings": <FlaskConical className="w-6 h-6" />,
+  "lab-equipment": <Cog className="w-6 h-6" />,
+  "chemical-store": <Package className="w-6 h-6" />,
+
   process: <Layers className="w-6 h-6" />,
   utilities: <Droplets className="w-6 h-6" />,
   documents: <FileText className="w-6 h-6" />,
