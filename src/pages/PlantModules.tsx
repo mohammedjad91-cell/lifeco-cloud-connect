@@ -105,10 +105,15 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const deptKey = plant?.department_key || "";
   const modules =
     deptKey === "LAB"
-      ? LAB_MODULES
+      ? plantCode === "LAB-EQ"
+        ? LAB_EQUIPMENT_MODULES
+        : plantCode === "LAB-CHEM"
+          ? LAB_CHEM_MODULES
+          : LAB_MODULES
       : OPS_DEPTS.includes(deptKey)
         ? SIMPLE_MODULES
         : [];
+
 
 
   const openModule = (m: PlantModule) => {
