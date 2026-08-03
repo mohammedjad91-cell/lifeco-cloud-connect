@@ -123,6 +123,9 @@ const LabDashboard = () => {
   const [plantFilter, setPlantFilter] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
   // مهندس المصنع: عرض فقط — يُحدَّد عند الدخول من شاشة المصنع ولا يتغير بتغيير الفلتر
+  // نطاق إدارة (معمل الأمونيا / معمل اليوريا) — يعرض عينات مصانع تلك الإدارة فقط
+  const [deptScope] = useState<string>(() =>
+    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
   const [readOnly] = useState<boolean>(() =>
     typeof window === "undefined" ? false : !!sessionStorage.getItem("lifeco_lab_plant"));
 
@@ -153,7 +156,7 @@ const LabDashboard = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates, plantFilter]);
+  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates, plantFilter, deptScope]);
 
   const fetchDynamicFields = async () => {
     const { data } = await supabase.from("dynamic_fields").select("*")
@@ -176,6 +179,10 @@ const LabDashboard = () => {
     let q = supabase.from("samples").select("*");
     if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
     if (plantFilter) q = q.eq("department", plantFilter);
+    else if (deptScope) {
+      const codes = PLANT_GROUPS.find((g) => g.dept === deptScope)?.plants.map((p) => p.code) ?? [];
+      if (codes.length) q = q.in("department", codes);
+    }
     const { data } = await q.order("sample_date", { ascending: false })
       .order("created_at", { ascending: false }).limit(300);
     if (data) setSamples(data as SampleEntry[]);
@@ -506,7 +513,7 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={(v) => { setPlant(v); setParamValues({}); }}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANT_GROUPS.map(g => (
+                    <SelectContent>{(deptScope ? PLANT_GROUPS.filter(g => g.dept === deptScope) : PLANT_GROUPS).map(g => (
                       <SelectGroup key={g.dept}>
                         <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
                         {g.plants.map(pl => (
@@ -654,7 +661,7 @@ const LabDashboard = () => {
                   <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
                   <Select value={plant} onValueChange={setPlant}>
                     <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{PLANT_GROUPS.map(g => (
+                    <SelectContent>{(deptScope ? PLANT_GROUPS.filter(g => g.dept === deptScope) : PLANT_GROUPS).map(g => (
                       <SelectGroup key={g.dept}>
                         <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
                         {g.plants.map(pl => (
