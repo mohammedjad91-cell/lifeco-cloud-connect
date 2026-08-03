@@ -164,12 +164,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // التشغيل → لوحة التشغيل مع التقارير
-    if (key === "operations") {
-      sessionStorage.setItem("lifeco_dashboard_tab", "report");
+    // كل خانة تشغيل تفتح تبويبها الخاص في لوحة التحكم
+    if (OPS_TAB[key]) {
+      sessionStorage.setItem("lifeco_dashboard_tab", OPS_TAB[key]);
       navigate("/dashboard");
       return;
     }
+
 
     // تقارير مشرف المعمل (إدارة المختبر فقط)
     if (key === "lab-reports") {
