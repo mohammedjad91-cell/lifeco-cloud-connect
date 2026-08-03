@@ -50,7 +50,14 @@ const ICONS: Record<string, React.ReactNode> = {
   production: <LayoutDashboard className="w-6 h-6" />,
   drawings: <Files className="w-6 h-6" />,
   water: <Droplets className="w-6 h-6" />,
+  "ops-logs": <ClipboardList className="w-6 h-6" />,
+  "ops-fieldops": <Gauge className="w-6 h-6" />,
+  "ops-maintenance": <Wrench className="w-6 h-6" />,
+  "ops-report": <FileBarChart className="w-6 h-6" />,
+  "ops-ots": <Activity className="w-6 h-6" />,
+  "ops-analytics": <LayoutDashboard className="w-6 h-6" />,
 };
+
 
 const SIMPLE_MODULES: PlantModule[] = [
   { key: "ops-logs", label: "Logs", labelAr: "السجلات" },
