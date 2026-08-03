@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { exportTableCsv } from "@/lib/table-export";
 
 const CATEGORY: Record<string, string> = {
   reagent: "كاشف تحليلي",
@@ -131,9 +132,29 @@ export default function ChemicalStore() {
             <p className="text-xs text-muted-foreground">قائمة تخزين المواد — يدخلها موظف المعمل ويتابع الكميات والصلاحية</p>
           </div>
         </div>
-        <Button asChild variant="outline" className="gap-2">
-          <Link to="/dept/LAB"><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            className="gap-2"
+            disabled={!rows.length}
+            onClick={() =>
+              exportTableCsv(
+                `chemical-store-${today}`,
+                ["المادة", "الكود", "التصنيف", "التركيز", "المصنّع", "الكمية", "الوحدة", "الحد الأدنى", "التخزين", "رقم التشغيلة", "تاريخ الانتهاء", "الخطورة", "ملاحظات"],
+                rows.map((r) => [
+                  r.name, r.code, CATEGORY[r.category] ?? r.category, r.concentration, r.manufacturer,
+                  r.qty, r.uom, r.min_qty, r.location, r.batch_no, r.expiry_date,
+                  HAZARD[r.hazard ?? "none"] ?? r.hazard, r.notes,
+                ]),
+              )
+            }
+          >
+            <FileDown className="h-4 w-4" /> تصدير الكميات
+          </Button>
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/dept/LAB"><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
+          </Button>
+        </div>
       </header>
 
       <section className="mb-6 grid grid-cols-3 gap-3">
