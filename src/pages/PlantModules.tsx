@@ -50,12 +50,34 @@ const ICONS: Record<string, React.ReactNode> = {
   production: <LayoutDashboard className="w-6 h-6" />,
   drawings: <Files className="w-6 h-6" />,
   water: <Droplets className="w-6 h-6" />,
+  "ops-logs": <ClipboardList className="w-6 h-6" />,
+  "ops-fieldops": <Gauge className="w-6 h-6" />,
+  "ops-maintenance": <Wrench className="w-6 h-6" />,
+  "ops-report": <FileBarChart className="w-6 h-6" />,
+  "ops-ots": <Activity className="w-6 h-6" />,
+  "ops-analytics": <LayoutDashboard className="w-6 h-6" />,
 };
 
+
 const SIMPLE_MODULES: PlantModule[] = [
-  { key: "operations", label: "Operations & Reports", labelAr: "التشغيل والتقارير" },
+  { key: "ops-logs", label: "Logs", labelAr: "السجلات" },
+  { key: "ops-fieldops", label: "Field Ops", labelAr: "العمل الميداني" },
+  { key: "ops-maintenance", label: "Maintenance", labelAr: "الصيانة" },
+  { key: "ops-report", label: "Report", labelAr: "التقارير" },
+  { key: "ops-ots", label: "OTS", labelAr: "المحاكي التدريبي" },
+  { key: "ops-analytics", label: "Analytics", labelAr: "التحليلات" },
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
 ];
+
+const OPS_TAB: Record<string, string> = {
+  "ops-logs": "logs",
+  "ops-fieldops": "fieldOps",
+  "ops-maintenance": "assets",
+  "ops-report": "report",
+  "ops-ots": "ots",
+  "ops-analytics": "analytics",
+};
+
 
 // خانات خاصة بإدارة المعمل فقط
 const LAB_MODULES: PlantModule[] = [
@@ -142,12 +164,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // التشغيل → لوحة التشغيل مع التقارير
-    if (key === "operations") {
-      sessionStorage.setItem("lifeco_dashboard_tab", "report");
+    // كل خانة تشغيل تفتح تبويبها الخاص في لوحة التحكم
+    if (OPS_TAB[key]) {
+      sessionStorage.setItem("lifeco_dashboard_tab", OPS_TAB[key]);
       navigate("/dashboard");
       return;
     }
+
 
     // تقارير مشرف المعمل (إدارة المختبر فقط)
     if (key === "lab-reports") {
