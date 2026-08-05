@@ -20,8 +20,8 @@ export const getFormHistory = createServerFn({ method: "GET" })
 
     if (data.department_key) query = query.eq("department_key", data.department_key);
     if (data.plant_code) query = query.eq("plant_code", data.plant_code);
-    if (data.status) query = query.eq("status", data.status);
-    if (data.form_type) query = query.eq("form_type", data.form_type);
+    if (data.status) query = query.eq("status", data.status as any);
+    if (data.form_type) query = query.eq("form_type", data.form_type as any);
 
     const { data: forms, error } = await query;
     if (error) throw error;

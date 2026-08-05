@@ -149,7 +149,7 @@ export default function LabEquipment() {
             <FileDown className="h-4 w-4" /> تصدير الجدول
           </Button>
           <Button asChild variant="outline" className="gap-2">
-            <Link to="/dept/LAB"><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
+            <Link to="/dept/$deptId" params={{ deptId: "LAB" }}><ArrowRight className="h-4 w-4" /> رجوع لإدارة المعمل</Link>
           </Button>
         </div>
       </header>
