@@ -601,6 +601,103 @@ export type Database = {
         }
         Relationships: []
       }
+      lifeco_digital_forms: {
+        Row: {
+          closed_at: string | null
+          created_at: string
+          created_by_id: string | null
+          created_by_name: string
+          department_key: string
+          equipment_id: string | null
+          form_data: Json
+          form_number: string
+          form_type: Database["public"]["Enums"]["lifeco_form_type"]
+          id: string
+          plant_code: string
+          signatures: Json
+          status: Database["public"]["Enums"]["lifeco_form_status"]
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          created_by_name: string
+          department_key: string
+          equipment_id?: string | null
+          form_data?: Json
+          form_number: string
+          form_type: Database["public"]["Enums"]["lifeco_form_type"]
+          id?: string
+          plant_code: string
+          signatures?: Json
+          status?: Database["public"]["Enums"]["lifeco_form_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          created_by_name?: string
+          department_key?: string
+          equipment_id?: string | null
+          form_data?: Json
+          form_number?: string
+          form_type?: Database["public"]["Enums"]["lifeco_form_type"]
+          id?: string
+          plant_code?: string
+          signatures?: Json
+          status?: Database["public"]["Enums"]["lifeco_form_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lifeco_digital_forms_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lifeco_form_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_type: string
+          file_url: string
+          form_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_type: string
+          file_url: string
+          form_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          form_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lifeco_form_attachments_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "lifeco_digital_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locked_dates: {
         Row: {
           id: string
@@ -1236,6 +1333,15 @@ export type Database = {
         | "technician"
         | "operator"
         | "viewer"
+      lifeco_form_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "closed"
+        | "cancelled"
+      lifeco_form_type: "work_permit" | "electrical_permit" | "work_request"
       mreq_status:
         | "draft"
         | "pending"
@@ -1380,6 +1486,16 @@ export const Constants = {
         "operator",
         "viewer",
       ],
+      lifeco_form_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "rejected",
+        "closed",
+        "cancelled",
+      ],
+      lifeco_form_type: ["work_permit", "electrical_permit", "work_request"],
       mreq_status: [
         "draft",
         "pending",
