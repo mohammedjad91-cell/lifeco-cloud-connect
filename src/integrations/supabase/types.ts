@@ -454,6 +454,36 @@ export type Database = {
         }
         Relationships: []
       }
+      general_information: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          icon: string | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       lab_chemicals: {
         Row: {
           batch_no: string | null
