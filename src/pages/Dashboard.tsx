@@ -430,8 +430,9 @@ const Dashboard = () => {
           <div className="absolute inset-0 bg-background/75 backdrop-blur-sm" />
         </div>
       )}
+      
       {/* Header */}
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
+      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none sticky top-0 z-50">
         <div>
           <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
           <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
@@ -443,6 +444,7 @@ const Dashboard = () => {
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
           </Button>
+
           <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
             <FileDown className="w-4 h-4" /> {t.pdf}
           </Button>
@@ -455,10 +457,19 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6">
-        <DateUserBanner />
-        {/* Global Date Filter */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingState message={lang === "ar" ? "جاري تحميل البيانات..." : "Fetching dashboard data..."} />
+        </div>
+      ) : (
+        <motion.main
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full space-y-6"
+        >
+          <DateUserBanner />
+          {/* Global Date Filter */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <CalendarIcon className="w-4 h-4 text-primary" />
             <span className="text-sm text-foreground font-medium">{t.dateFilter}</span>
@@ -601,9 +612,17 @@ const Dashboard = () => {
               </h2>
 
               {loading ? (
-                <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+                <div className="flex justify-center py-12">
+                  <LoadingState message={lang === "ar" ? "جاري تحميل السجلات..." : "Loading logs..."} />
+                </div>
               ) : logs.length === 0 ? (
-                <div className="glass-card p-8 text-center text-muted-foreground">{t.noLogs}</div>
+                <div className="py-12">
+                  <EmptyState 
+                    title={t.noLogs}
+                    description={lang === "ar" ? "لم يتم تسجيل أي بيانات لهذا اليوم." : "No operational data has been recorded for this date."}
+                    icon={<Inbox className="w-12 h-12" />}
+                  />
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <AnimatePresence>
