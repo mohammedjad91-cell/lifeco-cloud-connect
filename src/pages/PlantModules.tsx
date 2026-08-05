@@ -154,6 +154,8 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   const openModule = (m: PlantModule) => {
     const key = m.key.toLowerCase();
+    const name = m.label.toLowerCase();
+    const text = `${key} ${name}`;
     const departmentKey = plant?.department_key || sessionStorage.getItem("lifeco_dept") || "AMMONIA";
 
     sessionStorage.setItem("lifeco_plant", plantCode);
