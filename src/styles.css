@@ -50,23 +50,23 @@
 }
 
 :root {
-  --background: 222 47% 8%;
-  --foreground: 210 40% 93%;
+  --background: 222 47% 6%;
+  --foreground: 210 100% 98%;
 
   --card: 222 35% 12%;
-  --card-foreground: 210 40% 93%;
+  --card-foreground: 210 100% 98%;
 
   --popover: 222 35% 12%;
-  --popover-foreground: 210 40% 93%;
+  --popover-foreground: 210 100% 98%;
 
   --primary: 42 70% 50%;
   --primary-foreground: 222 47% 8%;
 
   --secondary: 222 25% 18%;
-  --secondary-foreground: 210 40% 93%;
+  --secondary-foreground: 210 100% 98%;
 
   --muted: 222 20% 15%;
-  --muted-foreground: 215 20% 55%;
+  --muted-foreground: 215 30% 70%;
 
   --accent: 200 85% 50%;
   --accent-foreground: 222 47% 8%;
@@ -81,11 +81,11 @@
   --radius: 0.75rem;
 
   --sidebar-background: 222 35% 10%;
-  --sidebar-foreground: 210 40% 93%;
+  --sidebar-foreground: 210 100% 98%;
   --sidebar-primary: 42 70% 50%;
   --sidebar-primary-foreground: 222 47% 8%;
   --sidebar-accent: 222 25% 18%;
-  --sidebar-accent-foreground: 210 40% 93%;
+  --sidebar-accent-foreground: 210 100% 98%;
   --sidebar-border: 222 25% 20%;
   --sidebar-ring: 42 70% 50%;
 
@@ -97,8 +97,8 @@
 }
 
 .dark {
-  --background: 222 47% 8%;
-  --foreground: 210 40% 93%;
+  --background: 222 47% 6%;
+  --foreground: 210 100% 98%;
 }
 
 @layer base {
@@ -110,17 +110,91 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  h1 { font-size: 2.25rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.875rem; margin-bottom: 1.25rem; }
+  h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+  h4 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+
+  p {
+    color: hsl(var(--foreground) / 0.85);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  label {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    letter-spacing: 0.01em;
+  }
+
+  input, textarea, select {
+    background-color: hsl(var(--secondary) / 0.5);
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+    outline: none;
+  }
+
+  ::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+
+  /* Interactive States */
+  a, button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.4);
+    color: #fff;
   }
 }
 
 @layer components {
   .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius);
+  }
+
+  .glass-card h1, .glass-card h2, .glass-card h3, .glass-card h4 {
+    color: hsl(var(--foreground));
+  }
+
+  .glass-card p {
+    color: hsl(var(--foreground) / 0.85);
   }
 
   .neon-text {
@@ -134,8 +208,8 @@
   }
 
   .neon-border {
-    border-color: hsl(var(--primary) / 0.4);
-    box-shadow: inset 0 0 20px hsl(var(--primary) / 0.05), 0 0 15px hsl(var(--primary) / 0.1);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: inset 0 0 20px hsl(var(--primary) / 0.1), 0 0 25px hsl(var(--primary) / 0.2);
   }
 }
 

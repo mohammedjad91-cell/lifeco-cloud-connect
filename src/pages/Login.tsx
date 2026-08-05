@@ -30,7 +30,7 @@ const Login = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         onClick={() => setLang(lang === "en" ? "ar" : "en")}
-        className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/20 border border-white/40 text-white hover:text-white hover:bg-white/30 hover:border-white/60 transition-all text-sm font-bold shadow-lg backdrop-blur-md"
+        className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-white hover:bg-primary/30 hover:border-primary/60 transition-all text-sm font-bold shadow-xl backdrop-blur-md ring-2 ring-primary/20"
       >
         <Globe className="w-4 h-4" />
         {t.language}
