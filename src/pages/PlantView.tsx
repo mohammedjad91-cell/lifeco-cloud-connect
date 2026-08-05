@@ -65,7 +65,7 @@ const PLANTS = ["AMM1", "AMM2", "NITROGEN", "DEMIN1", "DEMIN2"];
 const PlantView = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang } = useI18n();
 
   const initialPlant = searchParams.get("plant") || "";
   const [plant, setPlant] = useState(initialPlant);
@@ -295,9 +295,6 @@ const PlantView = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
-            <Globe className="w-4 h-4" /> {t.language}
-          </Button>
           <Button variant="outline" size="sm" onClick={openPreview} className="gap-1.5">
             <FileDown className="w-4 h-4" /> {t.pdf}
           </Button>

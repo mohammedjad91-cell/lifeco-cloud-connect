@@ -53,7 +53,7 @@ const FIELD_TYPES = [
 const AdminSettings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang } = useI18n();
   const [authenticated, setAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
@@ -307,9 +307,6 @@ const AdminSettings = () => {
         </div>
         <Button variant="default" size="sm" onClick={() => navigate("/bi")} className="gap-1.5">
           <Activity className="w-4 h-4" /> ذكاء الأعمال المباشر
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
-          <Globe className="w-4 h-4" /> {t.language}
         </Button>
       </header>
 
