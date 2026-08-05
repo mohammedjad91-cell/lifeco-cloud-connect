@@ -101,7 +101,7 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
     >
       <div className="space-y-6">
         {/* W.R. Header Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 border-2 border-slate-900">
+        <div className="grid grid-cols-2 md:grid-cols-4 border-[3px] border-slate-900 shadow-sm rounded-sm overflow-hidden">
            <div className="border-r-2 border-b-2 border-slate-900 p-2">
              <Label className="text-[10px] font-bold">W.R. NO.</Label>
              <Input className="border-none h-6 p-0 text-sm font-bold bg-transparent" value={data.header.wrNo} readOnly />
@@ -156,8 +156,8 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
         </div>
 
         {/* Description Section */}
-        <div className="border-2 border-slate-900 min-h-[200px] flex flex-col">
-          <div className="bg-slate-900 text-white p-1 text-[10px] font-bold uppercase">Description of Job / وصف العمل المطلوب</div>
+        <div className="border-[3px] border-slate-900 min-h-[200px] flex flex-col rounded-sm overflow-hidden shadow-sm">
+          <div className="bg-slate-900 text-white p-2 text-[11px] font-black uppercase tracking-wider">Description of Job / وصف العمل المطلوب</div>
           <Textarea 
             className="flex-1 border-none resize-none p-4 text-sm focus-visible:ring-0" 
             placeholder="Describe the maintenance work required..."
@@ -167,8 +167,8 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
         </div>
 
         {/* Permits Checklist */}
-        <div className="border-2 border-slate-900 p-2 flex flex-wrap gap-6 items-center">
-          <Label className="text-xs font-bold mr-4">PERMIT REQUIRED:</Label>
+        <div className="border-[3px] border-slate-900 p-3 flex flex-wrap gap-6 items-center rounded-sm shadow-sm">
+          <Label className="text-xs font-black mr-4 uppercase tracking-tight">PERMIT REQUIRED:</Label>
           {['HOT', 'COLD', 'ELECT', 'NONE'].map(type => (
             <div key={type} className="flex items-center gap-2">
               <Checkbox 
@@ -183,8 +183,8 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
 
         {/* Signatures and Cost */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div className="border-2 border-slate-900 p-4 space-y-4">
-              <div className="space-y-1">
+           <div className="border-[3px] border-slate-900 p-6 space-y-6 rounded-sm shadow-sm">
+              <div className="space-y-2">
                 <Label className="text-[10px] font-bold uppercase">Originator (الجهة الطالبة)</Label>
                 <Input className="border-b border-slate-400 rounded-none border-t-0 border-x-0 h-8" value={data.job.originator} onChange={(e) => handleUpdate('job', 'originator', e.target.value)} />
               </div>
@@ -198,8 +198,8 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
               </div>
            </div>
 
-           <div className="border-2 border-slate-900 p-0">
-             <div className="bg-slate-900 text-white p-1 text-[10px] font-bold text-center uppercase">Cost Estimation / تقدير التكلفة</div>
+           <div className="border-[3px] border-slate-900 p-0 rounded-sm shadow-sm overflow-hidden">
+             <div className="bg-slate-900 text-white p-2 text-[11px] font-black text-center uppercase tracking-wider">Cost Estimation / تقدير التكلفة</div>
              <div className="grid grid-cols-2 border-b border-slate-900">
                 <div className="p-2 border-r border-slate-900 font-bold text-[10px]">EST. M.E.</div>
                 <Input className="border-none h-8 text-right pr-2" value={data.cost.estME} onChange={(e) => handleUpdate('cost', 'estME', e.target.value)} />

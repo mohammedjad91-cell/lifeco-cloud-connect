@@ -86,12 +86,13 @@ const Dashboard = () => {
     if (typeof window === "undefined") return "logs";
     return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
   });
-  // لما نفتح الشاشة من خانة مستقلة (سجلات، صيانة...) نخفي شريط التبويبات
+  // Force single tab mode only for specific modules from PlantModules
   const [singleTabMode] = useState(() => {
     if (typeof window === "undefined") return false;
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    // Only force single tab mode for special sections, not the unified logs/ops/maintenance view
-    return tab && !["logs", "fieldOps", "assets", "report", "ots", "analytics"].includes(tab);
+    // If we're coming from the unified "Operations & Records" tile, we want to show the full dashboard (tabs visible)
+    const isUnifiedView = sessionStorage.getItem("lifeco_module") === "ops-logs";
+    return tab && !isUnifiedView;
   });
 
 
