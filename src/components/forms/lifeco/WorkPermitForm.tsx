@@ -129,8 +129,11 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
     >
       <div className="space-y-8">
         {/* Section 1: General Information */}
-        <div className="border border-slate-900 rounded-sm">
-          <div className="bg-slate-900 text-white p-2 font-bold uppercase text-sm">General Information / معلومات عامة</div>
+        <div className="border-2 border-slate-900 rounded-sm overflow-hidden shadow-sm">
+          <div className="bg-slate-900 text-white p-3 font-bold uppercase text-base flex justify-between items-center">
+            <span>General Information / معلومات عامة</span>
+            <span className="text-[10px] opacity-70">SECTION 1</span>
+          </div>
           <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Plant / Area (المصنع)</Label>

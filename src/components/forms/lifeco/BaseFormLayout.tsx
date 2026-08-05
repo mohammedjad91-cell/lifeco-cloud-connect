@@ -39,8 +39,9 @@ export const BaseFormLayout: React.FC<BaseFormLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8 font-sans">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-900 text-slate-900 p-4 md:p-8 font-sans relative">
+      <div className="absolute inset-0 bg-[url('/lifeco-hero-1.webp')] bg-cover bg-center opacity-20 pointer-events-none" />
+      <div className="max-w-5xl mx-auto space-y-6 relative z-10">
         {/* Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-4 sticky top-0 z-10 bg-white/80 backdrop-blur px-4 py-3 border rounded-xl shadow-sm no-print">
           <div className="flex items-center gap-3">

@@ -89,7 +89,9 @@ const Dashboard = () => {
   // لما نفتح الشاشة من خانة مستقلة (سجلات، صيانة...) نخفي شريط التبويبات
   const [singleTabMode] = useState(() => {
     if (typeof window === "undefined") return false;
-    return !!sessionStorage.getItem("lifeco_dashboard_tab");
+    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
+    // Only force single tab mode for special sections, not the unified logs/ops/maintenance view
+    return tab && !["logs", "fieldOps", "assets", "report", "ots", "analytics"].includes(tab);
   });
 
 
