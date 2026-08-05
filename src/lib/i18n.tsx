@@ -219,7 +219,7 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "اكمل",
+    language: "ماهذا احذفها",
     اكمل: "اكمل",
   },
 } as const;
