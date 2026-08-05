@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type Lang = "en" | "ar";
+type Lang = "ar" | "en";
 
 const translations = {
   en: {
@@ -112,10 +112,6 @@ const translations = {
     notes: "Notes",
     notesPlaceholder: "Optional remarks...",
     fieldOps: "Field Ops",
-
-    // Language
-    language: "تحقق من عدم بقاء أي ظهور لعبارة \"language selector\" في الواجهة بعد التعديل.",
-    اكمل: "اكمل",
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",
@@ -218,24 +214,19 @@ const translations = {
     notes: "ملاحظات",
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
-
-    language: "تحقق من عدم بقاء أي ظهور لعبارة \"language selector\" في الواجهة بعد التعديل.",
-    اكمل: "اكمل",
   },
 } as const;
 
-type Translations = Record<keyof typeof translations.en, string>;
+type Translations = typeof translations.en;
 
 interface I18nContextType {
   lang: Lang;
-  setLang: (lang: Lang) => void;
   t: Translations;
   dir: "ltr" | "rtl";
 }
 
 const I18nContext = createContext<I18nContextType>({
   lang: "ar",
-  setLang: () => {},
   t: translations.ar,
   dir: "rtl",
 });
@@ -243,21 +234,19 @@ const I18nContext = createContext<I18nContextType>({
 export const useI18n = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLang] = useState<Lang>(() => {
+  const [lang] = useState<Lang>(() => {
     if (typeof window === "undefined") return "ar";
     return (localStorage.getItem("lifeco_lang") as Lang) || "ar";
   });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem("lifeco_lang", lang);
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = lang;
   }, [lang]);
 
   const value: I18nContextType = {
     lang,
-    setLang,
     t: translations[lang],
     dir: lang === "ar" ? "rtl" : "ltr",
   };

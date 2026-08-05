@@ -65,7 +65,7 @@ const PLANTS = ["AMM1", "AMM2", "NITROGEN", "DEMIN1", "DEMIN2"];
 const PlantView = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang } = useI18n();
 
   const initialPlant = searchParams.get("plant") || "";
   const [plant, setPlant] = useState(initialPlant);
