@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, FileText, Eye, Filter, Calendar } from "lucide-react";
+import { Search, FileText, Eye, Filter, Calendar, History } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { getFormHistory } from "@/lib/forms.functions";
 import { format } from "date-fns";

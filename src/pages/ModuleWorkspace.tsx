@@ -2,6 +2,7 @@ import React from "react";
 import WorkPermitForm from '@/components/forms/lifeco/WorkPermitForm';
 import WorkRequestForm from '@/components/forms/lifeco/WorkRequestForm';
 import ElectricalWorkPermitForm from '@/components/forms/lifeco/ElectricalWorkPermitForm';
+import FormHistory from '@/components/forms/lifeco/FormHistory';
 
 const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKey: string }) => {
   if (moduleKey === 'work-permit') {
@@ -14,6 +15,10 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
   
   if (moduleKey === 'electrical-permit') {
     return <ElectricalWorkPermitForm plantCode={plantCode} />;
+  }
+
+  if (moduleKey === 'form-history') {
+    return <FormHistory plantCode={plantCode} />;
   }
   
   return (
