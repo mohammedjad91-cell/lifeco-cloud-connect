@@ -168,6 +168,9 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       navigate("/dashboard");
       return;
     }
+
+    // تقارير مشرف المعمل (إدارة المختبر فقط)
+    if (key === "lab-reports") {
       navigate("/lab-reports");
       return;
     }
