@@ -15,9 +15,9 @@ interface GeneralInfoItem {
   id: string;
   title: string;
   content: string;
-  category: string;
+  category: string | null;
   icon: string | null;
-  created_at: string;
+  created_at: string | null;
 }
 
 const ICON_MAP: Record<string, any> = {
@@ -82,7 +82,7 @@ const GeneralInfo = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="hover:bg-white/10"
         >
           <ArrowLeft className="w-5 h-5" />

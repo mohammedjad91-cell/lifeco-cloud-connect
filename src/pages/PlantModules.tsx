@@ -66,6 +66,7 @@ const SIMPLE_MODULES: PlantModule[] = [
   { key: "electrical-permit", label: "Electrical Permit", labelAr: "تصريح كهرباء" },
   { key: "work-request", label: "Work Request", labelAr: "طلب عمل" },
   { key: "form-history", label: "Forms History", labelAr: "سجل النماذج" },
+  { key: "general-info", label: "General Information", labelAr: "المعلومات العامة" },
 ];
 
 const OPS_TAB: Record<string, string> = {
@@ -168,6 +169,11 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       // Default to logs tab but keep navigation bar hidden in Dashboard
       sessionStorage.setItem("lifeco_dashboard_tab", "logs");
       navigate("/dashboard");
+      return;
+    }
+
+    if (key === "general-info") {
+      navigate("/overview");
       return;
     }
 
