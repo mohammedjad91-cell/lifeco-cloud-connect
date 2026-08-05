@@ -67,6 +67,8 @@ const SIMPLE_MODULES: PlantModule[] = [
   { key: "ops-ots", label: "OTS", labelAr: "المحاكي التدريبي" },
   { key: "ops-analytics", label: "Analytics", labelAr: "التحليلات" },
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
+  { key: "work-permit", label: "Work Permit", labelAr: "تصريح عمل" },
+  { key: "work-request", label: "Work Request", labelAr: "طلب عمل" },
 ];
 
 const OPS_TAB: Record<string, string> = {
