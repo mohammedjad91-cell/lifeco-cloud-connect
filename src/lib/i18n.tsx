@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "Goal\n\n- The application displays general information, which may include Safety, Corporate Overview, and Emergency Contacts.\n\nData\n\n- No information available: Ensure a clear message is shown when no information is available.\n\nStates\n\n- Loading state: Design a responsive and informative loading screen.\n\n- Empty state: Create an engaging and helpful empty state screen.\n\n- Error state: Develop a user-friendly error state screen with recovery options.",
+    language: "ماهذا احذفها",
     اكمل: "اكمل",
   },
   ar: {
