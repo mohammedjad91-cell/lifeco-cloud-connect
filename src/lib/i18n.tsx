@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "اكمل",
+    language: "Goal\n\n* Display a list of general information without any issues\n\n* Ensure all text is visible and readable in the list\n\n\n\nScreens\n\n* General information page\n\n* List view of general information\n\n\n\nComponents\n\n* Text components for displaying general information\n\n* List view container for holding the text components\n\n\n\nData\n\n* General information data to be displayed in the list\n\n* Text data for each item in the list\n\n\n\nStates\n\n* Loaded state: display the list of general information\n\n* Empty state: display a message when there is no general information to display\n\n* Error state: display an error message when there is an issue loading the general information\n\n* Loading state: display a loading animation while the general information is being loaded\n\n\n\nUX\n\n* Ensure the text is clear and easy to read\n\n* Use a consistent font throughout the list\n\n* Handle different screen sizes and mobile responsiveness to ensure the list is usable on various devices\n\n\n\nAcceptance\n\n* The list of general information is displayed correctly without any issues\n\n* The text is visible and readable in the list\n\n* The list is usable on mobile devices and handles different screen sizes correctly\n\n* The empty, loading, and error states are handled correctly and display the appropriate messages or animations.",
     اكمل: "اكمل",
   },
   ar: {
