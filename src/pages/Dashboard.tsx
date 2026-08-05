@@ -762,7 +762,8 @@ const Dashboard = () => {
             <AnalyticsDashboard />
           </TabsContent>
         </Tabs>
-      </main>
+        </motion.main>
+      )}
 
       <footer className="border-t border-border px-6 py-3 text-center">
         <p className="text-muted-foreground text-xs" dir="rtl">{t.footer}</p>
