@@ -35,7 +35,7 @@ export const BaseFormLayout: React.FC<BaseFormLayoutProps> = ({
 
   const handleBack = () => {
     if (onBack) onBack();
-    else navigate(-1);
+    else navigate({ to: "/" });
   };
 
   return (
