@@ -217,37 +217,42 @@ const translations = {
   },
 } as const;
 
-type Translations = typeof translations.en;
+type TranslationKeys = keyof typeof translations.en;
+type Translations = Record<TranslationKeys, string>;
 
 interface I18nContextType {
   lang: Lang;
+  setLang: (lang: Lang) => void;
   t: Translations;
   dir: "ltr" | "rtl";
 }
 
 const I18nContext = createContext<I18nContextType>({
   lang: "ar",
-  t: translations.ar,
+  setLang: () => {},
+  t: translations.ar as unknown as Translations,
   dir: "rtl",
 });
 
 export const useI18n = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
-  const [lang] = useState<Lang>(() => {
+  const [lang, setLang] = useState<Lang>(() => {
     if (typeof window === "undefined") return "ar";
     return (localStorage.getItem("lifeco_lang") as Lang) || "ar";
   });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    localStorage.setItem("lifeco_lang", lang);
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = lang;
   }, [lang]);
 
   const value: I18nContextType = {
     lang,
-    t: translations[lang],
+    setLang,
+    t: translations[lang] as unknown as Translations,
     dir: lang === "ar" ? "rtl" : "ltr",
   };
 
