@@ -60,12 +60,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 
 const SIMPLE_MODULES: PlantModule[] = [
-  { key: "ops-logs", label: "Logs", labelAr: "السجلات" },
-  { key: "ops-fieldops", label: "Field Ops", labelAr: "العمل الميداني" },
-  { key: "ops-maintenance", label: "Maintenance", labelAr: "الصيانة" },
-  { key: "ops-report", label: "Report", labelAr: "التقارير" },
-  { key: "ops-ots", label: "OTS", labelAr: "المحاكي التدريبي" },
-  { key: "ops-analytics", label: "Analytics", labelAr: "التحليلات" },
+  { key: "ops-logs", label: "Operations & Records", labelAr: "السجلات والتشغيل" },
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
   { key: "work-permit", label: "Work Permit", labelAr: "تصريح عمل" },
   { key: "electrical-permit", label: "Electrical Permit", labelAr: "تصريح كهرباء" },
@@ -168,13 +163,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // كل خانة تشغيل تفتح تبويبها الخاص في لوحة التحكم
-    if (OPS_TAB[key]) {
-      sessionStorage.setItem("lifeco_dashboard_tab", OPS_TAB[key]);
+    // Unified view for Operations, Logs, Records, and Maintenance
+    if (key === "ops-logs") {
+      // Default to logs tab but keep navigation bar hidden in Dashboard
+      sessionStorage.setItem("lifeco_dashboard_tab", "logs");
       navigate("/dashboard");
       return;
     }
-
 
     // تقارير مشرف المعمل (إدارة المختبر فقط)
     if (key === "lab-reports") {
