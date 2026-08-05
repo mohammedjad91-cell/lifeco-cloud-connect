@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "اكمل",
+    language: "ممكن هيك يكون التصريح أكثر وضوح. يا ريت تشوف الموضوع كيف صديقي.",
     اكمل: "اكمل",
   },
   ar: {
@@ -219,7 +219,7 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "اكمل",
+    language: "ممكن هيك يكون التصريح أكثر وضوح. يا ريت تشوف الموضوع كيف صديقي.",
     اكمل: "اكمل",
   },
 } as const;
