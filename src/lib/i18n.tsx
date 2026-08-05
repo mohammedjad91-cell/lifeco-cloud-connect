@@ -114,8 +114,8 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "مشكله هنا",
-    اكمل: "اكمل",
+    language: "ارجو تغير لون خط حتى يكون واضح",
+    اكمل: "ارجو تغير لون خط حتى يكون واضح",
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",
@@ -219,8 +219,8 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "مشكله هنا",
-    اكمل: "اكمل",
+    language: "ارجو تغير لون خط حتى يكون واضح",
+    اكمل: "ارجو تغير لون خط حتى يكون واضح",
   },
 } as const;
 
