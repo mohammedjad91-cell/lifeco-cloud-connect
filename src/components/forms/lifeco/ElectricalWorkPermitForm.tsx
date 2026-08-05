@@ -169,11 +169,12 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
            </div>
 
            {/* Work Description (Large Text Area) */}
-           <div className="flex-1 flex flex-col border-b-[3px] border-slate-900 relative">
-              <div className="absolute top-0 right-0 bg-slate-900 text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest">Description of work to be done</div>
+           <div className="flex-1 flex flex-col border-b-[3px] border-slate-900 relative bg-white">
+              <div className="absolute top-0 right-0 bg-slate-900 text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest z-20">Description of work to be done</div>
+              <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] z-0" />
               <Textarea 
-                className="flex-1 border-none resize-none p-8 text-lg font-bold italic bg-transparent focus-visible:ring-0 leading-relaxed"
-                placeholder="Write work description here..."
+                className="flex-1 border-none resize-none p-10 text-xl font-black italic bg-transparent focus-visible:ring-0 leading-relaxed z-10 min-h-[300px]"
+                placeholder="PLEASE DESCRIBE THE ELECTRICAL WORK IN DETAIL..."
                 value={data.general.workDescription}
                 onChange={(e) => handleUpdate('general', 'workDescription', e.target.value)}
               />
