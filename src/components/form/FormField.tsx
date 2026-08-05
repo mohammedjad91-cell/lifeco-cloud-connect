@@ -46,7 +46,7 @@ export function FormField({
   return (
     <div className={cn("min-w-0 space-y-1.5", className)}>
       <div className="flex items-center gap-1.5">
-        <Label htmlFor={id} className="text-sm text-muted-foreground">
+        <Label htmlFor={id} className="text-sm text-foreground font-semibold">
           {label}
           {required && <span className="text-destructive ms-0.5">*</span>}
         </Label>
@@ -76,7 +76,7 @@ export function FormField({
       {(hint || error) && (
         <p
           id={hintId}
-          className={cn("text-xs", error ? "text-destructive" : "text-muted-foreground/80")}
+          className={cn("text-xs", error ? "text-destructive" : "text-foreground/70")}
         >
           {error || hint}
         </p>
