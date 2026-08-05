@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "لا يوجد فيه نص أو لا لم يكتب فيه شيء داخله. ارجو التعديل. ارجو تعديل هذا الصورة.",
+    language: "مشكله هنا",
     اكمل: "اكمل",
   },
   ar: {
@@ -219,7 +219,7 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "لا يوجد فيه نص أو لا لم يكتب فيه شيء داخله. ارجو التعديل. ارجو تعديل هذا الصورة.",
+    language: "مشكله هنا",
     اكمل: "اكمل",
   },
 } as const;
