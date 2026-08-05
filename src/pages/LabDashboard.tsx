@@ -97,7 +97,7 @@ const PLANTS = PLANT_GROUPS.flatMap(g => g.plants.map(p => p.code));
 const LabDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang } = useI18n();
 
   const [technicianName, setTechnicianName] = useState("");
   const [employeeId, setEmployeeId] = useState("");

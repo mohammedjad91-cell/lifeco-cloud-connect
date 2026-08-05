@@ -65,7 +65,7 @@ interface LabEntry {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang } = useI18n();
   const [department, setDepartment] = useState(getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""));
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
