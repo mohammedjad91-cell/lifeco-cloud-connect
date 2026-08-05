@@ -308,9 +308,6 @@ const AdminSettings = () => {
         <Button variant="default" size="sm" onClick={() => navigate("/bi")} className="gap-1.5">
           <Activity className="w-4 h-4" /> ذكاء الأعمال المباشر
         </Button>
-        <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
-          <Globe className="w-4 h-4" /> {t.language}
-        </Button>
       </header>
 
       <main className="p-4 md:p-6 max-w-5xl mx-auto space-y-6">

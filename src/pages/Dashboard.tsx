@@ -441,9 +441,6 @@ const Dashboard = () => {
           <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
             <Sparkles className="w-4 h-4" /> {lang === "ar" ? "المساعد الذكي" : "AI Assistant"}
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
-            <Globe className="w-4 h-4" /> {t.language}
-          </Button>
 
           <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
             <FileDown className="w-4 h-4" /> {t.pdf}
