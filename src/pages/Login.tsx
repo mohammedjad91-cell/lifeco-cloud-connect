@@ -25,67 +25,59 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
-      {/* Language Toggle */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        onClick={() => setLang(lang === "en" ? "ar" : "en")}
-        className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-white hover:bg-primary/30 hover:border-primary/60 transition-all text-sm font-bold shadow-xl backdrop-blur-md ring-2 ring-primary/20"
-      >
-        <Globe className="w-4 h-4" />
-        {t.language}
-      </motion.button>
+      {/* Unified Action Toolbar */}
+      <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/admin")}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:neon-border transition-all shadow-lg backdrop-blur-md"
+            title={lang === "ar" ? "إعدادات المنظومة" : "System Settings"}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-semibold text-xs md:text-sm tracking-wide">{lang === "ar" ? "الإعدادات" : "Admin"}</span>
+          </motion.button>
 
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1, rotate: 90 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/admin")}
-        className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-        title={lang === "ar" ? "إعدادات المنظومة" : "System Settings"}
-      >
-        <Settings className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الإعدادات" : "Admin"}</span>
-      </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/bi")}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:neon-border transition-all shadow-lg backdrop-blur-md"
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span className="font-semibold text-xs md:text-sm tracking-wide">{lang === "ar" ? "لوحة التحكم" : "Live BI"}</span>
+          </motion.button>
 
-      <motion.button
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/bi")}
-        className="absolute top-4 left-32 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-      >
-        <BarChart3 className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "لوحة التحكم" : "Live BI"}</span>
-      </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/hierarchy")}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:neon-border transition-all shadow-lg backdrop-blur-md"
+          >
+            <Network className="w-5 h-5" />
+            <span className="font-semibold text-xs md:text-sm tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
+          </motion.button>
 
-      <motion.button
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/hierarchy")}
-        className="absolute top-4 left-60 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-      >
-        <Network className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">{lang === "ar" ? "الهيكل" : "Hierarchy"}</span>
-      </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/overview")}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:neon-border transition-all shadow-lg backdrop-blur-md"
+          >
+            <Gauge className="w-5 h-5" />
+            <span className="font-semibold text-xs md:text-sm tracking-wide">
+              {lang === "ar" ? "تقارير المشرفين" : "Supervisor Reports"}
+            </span>
+          </motion.button>
+        </div>
 
-      <motion.button
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 200 }}
-        onClick={() => navigate("/overview")}
-        className="absolute top-4 left-[22rem] z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all shadow-lg"
-      >
-        <Gauge className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base tracking-wide">
-          {lang === "ar" ? "تقارير المشرفين" : "Supervisor Reports"}
-        </span>
-      </motion.button>
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setLang(lang === "en" ? "ar" : "en")}
+          className="pointer-events-auto flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-white hover:bg-primary/30 hover:border-primary/60 transition-all text-sm font-bold shadow-xl backdrop-blur-md ring-2 ring-primary/20"
+        >
+          <Globe className="w-4 h-4" />
+          {t.language}
+        </motion.button>
+      </div>
 
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
