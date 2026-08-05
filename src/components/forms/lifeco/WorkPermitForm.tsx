@@ -111,7 +111,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
         created_by_name: "LIFECO User" // In real app, get from auth
       };
       
-      await saveFormFn(payload);
+      await saveFormFn({ data: payload });
       toast.success(status === 'submitted' ? "تم تقديم التصريح بنجاح" : "تم حفظ المسودة");
     } catch (err: any) {
       toast.error("خطأ في الحفظ: " + err.message);
