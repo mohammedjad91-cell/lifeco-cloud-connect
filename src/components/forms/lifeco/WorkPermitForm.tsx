@@ -175,35 +175,47 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
           </div>
         </div>
 
-        {/* Section 2: Hazard Identification */}
+        {/* Section 2: Hazard Identification & PPE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="border border-slate-900 rounded-sm">
-            <div className="bg-slate-900 text-white p-2 font-bold uppercase text-sm">Hazard Identification / تحديد المخاطر</div>
-            <div className="p-4 grid grid-cols-2 gap-3">
+          <div className="border-[3px] border-slate-900 rounded-lg overflow-hidden">
+            <div className="bg-slate-900 text-white p-3 font-black uppercase text-xs flex justify-between items-center">
+              <span>Hazard Identification / تحديد المخاطر</span>
+              <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 02</span>
+            </div>
+            <div className="p-4 grid grid-cols-2 gap-4">
               {Object.keys(data.hazards).map(key => (
-                <div key={key} className="flex items-center space-x-2">
+                <div key={key} className="flex items-center space-x-3 group cursor-pointer">
                   <Checkbox 
                     id={`hazard-${key}`} 
                     checked={data.hazards[key]} 
                     onCheckedChange={(v) => handleUpdate('hazards', key, !!v)}
+                    className="w-5 h-5 border-2 border-slate-900 data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor={`hazard-${key}`} className="text-xs uppercase leading-none">{key.replace(/([A-Z])/g, ' $1')}</Label>
+                  <Label htmlFor={`hazard-${key}`} className="text-[10px] font-black uppercase leading-tight cursor-pointer group-hover:text-blue-600 transition-colors">
+                    {key.replace(/([A-Z])/g, ' $1')}
+                  </Label>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="border border-slate-900 rounded-sm">
-            <div className="bg-slate-900 text-white p-2 font-bold uppercase text-sm">PPE Requirements / الوقاية الشخصية</div>
-            <div className="p-4 grid grid-cols-2 gap-3">
+          <div className="border-[3px] border-slate-900 rounded-lg overflow-hidden">
+            <div className="bg-slate-900 text-white p-3 font-black uppercase text-xs flex justify-between items-center">
+              <span>PPE Requirements / الوقاية الشخصية</span>
+              <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 03</span>
+            </div>
+            <div className="p-4 grid grid-cols-2 gap-4">
                {Object.keys(data.ppe).map(key => (
-                <div key={key} className="flex items-center space-x-2">
+                <div key={key} className="flex items-center space-x-3 group cursor-pointer">
                   <Checkbox 
                     id={`ppe-${key}`} 
                     checked={data.ppe[key]} 
                     onCheckedChange={(v) => handleUpdate('ppe', key, !!v)}
+                    className="w-5 h-5 border-2 border-slate-900 data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor={`ppe-${key}`} className="text-xs uppercase leading-none">{key.replace(/([A-Z])/g, ' $1')}</Label>
+                  <Label htmlFor={`ppe-${key}`} className="text-[10px] font-black uppercase leading-tight cursor-pointer group-hover:text-blue-600 transition-colors">
+                    {key.replace(/([A-Z])/g, ' $1')}
+                  </Label>
                 </div>
               ))}
             </div>
@@ -211,42 +223,54 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
         </div>
 
         {/* Section 3: Safe Work Preparation */}
-        <div className="border border-slate-900 rounded-sm">
-          <div className="bg-slate-900 text-white p-2 font-bold uppercase text-sm">Safe Work Preparation / تحضيرات العمل الآمن</div>
-          <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="border-[3px] border-slate-900 rounded-lg overflow-hidden">
+          <div className="bg-slate-900 text-white p-3 font-black uppercase text-xs flex justify-between items-center tracking-widest">
+            <span>Safe Work Preparation / تحضيرات العمل الآمن</span>
+            <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 04</span>
+          </div>
+          <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
              {Object.keys(data.preparation).map(key => (
-                <div key={key} className="flex items-center space-x-2">
+                <div key={key} className="flex items-center space-x-3 group cursor-pointer">
                   <Checkbox 
                     id={`prep-${key}`} 
                     checked={data.preparation[key]} 
                     onCheckedChange={(v) => handleUpdate('preparation', key, !!v)}
+                    className="w-5 h-5 border-2 border-slate-900 data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor={`prep-${key}`} className="text-xs uppercase leading-none">{key.replace(/([A-Z])/g, ' $1')}</Label>
+                  <Label htmlFor={`prep-${key}`} className="text-[10px] font-black uppercase leading-tight cursor-pointer group-hover:text-blue-600 transition-colors">
+                    {key.replace(/([A-Z])/g, ' $1')}
+                  </Label>
                 </div>
               ))}
           </div>
         </div>
 
         {/* Section 4: Gas Testing */}
-        <div className="border border-slate-900 rounded-sm">
-          <div className="bg-slate-900 text-white p-2 font-bold uppercase text-sm">Gas Testing / فحص الغاز</div>
-          <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="border-[3px] border-slate-900 rounded-lg overflow-hidden bg-slate-50">
+          <div className="bg-slate-900 text-white p-3 font-black uppercase text-xs flex justify-between items-center tracking-widest">
+            <span>Gas Testing / فحص الغاز</span>
+            <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 05</span>
+          </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="space-y-2">
-              <Label>Oxygen %</Label>
-              <Input type="number" step="0.1" value={data.gasTesting.oxygen} onChange={(e) => handleUpdate('gasTesting', 'oxygen', e.target.value)} />
+              <Label className="text-[10px] font-black uppercase text-slate-500">Oxygen %</Label>
+              <Input type="number" step="0.1" className="h-10 border-2 border-slate-300 font-bold focus:border-blue-600 rounded-md" value={data.gasTesting.oxygen} onChange={(e) => handleUpdate('gasTesting', 'oxygen', e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>LEL %</Label>
-              <Input type="number" step="0.1" value={data.gasTesting.lel} onChange={(e) => handleUpdate('gasTesting', 'lel', e.target.value)} />
+              <Label className="text-[10px] font-black uppercase text-slate-500">LEL %</Label>
+              <Input type="number" step="0.1" className="h-10 border-2 border-slate-300 font-bold focus:border-blue-600 rounded-md" value={data.gasTesting.lel} onChange={(e) => handleUpdate('gasTesting', 'lel', e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>H2S ppm</Label>
-              <Input type="number" step="1" value={data.gasTesting.h2s} onChange={(e) => handleUpdate('gasTesting', 'h2s', e.target.value)} />
+              <Label className="text-[10px] font-black uppercase text-slate-500">H2S ppm</Label>
+              <Input type="number" step="1" className="h-10 border-2 border-slate-300 font-bold focus:border-blue-600 rounded-md" value={data.gasTesting.h2s} onChange={(e) => handleUpdate('gasTesting', 'h2s', e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Performed By</Label>
-              <Input value={data.gasTesting.performedBy} onChange={(e) => handleUpdate('gasTesting', 'performedBy', e.target.value)} />
+              <Label className="text-[10px] font-black uppercase text-slate-500">Performed By</Label>
+              <Input className="h-10 border-2 border-slate-300 font-bold focus:border-blue-600 rounded-md" value={data.gasTesting.performedBy} onChange={(e) => handleUpdate('gasTesting', 'performedBy', e.target.value)} />
             </div>
+          </div>
+          <div className="px-6 pb-6 italic text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+            * Note: Gas testing results must be within safe limits before work commences.
           </div>
         </div>
       </div>
