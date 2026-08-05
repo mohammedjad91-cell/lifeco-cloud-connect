@@ -115,6 +115,8 @@ const translations = {
 
     // Language
     language: "اكمل",
+    اكمل: "اكمل",
+    اكمل: "اكمل",
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",

@@ -154,8 +154,6 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   const openModule = (m: PlantModule) => {
     const key = m.key.toLowerCase();
-    const name = m.label.toLowerCase();
-    const text = `${key} ${name}`;
     const departmentKey = plant?.department_key || sessionStorage.getItem("lifeco_dept") || "AMMONIA";
 
     sessionStorage.setItem("lifeco_plant", plantCode);
@@ -163,16 +161,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // كل خانة تشغيل تفتح تبويبها الخاص في لوحة التحكم
-    if (OPS_TAB[key]) {
-      sessionStorage.setItem("lifeco_dashboard_tab", OPS_TAB[key]);
+    // Unified view for Operations, Logs, Records, and Maintenance
+    if (key === "ops-logs") {
+      // Default to logs tab but keep navigation bar hidden in Dashboard
+      sessionStorage.setItem("lifeco_dashboard_tab", "logs");
       navigate("/dashboard");
       return;
     }
-
-
-    // تقارير مشرف المعمل (إدارة المختبر فقط)
-    if (key === "lab-reports") {
       navigate("/lab-reports");
       return;
     }
