@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LogOut, Plus, FileDown, FileSpreadsheet, Clock, Tag, Hash, CheckCircle,
   Loader2, Trash2, Edit2, Lock, CalendarIcon, History, BarChart3, Globe, User, FlaskConical,
-  Wrench, Sparkles, FileText,
+  Wrench, Sparkles, FileText, AlertCircle, Inbox,
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -39,6 +39,7 @@ import { useI18n } from "@/lib/i18n";
 import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getOperator, getStamp } from "@/lib/session";
 import { getDeptBg } from "@/lib/dept-backgrounds";
+import { LoadingState, EmptyState } from "@/components/ui/app-states";
 
 interface LogEntry {
   id: string;

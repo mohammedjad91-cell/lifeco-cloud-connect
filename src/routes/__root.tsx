@@ -12,6 +12,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
+import { ErrorState, LoadingState } from "@/components/ui/app-states";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -42,31 +43,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
-      </div>
+      <ErrorState 
+        message={error.message || "Something went wrong on our end. You can try refreshing or head back home."}
+        onRetry={() => {
+          router.invalidate();
+          reset();
+        }}
+      />
     </div>
   );
 }
@@ -128,7 +111,9 @@ function RootComponent() {
           {mounted ? (
             <Outlet />
           ) : (
-            <div className="min-h-screen bg-background" />
+            <div className="min-h-screen bg-background flex items-center justify-center">
+              <LoadingState message="Initializing system..." />
+            </div>
           )}
         </TooltipProvider>
       </I18nProvider>
