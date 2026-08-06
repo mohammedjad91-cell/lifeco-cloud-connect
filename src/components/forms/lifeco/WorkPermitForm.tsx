@@ -126,20 +126,45 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
       isSubmitted={initialData?.status === 'submitted'}
     >
       {/* SECTION 1: General Info */}
-      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
-        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">1 - General Information / معلومات عامة</div>
-        <div className="p-4 grid grid-cols-2 gap-4">
+      <div className="border-[3px] border-black rounded-sm mb-6">
+        <div className="bg-black text-white font-black text-base p-2 uppercase">1 - General Information / معلومات عامة</div>
+        <div className="p-4 grid grid-cols-2 gap-4 bg-white">
           <div className="col-span-2 flex gap-4">
             {['Cold', 'Hot', 'Confined Space Entry'].map(t => (
-               <label key={t} className="flex items-center gap-2 font-bold uppercase text-black"><Checkbox checked={data.general.workType === t.toUpperCase()} onCheckedChange={() => handleUpdate('general', 'workType', t.toUpperCase())} /> {t}</label>
+               <label key={t} className="flex items-center gap-2 font-black text-sm uppercase text-black">
+                 <Checkbox 
+                   className="border-black data-[state=checked]:bg-black" 
+                   checked={data.general.workType === t.toUpperCase()} 
+                   onCheckedChange={() => handleUpdate('general', 'workType', t.toUpperCase())} 
+                 /> 
+                 {t}
+               </label>
             ))}
           </div>
-          <Input placeholder="PERMIT No" value={data.general.permitNo} onChange={(e) => handleUpdate('general', 'permitNo', e.target.value)} />
-          <Input type="date" value={data.general.date} onChange={(e) => handleUpdate('general', 'date', e.target.value)} />
-          <Input placeholder="No. of People in Area" value={data.general.personsAtArea} onChange={(e) => handleUpdate('general', 'personsAtArea', e.target.value)} />
-          <Input placeholder="Plant" value={data.general.plant} onChange={(e) => handleUpdate('general', 'plant', e.target.value)} />
-          <Input className="col-span-2" placeholder="Equipment / Location" value={data.general.location} onChange={(e) => handleUpdate('general', 'location', e.target.value)} />
-          <Textarea className="col-span-2" placeholder="Description of the Work to be done" value={data.general.workDescription} onChange={(e) => handleUpdate('general', 'workDescription', e.target.value)} />
+          <div className="space-y-1">
+            <Label className="text-black font-black text-xs uppercase">Permit No / رقم التصريح</Label>
+            <Input className="border-black text-black font-black placeholder:text-slate-500" placeholder="PERMIT No" value={data.general.permitNo} onChange={(e) => handleUpdate('general', 'permitNo', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-black font-black text-xs uppercase">Date / التاريخ</Label>
+            <Input className="border-black text-black font-black" type="date" value={data.general.date} onChange={(e) => handleUpdate('general', 'date', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-black font-black text-xs uppercase">No. of People / عدد الأشخاص</Label>
+            <Input className="border-black text-black font-black placeholder:text-slate-500" placeholder="No. of People in Area" value={data.general.personsAtArea} onChange={(e) => handleUpdate('general', 'personsAtArea', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-black font-black text-xs uppercase">Plant / المصنع</Label>
+            <Input className="border-black text-black font-black placeholder:text-slate-500" placeholder="Plant" value={data.general.plant} onChange={(e) => handleUpdate('general', 'plant', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className="text-black font-black text-xs uppercase">Equipment / Location - المعدة / الموقع</Label>
+            <Input className="border-black text-black font-black placeholder:text-slate-500" placeholder="Equipment / Location" value={data.general.location} onChange={(e) => handleUpdate('general', 'location', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className="text-black font-black text-xs uppercase">Work Description / وصف العمل</Label>
+            <Textarea className="border-black text-black font-black placeholder:text-slate-500 min-h-[100px]" placeholder="Description of the Work to be done" value={data.general.workDescription} onChange={(e) => handleUpdate('general', 'workDescription', e.target.value)} />
+          </div>
         </div>
       </div>
 
