@@ -52,11 +52,18 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to {plantCode} Modules
           </Button>
           <div className="glass-card p-8 border border-white/10 shadow-2xl">
-            <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
-               <Wrench className="w-8 h-8 text-primary" />
-               <div>
-                  <h1 className="text-2xl font-black text-white uppercase tracking-tight">Maintenance Hub</h1>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest">Asset Register, Digital Passports & Work Requests</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/10 pb-4">
+               <div className="flex items-center gap-3">
+                 <Wrench className="w-8 h-8 text-primary" />
+                 <div>
+                    <h1 className="text-2xl font-black text-white uppercase tracking-tight">Maintenance Hub</h1>
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest">Asset Register, Digital Passports & Work Requests</p>
+                 </div>
+               </div>
+               <div className="flex gap-2">
+                 <Button variant="outline" className="gap-2 border-primary/50 text-primary hover:bg-primary/10" onClick={() => navigate(`/module/${plantCode}/form-history`)}>
+                    <HistoryIcon className="w-4 h-4" /> {sessionStorage.getItem("lifeco_lang") === "ar" ? "سجل النماذج (التصاريح المرسلة)" : "Form History (Sent Permits)"}
+                 </Button>
                </div>
             </div>
             

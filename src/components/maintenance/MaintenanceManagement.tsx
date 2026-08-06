@@ -136,9 +136,18 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
               <p className="text-muted-foreground">Loading requests...</p>
             </div>
           ) : requests.length === 0 ? (
-            <div className="glass-card p-12 flex flex-col items-center justify-center space-y-4 border-dashed border-2">
+            <div className="glass-card p-12 flex flex-col items-center justify-center space-y-4 border-dashed border-2 border-white/10">
               <Inbox className="w-12 h-12 text-muted-foreground opacity-20" />
-              <p className="text-muted-foreground">No requests found for this filter.</p>
+              <div className="text-center">
+                <p className="text-muted-foreground font-bold">
+                  {lang === "ar" ? "لا توجد طلبات واردة حالياً لهذا الفلتر" : "No incoming requests for this filter."}
+                </p>
+                <p className="text-[10px] text-muted-foreground mt-2 max-w-md">
+                  {lang === "ar" 
+                    ? "عندما يقوم المهندس بإرسال تصريح أو طلب عمل من داخل المصنع، سيظهر هنا مباشرة لمراجعته وتكليف فريق الصيانة." 
+                    : "When an engineer sends a permit or work request from the plant, it will appear here for review and assignment."}
+                </p>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
