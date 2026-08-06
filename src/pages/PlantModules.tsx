@@ -184,26 +184,27 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+    // Work Permits and Requests (Inside Plant Modules)
+    if (key === "permits") {
+      navigate(`/module/${plantCode}/work-permit`);
+      return;
+    }
+
+    if (key === "maintenance") {
+      navigate(`/module/${plantCode}/work-request`);
+      return;
+    }
+
+    if (key === "history") {
+      navigate(`/module/${plantCode}/form-history`);
+      return;
+    }
+
     if (key === "general-info") {
       navigate("/overview");
       return;
     }
 
-    // Laboratory specific navigations
-    if (key === "lab-reports") {
-      navigate("/lab-reports");
-      return;
-    }
-
-    if (key === "lab-equipment") {
-      navigate("/lab-equipment");
-      return;
-    }
-
-    if (key === "chemical-store") {
-      navigate("/chemical-store");
-      return;
-    }
 
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
