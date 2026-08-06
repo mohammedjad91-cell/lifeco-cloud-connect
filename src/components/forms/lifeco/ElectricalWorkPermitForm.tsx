@@ -92,7 +92,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
       onSubmit={() => onSave('submitted')}
       isSubmitted={initialData?.status === 'submitted'}
     >
-      <div className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
+      <div className="bg-[#fdf2f8] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
         {/* Document Header (Matched to file-2) */}
         <div className="flex border-b-[3px] border-slate-900">
            {/* Left Header Box */}
