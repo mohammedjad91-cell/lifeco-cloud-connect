@@ -92,9 +92,10 @@ const Dashboard = () => {
   const [singleTabMode] = useState(() => {
     if (typeof window === "undefined") return false;
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    // If we're coming from the unified "Operations & Records" tile, we want to show the full dashboard (tabs visible)
+    // If we're coming from the unified "Operations & Records" tile (ops-logs), we show all tabs.
+    // If we're coming from a specific tile like "Permits", we focus only on that.
     const isUnifiedView = sessionStorage.getItem("lifeco_module") === "ops-logs";
-    return tab && !isUnifiedView;
+    return tab !== null && tab !== "logs" && !isUnifiedView;
   });
 
 

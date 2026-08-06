@@ -80,8 +80,12 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
         )}
         
         {view !== "list" && (
-          <Button variant="ghost" onClick={() => setView("list")} className="text-muted-foreground">
-            {lang === "ar" ? "رجوع للقائمة" : "Back to List"}
+          <Button variant="ghost" onClick={() => {
+            if (view === "form") setView("categories");
+            else setView("list");
+          }} className="text-muted-foreground gap-2">
+            <ArrowRight className="w-4 h-4 rotate-180" />
+            {lang === "ar" ? "رجوع" : "Back"}
           </Button>
         )}
       </div>
