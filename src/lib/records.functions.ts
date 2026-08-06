@@ -32,7 +32,7 @@ export const updateRecord = createServerFn({ method: "POST" })
       changes: z.any()
     })
   }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }: { data: any }) => {
     const sb = getSupabase();
     const { id, updates, auditInfo } = data;
     
@@ -58,7 +58,7 @@ export const updateRecord = createServerFn({ method: "POST" })
 
 export const getAuditLogs = createServerFn({ method: "GET" })
   .validator((data: unknown) => z.object({ recordId: z.string().optional() }).parse(data || {}))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }: { data: any }) => {
     const sb = getSupabase();
     let query = sb
       .from("audit_logs")
