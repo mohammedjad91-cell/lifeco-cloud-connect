@@ -522,9 +522,6 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            <TabsTrigger value="assets" className="gap-1.5">
-              <Wrench className="w-3.5 h-3.5" /> {lang === "ar" ? "الصيانة" : "Maintenance"}
-            </TabsTrigger>
             {department.id === "NITROGEN" && (
               <TabsTrigger value="nitrogen" className="gap-1.5">
                 <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
@@ -734,9 +731,6 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          <TabsContent value="assets" className="mt-4">
-            <AssetRegister department={department.id} />
-          </TabsContent>
 
           {department.id === "NITROGEN" && (
             <TabsContent value="nitrogen" className="mt-4">
