@@ -64,6 +64,8 @@ const SIMPLE_MODULES: PlantModule[] = [
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
   { key: "work-permit", label: "Work Permit", labelAr: "تصريح عمل" },
   { key: "electrical-permit", label: "Electrical Permit", labelAr: "تصريح كهرباء" },
+  { key: "scaffolding-permit", label: "Scaffolding Permit", labelAr: "تصريح سقالات" },
+  { key: "safety-valve-permit", label: "Safety Valve Permit", labelAr: "تصريح صمام أمان" },
   { key: "work-request", label: "Work Request", labelAr: "طلب عمل" },
   { key: "form-history", label: "Forms History", labelAr: "سجل النماذج" },
   { key: "general-info", label: "General Information", labelAr: "المعلومات العامة" },

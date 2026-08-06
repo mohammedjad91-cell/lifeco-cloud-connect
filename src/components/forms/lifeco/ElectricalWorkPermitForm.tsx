@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { Zap, ShieldCheck } from "lucide-react";
+import { Zap, ShieldCheck, ArrowRight } from "lucide-react";
 
 export default function ElectricalWorkPermitForm({ formId, initialData, plantCode }: { formId?: string, initialData?: any, plantCode?: string }) {
   const [data, setData] = useState(initialData?.form_data || {
@@ -92,7 +92,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
       onSubmit={() => onSave('submitted')}
       isSubmitted={initialData?.status === 'submitted'}
     >
-      <div className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
+      <div className="bg-[#fdf2f8] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
         {/* Document Header (Matched to file-2) */}
         <div className="flex border-b-[3px] border-slate-900">
            {/* Left Header Box */}
@@ -217,11 +217,11 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
               {/* Signatures & Red Arrow Area */}
               <div className="p-6 flex flex-col justify-between bg-slate-50 relative overflow-hidden">
                  {/* Decorative Red Arrow (Matched to file-2) */}
-                 <div className="absolute inset-0 pointer-events-none opacity-20 flex items-center justify-center rotate-[150deg]">
-                    <div className="w-[120%] h-12 bg-red-600 relative">
-                       <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-t-[40px] border-t-transparent border-b-[40px] border-b-transparent border-l-[60px] border-l-red-600" />
+                  <div className="absolute inset-0 pointer-events-none opacity-20 flex items-center justify-center rotate-[-30deg]">
+                    <div className="w-[150%] h-24 bg-red-600 relative flex items-center justify-end pr-20">
+                       <ArrowRight className="w-48 h-48 text-red-600 transform scale-x-[3] translate-x-1/2" />
                     </div>
-                 </div>
+                  </div>
 
                  <div className="space-y-6 z-10">
                     <div className="space-y-1">

@@ -31,7 +31,7 @@ export const getFormHistory = createServerFn({ method: "GET" })
 export const saveForm = createServerFn({ method: "POST" })
   .inputValidator((data) => z.object({
     id: z.string().optional(),
-    form_type: z.enum(['work_permit', 'electrical_permit', 'work_request']),
+    form_type: z.enum(['work_permit', 'electrical_permit', 'work_request', 'scaffolding_permit', 'safety_valve_permit']),
     status: z.enum(['draft', 'submitted', 'under_review', 'approved', 'rejected', 'closed', 'cancelled']),
     department_key: z.string(),
     plant_code: z.string(),
@@ -47,9 +47,11 @@ export const saveForm = createServerFn({ method: "POST" })
         .from("lifeco_digital_forms")
         .update({
           ...rest,
+          form_type: rest.form_type as any,
+          status: rest.status as any,
           updated_at: new Date().toISOString(),
           submitted_at: data.status === 'submitted' ? new Date().toISOString() : undefined
-        })
+        } as any)
         .eq("id", id)
         .select()
         .single();
@@ -57,12 +59,19 @@ export const saveForm = createServerFn({ method: "POST" })
       return updated;
     } else {
       // Generate form number
-      const prefix = data.form_type === 'work_permit' ? 'WP' : data.form_type === 'electrical_permit' ? 'EP' : 'WR';
+      const prefixMap: Record<string, string> = {
+        'work_permit': 'WP',
+        'electrical_permit': 'EP',
+        'work_request': 'WR',
+        'scaffolding_permit': 'SP',
+        'safety_valve_permit': 'SV'
+      };
+      const prefix = prefixMap[data.form_type] || 'FRM';
       const year = new Date().getFullYear();
       const { count } = await supabase
         .from("lifeco_digital_forms")
         .select('*', { count: 'exact', head: true })
-        .eq("form_type", data.form_type);
+        .eq("form_type", data.form_type as any);
       
       const formNumber = `${prefix}-${year}-${((count || 0) + 1).toString().padStart(4, '0')}`;
 
@@ -70,8 +79,10 @@ export const saveForm = createServerFn({ method: "POST" })
         .from("lifeco_digital_forms")
         .insert({
           ...rest,
+          form_type: rest.form_type as any,
+          status: rest.status as any,
           form_number: formNumber,
-        })
+        } as any)
         .select()
         .single();
       if (error) throw error;
