@@ -56,9 +56,24 @@ export default function SafetyValvePermitForm({ formId, initialData, plantCode }
             <div className="text-red-600 font-black tracking-widest">{initialData?.form_number}</div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+
+        {/* General Information / معلومات عامة */}
+        <div className="border-2 border-yellow-600 rounded-md overflow-hidden">
+          <div className="bg-yellow-600 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider">
+            General Information / معلومات عامة
+          </div>
+          <div className="px-4 py-3 bg-white/80 border-b border-yellow-200">
+            <p className="text-[10px] text-yellow-800 font-bold leading-relaxed mb-3">
+              Please provide complete and accurate information for the work permit application. Ensure all fields are filled to maintain safety standards and operational compliance.
+              <br />
+              يرجى تقديم معلومات كاملة ودقيقة لطلب تصريح العمل. تأكد من ملء جميع الحقول للحفاظ على معايير السلامة والامتثال التشغيلي.
+            </p>
+            <hr className="w-full border-t-2 border-yellow-900/10" aria-hidden="true" />
+          </div>
+          <div className="p-4 grid grid-cols-2 gap-4">
             <Input placeholder="Valve Tag #" value={data.general.valveTag} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, valveTag: e.target.value}}))} />
             <Input placeholder="Set Pressure (Bar)" value={data.general.setPressure} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, setPressure: e.target.value}}))} />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4 border border-yellow-300 p-4 bg-white/50">
           {Object.keys(data.checks).map(k => (

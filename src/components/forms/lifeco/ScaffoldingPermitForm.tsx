@@ -56,9 +56,24 @@ export default function ScaffoldingPermitForm({ formId, initialData, plantCode }
             <div className="text-red-600 font-black tracking-widest">{initialData?.form_number}</div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        
+        {/* General Information / معلومات عامة */}
+        <div className="border-2 border-slate-900 rounded-md overflow-hidden">
+          <div className="bg-slate-900 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider">
+            General Information / معلومات عامة
+          </div>
+          <div className="px-4 py-3 bg-slate-50/50 border-b border-slate-200">
+            <p className="text-[10px] text-slate-500 font-bold leading-relaxed mb-3">
+              Please provide complete and accurate information for the work permit application. Ensure all fields are filled to maintain safety standards and operational compliance.
+              <br />
+              يرجى تقديم معلومات كاملة ودقيقة لطلب تصريح العمل. تأكد من ملء جميع الحقول للحفاظ على معايير السلامة والامتثال التشغيلي.
+            </p>
+            <hr className="w-full border-t-2 border-slate-900/10" aria-hidden="true" />
+          </div>
+          <div className="p-4 grid grid-cols-2 gap-4">
             <Input placeholder="Location" value={data.general.location} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, location: e.target.value}}))} />
             <Input placeholder="Inspector Name" value={data.general.inspector} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, inspector: e.target.value}}))} />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4 border p-4">
           {Object.keys(data.requirements).map(k => (
