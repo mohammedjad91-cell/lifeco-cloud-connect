@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "Adjust the Command Center layout so “Command Center” and the “Maintenance Planning” section are shown in the right place with no empty spaces.",
+    language: "I couldn't find it inside Maintenance Planning",
     managementFlow: "Factory -> Engineer -> Permits -> Electrical Permit -> Engineer fills permit -> Send -> System saves PDF -> Maintenance Management -> Incoming work requests -> Review request -> Determine work type -> Choose specialized team -> Assign Engineer/Supervisor/Technician -> Execute work -> Close work -> Record returns to Factory + Equipment + Permit",
   },
   ar: {
