@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Zap, Shield, HelpCircle, History, ArrowRight } from "lucide-react";
+import { Plus, FileText, Zap, Shield, HelpCircle, History, ArrowRight, ClipboardList } from "lucide-react";
 import WorkPermitForm from "./forms/lifeco/WorkPermitForm";
 
 interface PermitCenterProps {
   plantCode: string;
   departmentKey: string;
+  onViewHistory?: () => void;
 }
 
-const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey }) => {
+const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey, onViewHistory }) => {
   const { lang } = useI18n();
   const [view, setView] = useState<"list" | "categories" | "form">("list");
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -73,10 +74,18 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
         </div>
         
         {view === "list" && (
-          <Button onClick={handleCreateNew} className="gap-2 neon-border">
-            <Plus className="w-4 h-4" />
-            {lang === "ar" ? "إنشاء تصريح" : "Create Permit"}
-          </Button>
+          <div className="flex gap-2">
+            {onViewHistory && (
+              <Button variant="outline" onClick={onViewHistory} className="gap-2 border-white/20 text-white hover:bg-white/10">
+                <ClipboardList className="w-4 h-4" />
+                {lang === "ar" ? "سجل النماذج" : "Form History"}
+              </Button>
+            )}
+            <Button onClick={handleCreateNew} className="gap-2 neon-border">
+              <Plus className="w-4 h-4" />
+              {lang === "ar" ? "إنشاء تصريح" : "Create Permit"}
+            </Button>
+          </div>
         )}
         
         {view !== "list" && (
@@ -117,7 +126,7 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
             <div className="glass-card p-12 text-center border-dashed border-2">
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
               <p className="text-muted-foreground">
-                {lang === "ar" ? "لا توجد تصاريح نشطة في هذا المصنع حالياً" : "No active permits in this plant currently"}
+                {lang === "ar" ? "لا توجد تصاريح نشطة في هذا المصنع حالياً. يمكنك مراجعة 'سجل النماذج' في صفحة الصيانة." : "No active permits in this plant currently. You can check 'Form History' in the Maintenance page."}
               </p>
             </div>
           </motion.div>
