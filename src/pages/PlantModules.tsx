@@ -11,7 +11,7 @@ import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History, FileSpreadsheet, Layers,
-  Files,
+  Files, ShieldCheck, ClipboardCheck
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 
@@ -56,6 +56,9 @@ const ICONS: Record<string, React.ReactNode> = {
   "ops-report": <FileBarChart className="w-6 h-6" />,
   "ops-ots": <Activity className="w-6 h-6" />,
   "ops-analytics": <LayoutDashboard className="w-6 h-6" />,
+  permits: <ClipboardCheck className="w-6 h-6" />,
+  safety: <ShieldCheck className="w-6 h-6" />,
+  history: <History className="w-6 h-6" />,
 };
 
 
@@ -172,6 +175,12 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+    if (key === "permits") {
+      sessionStorage.setItem("lifeco_dashboard_tab", "permits");
+      navigate("/dashboard");
+      return;
+    }
+
     if (key === "general-info") {
       navigate("/overview");
       return;
@@ -182,6 +191,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       navigate("/lab-reports");
       return;
     }
+
 
     // معمل الأمونيا / معمل اليوريا — يفتح مباشرة على العينات والنتائج الخاصة بالإدارة
 const LAB_AMM_MODULES: PlantModule[] = [
