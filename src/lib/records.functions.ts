@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const getRecords = createServerFn({ method: "GET" })
   .handler(async () => {
+    // @ts-ignore - Dynamic table access before type generation
     const { data, error } = await supabase
       .from("records")
       .select("*")
@@ -14,17 +15,18 @@ export const getRecords = createServerFn({ method: "GET" })
   });
 
 export const updateRecord = createServerFn({ method: "POST" })
-  .input(z.object({
+  .inputValidator((data: any) => z.object({
     id: z.string(),
     updates: z.record(z.any()),
     auditInfo: z.object({
       action: z.string(),
       changes: z.any()
     })
-  }))
+  }).parse(data))
   .handler(async ({ data }) => {
     const { id, updates, auditInfo } = data;
     
+    // @ts-ignore
     const { error: updateError } = await supabase
       .from("records")
       .update(updates)
@@ -32,6 +34,7 @@ export const updateRecord = createServerFn({ method: "POST" })
       
     if (updateError) throw new Error(updateError.message);
     
+    // @ts-ignore
     const { error: auditError } = await supabase
       .from("audit_logs")
       .insert({
@@ -46,14 +49,16 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .input(z.object({ recordId: z.string().optional() }))
+  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data))
   .handler(async ({ data }) => {
+    // @ts-ignore
     let query = supabase
       .from("audit_logs")
       .select("*")
       .order("timestamp", { ascending: false });
     
     if (data.recordId) {
+      // @ts-ignore
       query = query.eq("record_id", data.recordId);
     }
     
