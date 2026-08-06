@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UreaRouteImport } from './routes/urea'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as RecordsRouteImport } from './routes/records'
 import { Route as PlantRouteImport } from './routes/plant'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as OtsRouteImport } from './routes/ots'
@@ -25,6 +27,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ChemicalStoreRouteImport } from './routes/chemical-store'
 import { Route as BiRouteImport } from './routes/bi'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AmmoniaRouteImport } from './routes/ammonia'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -40,9 +43,19 @@ const UreaRoute = UreaRouteImport.update({
   path: '/urea',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecordsRoute = RecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlantRoute = PlantRouteImport.update({
@@ -115,6 +128,11 @@ const AssistantRoute = AssistantRouteImport.update({
   path: '/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AmmoniaRoute = AmmoniaRouteImport.update({
   id: '/ammonia',
   path: '/ammonia',
@@ -166,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ammonia': typeof AmmoniaRoute
+  '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/chemical-store': typeof ChemicalStoreRoute
@@ -180,7 +199,9 @@ export interface FileRoutesByFullPath {
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/records': typeof RecordsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -193,6 +214,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ammonia': typeof AmmoniaRoute
+  '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/chemical-store': typeof ChemicalStoreRoute
@@ -207,7 +229,9 @@ export interface FileRoutesByTo {
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/records': typeof RecordsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -221,6 +245,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/ammonia': typeof AmmoniaRoute
+  '/analytics': typeof AnalyticsRoute
   '/assistant': typeof AssistantRoute
   '/bi': typeof BiRoute
   '/chemical-store': typeof ChemicalStoreRoute
@@ -235,7 +260,9 @@ export interface FileRoutesById {
   '/ots': typeof OtsRoute
   '/overview': typeof OverviewRoute
   '/plant': typeof PlantRoute
+  '/records': typeof RecordsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -250,6 +277,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ammonia'
+    | '/analytics'
     | '/assistant'
     | '/bi'
     | '/chemical-store'
@@ -264,7 +292,9 @@ export interface FileRouteTypes {
     | '/ots'
     | '/overview'
     | '/plant'
+    | '/records'
     | '/reports'
+    | '/settings'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -277,6 +307,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ammonia'
+    | '/analytics'
     | '/assistant'
     | '/bi'
     | '/chemical-store'
@@ -291,7 +322,9 @@ export interface FileRouteTypes {
     | '/ots'
     | '/overview'
     | '/plant'
+    | '/records'
     | '/reports'
+    | '/settings'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -304,6 +337,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/ammonia'
+    | '/analytics'
     | '/assistant'
     | '/bi'
     | '/chemical-store'
@@ -318,7 +352,9 @@ export interface FileRouteTypes {
     | '/ots'
     | '/overview'
     | '/plant'
+    | '/records'
     | '/reports'
+    | '/settings'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -332,6 +368,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AmmoniaRoute: typeof AmmoniaRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AssistantRoute: typeof AssistantRoute
   BiRoute: typeof BiRoute
   ChemicalStoreRoute: typeof ChemicalStoreRoute
@@ -346,7 +383,9 @@ export interface RootRouteChildren {
   OtsRoute: typeof OtsRoute
   OverviewRoute: typeof OverviewRoute
   PlantRoute: typeof PlantRoute
+  RecordsRoute: typeof RecordsRoute
   ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
   UreaRoute: typeof UreaRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
   LabReportsAmmoniaRoute: typeof LabReportsAmmoniaRoute
@@ -365,11 +404,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UreaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/records': {
+      id: '/records'
+      path: '/records'
+      fullPath: '/records'
+      preLoaderRoute: typeof RecordsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plant': {
@@ -470,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ammonia': {
       id: '/ammonia'
       path: '/ammonia'
@@ -540,6 +600,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AmmoniaRoute: AmmoniaRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AssistantRoute: AssistantRoute,
   BiRoute: BiRoute,
   ChemicalStoreRoute: ChemicalStoreRoute,
@@ -554,7 +615,9 @@ const rootRouteChildren: RootRouteChildren = {
   OtsRoute: OtsRoute,
   OverviewRoute: OverviewRoute,
   PlantRoute: PlantRoute,
+  RecordsRoute: RecordsRoute,
   ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
   UreaRoute: UreaRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
   LabReportsAmmoniaRoute: LabReportsAmmoniaRoute,
@@ -566,13 +629,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
