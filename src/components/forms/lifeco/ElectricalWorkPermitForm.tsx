@@ -109,7 +109,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
               </div>
               <div className="space-y-1">
                  <Label className="text-[9px] font-black uppercase flex justify-between">DATE <span>التاريخ</span></Label>
-                 <Input type="date" className="h-7 border-b-2 border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-bold" value={data.general.date} onChange={(e) => handleUpdate('general', 'date', e.target.value)} />
+                 <Input type="date" className="h-7 border-b-2 border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-black text-black" value={data.general.date} onChange={(e) => handleUpdate('general', 'date', e.target.value)} />
               </div>
            </div>
 
@@ -123,11 +123,12 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
                  <div className="mt-4 flex gap-6">
                     <div className="flex flex-col items-center">
                        <span className="text-[9px] font-black">TIME</span>
-                       <Input type="time" className="h-6 w-20 border-b border-slate-900 border-t-0 border-x-0 rounded-none text-center bg-transparent text-xs" value={data.general.timeFrom} onChange={(e) => handleUpdate('general', 'timeFrom', e.target.value)} />
-                    </div>
-                    <div className="flex flex-col items-center">
-                       <span className="text-[9px] font-black">TO</span>
-                       <Input type="time" className="h-6 w-20 border-b border-slate-900 border-t-0 border-x-0 rounded-none text-center bg-transparent text-xs" value={data.general.timeTo} onChange={(e) => handleUpdate('general', 'timeTo', e.target.value)} />
+                        <Input type="time" className="h-6 w-20 border-b border-slate-900 border-t-0 border-x-0 rounded-none text-center bg-transparent text-xs font-black text-black" value={data.general.timeFrom} onChange={(e) => handleUpdate('general', 'timeFrom', e.target.value)} />
+                     </div>
+                     <div className="flex flex-col items-center">
+                        <span className="text-[9px] font-black">TO</span>
+                        <Input type="time" className="h-6 w-20 border-b border-slate-900 border-t-0 border-x-0 rounded-none text-center bg-transparent text-xs font-black text-black" value={data.general.timeTo} onChange={(e) => handleUpdate('general', 'timeTo', e.target.value)} />
+
                     </div>
                  </div>
               </div>
@@ -141,7 +142,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
               </div>
               <div className="flex items-center justify-between border-2 border-slate-900 p-1 rounded-sm bg-white">
                  <span className="text-[8px] font-black px-2">PERSONS AT WORK</span>
-                 <Input type="number" className="w-12 h-6 border-none text-center font-bold bg-transparent" value={data.general.personsAtWork} onChange={(e) => handleUpdate('general', 'personsAtWork', e.target.value)} />
+                 <Input type="number" className="w-12 h-6 border-none text-center font-black bg-transparent text-black" value={data.general.personsAtWork} onChange={(e) => handleUpdate('general', 'personsAtWork', e.target.value)} />
               </div>
            </div>
         </div>
@@ -152,12 +153,12 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
            <div className="grid grid-cols-2 border-b-[3px] border-slate-900">
               <div className="p-3 border-r-[3px] border-slate-900 space-y-1">
                  <Label className="text-[10px] font-black uppercase">PLANT :</Label>
-                 <Input className="h-8 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-bold text-sm" value={data.general.plant} onChange={(e) => handleUpdate('general', 'plant', e.target.value)} />
+                 <Input className="h-8 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-black text-black text-sm" value={data.general.plant} onChange={(e) => handleUpdate('general', 'plant', e.target.value)} />
               </div>
               <div className="p-3 space-y-1">
                  <Label className="text-[10px] font-black uppercase">EQUIPMENT & LOCATION :</Label>
                  <Select value={data.general.equipment} onValueChange={(v) => handleUpdate('general', 'equipment', v)}>
-                    <SelectTrigger className="h-8 border-none bg-transparent shadow-none font-bold">
+                    <SelectTrigger className="h-8 border-none bg-transparent shadow-none font-black text-black">
                        <SelectValue placeholder="Select Equipment..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -227,11 +228,11 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
                  <div className="space-y-6 z-10">
                     <div className="space-y-1">
                        <Label className="text-[9px] font-black uppercase">Area Authorization Signature:</Label>
-                       <div className="border-b-2 border-slate-900 h-8 flex items-end italic font-bold">{data.authorization.areaAuth}</div>
+                       <div className="border-b-2 border-slate-900 h-8 flex items-end italic font-black text-black">{data.authorization.areaAuth}</div>
                        <Input className="hidden" value={data.authorization.areaAuth} onChange={(e) => handleUpdate('authorization', 'areaAuth', e.target.value)} />
                     </div>
                     
-                    <div className="p-2 border border-slate-300 rounded text-[9px] leading-tight font-bold text-slate-600 italic">
+                    <div className="p-2 border border-slate-400 rounded text-[9px] leading-tight font-black text-black italic bg-white/50">
                        NOTE : THE ISSUANCE OF THIS PERMIT DOES NOT EXCUSE THE HOLDER FROM OBTAINING ANY OTHER WORK PERMITS NORMALLY ISSUED FOR WORK IN THAT AREA.
                     </div>
 
@@ -252,7 +253,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
                              </div>
                           </div>
                           <div className="flex flex-col justify-end">
-                             <div className="border-b border-slate-900 h-6 italic text-[10px]">{data.authorization.permitHolder}</div>
+                             <div className="border-b border-slate-900 h-6 italic text-[10px] font-black text-black">{data.authorization.permitHolder}</div>
                              <span className="text-[8px] font-black uppercase">Signature of authorized craftsman</span>
                           </div>
                        </div>
@@ -268,36 +269,38 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
                  <div className="flex items-center justify-between">
                     <div className="flex flex-col">
                        <span className="text-[9px] font-black uppercase">Date:</span>
-                       <span className="font-bold text-sm">{data.general.date}</span>
+                       <span className="font-black text-sm text-black">{data.general.date}</span>
                     </div>
                     <div className="flex flex-col">
                        <span className="text-[9px] font-black uppercase">Time:</span>
-                       <span className="font-bold text-sm">{data.general.timeTo}</span>
+                       <span className="font-black text-sm text-black">{data.general.timeTo}</span>
+
                     </div>
                  </div>
               </div>
               <div className="flex flex-col justify-between h-20 border-r-2 border-slate-200 px-6">
                  <div className="space-y-1">
                     <span className="text-[9px] font-black uppercase">Operating Supervisor</span>
-                    <Input className="h-7 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-bold italic" value={data.authorization.supervisor} onChange={(e) => handleUpdate('authorization', 'supervisor', e.target.value)} />
+                    <Input className="h-7 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-black text-black italic" value={data.authorization.supervisor} onChange={(e) => handleUpdate('authorization', 'supervisor', e.target.value)} />
                  </div>
-                 <div className="text-[8px] font-black text-slate-400">PN: ______________</div>
+                 <div className="text-[8px] font-black text-slate-900">PN: ______________</div>
               </div>
               <div className="flex flex-col justify-between h-20 pl-6">
                  <div className="flex items-center gap-4">
                     <span className="text-[10px] font-black uppercase">Work Completed</span>
                     <div className="flex gap-4">
                        <div className="flex items-center gap-1">
-                          <Checkbox id="wc-yes" /> <span className="text-[9px] font-black">YES</span>
-                       </div>
-                       <div className="flex items-center gap-1">
-                          <Checkbox id="wc-no" /> <span className="text-[9px] font-black">NO</span>
+                           <Checkbox id="wc-yes" className="border-black data-[state=checked]:bg-black" /> <span className="text-[9px] font-black text-black">YES</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                           <Checkbox id="wc-no" className="border-black data-[state=checked]:bg-black" /> <span className="text-[9px] font-black text-black">NO</span>
+
                        </div>
                     </div>
                  </div>
                  <div className="space-y-1">
                     <span className="text-[9px] font-black uppercase">Authorized Craftsman</span>
-                    <Input className="h-7 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-bold italic" value={data.authorization.craftsman} onChange={(e) => handleUpdate('authorization', 'craftsman', e.target.value)} />
+                    <Input className="h-7 border-b border-slate-900 border-t-0 border-x-0 rounded-none bg-transparent font-black text-black italic" value={data.authorization.craftsman} onChange={(e) => handleUpdate('authorization', 'craftsman', e.target.value)} />
                  </div>
               </div>
            </div>
