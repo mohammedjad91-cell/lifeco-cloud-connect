@@ -10,7 +10,7 @@ import { Inbox, CheckCircle, Clock, Filter, Search, User, Hammer, ClipboardCheck
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 
-const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
+const MaintenanceManagement = ({ plantCode }: { plantCode?: string }) => {
   const { lang } = useI18n();
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,9 +33,13 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
   const fetchRequests = async () => {
     setLoading(true);
     let query = supabase.from("lifeco_digital_forms")
-      .select("*")
-      .eq("plant_code", plantCode)
-      .order("created_at", { ascending: false });
+      .select("*");
+    
+    if (plantCode) {
+      query = query.eq("plant_code", plantCode);
+    }
+    
+    query = query.order("created_at", { ascending: false });
     
     if (filter !== "all") {
       query = query.eq("status", filter as any);
