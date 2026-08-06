@@ -171,7 +171,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     const dashboardTabs: Record<string, string> = {
       "ops-logs": "logs",
       "lab-readings": "labReadings",
-      "permits": "permits",
+      
       "maintenance": "assets",
       "safety": "report",
       "reports": "analytics",
