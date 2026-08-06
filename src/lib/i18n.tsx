@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type Lang = "ar" | "en";
+type Lang = "en" | "ar";
 
 const translations = {
   en: {
@@ -112,6 +112,10 @@ const translations = {
     notes: "Notes",
     notesPlaceholder: "Optional remarks...",
     fieldOps: "Field Ops",
+
+    // Language
+    language: "تحقق من عدم بقاء أي ظهور لعبارة \"language selector\" في الواجهة بعد التعديل.",
+    اكمل: "اكمل",
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",
@@ -214,11 +218,13 @@ const translations = {
     notes: "ملاحظات",
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
+
+    language: "تحقق من عدم بقاء أي ظهور لعبارة \"language selector\" في الواجهة بعد التعديل.",
+    اكمل: "اكمل",
   },
 } as const;
 
-type TranslationKeys = keyof typeof translations.en;
-type Translations = Record<TranslationKeys, string>;
+type Translations = Record<keyof typeof translations.en, string>;
 
 interface I18nContextType {
   lang: Lang;
@@ -230,7 +236,7 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType>({
   lang: "ar",
   setLang: () => {},
-  t: translations.ar as unknown as Translations,
+  t: translations.ar,
   dir: "rtl",
 });
 
@@ -252,7 +258,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const value: I18nContextType = {
     lang,
     setLang,
-    t: translations[lang] as unknown as Translations,
+    t: translations[lang],
     dir: lang === "ar" ? "rtl" : "ltr",
   };
 

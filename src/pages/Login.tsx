@@ -16,7 +16,7 @@ const DEPT_ICONS: Record<string, React.ReactNode> = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { t, lang } = useI18n();
+  const { t, lang, setLang } = useI18n();
 
   const goToDept = (deptId: string) => {
     sessionStorage.setItem("lifeco_dept", deptId);
@@ -68,6 +68,15 @@ const Login = () => {
           </motion.button>
         </div>
 
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setLang(lang === "en" ? "ar" : "en")}
+          className="pointer-events-auto flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-white hover:bg-primary/30 hover:border-primary/60 transition-all text-sm font-bold shadow-xl backdrop-blur-md ring-2 ring-primary/20"
+        >
+          <Globe className="w-4 h-4" />
+          {t.language}
+        </motion.button>
       </div>
 
       {/* Background */}

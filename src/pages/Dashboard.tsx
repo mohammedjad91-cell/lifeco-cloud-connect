@@ -65,7 +65,7 @@ interface LabEntry {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t, lang } = useI18n();
+  const { t, lang, setLang } = useI18n();
   const [department, setDepartment] = useState(getDepartmentById(sessionStorage.getItem("lifeco_dept") || ""));
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [unitTag, setUnitTag] = useState("");
@@ -440,6 +440,9 @@ const Dashboard = () => {
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
             <Sparkles className="w-4 h-4" /> {lang === "ar" ? "المساعد الذكي" : "AI Assistant"}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
+            <Globe className="w-4 h-4" /> {t.language}
           </Button>
 
           <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
