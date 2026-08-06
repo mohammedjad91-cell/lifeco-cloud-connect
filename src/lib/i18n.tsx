@@ -115,6 +115,7 @@ const translations = {
 
     // Language
     language: "Language",
+    managementFlow: "Factory -> Engineer -> Permits -> Electrical Permit -> Engineer fills permit -> Send -> System saves PDF -> Maintenance Management -> Incoming work requests -> Review request -> Determine work type -> Choose specialized team -> Assign Engineer/Supervisor/Technician -> Execute work -> Close work -> Record returns to Factory + Equipment + Permit",
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",

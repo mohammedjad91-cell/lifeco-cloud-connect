@@ -5,6 +5,7 @@ import ElectricalWorkPermitForm from '@/components/forms/lifeco/ElectricalWorkPe
 import FormHistory from '@/components/forms/lifeco/FormHistory';
 import PermitCenter from '@/components/PermitCenter';
 import AssetRegister from '@/components/AssetRegister';
+import MaintenanceManagement from '@/components/maintenance/MaintenanceManagement';
 import { useNavigate } from "@/lib/router-compat";
 import { ArrowLeft, Wrench, ShieldCheck, History as HistoryIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,10 +59,12 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Asset Register, Digital Passports & Work Requests</p>
                </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-               <div className="lg:col-span-2">
-                  <AssetRegister department={sessionStorage.getItem("lifeco_dept") || "MAINTENANCE"} />
-               </div>
+            <div className="space-y-8">
+               <MaintenanceManagement plantCode={plantCode} />
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-white/10">
+                  <div className="lg:col-span-2">
+                     <AssetRegister department={sessionStorage.getItem("lifeco_dept") || "MAINTENANCE"} />
+                  </div>
                <div className="space-y-6">
                   <div className="glass-card p-6 border border-primary/20 bg-primary/5">
                      <h3 className="text-lg font-bold text-white mb-2">Actions</h3>

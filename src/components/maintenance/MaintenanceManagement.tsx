@@ -53,7 +53,7 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
   const handleReview = async (id: string) => {
     const { error } = await supabase.from("lifeco_digital_forms")
       .update({ 
-        status: "under_review",
+        status: "under_review" as any,
         form_data: { 
           ...selectedRequest.form_data, 
           maintenance_assignment: assignment 
@@ -71,7 +71,7 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
 
   const handleExecute = async (id: string) => {
     const { error } = await supabase.from("lifeco_digital_forms")
-      .update({ status: "approved" }) // Using approved as "In Execution" placeholder if enum is limited
+      .update({ status: "approved" as any }) // Using approved as "In Execution" placeholder if enum is limited
       .eq("id", id);
     
     if (error) toast.error("فشل في بدء التنفيذ");
@@ -85,7 +85,7 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
   const handleClose = async (id: string) => {
     const { error } = await supabase.from("lifeco_digital_forms")
       .update({ 
-        status: "closed",
+        status: "closed" as any,
         closed_at: new Date().toISOString()
       })
       .eq("id", id);
