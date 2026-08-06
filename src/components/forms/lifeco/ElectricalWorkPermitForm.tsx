@@ -9,7 +9,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { Zap, ShieldCheck } from "lucide-react";
+import { Zap, ShieldCheck, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function ElectricalWorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
@@ -83,17 +85,36 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
     }
   };
 
+  const exportToPDF = async () => {
+    const element = document.getElementById("electrical-permit-document");
+    if (!element) return;
+    
+    toast.info("جاري تجهيز نسخة PDF...");
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Electrical_Permit_${initialData?.form_number || 'New'}.pdf`);
+  };
+
   return (
     <BaseFormLayout 
       title="ELECTRICAL WORK PERMIT / تصريح عمل كهربائي" 
       formNumber={initialData?.form_number}
       status={initialData?.status}
       onSave={() => onSave('draft')}
-      onSubmit={() => onSave('submitted')}
+      onSubmit={async () => {
+        await onSave('submitted');
+        await exportToPDF();
+        toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
+      }}
       onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
-      <div className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
+      <div id="electrical-permit-document" className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">
         {/* Document Header (Matched to file-2) */}
         <div className="flex border-b-[3px] border-slate-900">
            {/* Left Header Box */}
