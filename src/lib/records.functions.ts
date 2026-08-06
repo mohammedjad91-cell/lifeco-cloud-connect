@@ -24,17 +24,19 @@ export const getRecords = createServerFn({ method: "GET" })
   });
 
 export const updateRecord = createServerFn({ method: "POST" })
-  .validator((data: unknown) => z.object({
-    id: z.string(),
-    updates: z.record(z.any()),
-    auditInfo: z.object({
-      action: z.string(),
-      changes: z.any()
+  .validator(
+    z.object({
+      id: z.string(),
+      updates: z.record(z.any()),
+      auditInfo: z.object({
+        action: z.string(),
+        changes: z.any()
+      })
     })
-  }).parse(data))
-  .handler(async ({ data }) => {
+  )
+  .handler(async ({ data }: { data: any }) => {
     const sb = getSupabase();
-    const { id, updates, auditInfo } = (data as any);
+    const { id, updates, auditInfo } = data;
     
     const { error: updateError } = await sb
       .from("records")
@@ -57,17 +59,20 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .validator((data: unknown) => z.object({ recordId: z.string().optional() }).parse(data || {}))
-  .handler(async ({ data }) => {
+  .validator(
+    z.object({ 
+      recordId: z.string().optional() 
+    }).optional()
+  )
+  .handler(async ({ data }: { data: any }) => {
     const sb = getSupabase();
-    const typedData = data as { recordId?: string };
     let query = sb
       .from("audit_logs")
       .select("*")
       .order("timestamp", { ascending: false });
     
-    if (typedData?.recordId) {
-      query = query.eq("record_id", typedData.recordId);
+    if (data?.recordId) {
+      query = query.eq("record_id", data.recordId);
     }
     
     const { data: logs, error } = await query;
