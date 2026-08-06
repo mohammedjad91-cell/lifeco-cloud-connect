@@ -57,8 +57,8 @@ function CommandDashboard() {
       {/* KPI Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Active Records', value: records?.filter(r => r.status === 'active').length || 0, icon: Database, color: 'text-blue-500' },
-          { label: 'Pending Review', value: records?.filter(r => r.status === 'pending').length || 0, icon: AlertTriangle, color: 'text-amber-500' },
+          { label: 'Active Records', value: records?.filter((r: any) => r.status === 'active').length || 0, icon: Database, color: 'text-blue-500' },
+          { label: 'Pending Review', value: records?.filter((r: any) => r.status === 'pending').length || 0, icon: AlertTriangle, color: 'text-amber-500' },
           { label: 'Audit Events (24h)', value: auditLogs?.length || 0, icon: History, color: 'text-emerald-500' },
           { label: 'System Users', value: 12, icon: User, color: 'text-purple-500' },
         ].map((kpi, i) => (

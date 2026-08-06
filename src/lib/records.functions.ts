@@ -1,16 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "@/integrations/supabase/client";
 
-function getSupabase() {
-  const SUPABASE_URL = process.env['SUPABASE_URL'] || process.env['VITE_SUPABASE_URL'] || '';
-  const SUPABASE_KEY = process.env['SUPABASE_PUBLISHABLE_KEY'] || process.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || '';
-  return createClient(SUPABASE_URL, SUPABASE_KEY);
-}
 
 export const getRecords = createServerFn({ method: "GET" })
   .handler(async () => {
-    const sb = getSupabase();
+    const sb = supabase;
     const { data, error } = await sb
       .from("records")
       .select("*")
@@ -30,12 +25,12 @@ export const updateRecord = createServerFn({ method: "POST" })
     })
   }).parse(data))
   .handler(async ({ data }) => {
-    const sb = getSupabase();
+    const sb = supabase;
     const { id, updates, auditInfo } = data;
     
     const { error: updateError } = await sb
       .from("records")
-      .update(updates)
+      .update(updates as any)
       .eq("id", id);
       
     if (updateError) throw new Error(updateError.message);
@@ -54,9 +49,9 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data))
+  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data || {}))
   .handler(async ({ data }) => {
-    const sb = getSupabase();
+    const sb = supabase;
     let query = sb
       .from("audit_logs")
       .select("*")

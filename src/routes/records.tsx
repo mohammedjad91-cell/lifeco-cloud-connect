@@ -77,7 +77,7 @@ function MasterDataHub() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-black text-red-500">
-              {records?.filter(r => r.priority === 'critical').length || 0}
+              {records?.filter((r: any) => r.priority === 'critical').length || 0}
             </div>
           </CardContent>
         </Card>
@@ -128,7 +128,7 @@ function MasterDataHub() {
                   </TableCell>
                 </TableRow>
               ) : (
-                records?.map((record) => (
+                records?.map((record: any) => (
                   <TableRow key={record.id} className="border-slate-800 hover:bg-slate-800/30 transition-colors group cursor-pointer">
                     <TableCell>{getStatusBadge(record.status)}</TableCell>
                     <TableCell>{getPriorityBadge(record.priority)}</TableCell>
