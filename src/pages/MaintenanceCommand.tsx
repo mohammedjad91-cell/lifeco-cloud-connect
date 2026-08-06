@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { useI18n } from "@/lib/i18n";
-import { ArrowLeft, Inbox, Hammer, ShieldCheck, History as HistoryIcon, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Inbox, Hammer, ShieldCheck, History as HistoryIcon, LayoutDashboard, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MaintenanceManagement from "@/components/maintenance/MaintenanceManagement";
 import { motion } from "framer-motion";
@@ -86,18 +86,24 @@ const MaintenanceCommand = () => {
              {/* Quick Stats / Teams Footer */}
              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
-                  { label: "Mechanical Team", icon: Hammer, status: "Active" },
-                  { label: "Electrical Team", icon: ShieldCheck, status: "Active" },
-                  { label: "Instrumentation", icon: Inbox, status: "Active" },
-                  { label: "Civil Works", icon: Hammer, status: "Standby" },
+                  { label: "Maintenance Planning", icon: LayoutDashboard, status: "System Ready", onClick: () => {} },
+                  { label: "Mechanical Workshop", icon: Hammer, status: "Active Team", onClick: () => {} },
+                  { label: "Electrical Workshop", icon: ShieldCheck, status: "Active Team", onClick: () => {} },
+                  { label: "Equipment Maintenance", icon: Cog, status: "Fleet Management", onClick: () => navigate("/dashboard") },
                 ].map((team, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                    <team.icon className="w-5 h-5 text-muted-foreground" />
+                  <button 
+                    key={i} 
+                    onClick={team.onClick}
+                    className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3 hover:bg-white/10 hover:border-primary/30 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <team.icon className="w-5 h-5 text-primary" />
+                    </div>
                     <div>
                       <p className="text-[10px] font-black text-white uppercase leading-none">{team.label}</p>
                       <p className="text-[9px] text-muted-foreground uppercase mt-1 tracking-tighter">{team.status}</p>
                     </div>
-                  </div>
+                  </button>
                 ))}
              </div>
           </div>
