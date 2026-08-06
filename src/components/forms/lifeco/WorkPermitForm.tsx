@@ -131,7 +131,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
         <div className="p-4 grid grid-cols-2 gap-4">
           <div className="col-span-2 flex gap-4">
             {['Cold', 'Hot', 'Confined Space Entry'].map(t => (
-               <label key={t} className="flex items-center gap-2 font-bold uppercase"><Checkbox checked={data.general.workType === t.toUpperCase()} onCheckedChange={() => handleUpdate('general', 'workType', t.toUpperCase())} /> {t}</label>
+               <label key={t} className="flex items-center gap-2 font-bold uppercase text-black"><Checkbox checked={data.general.workType === t.toUpperCase()} onCheckedChange={() => handleUpdate('general', 'workType', t.toUpperCase())} /> {t}</label>
             ))}
           </div>
           <Input placeholder="PERMIT No" value={data.general.permitNo} onChange={(e) => handleUpdate('general', 'permitNo', e.target.value)} />
@@ -151,7 +151,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             <div className="font-bold border-b border-slate-900 mb-2 text-xs">Group 1</div>
             {['combustible', 'toxic', 'corrosive', 'highPressure', 'hotSurface'].map(h => (
               <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
-                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <span className="text-[10px] font-bold uppercase text-black">{h.replace(/([A-Z])/g, ' $1')}</span>
                 <div className="flex gap-1">
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
@@ -163,7 +163,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             <div className="font-bold border-b border-slate-900 mb-2 text-xs">Hazard Indicators</div>
             {['flyingSparks', 'equipmentOperating', 'movingMachinery', 'radiationXRay'].map(h => (
               <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
-                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <span className="text-[10px] font-bold uppercase text-black">{h.replace(/([A-Z])/g, ' $1')}</span>
                 <div className="flex gap-1">
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
@@ -175,7 +175,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             <div className="font-bold border-b border-slate-900 mb-2 text-xs">Group 2 & 3</div>
             {['trippingHazard', 'roughWeather', 'workingAtHeight', 'sharpObjects', 'electricalHazard', 'highNoise', 'poorLighting'].map(h => (
               <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
-                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <span className="text-[10px] font-bold uppercase text-black">{h.replace(/([A-Z])/g, ' $1')}</span>
                 <div className="flex gap-1">
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
                   <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
@@ -204,7 +204,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
           ].map(item => (
             <div key={item.id} className="flex items-start gap-3">
               <Checkbox id={item.id} checked={data.preparation[item.id]} onCheckedChange={(val) => handleUpdate('preparation', item.id, val)} />
-              <Label htmlFor={item.id} className="text-[11px] font-bold uppercase cursor-pointer leading-tight">{item.label}</Label>
+              <Label htmlFor={item.id} className="text-[11px] font-bold uppercase cursor-pointer leading-tight text-black">{item.label}</Label>
             </div>
           ))}
           <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -224,7 +224,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             {['helmet', 'safetyShoes', 'coverall', 'safetyGlasses', 'gloves'].map(p => (
               <div key={p} className="flex items-center gap-2">
                 <Checkbox id={`ppe-${p}`} checked={data.ppe[p]} onCheckedChange={(val) => handleUpdate('ppe', p, val)} />
-                <Label htmlFor={`ppe-${p}`} className="text-[10px] font-bold uppercase cursor-pointer">{p}</Label>
+                <Label htmlFor={`ppe-${p}`} className="text-[10px] font-bold uppercase cursor-pointer text-black">{p}</Label>
               </div>
             ))}
           </div>
@@ -233,7 +233,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             {['faceShield', 'rubberBoots', 'noSmoking', 'breathingEquipment'].map(p => (
               <div key={p} className="flex items-center gap-2">
                 <Checkbox id={`spec-${p}`} checked={data.ppe[p]} onCheckedChange={(val) => handleUpdate('ppe', p, val)} />
-                <Label htmlFor={`spec-${p}`} className="text-[10px] font-bold uppercase cursor-pointer">{p.replace(/([A-Z])/g, ' $1')}</Label>
+                <Label htmlFor={`spec-${p}`} className="text-[10px] font-bold uppercase cursor-pointer text-black">{p.replace(/([A-Z])/g, ' $1')}</Label>
               </div>
             ))}
           </div>
@@ -242,7 +242,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             {['fireExtinguisher', 'weldingMachine', 'light24v', 'batteryOperated', 'heatProtection'].map(t => (
               <div key={t} className="flex items-center gap-2">
                 <Checkbox id={`tool-${t}`} checked={data.tools[t]} onCheckedChange={(val) => handleUpdate('tools', t, val)} />
-                <Label htmlFor={`tool-${t}`} className="text-[10px] font-bold uppercase cursor-pointer">{t.replace(/([A-Z])/g, ' $1')}</Label>
+                <Label htmlFor={`tool-${t}`} className="text-[10px] font-bold uppercase cursor-pointer text-black">{t.replace(/([A-Z])/g, ' $1')}</Label>
               </div>
             ))}
           </div>
@@ -253,7 +253,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
       <div className="border-[3px] border-slate-900 rounded-sm mb-6">
         <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">5 - GAS TESTING / فحص الغاز</div>
         <div className="p-4">
-          <table className="w-full border-collapse border border-slate-300 text-[10px] font-bold uppercase">
+          <table className="w-full border-collapse border border-slate-300 text-[10px] font-black uppercase text-black">
             <thead>
               <tr className="bg-slate-50">
                 <th className="border border-slate-300 p-1">Time</th>
@@ -301,7 +301,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
               ))}
             </tbody>
           </table>
-          <div className="mt-4 p-4 border-2 border-slate-900 bg-slate-50 italic text-[11px] font-bold">
+          <div className="mt-4 p-4 border-2 border-slate-900 bg-slate-50 italic text-[11px] font-black text-black">
             "The equipment and/or location where the work has to be performed were inspected & safety precautions listed in this Work Permit have been fully implemented."
             <div className="mt-2 flex flex-wrap gap-4 items-center not-italic">
               <span className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             const key = `q${i+1}`;
             return (
               <div key={key} className="grid grid-cols-[1fr,150px,200px] items-start gap-4 py-2 border-b border-slate-100 last:border-0">
-                <span className="text-[11px] font-bold uppercase leading-tight">{i+1}. {q}</span>
+                <span className="text-[11px] font-black uppercase leading-tight text-black">{i+1}. {q}</span>
                 <div className="flex gap-2">
                   <button type="button" className={`px-2 py-1 border text-[9px] font-black ${data.workPlaceChecklist[key].y ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], y: true, n: false, na: false })}>Y</button>
                   <button type="button" className={`px-2 py-1 border text-[9px] font-black ${data.workPlaceChecklist[key].n ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], y: false, n: true, na: false })}>N</button>
@@ -355,21 +355,21 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-6">
-              <span className="text-[11px] font-black uppercase">Work Completed:</span>
+              <span className="text-[11px] font-black uppercase text-black">Work Completed:</span>
               <div className="flex gap-4">
-                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={data.closure.completed} onCheckedChange={(v) => handleUpdate('closure', 'completed', v)} /> YES</label>
-                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={!data.closure.completed && data.closure.incomplete} onCheckedChange={(v) => handleUpdate('closure', 'incomplete', v)} /> NO</label>
+                <label className="flex items-center gap-1 text-[10px] font-black text-black"><Checkbox checked={data.closure.completed} onCheckedChange={(v) => handleUpdate('closure', 'completed', v)} /> YES</label>
+                <label className="flex items-center gap-1 text-[10px] font-black text-black"><Checkbox checked={!data.closure.completed && data.closure.incomplete} onCheckedChange={(v) => handleUpdate('closure', 'incomplete', v)} /> NO</label>
               </div>
             </div>
             <div className="flex items-center gap-6">
-              <span className="text-[11px] font-black uppercase">Incomplete / Stopped:</span>
+              <span className="text-[11px] font-black uppercase text-black">Incomplete / Stopped:</span>
               <Input placeholder="Why?" className="flex-1" value={data.closure.remarks} onChange={(e) => handleUpdate('closure', 'remarks', e.target.value)} />
             </div>
             <div className="flex items-center gap-6">
-              <span className="text-[11px] font-black uppercase">Housekeeping Done:</span>
+              <span className="text-[11px] font-black uppercase text-black">Housekeeping Done:</span>
               <div className="flex gap-4">
-                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', v)} /> YES</label>
-                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={!data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', !v)} /> NO</label>
+                <label className="flex items-center gap-1 text-[10px] font-black text-black"><Checkbox checked={data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', v)} /> YES</label>
+                <label className="flex items-center gap-1 text-[10px] font-black text-black"><Checkbox checked={!data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', !v)} /> NO</label>
               </div>
             </div>
           </div>
