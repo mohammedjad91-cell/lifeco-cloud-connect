@@ -32,9 +32,9 @@ export const updateRecord = createServerFn({ method: "POST" })
       changes: z.any()
     })
   }).parse(data))
-  .handler(async ({ data }: { data: any }) => {
+  .handler(async ({ data }) => {
     const sb = getSupabase();
-    const { id, updates, auditInfo } = data;
+    const { id, updates, auditInfo } = (data as any);
     
     const { error: updateError } = await sb
       .from("records")
@@ -58,15 +58,15 @@ export const updateRecord = createServerFn({ method: "POST" })
 
 export const getAuditLogs = createServerFn({ method: "GET" })
   .validator((data: unknown) => z.object({ recordId: z.string().optional() }).parse(data || {}))
-  .handler(async ({ data }: { data: any }) => {
+  .handler(async ({ data }) => {
     const sb = getSupabase();
-    let query = sb
+    const typedData = data as { recordId?: string };
       .from("audit_logs")
       .select("*")
       .order("timestamp", { ascending: false });
     
-    if (data?.recordId) {
-      query = query.eq("record_id", data.recordId);
+    if (typedData?.recordId) {
+      query = query.eq("record_id", typedData.recordId);
     }
     
     const { data: logs, error } = await query;
