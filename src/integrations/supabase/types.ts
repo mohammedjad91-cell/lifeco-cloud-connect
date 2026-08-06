@@ -70,6 +70,41 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action: string
+          changes: Json
+          id: string
+          record_id: string
+          timestamp: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          changes: Json
+          id?: string
+          record_id: string
+          timestamp?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          changes?: Json
+          id?: string
+          record_id?: string
+          timestamp?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       department_pins: {
         Row: {
           id: string
@@ -890,6 +925,78 @@ export type Database = {
           },
         ]
       }
+      maintenance_work_requests: {
+        Row: {
+          area_name: string | null
+          created_at: string | null
+          department_key: string
+          description: string
+          equipment_id: string | null
+          equipment_tag: string | null
+          id: string
+          permit_id: string | null
+          permit_number: string | null
+          plant_code: string
+          priority: string | null
+          request_date: string | null
+          request_number: string
+          requested_by: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area_name?: string | null
+          created_at?: string | null
+          department_key: string
+          description: string
+          equipment_id?: string | null
+          equipment_tag?: string | null
+          id?: string
+          permit_id?: string | null
+          permit_number?: string | null
+          plant_code: string
+          priority?: string | null
+          request_date?: string | null
+          request_number: string
+          requested_by: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area_name?: string | null
+          created_at?: string | null
+          department_key?: string
+          description?: string
+          equipment_id?: string | null
+          equipment_tag?: string | null
+          id?: string
+          permit_id?: string | null
+          permit_number?: string | null
+          plant_code?: string
+          priority?: string | null
+          request_date?: string | null
+          request_number?: string
+          requested_by?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_work_requests_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_work_requests_permit_id_fkey"
+            columns: ["permit_id"]
+            isOneToOne: false
+            referencedRelation: "lifeco_digital_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       material_issues: {
         Row: {
           id: string
@@ -1085,6 +1192,45 @@ export type Database = {
           ppe_type?: string
           replacement_due?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      records: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          priority: Database["public"]["Enums"]["record_priority"]
+          status: Database["public"]["Enums"]["record_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["record_priority"]
+          status?: Database["public"]["Enums"]["record_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["record_priority"]
+          status?: Database["public"]["Enums"]["record_status"]
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1379,6 +1525,8 @@ export type Database = {
         | "in_progress"
         | "done"
         | "rejected"
+      record_priority: "low" | "medium" | "high" | "critical"
+      record_status: "active" | "pending" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1534,6 +1682,8 @@ export const Constants = {
         "done",
         "rejected",
       ],
+      record_priority: ["low", "medium", "high", "critical"],
+      record_status: ["active", "pending", "archived"],
     },
   },
 } as const
