@@ -1,7 +1,7 @@
 import { useNavigate } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { DEPARTMENTS } from "@/lib/departments";
-import { Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network } from "lucide-react";
+import { Globe, Factory, FlaskConical, Gauge, Wrench, PackageOpen, Beaker, Flame, Settings, BarChart3, Network, Presentation } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import lifecoLogo from "@/assets/lifeco-logo.png";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
@@ -64,6 +64,18 @@ const Login = () => {
             <Gauge className="w-5 h-5" />
             <span className="font-semibold text-xs md:text-sm tracking-wide">
               {lang === "ar" ? "تقارير المشرفين" : "Supervisor Reports"}
+            </span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/presentation")}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary/20 border border-primary/40 text-white hover:bg-primary/30 hover:neon-border transition-all shadow-lg backdrop-blur-md"
+            title={lang === "ar" ? "عرض مجلس الإدارة" : "Board Presentation"}
+          >
+            <Presentation className="w-5 h-5 text-primary" />
+            <span className="font-semibold text-xs md:text-sm tracking-wide">
+              {lang === "ar" ? "عرض الإدارة" : "Presentation"}
             </span>
           </motion.button>
         </div>
