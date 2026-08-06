@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { getDepartmentById } from "@/lib/departments";
-import { type PlantModule } from "@/lib/plant-modules";
+import { type PlantModule, getModulesForPlant } from "@/lib/plant-modules";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
-  Activity, Gauge, Cog, FileBarChart, History, FileSpreadsheet, Layers,
-  Files, ShieldCheck, ClipboardCheck, History as HistoryIcon,
+  Activity, Gauge, Cog, FileBarChart, History as HistoryIcon, FileSpreadsheet, Layers,
+  Files, ShieldCheck, ClipboardCheck,
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 
