@@ -30,7 +30,7 @@ export const updateRecord = createServerFn({ method: "POST" })
     
     const { error: updateError } = await sb
       .from("records")
-      .update(updates)
+      .update(updates as any)
       .eq("id", id);
       
     if (updateError) throw new Error(updateError.message);
