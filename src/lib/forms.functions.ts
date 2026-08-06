@@ -42,6 +42,7 @@ export const saveForm = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { id, ...rest } = data;
     
+    let result;
     if (id) {
       const { data: updated, error } = await supabase
         .from("lifeco_digital_forms")
@@ -54,7 +55,7 @@ export const saveForm = createServerFn({ method: "POST" })
         .select()
         .single();
       if (error) throw error;
-      return updated;
+      result = updated;
     } else {
       // Generate form number
       const prefix = data.form_type === 'work_permit' ? 'WP' : data.form_type === 'electrical_permit' ? 'EP' : 'WR';
@@ -64,7 +65,7 @@ export const saveForm = createServerFn({ method: "POST" })
         .select('*', { count: 'exact', head: true })
         .eq("form_type", data.form_type);
       
-      const formNumber = `${prefix}-${year}-${((count || 0) + 1).toString().padStart(4, '0')}`;
+      const formNumber = `${prefix}-${year}-${((count || 0) + 1).toString().padStart(6, '0')}`;
 
       const { data: inserted, error } = await supabase
         .from("lifeco_digital_forms")
@@ -75,8 +76,33 @@ export const saveForm = createServerFn({ method: "POST" })
         .select()
         .single();
       if (error) throw error;
-      return inserted;
+      result = inserted;
     }
+
+    // Auto-create Maintenance Work Request if it's a submitted Work Permit
+    if (data.form_type === 'work_permit' && data.status === 'submitted') {
+      const year = new Date().getFullYear();
+      const { count: mntCount } = await supabase
+        .from("maintenance_work_requests")
+        .select('*', { count: 'exact', head: true });
+      
+      const mntNumber = `MNT-${year}-${((mntCount || 0) + 1).toString().padStart(6, '0')}`;
+      
+      await supabase.from("maintenance_work_requests").insert({
+        request_number: mntNumber,
+        department_key: data.department_key,
+        plant_code: data.plant_code,
+        equipment_id: data.equipment_id,
+        permit_id: result.id,
+        permit_number: result.form_number,
+        description: data.form_data.general?.workDescription || "Maintenance requested via Work Permit",
+        requested_by: data.created_by_name,
+        priority: 'NORMAL',
+        status: 'PENDING'
+      });
+    }
+
+    return result;
   });
 
 export const getFormById = createServerFn({ method: "GET" })
