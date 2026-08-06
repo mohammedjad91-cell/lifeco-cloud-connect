@@ -10,7 +10,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getFormHistory } from "@/lib/forms.functions";
 import { format } from "date-fns";
 
-export default function FormHistory({ departmentKey, plantCode }: { departmentKey?: string, plantCode?: string }) {
+export default function FormHistory({ departmentKey, plantCode, onBack }: { departmentKey?: string, plantCode?: string, onBack?: () => void }) {
   const [forms, setForms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

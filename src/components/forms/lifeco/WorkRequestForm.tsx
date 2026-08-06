@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Building2 } from "lucide-react";
 
-export default function WorkRequestForm({ formId, initialData, plantCode }: { formId?: string, initialData?: any, plantCode?: string }) {
+export default function WorkRequestForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
     header: {
       wrNo: "",
@@ -103,6 +103,7 @@ export default function WorkRequestForm({ formId, initialData, plantCode }: { fo
       status={initialData?.status}
       onSave={() => onSave('draft')}
       onSubmit={() => onSave('submitted')}
+      onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div className="bg-white text-slate-900 shadow-2xl border-[3px] border-slate-900">
