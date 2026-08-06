@@ -11,7 +11,7 @@ import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History, FileSpreadsheet, Layers,
-  Files, ShieldCheck, ClipboardCheck
+  Files, ShieldCheck, ClipboardCheck, History as HistoryIcon,
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 
@@ -58,7 +58,7 @@ const ICONS: Record<string, React.ReactNode> = {
   "ops-analytics": <LayoutDashboard className="w-6 h-6" />,
   permits: <ClipboardCheck className="w-6 h-6" />,
   safety: <ShieldCheck className="w-6 h-6" />,
-  history: <History className="w-6 h-6" />,
+  history: <HistoryIcon className="w-6 h-6" />,
 };
 
 
