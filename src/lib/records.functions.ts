@@ -16,12 +16,15 @@ export const getRecords = createServerFn({ method: "GET" })
       .select("*")
       .order("created_at", { ascending: false });
     
-    if (error) throw new Error(error.message);
-    return data;
+    if (error) {
+      console.error("Supabase error in getRecords:", error);
+      throw new Error(error.message);
+    }
+    return data || [];
   });
 
 export const updateRecord = createServerFn({ method: "POST" })
-  .inputValidator((data: any) => z.object({
+  .validator((data: unknown) => z.object({
     id: z.string(),
     updates: z.record(z.any()),
     auditInfo: z.object({
@@ -54,7 +57,7 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data))
+  .validator((data: unknown) => z.object({ recordId: z.string().optional() }).parse(data || {}))
   .handler(async ({ data }) => {
     const sb = getSupabase();
     let query = sb
@@ -62,11 +65,14 @@ export const getAuditLogs = createServerFn({ method: "GET" })
       .select("*")
       .order("timestamp", { ascending: false });
     
-    if (data.recordId) {
+    if (data?.recordId) {
       query = query.eq("record_id", data.recordId);
     }
     
     const { data: logs, error } = await query;
-    if (error) throw new Error(error.message);
-    return logs;
+    if (error) {
+      console.error("Supabase error in getAuditLogs:", error);
+      throw new Error(error.message);
+    }
+    return logs || [];
   });
