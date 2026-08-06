@@ -25,7 +25,7 @@ export const updateRecord = createServerFn({ method: "POST" })
     })
   }).parse(data))
   .handler(async ({ data }) => {
-    const sb = getSupabase();
+    const sb = supabase;
     const { id, updates, auditInfo } = data;
     
     const { error: updateError } = await sb
