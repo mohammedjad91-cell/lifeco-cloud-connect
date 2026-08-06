@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Zap, ShieldCheck } from "lucide-react";
 
-export default function ElectricalWorkPermitForm({ formId, initialData, plantCode }: { formId?: string, initialData?: any, plantCode?: string }) {
+export default function ElectricalWorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
     general: {
       permitNo: "",
@@ -90,6 +90,7 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
       status={initialData?.status}
       onSave={() => onSave('draft')}
       onSubmit={() => onSave('submitted')}
+      onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">

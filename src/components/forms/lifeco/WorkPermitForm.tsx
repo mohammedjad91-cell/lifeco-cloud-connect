@@ -10,7 +10,7 @@ import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 
-export default function WorkPermitForm({ formId, initialData, plantCode }: { formId?: string, initialData?: any, plantCode?: string }) {
+export default function WorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
     general: {
       workType: "COLD",
@@ -122,6 +122,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
       formNumber={initialData?.form_number || "WP-2026-0000"}
       onSave={() => onSave('draft')}
       onSubmit={() => onSave('submitted')}
+      onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
       {/* SECTION 1: General Info */}

@@ -167,15 +167,36 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // Unified view for Operations, Logs, Records, Maintenance, Permits, etc.
+    // Direct Navigation for specific Plant Modules
+    const plantWorkspaces: Record<string, string> = {
+      "permits": "permits",
+      "maintenance": "maintenance",
+      "history": "form-history",
+      "documents": "digital-library",
+      "general-info": "overview"
+    };
+
+    if (plantWorkspaces[key]) {
+      // Some specialized routes exist outside ModuleWorkspace
+      if (key === "documents") {
+        navigate(`/dept/${deptKey}/library`);
+        return;
+      }
+      if (key === "general-info") {
+        navigate("/overview");
+        return;
+      }
+      
+      navigate(`/module/${plantCode}/${plantWorkspaces[key]}`);
+      return;
+    }
+
+    // Unified view for Operations, Logs, Records, etc.
     const dashboardTabs: Record<string, string> = {
       "ops-logs": "logs",
       "lab-readings": "labReadings",
-      "permits": "permits",
-      "maintenance": "assets",
       "safety": "report",
       "reports": "analytics",
-      "history": "logs",
     };
 
     if (dashboardTabs[key]) {
@@ -184,26 +205,23 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+
+
+    if (key === "maintenance") {
+      navigate(`/module/${plantCode}/work-request`);
+      return;
+    }
+
+    if (key === "history") {
+      navigate(`/module/${plantCode}/form-history`);
+      return;
+    }
+
     if (key === "general-info") {
       navigate("/overview");
       return;
     }
 
-    // Laboratory specific navigations
-    if (key === "lab-reports") {
-      navigate("/lab-reports");
-      return;
-    }
-
-    if (key === "lab-equipment") {
-      navigate("/lab-equipment");
-      return;
-    }
-
-    if (key === "chemical-store") {
-      navigate("/chemical-store");
-      return;
-    }
 
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");

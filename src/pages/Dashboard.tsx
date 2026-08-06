@@ -40,7 +40,7 @@ import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPrevi
 import { getOperator, getStamp } from "@/lib/session";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { LoadingState, EmptyState } from "@/components/ui/app-states";
-import PermitCenter from "@/components/PermitCenter";
+
 
 interface LogEntry {
   id: string;
@@ -522,9 +522,6 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            <TabsTrigger value="assets" className="gap-1.5">
-              <Wrench className="w-3.5 h-3.5" /> {lang === "ar" ? "الصيانة" : "Maintenance"}
-            </TabsTrigger>
             {department.id === "NITROGEN" && (
               <TabsTrigger value="nitrogen" className="gap-1.5">
                 <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
@@ -535,9 +532,6 @@ const Dashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="ots" className="gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> {lang === "ar" ? "محاكي التدريب" : "OTS Simulator"}
-            </TabsTrigger>
-            <TabsTrigger value="permits" className="gap-1.5">
-              <ClipboardCheck className="w-3.5 h-3.5" /> {lang === "ar" ? "التصاريح" : "Permits"}
             </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
@@ -737,9 +731,6 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          <TabsContent value="assets" className="mt-4">
-            <AssetRegister department={department.id} />
-          </TabsContent>
 
           {department.id === "NITROGEN" && (
             <TabsContent value="nitrogen" className="mt-4">
@@ -762,9 +753,6 @@ const Dashboard = () => {
             <PlantTrainingSimulator />
           </TabsContent>
 
-          <TabsContent value="permits" className="mt-4">
-            <PermitCenter plantCode={sessionStorage.getItem("lifeco_plant") || ""} departmentKey={department.id} />
-          </TabsContent>
 
           <TabsContent value="analytics" className="mt-4 space-y-4">
             <ShiftCharts />
