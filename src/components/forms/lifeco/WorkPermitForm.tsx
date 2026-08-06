@@ -233,10 +233,11 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
             </div>
           ))}
           <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-            <Input placeholder="10. No other works / activity allowed within ______ m" value={data.preparation.noOtherWork} onChange={(e) => handleUpdate('preparation', 'noOtherWork', e.target.value)} />
-            <Input placeholder="11. Sewer covered within ______ m" value={data.preparation.sewerCovered} onChange={(e) => handleUpdate('preparation', 'sewerCovered', e.target.value)} />
+            <Input className="border-black text-black font-black placeholder:text-slate-600" placeholder="10. No other works / activity allowed within ______ m" value={data.preparation.noOtherWork} onChange={(e) => handleUpdate('preparation', 'noOtherWork', e.target.value)} />
+            <Input className="border-black text-black font-black placeholder:text-slate-600" placeholder="11. Sewer covered within ______ m" value={data.preparation.sewerCovered} onChange={(e) => handleUpdate('preparation', 'sewerCovered', e.target.value)} />
+
           </div>
-          <Textarea className="col-span-1 md:col-span-2 mt-2" placeholder="REMARKS / ملاحظات" value={data.preparation.remarks} onChange={(e) => handleUpdate('preparation', 'remarks', e.target.value)} />
+          <Textarea className="col-span-1 md:col-span-2 mt-2 border-black text-black font-black placeholder:text-slate-600" placeholder="REMARKS / ملاحظات" value={data.preparation.remarks} onChange={(e) => handleUpdate('preparation', 'remarks', e.target.value)} />
         </div>
       </div>
 
