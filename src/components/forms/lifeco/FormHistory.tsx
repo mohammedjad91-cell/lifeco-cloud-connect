@@ -69,10 +69,16 @@ export default function FormHistory({ departmentKey, plantCode, onBack }: { depa
 
   return (
     <div className="space-y-6 p-4">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2 mb-2 text-slate-400 hover:text-white">
+          <ArrowLeft className="w-4 h-4" /> العودة
+        </Button>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-xl font-bold flex items-center gap-2">
           <History className="w-5 h-5" /> سجل النماذج والتصاريح
         </h2>
+
         <div className="flex items-center gap-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
