@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "Create a professional Arabic presentation for the Board of Directors based on the proposed structure with titles and bullet points for each slide.",
+    language: "أضف صفحة داخل التطبيق لعرض شرائح العرض التقديمي مع عناوين ونقاط كل شريحة بشكل مرتب.",
     managementFlow: "Factory -> Engineer -> Permits -> Electrical Permit -> Engineer fills permit -> Send -> System saves PDF -> Maintenance Management -> Incoming work requests -> Review request -> Determine work type -> Choose specialized team -> Assign Engineer/Supervisor/Technician -> Execute work -> Close work -> Record returns to Factory + Equipment + Permit",
   },
   ar: {
@@ -219,7 +219,7 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "أنشئ عرض تقديمي عربي احترافي لمجلس الإدارة مبني على الهيكل المقترح مع عناوين ونقاط لكل شريحة.",
+    language: "أضف صفحة داخل التطبيق لعرض شرائح العرض التقديمي مع عناوين ونقاط كل شريحة بشكل مرتب.",
     managementFlow: "المصنع\n\n↓\n\nالمهندس\n\n↓\n\nالتصاريح\n\n↓\n\nتصريح عمل كهربائي\n\n↓\n\nالمهندس يعبي التصريح\n\n↓\n\nإرسال\n\n↓\n\nالنظام يحفظ التصريح PDF\n\n↓\n\nإدارة الصيانة\n\n↓\n\nطلبات العمل الواردة\n\n↓\n\nمراجعة الطلب\n\n↓\n\nتحديد نوع العمل\n\n↓\n\nاختيار الفريق المختص\n\n↓\n\nتعيين المهندس / المشرف / الفني\n\n↓\n\nتنفيذ العمل\n\n↓\n\nإغلاق العمل\n\n↓\n\nيرجع السجل للمصنع + المعدة + التصريح",
   },
 } as const;
