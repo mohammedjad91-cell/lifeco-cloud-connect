@@ -132,21 +132,235 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
         </div>
       </div>
 
-      {/* Simplified Hazard Table Structure for brief display — Add more as needed */}
-      <div className="border-[3px] border-slate-900 rounded-sm p-4 space-y-2">
-        <div className="font-black border-b-2 border-slate-900 mb-2">2 - Hazard Identification / تحديد المخاطر</div>
-        {Object.entries(data.hazards).map(([key, vals]: [string, any]) => (
-          <div key={key} className="grid grid-cols-[1fr,50px,50px] items-center gap-2 border-b border-slate-200 py-1 text-[10px] font-black uppercase">
-            <span>{key.replace(/([A-Z])/g, ' $1')}</span>
-            <button className={`p-1 border ${vals.yes ? 'bg-slate-900 text-white' : ''}`} onClick={() => handleUpdate('hazards', key, true, 'yes')}>YES</button>
-            <button className={`p-1 border ${vals.no ? 'bg-slate-900 text-white' : ''}`} onClick={() => handleUpdate('hazards', key, true, 'no')}>NO</button>
+      {/* SECTION 2: Hazard Identification */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">2 - Hazard Identification / تحديد المخاطر</div>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div>
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">Group 1</div>
+            {['combustible', 'toxic', 'corrosive', 'highPressure', 'hotSurface'].map(h => (
+              <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
+                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <div className="flex gap-1">
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+          <div>
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">Hazard Indicators</div>
+            {['flyingSparks', 'equipmentOperating', 'movingMachinery', 'radiationXRay'].map(h => (
+              <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
+                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <div className="flex gap-1">
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div>
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">Group 2 & 3</div>
+            {['trippingHazard', 'roughWeather', 'workingAtHeight', 'sharpObjects', 'electricalHazard', 'highNoise', 'poorLighting'].map(h => (
+              <div key={h} className="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
+                <span className="text-[10px] font-bold uppercase">{h.replace(/([A-Z])/g, ' $1')}</span>
+                <div className="flex gap-1">
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].yes ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'yes')}>YES</button>
+                  <button type="button" className={`px-2 py-0.5 border text-[9px] font-black ${data.hazards[h].no ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('hazards', h, true, 'no')}>NO</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      
-      {/* Continued implementation would follow... */}
-      <div className="mt-8 text-center text-slate-400 font-bold italic p-10 border-2 border-dashed">
-        Digital Work Permit Interface (Full LIFECO SFF-06-01-03 Spec)
+
+      {/* SECTION 3: Safe Work Preparation */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">3 - Safe Work Preparation / تجهيز العمل الآمن</div>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+          {[
+            { id: 'blinded', label: '1. Equipment: Blinded / Disconnected / Locked and tagged' },
+            { id: 'deEnergized', label: '2. Equipment: De-energized / Depressurized' },
+            { id: 'isolated', label: '3. Equipment: Isolated / Washed' },
+            { id: 'pluggedNitrogen', label: '4. Equipment: Plugged (Nitrogen) / Ventilated (air)' },
+            { id: 'gasTestCombustible', label: '5. Gas test required for: Combustible / Oxygen / Ammonia' },
+            { id: 'gasTestContinuous', label: '6. Gas test required for: Continuous' },
+            { id: 'electricIsolation', label: '7. Electric isolation & lock out / tag out (Permit attached if required)' },
+            { id: 'fireBrigade', label: '8. Fire brigade support / firefighting equipment / Fire resistant blankets' },
+            { id: 'fireWatch', label: '9. Stand by: Fire Watch / Support' },
+            { id: 'safeJobAnalysis', label: '13. Safe job analysis required: Yes (JSA attached if required) / No' },
+          ].map(item => (
+            <div key={item.id} className="flex items-start gap-3">
+              <Checkbox id={item.id} checked={data.preparation[item.id]} onCheckedChange={(val) => handleUpdate('preparation', item.id, val)} />
+              <Label htmlFor={item.id} className="text-[11px] font-bold uppercase cursor-pointer leading-tight">{item.label}</Label>
+            </div>
+          ))}
+          <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <Input placeholder="10. No other works / activity allowed within ______ m" value={data.preparation.noOtherWork} onChange={(e) => handleUpdate('preparation', 'noOtherWork', e.target.value)} />
+            <Input placeholder="11. Sewer covered within ______ m" value={data.preparation.sewerCovered} onChange={(e) => handleUpdate('preparation', 'sewerCovered', e.target.value)} />
+          </div>
+          <Textarea className="col-span-1 md:col-span-2 mt-2" placeholder="REMARKS / ملاحظات" value={data.preparation.remarks} onChange={(e) => handleUpdate('preparation', 'remarks', e.target.value)} />
+        </div>
+      </div>
+
+      {/* SECTION 4: PPE & Tools */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">4 - Additional Special Tools / Protection Required / معدات الوقاية والأدوات</div>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">PPE Required</div>
+            {['helmet', 'safetyShoes', 'coverall', 'safetyGlasses', 'gloves'].map(p => (
+              <div key={p} className="flex items-center gap-2">
+                <Checkbox id={`ppe-${p}`} checked={data.ppe[p]} onCheckedChange={(val) => handleUpdate('ppe', p, val)} />
+                <Label htmlFor={`ppe-${p}`} className="text-[10px] font-bold uppercase cursor-pointer">{p}</Label>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">Special Protection</div>
+            {['faceShield', 'rubberBoots', 'noSmoking', 'breathingEquipment'].map(p => (
+              <div key={p} className="flex items-center gap-2">
+                <Checkbox id={`spec-${p}`} checked={data.ppe[p]} onCheckedChange={(val) => handleUpdate('ppe', p, val)} />
+                <Label htmlFor={`spec-${p}`} className="text-[10px] font-bold uppercase cursor-pointer">{p.replace(/([A-Z])/g, ' $1')}</Label>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <div className="font-bold border-b border-slate-900 mb-2 text-xs">Tools Required</div>
+            {['fireExtinguisher', 'weldingMachine', 'light24v', 'batteryOperated', 'heatProtection'].map(t => (
+              <div key={t} className="flex items-center gap-2">
+                <Checkbox id={`tool-${t}`} checked={data.tools[t]} onCheckedChange={(val) => handleUpdate('tools', t, val)} />
+                <Label htmlFor={`tool-${t}`} className="text-[10px] font-bold uppercase cursor-pointer">{t.replace(/([A-Z])/g, ' $1')}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 5: Gas Testing */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">5 - GAS TESTING / فحص الغاز</div>
+        <div className="p-4">
+          <table className="w-full border-collapse border border-slate-300 text-[10px] font-bold uppercase">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="border border-slate-300 p-1">Time</th>
+                <th className="border border-slate-300 p-1">Operator</th>
+                <th className="border border-slate-300 p-1">Oxygen</th>
+                <th className="border border-slate-300 p-1">LEL</th>
+                <th className="border border-slate-300 p-1">Toxic</th>
+                <th className="border border-slate-300 p-1">Other</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.gasTesting.entries.map((entry: any, i: number) => (
+                <tr key={i}>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.time} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].time = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.operator} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].operator = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.o2} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].o2 = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.lel} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].lel = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.ppm} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].ppm = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                  <td className="border border-slate-300 p-0"><input className="w-full p-1 border-0 focus:ring-0" value={entry.other} onChange={(e) => {
+                    const next = [...data.gasTesting.entries];
+                    next[i].other = e.target.value;
+                    handleUpdate('gasTesting', 'entries', next);
+                  }} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-4 p-4 border-2 border-slate-900 bg-slate-50 italic text-[11px] font-bold">
+            "The equipment and/or location where the work has to be performed were inspected & safety precautions listed in this Work Permit have been fully implemented."
+            <div className="mt-2 flex justify-between items-center not-italic">
+              <span>Signature of Shift Supervisor: ________________</span>
+              <span>PN: ________</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 6: Work Place Checklist */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">6 - WORK PLACE CHECK LIST / قائمة التحقق من موقع العمل</div>
+        <div className="p-4 space-y-2">
+          {[
+            'Have you located the nearest safety shower? Is it OK?',
+            'Have you located the nearest eye washing equipment? Is it OK?',
+            'Have you located the nearest escape route? Is it free from obstacles or debris?',
+            'Have you located the nearest emergency communication system? Is it OK?',
+            'Working area is clean and free of debris or material?',
+            'Tools and equipment are in good condition and suitable for the job?',
+            'Are other works going on above / beneath your working area that may interfere?',
+            'Lighting is sufficient? Do you need extra lighting?',
+            'If you are using scaffolding is it safe and easy to access?',
+            'Have you been explained about all the risks involved in this work and the safety precautions that must be taken and are clear to me?'
+          ].map((q, i) => {
+            const key = `q${i+1}`;
+            return (
+              <div key={key} className="grid grid-cols-[1fr,150px,200px] items-start gap-4 py-2 border-b border-slate-100 last:border-0">
+                <span className="text-[11px] font-bold uppercase leading-tight">{i+1}. {q}</span>
+                <div className="flex gap-2">
+                  <button type="button" className={`px-2 py-1 border text-[9px] font-black ${data.workPlaceChecklist[key].y ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], y: true, n: false, na: false })}>Y</button>
+                  <button type="button" className={`px-2 py-1 border text-[9px] font-black ${data.workPlaceChecklist[key].n ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], y: false, n: true, na: false })}>N</button>
+                  <button type="button" className={`px-2 py-1 border text-[9px] font-black ${data.workPlaceChecklist[key].na ? 'bg-slate-900 text-white' : 'bg-white text-slate-400'}`} onClick={() => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], y: false, n: false, na: true })}>N/A</button>
+                </div>
+                <Input placeholder="Remarks" className="h-7 text-[10px]" value={data.workPlaceChecklist[key].remarks} onChange={(e) => handleUpdate('workPlaceChecklist', key, { ...data.workPlaceChecklist[key], remarks: e.target.value })} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* SECTION 7: Permit Closed Out */}
+      <div className="border-[3px] border-slate-900 rounded-sm mb-6">
+        <div className="bg-slate-900 text-white font-black text-sm p-2 uppercase">7 - PERMIT CLOSED OUT / إغلاق التصريح</div>
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-6">
+              <span className="text-[11px] font-black uppercase">Work Completed:</span>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={data.closure.completed} onCheckedChange={(v) => handleUpdate('closure', 'completed', v)} /> YES</label>
+                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={!data.closure.completed && data.closure.incomplete} onCheckedChange={(v) => handleUpdate('closure', 'incomplete', v)} /> NO</label>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <span className="text-[11px] font-black uppercase">Incomplete / Stopped:</span>
+              <Input placeholder="Why?" className="flex-1" value={data.closure.remarks} onChange={(e) => handleUpdate('closure', 'remarks', e.target.value)} />
+            </div>
+            <div className="flex items-center gap-6">
+              <span className="text-[11px] font-black uppercase">Housekeeping Done:</span>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', v)} /> YES</label>
+                <label className="flex items-center gap-1 text-[10px] font-bold"><Checkbox checked={!data.closure.housekeeping} onCheckedChange={(v) => handleUpdate('closure', 'housekeeping', !v)} /> NO</label>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="border border-slate-200 p-2 text-center h-24 flex flex-col justify-end italic text-[10px] text-slate-300">Shift Supervisor Sign / PN</div>
+            <div className="border border-slate-200 p-2 text-center h-24 flex flex-col justify-end italic text-[10px] text-slate-300">Authorized Foreman Sign / PN</div>
+          </div>
+        </div>
       </div>
     </BaseFormLayout>
   );
