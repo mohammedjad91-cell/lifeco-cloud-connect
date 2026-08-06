@@ -73,6 +73,7 @@ export default function ScaffoldingPermitForm({ formId, initialData, plantCode }
           <div className="p-4 grid grid-cols-2 gap-4">
             <Input placeholder="Location" value={data.general.location} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, location: e.target.value}}))} />
             <Input placeholder="Inspector Name" value={data.general.inspector} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, inspector: e.target.value}}))} />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4 border p-4">
           {Object.keys(data.requirements).map(k => (

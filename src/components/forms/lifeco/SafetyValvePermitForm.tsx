@@ -73,6 +73,7 @@ export default function SafetyValvePermitForm({ formId, initialData, plantCode }
           <div className="p-4 grid grid-cols-2 gap-4">
             <Input placeholder="Valve Tag #" value={data.general.valveTag} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, valveTag: e.target.value}}))} />
             <Input placeholder="Set Pressure (Bar)" value={data.general.setPressure} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, setPressure: e.target.value}}))} />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4 border border-yellow-300 p-4 bg-white/50">
           {Object.keys(data.checks).map(k => (
