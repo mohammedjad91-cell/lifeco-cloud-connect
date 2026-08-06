@@ -31,7 +31,7 @@ export const getFormHistory = createServerFn({ method: "GET" })
 export const saveForm = createServerFn({ method: "POST" })
   .inputValidator((data) => z.object({
     id: z.string().optional(),
-    form_type: z.enum(['work_permit', 'electrical_permit', 'work_request']),
+    form_type: z.enum(['work_permit', 'electrical_permit', 'work_request', 'scaffolding_permit', 'safety_valve_permit']),
     status: z.enum(['draft', 'submitted', 'under_review', 'approved', 'rejected', 'closed', 'cancelled']),
     department_key: z.string(),
     plant_code: z.string(),
