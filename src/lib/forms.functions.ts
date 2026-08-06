@@ -57,7 +57,14 @@ export const saveForm = createServerFn({ method: "POST" })
       return updated;
     } else {
       // Generate form number
-      const prefix = data.form_type === 'work_permit' ? 'WP' : data.form_type === 'electrical_permit' ? 'EP' : 'WR';
+      const prefixMap: Record<string, string> = {
+        'work_permit': 'WP',
+        'electrical_permit': 'EP',
+        'work_request': 'WR',
+        'scaffolding_permit': 'SP',
+        'safety_valve_permit': 'SV'
+      };
+      const prefix = prefixMap[data.form_type] || 'FRM';
       const year = new Date().getFullYear();
       const { count } = await supabase
         .from("lifeco_digital_forms")
