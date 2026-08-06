@@ -24,17 +24,15 @@ export const getRecords = createServerFn({ method: "GET" })
   });
 
 export const updateRecord = createServerFn({ method: "POST" })
-  .validator(
-    z.object({
-      id: z.string(),
-      updates: z.record(z.any()),
-      auditInfo: z.object({
-        action: z.string(),
-        changes: z.any()
-      })
+  .inputValidator((data: any) => z.object({
+    id: z.string(),
+    updates: z.record(z.any()),
+    auditInfo: z.object({
+      action: z.string(),
+      changes: z.any()
     })
-  )
-  .handler(async ({ data }: { data: any }) => {
+  }).parse(data))
+  .handler(async ({ data }) => {
     const sb = getSupabase();
     const { id, updates, auditInfo } = data;
     
@@ -59,12 +57,8 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .validator(
-    z.object({ 
-      recordId: z.string().optional() 
-    }).optional()
-  )
-  .handler(async ({ data }: { data: any }) => {
+  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data || {}))
+  .handler(async ({ data }) => {
     const sb = getSupabase();
     let query = sb
       .from("audit_logs")
