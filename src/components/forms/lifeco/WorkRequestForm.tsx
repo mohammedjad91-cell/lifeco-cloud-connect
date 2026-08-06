@@ -110,7 +110,19 @@ export default function WorkRequestForm({ formId, initialData, plantCode, onBack
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`Work_Request_${initialData?.form_number || 'New'}.pdf`);
+    const pdfBlob = pdf.output("blob");
+    const fileName = `Work_Request_${initialData?.form_number || 'New'}_${Date.now()}.pdf`;
+    
+    // Save to browser
+    pdf.save(fileName);
+
+    // Also upload to system storage
+    const { error: uploadError } = await supabase.storage
+      .from("field-ops-photos")
+      .upload(`permits/${fileName}`, pdfBlob);
+    
+    if (uploadError) console.error("Error uploading PDF:", uploadError);
+    else toast.success("تم حفظ النسخة في أرشيف النظام.");
   };
 
   return (
