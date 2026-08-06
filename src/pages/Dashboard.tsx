@@ -40,7 +40,7 @@ import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPrevi
 import { getOperator, getStamp } from "@/lib/session";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { LoadingState, EmptyState } from "@/components/ui/app-states";
-import PermitCenter from "@/components/PermitCenter";
+
 
 interface LogEntry {
   id: string;
@@ -536,9 +536,6 @@ const Dashboard = () => {
             <TabsTrigger value="ots" className="gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> {lang === "ar" ? "محاكي التدريب" : "OTS Simulator"}
             </TabsTrigger>
-            <TabsTrigger value="permits" className="gap-1.5">
-              <ClipboardCheck className="w-3.5 h-3.5" /> {lang === "ar" ? "التصاريح" : "Permits"}
-            </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
@@ -762,9 +759,6 @@ const Dashboard = () => {
             <PlantTrainingSimulator />
           </TabsContent>
 
-          <TabsContent value="permits" className="mt-4">
-            <PermitCenter plantCode={sessionStorage.getItem("lifeco_plant") || ""} departmentKey={department.id} />
-          </TabsContent>
 
           <TabsContent value="analytics" className="mt-4 space-y-4">
             <ShiftCharts />
