@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Zap, Shield, HelpCircle, History, ArrowRight } from "lucide-react";
+import { Plus, FileText, Zap, Shield, HelpCircle, History, ArrowRight, ClipboardList } from "lucide-react";
 import WorkPermitForm from "./forms/lifeco/WorkPermitForm";
 
 interface PermitCenterProps {
@@ -73,10 +73,16 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
         </div>
         
         {view === "list" && (
-          <Button onClick={handleCreateNew} className="gap-2 neon-border">
-            <Plus className="w-4 h-4" />
-            {lang === "ar" ? "إنشاء تصريح" : "Create Permit"}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => (window as any).location.href = (window as any).location.pathname.replace('/permits', '/form-history')} className="gap-2 border-white/20 text-white hover:bg-white/10">
+              <ClipboardList className="w-4 h-4" />
+              {lang === "ar" ? "سجل النماذج" : "Form History"}
+            </Button>
+            <Button onClick={handleCreateNew} className="gap-2 neon-border">
+              <Plus className="w-4 h-4" />
+              {lang === "ar" ? "إنشاء تصريح" : "Create Permit"}
+            </Button>
+          </div>
         )}
         
         {view !== "list" && (
