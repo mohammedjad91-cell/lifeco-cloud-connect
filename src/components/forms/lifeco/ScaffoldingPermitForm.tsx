@@ -10,7 +10,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { HardHat } from "lucide-react";
 
 export default function ScaffoldingPermitForm({ formId, initialData, plantCode }: { formId?: string, initialData?: any, plantCode?: string }) {
-  const [data, setData] = useState(initialData?.form_data || {
+  const [data, setData] = useState<any>(initialData?.form_data || {
     general: { permitNo: "", date: new Date().toISOString().split('T')[0], plant: plantCode || "", location: "", inspector: "" },
     requirements: { height: false, base: false, ties: false, guardrails: false, toeBoard: false, access: false },
     notes: ""
@@ -57,18 +57,18 @@ export default function ScaffoldingPermitForm({ formId, initialData, plantCode }
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-            <Input placeholder="Location" value={data.general.location} onChange={(e) => setData(d => ({...d, general: {...d.general, location: e.target.value}}))} />
-            <Input placeholder="Inspector Name" value={data.general.inspector} onChange={(e) => setData(d => ({...d, general: {...d.general, inspector: e.target.value}}))} />
+            <Input placeholder="Location" value={data.general.location} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, location: e.target.value}}))} />
+            <Input placeholder="Inspector Name" value={data.general.inspector} onChange={(e) => setData((d: any) => ({...d, general: {...d.general, inspector: e.target.value}}))} />
         </div>
         <div className="grid grid-cols-2 gap-4 border p-4">
           {Object.keys(data.requirements).map(k => (
              <div key={k} className="flex items-center gap-2">
-               <Checkbox checked={data.requirements[k]} onCheckedChange={(v) => setData(d => ({...d, requirements: {...d.requirements, [k]: !!v}}))} />
+               <Checkbox checked={data.requirements[k]} onCheckedChange={(v) => setData((d: any) => ({...d, requirements: {...d.requirements, [k]: !!v}}))} />
                <Label className="capitalize">{k.replace(/([A-Z])/g, ' $1')}</Label>
              </div>
           ))}
         </div>
-        <Textarea placeholder="Remarks / Notes" value={data.notes} onChange={(e) => setData(d => ({...d, notes: e.target.value}))} />
+        <Textarea placeholder="Remarks / Notes" value={data.notes} onChange={(e) => setData((d: any) => ({...d, notes: e.target.value}))} />
       </div>
     </BaseFormLayout>
   );
