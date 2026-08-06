@@ -72,11 +72,11 @@ const MaintenanceCommand = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
             {/* Sidebar / Stats / Teams */}
-            <div className="lg:col-span-1 space-y-4">
+            <div className="lg:col-span-1 space-y-4 sticky top-6">
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-                <h2 className="text-sm font-black text-white uppercase tracking-wider border-b border-white/10 pb-2">
+                <h2 className="text-sm font-black text-white uppercase tracking-wider border-b border-white/10 pb-2 truncate">
                   {lang === "ar" ? "تخطيط الصيانة" : "Maintenance Planning"}
                 </h2>
                 <div className="space-y-3">
