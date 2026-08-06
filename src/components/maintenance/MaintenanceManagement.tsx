@@ -38,7 +38,7 @@ const MaintenanceManagement = ({ plantCode }: { plantCode: string }) => {
       .order("created_at", { ascending: false });
     
     if (filter !== "all") {
-      query = query.eq("status", filter);
+      query = query.eq("status", filter as any);
     }
 
     const { data, error } = await query;
