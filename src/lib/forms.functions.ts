@@ -47,9 +47,11 @@ export const saveForm = createServerFn({ method: "POST" })
         .from("lifeco_digital_forms")
         .update({
           ...rest,
+          form_type: rest.form_type as any,
+          status: rest.status as any,
           updated_at: new Date().toISOString(),
           submitted_at: data.status === 'submitted' ? new Date().toISOString() : undefined
-        })
+        } as any)
         .eq("id", id)
         .select()
         .single();
