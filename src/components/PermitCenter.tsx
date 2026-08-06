@@ -117,7 +117,7 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
             <div className="glass-card p-12 text-center border-dashed border-2">
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
               <p className="text-muted-foreground">
-                {lang === "ar" ? "لا توجد تصاريح نشطة في هذا المصنع حالياً" : "No active permits in this plant currently"}
+                {lang === "ar" ? "لا توجد تصاريح نشطة في هذا المصنع حالياً. يمكنك مراجعة 'سجل النماذج' في صفحة الصيانة." : "No active permits in this plant currently. You can check 'Form History' in the Maintenance page."}
               </p>
             </div>
           </motion.div>
