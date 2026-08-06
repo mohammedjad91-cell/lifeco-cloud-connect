@@ -135,6 +135,14 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
             <span>General Information / معلومات عامة</span>
             <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 01</span>
           </div>
+          <div className="px-4 py-3 bg-slate-50/50 border-b border-slate-200">
+            <p className="text-[10px] text-slate-500 font-bold leading-relaxed mb-3">
+              Please provide complete and accurate information for the work permit application. Ensure all fields are filled to maintain safety standards and operational compliance.
+              <br />
+              يرجى تقديم معلومات كاملة ودقيقة لطلب تصريح العمل. تأكد من ملء جميع الحقول للحفاظ على معايير السلامة والامتثال التشغيلي.
+            </p>
+            <hr className="w-full border-t-2 border-slate-900/10" aria-hidden="true" />
+          </div>
           <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Plant / Area (المصنع)</Label>
