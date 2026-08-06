@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Plus, FileText, Zap, Shield, HelpCircle, History, ArrowRight, ClipboardList } from "lucide-react";
 import WorkPermitForm from "./forms/lifeco/WorkPermitForm";
+import ElectricalWorkPermitForm from "./forms/lifeco/ElectricalWorkPermitForm";
 
 interface PermitCenterProps {
   plantCode: string;
@@ -52,7 +53,7 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey, o
   };
 
   const handleSelectCategory = (typeId: string) => {
-    if (typeId === "work_permit") {
+    if (typeId === "work_permit" || typeId === "electrical_permit") {
       setSelectedType(typeId);
       setView("form");
     } else {
@@ -180,6 +181,9 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey, o
           >
             {selectedType === "work_permit" && (
               <WorkPermitForm plantCode={plantCode} />
+            )}
+            {selectedType === "electrical_permit" && (
+              <ElectricalWorkPermitForm plantCode={plantCode} />
             )}
           </motion.div>
         )}

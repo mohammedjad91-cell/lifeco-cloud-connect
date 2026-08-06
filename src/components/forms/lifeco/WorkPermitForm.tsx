@@ -9,6 +9,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
+import { Zap, ShieldCheck, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function WorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
@@ -101,6 +104,33 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
     });
   };
 
+  const exportToPDF = async () => {
+    const element = document.getElementById("work-permit-document");
+    if (!element) return;
+    
+    toast.info("جاري تجهيز نسخة PDF...");
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    const pdfBlob = pdf.output("blob");
+    const fileName = `Work_Permit_${initialData?.form_number || 'New'}_${Date.now()}.pdf`;
+    
+    // Save to browser
+    pdf.save(fileName);
+
+    // Also upload to system storage
+    const { error: uploadError } = await supabase.storage
+      .from("field-ops-photos") // Re-using an existing bucket or should I create a new one?
+      .upload(`permits/${fileName}`, pdfBlob);
+    
+    if (uploadError) console.error("Error uploading PDF:", uploadError);
+    else toast.success("تم حفظ النسخة في أرشيف النظام.");
+  };
+
   const onSave = async (status: 'submitted' | 'draft') => {
     try {
       await saveFormFn({ data: {
@@ -121,14 +151,15 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
       title="WORK PERMIT / تصريح عمل"
       formNumber={initialData?.form_number || "WP-2026-0000"}
       onSave={() => onSave('draft')}
-      onSubmit={() => {
-        onSave('submitted');
-        toast.info("تم إرسال التصريح إلى إدارة المصنع بنجاح لتعيين فريق الصيانة");
+      onSubmit={async () => {
+        await onSave('submitted');
+        await exportToPDF();
+        toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
       }}
       onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
-      {/* SECTION 1: General Info */}
+      <div id="work-permit-document" className="bg-white text-slate-900 flex flex-col">
       <div className="border-[3px] border-black rounded-sm mb-6">
         <div className="bg-black text-white font-black text-base p-2 uppercase">1 - General Information / معلومات عامة</div>
         <div className="p-4 grid grid-cols-2 gap-4 bg-white">
@@ -416,6 +447,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
           </div>
         </div>
       </div>
-    </BaseFormLayout>
-  );
+    </div>
+  </BaseFormLayout>
+);
 }

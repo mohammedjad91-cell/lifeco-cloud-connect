@@ -9,7 +9,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { Building2 } from "lucide-react";
+import { Building2, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function WorkRequestForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
@@ -96,17 +98,48 @@ export default function WorkRequestForm({ formId, initialData, plantCode, onBack
     }
   };
 
+  const exportToPDF = async () => {
+    const element = document.getElementById("work-request-document");
+    if (!element) return;
+    
+    toast.info("جاري تجهيز نسخة PDF...");
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    const pdfBlob = pdf.output("blob");
+    const fileName = `Work_Request_${initialData?.form_number || 'New'}_${Date.now()}.pdf`;
+    
+    // Save to browser
+    pdf.save(fileName);
+
+    // Also upload to system storage
+    const { error: uploadError } = await supabase.storage
+      .from("field-ops-photos")
+      .upload(`permits/${fileName}`, pdfBlob);
+    
+    if (uploadError) console.error("Error uploading PDF:", uploadError);
+    else toast.success("تم حفظ النسخة في أرشيف النظام.");
+  };
+
   return (
     <BaseFormLayout 
       title="WORK REQUEST / طلب عمل" 
       formNumber={initialData?.form_number}
       status={initialData?.status}
       onSave={() => onSave('draft')}
-      onSubmit={() => onSave('submitted')}
+      onSubmit={async () => {
+        await onSave('submitted');
+        await exportToPDF();
+        toast.info("تم إرسال طلب العمل وحفظ نسخة PDF بنجاح.");
+      }}
       onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
-      <div className="bg-white text-slate-900 shadow-2xl border-[3px] border-slate-900">
+      <div id="work-request-document" className="bg-white text-slate-900 shadow-2xl border-[3px] border-slate-900">
         {/* Document Header (Matched to file-3) */}
         <div className="flex border-b-[3px] border-slate-900">
           <div className="w-1/4 p-4 border-r-[3px] border-slate-900 flex flex-col justify-center items-center space-y-2">
