@@ -121,7 +121,10 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
       title="WORK PERMIT / تصريح عمل"
       formNumber={initialData?.form_number || "WP-2026-0000"}
       onSave={() => onSave('draft')}
-      onSubmit={() => onSave('submitted')}
+      onSubmit={() => {
+        onSave('submitted');
+        toast.info("تم إرسال التصريح إلى إدارة المصنع بنجاح لتعيين فريق الصيانة");
+      }}
       onBack={onBack}
       isSubmitted={initialData?.status === 'submitted'}
     >
