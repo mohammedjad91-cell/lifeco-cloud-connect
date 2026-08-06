@@ -1,11 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from '@supabase/supabase-js';
+
+function getSupabase() {
+  const SUPABASE_URL = process.env['SUPABASE_URL'] || process.env['VITE_SUPABASE_URL'] || '';
+  const SUPABASE_KEY = process.env['SUPABASE_PUBLISHABLE_KEY'] || process.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || '';
+  return createClient(SUPABASE_URL, SUPABASE_KEY);
+}
 
 export const getRecords = createServerFn({ method: "GET" })
   .handler(async () => {
-    // @ts-ignore - Dynamic table access before type generation
-    const { data, error } = await supabase
+    const sb = getSupabase();
+    const { data, error } = await sb
       .from("records")
       .select("*")
       .order("created_at", { ascending: false });
@@ -24,18 +30,17 @@ export const updateRecord = createServerFn({ method: "POST" })
     })
   }).parse(data))
   .handler(async ({ data }) => {
+    const sb = getSupabase();
     const { id, updates, auditInfo } = data;
     
-    // @ts-ignore
-    const { error: updateError } = await supabase
+    const { error: updateError } = await sb
       .from("records")
       .update(updates)
       .eq("id", id);
       
     if (updateError) throw new Error(updateError.message);
     
-    // @ts-ignore
-    const { error: auditError } = await supabase
+    const { error: auditError } = await sb
       .from("audit_logs")
       .insert({
         record_id: id,
@@ -51,14 +56,13 @@ export const updateRecord = createServerFn({ method: "POST" })
 export const getAuditLogs = createServerFn({ method: "GET" })
   .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data))
   .handler(async ({ data }) => {
-    // @ts-ignore
-    let query = supabase
+    const sb = getSupabase();
+    let query = sb
       .from("audit_logs")
       .select("*")
       .order("timestamp", { ascending: false });
     
     if (data.recordId) {
-      // @ts-ignore
       query = query.eq("record_id", data.recordId);
     }
     
