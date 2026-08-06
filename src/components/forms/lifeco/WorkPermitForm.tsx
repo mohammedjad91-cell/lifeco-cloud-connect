@@ -432,6 +432,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
           </div>
         </div>
       </div>
-    </BaseFormLayout>
+    </div>
+  </BaseFormLayout>
   );
 }
