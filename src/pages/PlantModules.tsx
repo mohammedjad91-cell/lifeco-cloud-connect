@@ -167,16 +167,19 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // Unified view for Operations, Logs, Records, and Maintenance
-    if (key === "ops-logs") {
-      // Default to logs tab but keep navigation bar hidden in Dashboard
-      sessionStorage.setItem("lifeco_dashboard_tab", "logs");
-      navigate("/dashboard");
-      return;
-    }
+    // Unified view for Operations, Logs, Records, Maintenance, Permits, etc.
+    const dashboardTabs: Record<string, string> = {
+      "ops-logs": "logs",
+      "lab-readings": "labReadings",
+      "permits": "permits",
+      "maintenance": "assets",
+      "safety": "report",
+      "reports": "analytics",
+      "history": "logs",
+    };
 
-    if (key === "permits") {
-      sessionStorage.setItem("lifeco_dashboard_tab", "permits");
+    if (dashboardTabs[key]) {
+      sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
       navigate("/dashboard");
       return;
     }
@@ -186,37 +189,22 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
-    // تقارير مشرف المعمل (إدارة المختبر فقط)
+    // Laboratory specific navigations
     if (key === "lab-reports") {
       navigate("/lab-reports");
       return;
     }
 
-
-    // معمل الأمونيا / معمل اليوريا — يفتح مباشرة على العينات والنتائج الخاصة بالإدارة
-const LAB_AMM_MODULES: PlantModule[] = [
-  { key: "lab-dept-ammonia", label: "Ammonia Samples & Results", labelAr: "عينات ونتائج الأمونيا" },
-];
-const LAB_UREA_MODULES: PlantModule[] = [
-  { key: "lab-dept-urea", label: "Urea Samples & Results", labelAr: "عينات ونتائج اليوريا" },
-];
-
-// معدات المختبر
     if (key === "lab-equipment") {
       navigate("/lab-equipment");
       return;
     }
 
-    // المخزن الكيميائي
     if (key === "chemical-store") {
       navigate("/chemical-store");
       return;
     }
 
-
-
-
-    // المعمل → شاشة المعمل مع القراءات
     if (key === "lab") {
       sessionStorage.setItem("lifeco_lab_tab", "samples");
       sessionStorage.removeItem("lifeco_lab_plant");
@@ -225,64 +213,17 @@ const LAB_UREA_MODULES: PlantModule[] = [
       return;
     }
 
-    // قراءات المعمل الخاصة بهذا المصنع
-    if (key === "lab-readings") {
-      sessionStorage.setItem("lifeco_lab_tab", "samples");
-      sessionStorage.setItem("lifeco_lab_plant", plantCode);
-      sessionStorage.removeItem("lifeco_lab_dept");
-      navigate("/lab");
-      return;
-    }
-
-
-
-
-
-    if (text.includes("sample") || text.includes("analysis") || text.includes("laboratory") || m.route?.startsWith("/lab")) {
-      sessionStorage.setItem("lifeco_lab_tab", text.includes("sample") || text.includes("analysis") ? "samples" : "classic");
-      navigate("/lab");
-      return;
-    }
-
-
     if (
       text.includes("document") || text.includes("manual") || text.includes("drawing") ||
       text.includes("archive") || text.includes("library") || text.includes("photo") ||
       text.includes("video") || text.includes("certificate") || text.includes("datasheet") ||
       text.includes("procedure") || text.includes("standard") || text.includes("msds") ||
-      key === "sop" || key === "pfd" || key === "pid" || key === "pdf"
+      key === "sop" || key === "pfd" || key === "pid" || key === "pdf" || key === "documents"
     ) {
-      sessionStorage.setItem("lifeco_library_category", key);
+      sessionStorage.setItem("lifeco_library_category", key === "documents" ? "manuals" : key);
       navigate("/digital-library");
       return;
     }
-
-    if (text.includes("report") || text.includes("analytics") || key === "bi") {
-      navigate("/bi");
-      return;
-    }
-
-    if (departmentKey === "SAFETY" || key.startsWith("hse")) {
-      navigate("/hse-center");
-      return;
-    }
-
-    // مركز الصيانة يُفتح فقط للوحدات الخاصة بسجل المعدات/بطاقات المعدات/أوامر العمل
-    if (
-      key === "maintenance" || key === "cmms" || text.includes("passport") ||
-      text.includes("work order") || text.includes("أوامر العمل") ||
-      (text.includes("maintenance") && (text.includes("asset") || text.includes("equipment") || text.includes("command")))
-    ) {
-      navigate("/mnt-command");
-      return;
-    }
-
-    if (text.includes("equipment register") || key === "equipment" || key === "assets") {
-      sessionStorage.setItem("lifeco_dashboard_tab", "assets");
-      navigate("/dashboard");
-      return;
-    }
-
 
     if (m.route) {
       navigate(m.route.split("#")[0]);
@@ -291,6 +232,7 @@ const LAB_UREA_MODULES: PlantModule[] = [
 
     navigate(`/module/${plantCode}/${encodeURIComponent(m.key)}`);
   };
+
 
 
 
