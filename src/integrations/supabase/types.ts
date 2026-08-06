@@ -70,41 +70,6 @@ export type Database = {
           },
         ]
       }
-      audit_logs: {
-        Row: {
-          action: string
-          changes: Json
-          id: string
-          record_id: string
-          timestamp: string
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          changes: Json
-          id?: string
-          record_id: string
-          timestamp?: string
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          changes?: Json
-          id?: string
-          record_id?: string
-          timestamp?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "audit_logs_record_id_fkey"
-            columns: ["record_id"]
-            isOneToOne: false
-            referencedRelation: "records"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       department_pins: {
         Row: {
           id: string
@@ -1123,45 +1088,6 @@ export type Database = {
         }
         Relationships: []
       }
-      records: {
-        Row: {
-          category: string
-          created_at: string
-          created_by: string | null
-          description: string | null
-          id: string
-          metadata: Json | null
-          priority: Database["public"]["Enums"]["record_priority"]
-          status: Database["public"]["Enums"]["record_status"]
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          id?: string
-          metadata?: Json | null
-          priority?: Database["public"]["Enums"]["record_priority"]
-          status?: Database["public"]["Enums"]["record_status"]
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
-          id?: string
-          metadata?: Json | null
-          priority?: Database["public"]["Enums"]["record_priority"]
-          status?: Database["public"]["Enums"]["record_status"]
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       safety_incidents: {
         Row: {
           assigned_to: string | null
@@ -1453,8 +1379,6 @@ export type Database = {
         | "in_progress"
         | "done"
         | "rejected"
-      record_priority: "low" | "medium" | "high" | "critical"
-      record_status: "active" | "pending" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1610,8 +1534,6 @@ export const Constants = {
         "done",
         "rejected",
       ],
-      record_priority: ["low", "medium", "high", "critical"],
-      record_status: ["active", "pending", "archived"],
     },
   },
 } as const
