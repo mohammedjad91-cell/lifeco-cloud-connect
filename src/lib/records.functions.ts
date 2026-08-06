@@ -61,6 +61,7 @@ export const getAuditLogs = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const sb = getSupabase();
     const typedData = data as { recordId?: string };
+    let query = sb
       .from("audit_logs")
       .select("*")
       .order("timestamp", { ascending: false });
