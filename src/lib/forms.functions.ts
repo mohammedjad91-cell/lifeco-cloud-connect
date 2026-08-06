@@ -71,7 +71,7 @@ export const saveForm = createServerFn({ method: "POST" })
       const { count } = await supabase
         .from("lifeco_digital_forms")
         .select('*', { count: 'exact', head: true })
-        .eq("form_type", data.form_type);
+        .eq("form_type", data.form_type as any);
       
       const formNumber = `${prefix}-${year}-${((count || 0) + 1).toString().padStart(4, '0')}`;
 
@@ -79,8 +79,10 @@ export const saveForm = createServerFn({ method: "POST" })
         .from("lifeco_digital_forms")
         .insert({
           ...rest,
+          form_type: rest.form_type as any,
+          status: rest.status as any,
           form_number: formNumber,
-        })
+        } as any)
         .select()
         .single();
       if (error) throw error;
