@@ -54,7 +54,7 @@ export const updateRecord = createServerFn({ method: "POST" })
   });
 
 export const getAuditLogs = createServerFn({ method: "GET" })
-  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data))
+  .inputValidator((data: any) => z.object({ recordId: z.string().optional() }).parse(data || {}))
   .handler(async ({ data }) => {
     const sb = getSupabase();
     let query = sb
