@@ -167,19 +167,27 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // Work Permits and Requests (Inside Plant Modules)
-    if (key === "permits") {
-      navigate(`/module/${plantCode}/permits`);
-      return;
-    }
+    // Direct Navigation for specific Plant Modules
+    const plantWorkspaces: Record<string, string> = {
+      "permits": "permits",
+      "maintenance": "maintenance",
+      "history": "form-history",
+      "documents": "digital-library",
+      "general-info": "overview"
+    };
 
-    if (key === "maintenance") {
-      navigate(`/module/${plantCode}/work-request`);
-      return;
-    }
-
-    if (key === "history") {
-      navigate(`/module/${plantCode}/form-history`);
+    if (plantWorkspaces[key]) {
+      // Some specialized routes exist outside ModuleWorkspace
+      if (key === "documents") {
+        navigate(`/dept/${deptKey}/library`);
+        return;
+      }
+      if (key === "general-info") {
+        navigate("/overview");
+        return;
+      }
+      
+      navigate(`/module/${plantCode}/${plantWorkspaces[key]}`);
       return;
     }
 
@@ -196,6 +204,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       navigate("/dashboard");
       return;
     }
+
 
 
     if (key === "maintenance") {

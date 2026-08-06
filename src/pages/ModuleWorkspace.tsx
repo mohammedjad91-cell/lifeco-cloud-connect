@@ -39,7 +39,6 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
     );
   }
 
-  // Dedicated View for Maintenance (Asset Register & Work Requests)
   if (moduleKey === 'maintenance') {
     return (
       <div className="min-h-screen bg-[#050b18] p-4 md:p-8">
@@ -77,6 +76,7 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
       </div>
     );
   }
+
 
   // Form-Specific Views
   if (moduleKey === 'work-permit') {
