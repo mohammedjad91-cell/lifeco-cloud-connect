@@ -65,7 +65,17 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
       q9: { y: false, n: false, na: false, remarks: "" },
       q10: { y: false, n: false, na: false, remarks: "" }
     },
-    closure: { completed: false, incomplete: false, stopped: false, housekeeping: false, remarks: "" }
+    closure: { 
+      completed: false, 
+      incomplete: false, 
+      stopped: false, 
+      housekeeping: false, 
+      remarks: "",
+      supervisorName: "",
+      supervisorPN: "",
+      foremanName: "",
+      foremanPN: ""
+    }
   });
 
   const [equipmentList, setEquipmentList] = useState<any[]>([]);
@@ -292,9 +302,15 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
           </table>
           <div className="mt-4 p-4 border-2 border-slate-900 bg-slate-50 italic text-[11px] font-bold">
             "The equipment and/or location where the work has to be performed were inspected & safety precautions listed in this Work Permit have been fully implemented."
-            <div className="mt-2 flex justify-between items-center not-italic">
-              <span>Signature of Shift Supervisor: ________________</span>
-              <span>PN: ________</span>
+            <div className="mt-2 flex flex-wrap gap-4 items-center not-italic">
+              <span className="flex items-center gap-2">
+                Shift Supervisor: 
+                <Input className="w-40 h-7 text-[10px]" placeholder="Name" value={data.gasTesting.supervisorName || ""} onChange={(e) => handleUpdate('gasTesting', 'supervisorName', e.target.value)} />
+              </span>
+              <span className="flex items-center gap-2">
+                PN: 
+                <Input className="w-20 h-7 text-[10px]" placeholder="PN" value={data.gasTesting.supervisorPN || ""} onChange={(e) => handleUpdate('gasTesting', 'supervisorPN', e.target.value)} />
+              </span>
             </div>
           </div>
         </div>
@@ -357,8 +373,16 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="border border-slate-200 p-2 text-center h-24 flex flex-col justify-end italic text-[10px] text-slate-300">Shift Supervisor Sign / PN</div>
-            <div className="border border-slate-200 p-2 text-center h-24 flex flex-col justify-end italic text-[10px] text-slate-300">Authorized Foreman Sign / PN</div>
+            <div className="border-[2px] border-slate-900 p-2 flex flex-col justify-between">
+              <div className="text-[9px] font-black uppercase text-slate-500">Shift Supervisor</div>
+              <Input className="border-0 border-b border-slate-200 rounded-none h-6 text-[10px] p-0" placeholder="Name" value={data.closure.supervisorName} onChange={(e) => handleUpdate('closure', 'supervisorName', e.target.value)} />
+              <Input className="border-0 border-b border-slate-200 rounded-none h-6 text-[10px] p-0" placeholder="PN" value={data.closure.supervisorPN} onChange={(e) => handleUpdate('closure', 'supervisorPN', e.target.value)} />
+            </div>
+            <div className="border-[2px] border-slate-900 p-2 flex flex-col justify-between">
+              <div className="text-[9px] font-black uppercase text-slate-500">Authorized Foreman</div>
+              <Input className="border-0 border-b border-slate-200 rounded-none h-6 text-[10px] p-0" placeholder="Name" value={data.closure.foremanName} onChange={(e) => handleUpdate('closure', 'foremanName', e.target.value)} />
+              <Input className="border-0 border-b border-slate-200 rounded-none h-6 text-[10px] p-0" placeholder="PN" value={data.closure.foremanPN} onChange={(e) => handleUpdate('closure', 'foremanPN', e.target.value)} />
+            </div>
           </div>
         </div>
       </div>
