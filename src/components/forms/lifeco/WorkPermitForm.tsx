@@ -17,6 +17,7 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
       department: "HSE",
       plant: plantCode || "",
       equipment: "",
+      location: "",
       workDescription: "",
       workToBeDone: "",
       fromDate: "",
@@ -153,6 +154,10 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
               </Select>
             </div>
              <div className="space-y-2">
+              <Label>Location / Detail (المكان بالتفصيل)</Label>
+              <Input value={data.general.location} onChange={(e) => handleUpdate('general', 'location', e.target.value)} />
+            </div>
+             <div className="space-y-2">
               <Label>Work Description (وصف العمل)</Label>
               <Input value={data.general.workDescription} onChange={(e) => handleUpdate('general', 'workDescription', e.target.value)} />
             </div>
@@ -182,17 +187,26 @@ export default function WorkPermitForm({ formId, initialData, plantCode }: { for
               <span>Hazard Identification / تحديد المخاطر</span>
               <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">SECTION 02</span>
             </div>
-            <div className="p-4 grid grid-cols-2 gap-4">
-              {Object.keys(data.hazards).map(key => (
-                <div key={key} className="flex items-center space-x-3 group cursor-pointer">
+            <div className="p-4 grid grid-cols-2 gap-4 bg-[#f8fafc]">
+              {[
+                { key: 'hotWork', label: 'Hot Work / أعمال ساخنة', color: 'text-red-600' },
+                { key: 'electrical', label: 'Electrical / كهرباء', color: 'text-blue-600' },
+                { key: 'highPressure', label: 'High Pressure / ضغط عالي', color: 'text-orange-600' },
+                { key: 'confinedSpace', label: 'Confined Space / مكان مغلق', color: 'text-yellow-600' },
+                { key: 'radiation', label: 'Radiation / إشعاع', color: 'text-purple-600' },
+                { key: 'toxicGas', label: 'Toxic Gas / غاز سام', color: 'text-green-600' },
+                { key: 'droppedObjects', label: 'Dropped Objects / سقوط أشياء', color: 'text-slate-600' },
+                { key: 'flyingSparks', label: 'Flying Sparks / شرر متطاير', color: 'text-red-500' }
+              ].map(item => (
+                <div key={item.key} className="flex items-center space-x-3 group cursor-pointer border-b border-slate-100 pb-1">
                   <Checkbox 
-                    id={`hazard-${key}`} 
-                    checked={data.hazards[key]} 
-                    onCheckedChange={(v) => handleUpdate('hazards', key, !!v)}
+                    id={`hazard-${item.key}`} 
+                    checked={data.hazards[item.key]} 
+                    onCheckedChange={(v) => handleUpdate('hazards', item.key, !!v)}
                     className="w-5 h-5 border-2 border-slate-900 data-[state=checked]:bg-slate-900"
                   />
-                  <Label htmlFor={`hazard-${key}`} className="text-[10px] font-black uppercase leading-tight cursor-pointer group-hover:text-blue-600 transition-colors">
-                    {key.replace(/([A-Z])/g, ' $1')}
+                  <Label htmlFor={`hazard-${item.key}`} className={`text-[10px] font-black uppercase leading-tight cursor-pointer group-hover:opacity-70 transition-colors ${item.color}`}>
+                    {item.label}
                   </Label>
                 </div>
               ))}
