@@ -8,9 +8,10 @@ import WorkPermitForm from "./forms/lifeco/WorkPermitForm";
 interface PermitCenterProps {
   plantCode: string;
   departmentKey: string;
+  onViewHistory?: () => void;
 }
 
-const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey }) => {
+const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey, onViewHistory }) => {
   const { lang } = useI18n();
   const [view, setView] = useState<"list" | "categories" | "form">("list");
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -74,10 +75,12 @@ const PermitCenter: React.FC<PermitCenterProps> = ({ plantCode, departmentKey })
         
         {view === "list" && (
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => (window as any).location.href = (window as any).location.pathname.replace('/permits', '/form-history')} className="gap-2 border-white/20 text-white hover:bg-white/10">
-              <ClipboardList className="w-4 h-4" />
-              {lang === "ar" ? "سجل النماذج" : "Form History"}
-            </Button>
+            {onViewHistory && (
+              <Button variant="outline" onClick={onViewHistory} className="gap-2 border-white/20 text-white hover:bg-white/10">
+                <ClipboardList className="w-4 h-4" />
+                {lang === "ar" ? "سجل النماذج" : "Form History"}
+              </Button>
+            )}
             <Button onClick={handleCreateNew} className="gap-2 neon-border">
               <Plus className="w-4 h-4" />
               {lang === "ar" ? "إنشاء تصريح" : "Create Permit"}

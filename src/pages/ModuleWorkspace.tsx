@@ -32,7 +32,11 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Official Work Permits & Safety Certifications</p>
                </div>
             </div>
-            <PermitCenter plantCode={plantCode} departmentKey={sessionStorage.getItem("lifeco_dept") || "MAINTENANCE"} />
+            <PermitCenter 
+              plantCode={plantCode} 
+              departmentKey={sessionStorage.getItem("lifeco_dept") || "MAINTENANCE"} 
+              onViewHistory={() => navigate(`/module/${plantCode}/form-history`)}
+            />
           </div>
         </div>
       </div>
