@@ -1,8 +1,118 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type Lang = "ar";
+type Lang = "ar" | "en";
 
 const translations = {
+  en: {
+    // Login / Grid
+    lifecoDigital: "LIFECO PMS 2026",
+    opsLoggingSystem: "Plant Management System",
+    departmentAccess: "Department Access",
+    enterPin: "Enter PIN",
+    selectDepartment: "Select Department",
+    pinRequired: "Enter 4-digit PIN",
+
+    // Dashboard
+    department: "Department",
+    dateFilter: "Date Filter:",
+    locked: "Locked (Read-Only)",
+    finalizeAndLock: "Finalize & Lock (تم الإدراج)",
+    viewDailyHistory: "View Daily History (عرض السجل)",
+    newLogEntry: "New Log Entry",
+    employeeId: "Employee ID",
+    employeeIdPlaceholder: "Enter Employee ID...",
+    unitTag: "Unit / Tag",
+    selectUnit: "Select unit...",
+    value: "Value",
+    saveEntry: "Save Entry",
+    missingFields: "Please fill all required fields (Employee ID, Tag, Value).",
+    logs: "Logs",
+    analytics: "Analytics",
+    noLogs: "No logs for this date.",
+    exit: "Exit",
+    pdf: "PDF",
+    excel: "Excel",
+    save: "Save",
+    cancel: "Cancel",
+    deleted: "Deleted",
+    updated: "Updated",
+    saved: "Saved",
+    logEntrySaved: "Log entry recorded successfully",
+    errorSaving: "Failed to save log entry",
+    alreadyLocked: "Already locked or error",
+    dateLocked: "Date is now locked.",
+
+    // Lab
+    laboratory: "LABORATORY",
+    technicianName: "Technician Name",
+    technicianNamePlaceholder: "Enter technician name...",
+    selectPlant: "Select Plant",
+    sampleType: "Sample Type",
+    daily: "Daily",
+    weekly: "Weekly",
+    parameter: "Parameter",
+    labResults: "Lab Results",
+    noLabResults: "No lab results for this date.",
+    saveSample: "Save Sample",
+    labMissingFields: "Please fill all required fields.",
+    labSaved: "Lab result saved successfully",
+
+    // Admin
+    adminAccess: "Admin Access",
+    masterPin: "Master PIN",
+    authenticate: "Authenticate",
+    invalidPin: "Invalid Master PIN",
+    adminSettings: "ADMIN SETTINGS",
+    adminPortal: "Developer / Admin Portal",
+    emergencyUnlock: "Emergency Master Unlock",
+    overrideAllLocks: "Override all date locks temporarily",
+    lockedDates: "Locked Dates",
+    noLockedDates: "No dates are currently locked.",
+    unlock: "Unlock",
+    dateUnlocked: "Date unlocked",
+    departmentPins: "Department PINs",
+    changePins: "Change PINs",
+    pinUpdated: "PIN updated successfully",
+    pinUpdateError: "Failed to update PIN",
+    activityLogs: "Activity Logs",
+    noActivityLogs: "No activity logs yet.",
+    tagManagement: "Tag Management",
+    addTag: "Add Tag",
+    deleteTag: "Delete",
+    tagAdded: "Tag added",
+    tagDeleted: "Tag deleted",
+    selectDept: "Select Department",
+    newTagName: "New tag name...",
+
+    // Lab results on dashboard
+    labReadings: "Lab Readings",
+    noLabReadings: "No lab readings for your plant on this date.",
+
+    // Analytics
+    comparisonAnalytics: "Comparison Analytics",
+    selectDate1: "Date 1",
+    selectDate2: "Date 2",
+    compare: "Compare",
+    deptDistribution: "Department Distribution",
+    trendAnalysis: "Trend Analysis",
+    performanceRadar: "Performance Radar",
+
+    // Footer
+    footer: "Prepared by Eng. Mohammed Gadallah",
+
+    // Field Operations
+    fieldOpsEntry: "Field Operations Entry",
+    fieldOpsMissing: "Please fill Employee ID, Equipment and at least one reading.",
+    fieldOpsSaved: "Field operation reading saved.",
+    equipmentTag: "Equipment / Asset",
+    selectEquipment: "Select equipment...",
+    runningHours: "Running Hours",
+    dischargePressure: "Discharge Pressure",
+    temperature: "Temperature",
+    notes: "Notes",
+    notesPlaceholder: "Optional remarks...",
+    fieldOps: "Field Ops",
+  },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",
     opsLoggingSystem: "نظام إدارة المصنع",
@@ -10,7 +120,7 @@ const translations = {
     enterPin: "أدخل الرمز",
     selectDepartment: "اختر القسم",
     pinRequired: "أدخل رمز من 4 أرقام",
-    
+
     department: "القسم",
     dateFilter: "فلتر التاريخ:",
     locked: "مقفل (للقراءة فقط)",
@@ -39,7 +149,7 @@ const translations = {
     errorSaving: "فشل في حفظ الإدخال",
     alreadyLocked: "مقفل بالفعل أو حدث خطأ",
     dateLocked: "تم قفل التاريخ.",
-    
+
     laboratory: "المختبر",
     technicianName: "اسم الفني",
     technicianNamePlaceholder: "أدخل اسم الفني...",
@@ -53,7 +163,7 @@ const translations = {
     saveSample: "حفظ العينة",
     labMissingFields: "يرجى ملء جميع الحقول المطلوبة.",
     labSaved: "تم حفظ نتيجة المختبر بنجاح",
-    
+
     adminAccess: "دخول المسؤول",
     masterPin: "الرمز الرئيسي",
     authenticate: "تسجيل الدخول",
@@ -79,10 +189,10 @@ const translations = {
     tagDeleted: "تم حذف العنصر",
     selectDept: "اختر القسم",
     newTagName: "اسم العنصر الجديد...",
-    
+
     labReadings: "قراءات المختبر",
     noLabReadings: "لا توجد قراءات مختبر لمصنعك في هذا التاريخ.",
-    
+
     comparisonAnalytics: "تحليلات المقارنة",
     selectDate1: "التاريخ ١",
     selectDate2: "التاريخ ٢",
@@ -90,9 +200,9 @@ const translations = {
     deptDistribution: "توزيع الأقسام",
     trendAnalysis: "تحليل الاتجاه",
     performanceRadar: "رادار الأداء",
-    
+
     footer: "إعداد م. محمد جادالله",
-    
+
     fieldOpsEntry: "إدخال العمليات الميدانية",
     fieldOpsMissing: "يرجى ملء الرقم الوظيفي والمعدة وقراءة واحدة على الأقل.",
     fieldOpsSaved: "تم حفظ قراءة العمليات الميدانية.",
@@ -104,39 +214,47 @@ const translations = {
     notes: "ملاحظات",
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
-    
-    languageGoal: "Goal\n\n- Perform a complete visual and structural redesign of the application to deliver an executive-grade, modern, and highly cohesive user interface.\n\n\n\nDesign & Theme System\n\n- Implement a sophisticated, modern color palette using rich neutral backgrounds (e.g., deep slate or clean off-white), vibrant primary accents (e.g., indigo, violet, or electric blue), and distinct semantic colors for success, warning, and error states.\n\n- Establish unified CSS design tokens using Tailwind utilities for smooth background gradients, card elevations, glassmorphism backdrops, and consistent border radii (`rounded-xl` or `rounded-2xl`).\n\n- Refine typography with a modern sans-serif hierarchy (e.g., Inter or Plus Jakarta Sans), ensuring crisp readability, proportional tracking, and clear heading-to-body contrast.\n\n\n\nComponent Refinement\n\n- Redesign key interface components—including cards, tables, modal dialogs, navigation bars, and forms—with elevated surface styling, soft drop shadows (`shadow-sm` to `shadow-lg`), and clean border accents (`border-border/40`).\n\n- Modernize interactive controls (buttons, inputs, toggle switches, select dropdowns) with defined hover, active, dynamic focus-visible rings, and disabled states.\n\n- Integrate clean Lucide React iconography and pill-style status badges to enhance visual data hierarchy and readability.\n\n\n\nStates & Micro-Interactions\n\n- Incorporate subtle, performant transitions (`duration-200 ease-in-out`) on interactive elements, hover cards, and modal overlay entrances.\n\n- Implement polished skeletal loading shimmers during asynchronous data fetching, and create engaging empty states featuring iconography, helpful descriptions, and primary call-to-action buttons.\n\n- Display inline form validation and toast notification popups with clear color-coded iconography for immediate user feedback.\n\n\n\nUX & Responsiveness\n\n- Build a mobile-first responsive layout that seamlessly adapts from mobile screen sizes to ultra-wide desktop monitors using fluid CSS grids and flexbox containers.\n\n- Implement an intuitive mobile navigation system (e.g., sliding drawer or sticky bottom navigation bar) for seamless touch-screen usability.\n\n\n\nAccessibility & Standards\n\n- Maintain strict WCAG AA contrast ratios across all text elements, iconography, and semantic indicators in both dark and light modes.\n\n- Ensure full keyboard navigation accessibility with custom focus-visible outlines and appropriate ARIA roles across all interactive components.\n\n\n\nAcceptance Criteria\n\n- The application presents a modern, visually striking visual identity with a refined color hierarchy and cohesive component styling.\n\n- Layouts are fluid and fully responsive across all device breakpoints without horizontal overflow or alignment glitches.\n\n- Every interactive element provides clear, tactile feedback across default, hover, focus, loading, and disabled states.",
-  }
+  },
 } as const;
 
-type TranslationKeys = keyof typeof translations.ar;
+type TranslationKeys = keyof typeof translations.en;
 type Translations = Record<TranslationKeys, string>;
 
 interface I18nContextType {
   lang: Lang;
+  setLang: (lang: Lang) => void;
   t: Translations;
-  dir: "rtl";
+  dir: "ltr" | "rtl";
 }
 
 const I18nContext = createContext<I18nContextType>({
   lang: "ar",
-  t: translations.ar,
+  setLang: () => {},
+  t: translations.ar as unknown as Translations,
   dir: "rtl",
 });
 
 export const useI18n = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
-  const value: I18nContextType = {
-    lang: "ar",
-    t: translations.ar,
-    dir: "rtl",
-  };
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "ar";
+    return (localStorage.getItem("lifeco_lang") as Lang) || "ar";
+  });
 
   useEffect(() => {
-    document.documentElement.dir = "rtl";
-    document.documentElement.lang = "ar";
-  }, []);
+    if (typeof window === "undefined") return;
+    localStorage.setItem("lifeco_lang", lang);
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const value: I18nContextType = {
+    lang,
+    setLang,
+    t: translations[lang] as unknown as Translations,
+    dir: lang === "ar" ? "rtl" : "ltr",
+  };
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
