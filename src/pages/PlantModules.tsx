@@ -186,7 +186,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
     // Work Permits and Requests (Inside Plant Modules)
     if (key === "permits") {
-      navigate(`/module/${plantCode}/work-permit`);
+      navigate(`/module/${plantCode}/permits`);
       return;
     }
 
