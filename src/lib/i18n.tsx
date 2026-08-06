@@ -114,7 +114,7 @@ const translations = {
     fieldOps: "Field Ops",
 
     // Language
-    language: "Language",
+    language: "اين اجد التصريح الي رسلهن مهندس لي تابع ادارة الامونيا وين نلقهن في ادارة الصيانة وين عطيني الخطوات",
     managementFlow: "Factory -> Engineer -> Permits -> Electrical Permit -> Engineer fills permit -> Send -> System saves PDF -> Maintenance Management -> Incoming work requests -> Review request -> Determine work type -> Choose specialized team -> Assign Engineer/Supervisor/Technician -> Execute work -> Close work -> Record returns to Factory + Equipment + Permit",
   },
   ar: {
