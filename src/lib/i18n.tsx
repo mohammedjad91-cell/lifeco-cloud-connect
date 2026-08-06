@@ -219,7 +219,7 @@ const translations = {
     notesPlaceholder: "ملاحظات اختيارية...",
     fieldOps: "العمليات الميدانية",
 
-    language: "Load the security issues from the scan results and fix the selected issues.",
+    language: "Maintenance Planning\nنبي فيها \nCommand Center\nنبيها هنا فكني ط",
     managementFlow: "المصنع\n\n↓\n\nالمهندس\n\n↓\n\nالتصاريح\n\n↓\n\nتصريح عمل كهربائي\n\n↓\n\nالمهندس يعبي التصريح\n\n↓\n\nإرسال\n\n↓\n\nالنظام يحفظ التصريح PDF\n\n↓\n\nإدارة الصيانة\n\n↓\n\nطلبات العمل الواردة\n\n↓\n\nمراجعة الطلب\n\n↓\n\nتحديد نوع العمل\n\n↓\n\nاختيار الفريق المختص\n\n↓\n\nتعيين المهندس / المشرف / الفني\n\n↓\n\nتنفيذ العمل\n\n↓\n\nإغلاق العمل\n\n↓\n\nيرجع السجل للمصنع + المعدة + التصريح",
   },
 } as const;
