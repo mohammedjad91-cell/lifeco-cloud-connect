@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const getRecords = createServerFn({ method: "GET" })
   .handler(async () => {
-    const sb = getSupabase();
+    const sb = supabase;
     const { data, error } = await sb
       .from("records")
       .select("*")
