@@ -9,6 +9,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveForm } from "@/lib/forms.functions";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
+import { Zap, ShieldCheck, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function WorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
   const [data, setData] = useState(initialData?.form_data || {
