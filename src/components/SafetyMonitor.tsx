@@ -194,11 +194,15 @@ export default function SafetyMonitor() {
             <motion.div
               initial={{ y: -40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="glass-card border-2 border-destructive shadow-[0_0_40px_hsl(var(--destructive)/0.6)] px-6 py-4 flex items-center gap-4 max-w-3xl w-full"
+              className="glass-card border-2 border-destructive shadow-[0_0_40px_hsl(var(--destructive)/0.6)] px-6 py-4 flex items-center gap-4 max-w-3xl w-full cursor-pointer hover:bg-destructive/5 transition-colors"
+              onClick={() => window.location.href = "/thresholds"}
             >
               <AlertTriangle className="w-8 h-8 text-destructive animate-pulse shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="font-display text-destructive text-lg font-bold tracking-widest">⚠ خطر — تجاوز حد السلامة</div>
+                <div className="font-display text-destructive text-lg font-bold tracking-widest flex items-center gap-2">
+                   <span>⚠ خطر — تجاوز حد السلامة</span>
+                   <span className="text-[10px] bg-destructive text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">إدارة الحدود</span>
+                </div>
                 <div className="text-sm text-foreground mt-0.5 truncate">
                   <span className="font-semibold">{breach.tag}</span> · {breach.metric}:{" "}
                   <span className="text-destructive font-bold">{breach.value}</span> (الحد {breach.limit})
