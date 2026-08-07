@@ -102,6 +102,10 @@
 }
 
 @layer base {
+  html {
+    font-size: 18px;
+  }
+
   * {
     border-color: hsl(var(--border));
   }
@@ -112,6 +116,8 @@
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 1.125rem;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -123,22 +129,22 @@
     text-wrap: balance;
   }
 
-  h1 { font-size: 2.25rem; margin-bottom: 1.5rem; }
-  h2 { font-size: 1.875rem; margin-bottom: 1.25rem; }
-  h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-  h4 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+  h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 2rem; margin-bottom: 1.25rem; }
+  h3 { font-size: 1.75rem; margin-bottom: 1rem; }
+  h4 { font-size: 1.5rem; margin-bottom: 0.75rem; }
 
   p {
     color: hsl(var(--foreground) / 0.85);
     line-height: 1.6;
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 
   label {
     color: hsl(var(--foreground));
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 1rem;
     margin-bottom: 0.5rem;
     display: block;
     letter-spacing: 0.01em;
