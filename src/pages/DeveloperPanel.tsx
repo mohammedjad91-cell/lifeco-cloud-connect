@@ -38,6 +38,7 @@ const SECTIONS: { key: SectionKey; label: string; icon: any }[] = [
   { key: "settings",      label: "إعدادات النظام",        icon: Settings },
   { key: "ai",            label: "إعدادات الذكاء الاصطناعي",            icon: Bot },
   { key: "monitoring",    label: "مراقبة النظام",      icon: Activity },
+  { key: "thresholds",    label: "حدود التنبيهات",     icon: AlertCircle },
   { key: "audit",         label: "مركز التدقيق",           icon: ClipboardList },
   { key: "devtools",      label: "أدوات المطور",        icon: Terminal },
   { key: "about",         label: "حول النظام",           icon: Info },
