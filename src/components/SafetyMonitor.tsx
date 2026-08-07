@@ -69,64 +69,98 @@ function useAlarmChime() {
 export default function SafetyMonitor() {
   const [breach, setBreach] = useState<Breach | null>(null);
   const [muted, setMuted] = useState(false);
+  const [thresholds, setThresholds] = useState<any[]>([]);
   const { start, stop } = useAlarmChime();
 
-  const evaluate = (row: any) => {
+  const loadThresholds = async () => {
+    const { data } = await supabase.from("equipment_thresholds").select("*");
+    setThresholds(data || []);
+  };
+
+  const evaluate = (row: any, currentThresholds: any[]) => {
+    const tag = row.equipment_tag;
     const dp = Number(row?.discharge_pressure);
     const tmp = Number(row?.temperature);
-    if (!Number.isNaN(dp) && dp > PRESSURE_LIMIT) {
+
+    // Check dynamic thresholds first
+    const tagThresholds = currentThresholds.filter(t => t.equipment_tag === tag);
+    
+    // Discharge Pressure
+    const dpThresh = tagThresholds.find(t => t.metric_key === "discharge_pressure");
+    const dpMax = dpThresh?.max_value ?? PRESSURE_LIMIT;
+    if (!Number.isNaN(dp) && dp > dpMax) {
       return {
         id: row.id ?? String(Date.now()),
-        tag: row.equipment_tag ?? "—",
+        tag: tag ?? "—",
         metric: "ضغط التصريف",
         value: dp,
-        limit: PRESSURE_LIMIT,
+        limit: dpMax,
         ts: row.timestamp ?? new Date().toISOString(),
       } as Breach;
     }
-    if (!Number.isNaN(tmp) && tmp > TEMP_LIMIT) {
+
+    // Temperature
+    const tmpThresh = tagThresholds.find(t => t.metric_key === "temperature");
+    const tmpMax = tmpThresh?.max_value ?? TEMP_LIMIT;
+    if (!Number.isNaN(tmp) && tmp > tmpMax) {
       return {
         id: row.id ?? String(Date.now()),
-        tag: row.equipment_tag ?? "—",
+        tag: tag ?? "—",
         metric: "درجة الحرارة",
         value: tmp,
-        limit: TEMP_LIMIT,
+        limit: tmpMax,
         ts: row.timestamp ?? new Date().toISOString(),
       } as Breach;
     }
+
     return null;
   };
 
   useEffect(() => {
-    // Initial sweep: check the most recent rows in case something already breached
+    loadThresholds();
+
+    // Initial sweep
     (async () => {
+      const { data: currentThresholds } = await supabase.from("equipment_thresholds").select("*");
       const { data } = await supabase
         .from("field_ops_logs")
         .select("id,equipment_tag,discharge_pressure,temperature,timestamp")
         .order("timestamp", { ascending: false })
         .limit(25);
+      
       data?.forEach((row) => {
-        const b = evaluate(row);
+        const b = evaluate(row, currentThresholds || []);
         if (b) setBreach((prev) => prev ?? b);
       });
     })();
 
     const channel = supabase
-      .channel("safety_field_ops")
+      .channel("safety_updates")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "equipment_thresholds" },
+        () => loadThresholds()
+      )
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "field_ops_logs" },
         (payload) => {
-          const b = evaluate(payload.new);
-          if (b) setBreach(b);
+          setThresholds(current => {
+            const b = evaluate(payload.new, current);
+            if (b) setBreach(b);
+            return current;
+          });
         },
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "field_ops_logs" },
         (payload) => {
-          const b = evaluate(payload.new);
-          if (b) setBreach(b);
+          setThresholds(current => {
+            const b = evaluate(payload.new, current);
+            if (b) setBreach(b);
+            return current;
+          });
         },
       )
       .subscribe();
