@@ -18,7 +18,7 @@ import {
 type SectionKey =
   | "dashboard" | "org" | "equipment" | "library" | "users" | "roles"
   | "reports" | "notifications" | "builder" | "branding" | "language"
-  | "database" | "security" | "settings" | "ai" | "monitoring"
+  | "database" | "security" | "settings" | "ai" | "monitoring" | "thresholds"
   | "audit" | "devtools" | "about";
 
 const SECTIONS: { key: SectionKey; label: string; icon: any }[] = [
