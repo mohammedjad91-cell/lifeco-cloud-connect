@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { ThresholdsManager } from "@/components/thresholds/ThresholdsManager";
 import {
   ArrowLeft, LayoutDashboard, Building2, Wrench, FolderOpen, Users, ShieldCheck,
   FileText, Bell, BarChart3, Palette, Languages, Database, Lock, Settings,
@@ -16,18 +17,20 @@ import {
 } from "lucide-react";
 
 type SectionKey =
-  | "dashboard" | "org" | "equipment" | "library" | "users" | "roles"
+  | "dashboard" | "org" | "equipment" | "thresholds" | "library" | "users" | "roles"
   | "reports" | "notifications" | "builder" | "branding" | "language"
-  | "database" | "security" | "settings" | "ai" | "monitoring" | "thresholds"
+  | "database" | "security" | "settings" | "ai" | "monitoring"
   | "audit" | "devtools" | "about";
 
 const SECTIONS: { key: SectionKey; label: string; icon: any }[] = [
   { key: "dashboard",     label: "لوحة التحكم",              icon: LayoutDashboard },
   { key: "org",           label: "الهيكل التنظيمي",           icon: Building2 },
   { key: "equipment",     label: "المعدات",              icon: Wrench },
+  { key: "thresholds",    label: "حدود التنبيهات",     icon: AlertCircle },
   { key: "library",       label: "المكتبة الرقمية",        icon: FolderOpen },
   { key: "users",         label: "المستخدمون",                  icon: Users },
   { key: "roles",         label: "الأدوار والصلاحيات",    icon: ShieldCheck },
+
   { key: "reports",       label: "التقارير",                icon: FileText },
   { key: "notifications", label: "الإشعارات",          icon: Bell },
   { key: "builder",       label: "منشئ لوحات التحكم",      icon: BarChart3 },
