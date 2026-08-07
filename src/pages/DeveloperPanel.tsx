@@ -158,9 +158,10 @@ function SectionRenderer({ active }: { active: SectionKey }) {
       {active === "settings"      && <SystemSettingsSection />}
       {active === "database"      && <DatabaseSection />}
       {active === "monitoring"    && <MonitoringSection />}
+      {active === "thresholds"    && <ThresholdsSection />}
       {active === "about"         && <AboutSection />}
 
-      {!["dashboard","org","equipment","library","users","roles","branding","settings","database","monitoring","about"].includes(active) && (
+      {!["dashboard","org","equipment","library","users","roles","branding","settings","database","monitoring","thresholds","about"].includes(active) && (
         <PlaceholderSection sectionKey={active} />
       )}
     </motion.div>
