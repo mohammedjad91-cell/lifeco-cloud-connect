@@ -367,6 +367,39 @@ export type Database = {
           },
         ]
       }
+      equipment_thresholds: {
+        Row: {
+          created_at: string | null
+          equipment_tag: string
+          id: string
+          max_value: number | null
+          metric_key: string
+          min_value: number | null
+          severity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          equipment_tag: string
+          id?: string
+          max_value?: number | null
+          metric_key: string
+          min_value?: number | null
+          severity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          equipment_tag?: string
+          id?: string
+          max_value?: number | null
+          metric_key?: string
+          min_value?: number | null
+          severity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       execution_photos: {
         Row: {
           caption: string | null
