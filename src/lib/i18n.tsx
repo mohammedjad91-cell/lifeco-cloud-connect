@@ -98,7 +98,7 @@ const translations = {
     performanceRadar: "Performance Radar",
 
     // Footer
-    footer: "Prepared by Eng. Mohammed Gadallah",
+    footer: "Prepared by Eng. Mohamed Gadalla",
 
     // Field Operations
     fieldOpsEntry: "Field Operations Entry",
