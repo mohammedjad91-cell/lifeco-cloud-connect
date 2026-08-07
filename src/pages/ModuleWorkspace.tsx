@@ -7,11 +7,13 @@ import PermitCenter from '@/components/PermitCenter';
 import AssetRegister from '@/components/AssetRegister';
 import MaintenanceManagement from '@/components/maintenance/MaintenanceManagement';
 import { useNavigate } from "@/lib/router-compat";
-import { ArrowLeft, Wrench, ShieldCheck, History as HistoryIcon } from "lucide-react";
+import { ArrowLeft, Wrench, ShieldCheck, History as HistoryIcon, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 
 const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKey: string }) => {
   const navigate = useNavigate();
+  const { lang } = useI18n();
   
   const handleBackToPlant = () => {
     navigate(`/modules/${plantCode}`);
@@ -82,6 +84,9 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
                         <p className="text-xs text-muted-foreground mb-4">Official maintenance documentation for this plant.</p>
                         <Button className="w-full justify-start gap-2 mb-2" onClick={() => navigate(`/module/${plantCode}/work-request`)}>
                            <Wrench className="w-4 h-4" /> New Work Request
+                        </Button>
+                        <Button variant="outline" className="w-full justify-start gap-2 mb-2" onClick={() => navigate("/thresholds")}>
+                           <AlertCircle className="w-4 h-4" /> {lang === "ar" ? "حدود التنبيهات" : "Alert Thresholds"}
                         </Button>
                         <Button variant="outline" className="w-full justify-start gap-2" onClick={() => navigate(`/module/${plantCode}/form-history`)}>
                            <HistoryIcon className="w-4 h-4" /> View History

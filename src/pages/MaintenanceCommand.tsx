@@ -83,7 +83,7 @@ const MaintenanceCommand = () => {
                   {[
                     { label: lang === "ar" ? "ورشة الميكانيكا" : "Mechanical Workshop", icon: Hammer, status: lang === "ar" ? "فريق نشط" : "Active Team", onClick: () => {} },
                     { label: lang === "ar" ? "ورشة الكهرباء" : "Electrical Workshop", icon: ShieldCheck, status: lang === "ar" ? "فريق نشط" : "Active Team", onClick: () => {} },
-                    { label: lang === "ar" ? "حدود التنبيهات" : "Alert Thresholds", icon: AlertCircle, status: lang === "ar" ? "إدارة الحدود" : "Manage Limits", onClick: () => navigate("/developer") },
+                    { label: lang === "ar" ? "حدود التنبيهات" : "Alert Thresholds", icon: AlertCircle, status: lang === "ar" ? "إدارة الحدود" : "Manage Limits", onClick: () => navigate("/thresholds") },
                     { label: lang === "ar" ? "صيانة المعدات" : "Equipment Maintenance", icon: Cog, status: lang === "ar" ? "إدارة الأسطول" : "Fleet Management", onClick: () => navigate("/dashboard") },
                   ].map((team, i) => (
                     <button 
