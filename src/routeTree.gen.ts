@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UreaRouteImport } from './routes/urea'
+import { Route as ThresholdsRouteImport } from './routes/thresholds'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PresentationRouteImport } from './routes/presentation'
 import { Route as PlantRouteImport } from './routes/plant'
@@ -39,6 +40,11 @@ import { Route as ModulePlantCodeModuleKeyRouteImport } from './routes/module.$p
 const UreaRoute = UreaRouteImport.update({
   id: '/urea',
   path: '/urea',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThresholdsRoute = ThresholdsRouteImport.update({
+  id: '/thresholds',
+  path: '/thresholds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/plant': typeof PlantRoute
   '/presentation': typeof PresentationRoute
   '/reports': typeof ReportsRoute
+  '/thresholds': typeof ThresholdsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/plant': typeof PlantRoute
   '/presentation': typeof PresentationRoute
   '/reports': typeof ReportsRoute
+  '/thresholds': typeof ThresholdsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/plant': typeof PlantRoute
   '/presentation': typeof PresentationRoute
   '/reports': typeof ReportsRoute
+  '/thresholds': typeof ThresholdsRoute
   '/urea': typeof UreaRoute
   '/dept/$deptId': typeof DeptDeptIdRoute
   '/lab-reports/ammonia': typeof LabReportsAmmoniaRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/plant'
     | '/presentation'
     | '/reports'
+    | '/thresholds'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/plant'
     | '/presentation'
     | '/reports'
+    | '/thresholds'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/plant'
     | '/presentation'
     | '/reports'
+    | '/thresholds'
     | '/urea'
     | '/dept/$deptId'
     | '/lab-reports/ammonia'
@@ -360,6 +372,7 @@ export interface RootRouteChildren {
   PlantRoute: typeof PlantRoute
   PresentationRoute: typeof PresentationRoute
   ReportsRoute: typeof ReportsRoute
+  ThresholdsRoute: typeof ThresholdsRoute
   UreaRoute: typeof UreaRoute
   DeptDeptIdRoute: typeof DeptDeptIdRoute
   LabReportsAmmoniaRoute: typeof LabReportsAmmoniaRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/urea'
       fullPath: '/urea'
       preLoaderRoute: typeof UreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thresholds': {
+      id: '/thresholds'
+      path: '/thresholds'
+      fullPath: '/thresholds'
+      preLoaderRoute: typeof ThresholdsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlantRoute: PlantRoute,
   PresentationRoute: PresentationRoute,
   ReportsRoute: ReportsRoute,
+  ThresholdsRoute: ThresholdsRoute,
   UreaRoute: UreaRoute,
   DeptDeptIdRoute: DeptDeptIdRoute,
   LabReportsAmmoniaRoute: LabReportsAmmoniaRoute,
@@ -587,13 +608,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
