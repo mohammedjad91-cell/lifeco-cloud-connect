@@ -32,7 +32,7 @@ export const LAB_RANGES: Record<string, Range> = {
 
 export const FIELD_OPS_RANGES = {
   running_hours: { min: 0, max: 24000 } as Range,
-  discharge_pressure: { min: 0, max: 150, unit: "bar" } as Range,
+  discharge_pressure: { min: 0, max: 60, unit: "bar" } as Range,
   temperature: { min: 5, max: 95, unit: "°C" } as Range,
 };
 

@@ -13,7 +13,7 @@ interface Breach {
   ts: string;
 }
 
-const PRESSURE_LIMIT = 150.0;
+const PRESSURE_LIMIT = 10.0;
 const TEMP_LIMIT = 210;
 
 // Tiny WebAudio chime — avoids needing external mp3
