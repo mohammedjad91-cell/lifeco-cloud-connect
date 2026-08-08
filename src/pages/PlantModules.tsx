@@ -11,9 +11,11 @@ import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History as HistoryIcon, FileSpreadsheet, Layers,
-  Files, ShieldCheck, ClipboardCheck,
+  Files, ShieldCheck, ClipboardCheck, Info,
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
+import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
+
 
 
 interface Plant {
@@ -301,41 +303,54 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       </motion.div>
 
       <div className="flex-1 px-4 pb-10 relative z-10">
-        <div className="max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {modules.map((m, i) => (
-              <motion.button
-                key={m.key}
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => openModule(m)}
-                className="glass-card p-6 text-left hover:neon-border transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
-                    {ICONS[m.key] || <FileText className="w-7 h-7" />}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-foreground font-bold text-lg leading-tight">
-                      {lang === "ar" ? m.labelAr || m.label : m.label}
-                    </div>
-                    <div className="text-muted-foreground text-xs mt-1" dir={lang === "ar" ? "ltr" : "rtl"}>
-                      {lang === "ar" ? m.label : m.labelAr}
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-          {modules.length === 0 && (
-            <div className="glass-card p-6 text-center text-muted-foreground">
-              {lang === "ar"
-                ? "لا توجد خانات متاحة لهذا المصنع"
-                : "No modules available for this plant"}
-            </div>
+        <div className="max-w-5xl mx-auto space-y-8">
+          {plantCode === "N2-1" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-8"
+            >
+              <PlantProcessOverview lang={lang as any} />
+            </motion.div>
           )}
+
+          <div className="max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {modules.map((m, i) => (
+                <motion.button
+                  key={m.key}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => openModule(m)}
+                  className="glass-card p-6 text-left hover:neon-border transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
+                      {ICONS[m.key] || <FileText className="w-7 h-7" />}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-foreground font-bold text-lg leading-tight">
+                        {lang === "ar" ? m.labelAr || m.label : m.label}
+                      </div>
+                      <div className="text-muted-foreground text-xs mt-1" dir={lang === "ar" ? "ltr" : "rtl"}>
+                        {lang === "ar" ? m.label : m.labelAr}
+                      </div>
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+            {modules.length === 0 && (
+              <div className="glass-card p-6 text-center text-muted-foreground">
+                {lang === "ar"
+                  ? "لا توجد خانات متاحة لهذا المصنع"
+                  : "No modules available for this plant"}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
 
     </div>
   );
