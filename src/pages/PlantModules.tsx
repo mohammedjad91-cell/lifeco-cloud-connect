@@ -14,6 +14,8 @@ import {
   Files, ShieldCheck, ClipboardCheck, Info,
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
+import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
+
 
 
 interface Plant {
@@ -301,7 +303,19 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       </motion.div>
 
       <div className="flex-1 px-4 pb-10 relative z-10">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto space-y-8">
+          {plantCode === "N2-1" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-8"
+            >
+              <PlantProcessOverview lang={lang as any} />
+            </motion.div>
+          )}
+
+          <div className="max-w-3xl mx-auto">
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {modules.map((m, i) => (
               <motion.button
