@@ -334,6 +334,110 @@ export type Database = {
           },
         ]
       }
+      equipment_identity_cards: {
+        Row: {
+          alarm: string | null
+          asset_id: string | null
+          attachments: Json | null
+          capacity: string | null
+          created_at: string | null
+          description: string | null
+          design_limits: string | null
+          discharge_pressure: string | null
+          downstream: string | null
+          equipment_name: string | null
+          equipment_tag: string | null
+          equipment_type: string | null
+          id: string
+          interlock: string | null
+          loading_unloading_status: string | null
+          m1_temperature: string | null
+          m2_temperature: string | null
+          maintenance_notes: string | null
+          manufacturer: string | null
+          model: string | null
+          normal_operating_range: string | null
+          operating_status: string | null
+          running_hours: string | null
+          safety_notes: string | null
+          service: string | null
+          suction_pressure: string | null
+          trip: string | null
+          updated_at: string | null
+          upstream: string | null
+        }
+        Insert: {
+          alarm?: string | null
+          asset_id?: string | null
+          attachments?: Json | null
+          capacity?: string | null
+          created_at?: string | null
+          description?: string | null
+          design_limits?: string | null
+          discharge_pressure?: string | null
+          downstream?: string | null
+          equipment_name?: string | null
+          equipment_tag?: string | null
+          equipment_type?: string | null
+          id?: string
+          interlock?: string | null
+          loading_unloading_status?: string | null
+          m1_temperature?: string | null
+          m2_temperature?: string | null
+          maintenance_notes?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          normal_operating_range?: string | null
+          operating_status?: string | null
+          running_hours?: string | null
+          safety_notes?: string | null
+          service?: string | null
+          suction_pressure?: string | null
+          trip?: string | null
+          updated_at?: string | null
+          upstream?: string | null
+        }
+        Update: {
+          alarm?: string | null
+          asset_id?: string | null
+          attachments?: Json | null
+          capacity?: string | null
+          created_at?: string | null
+          description?: string | null
+          design_limits?: string | null
+          discharge_pressure?: string | null
+          downstream?: string | null
+          equipment_name?: string | null
+          equipment_tag?: string | null
+          equipment_type?: string | null
+          id?: string
+          interlock?: string | null
+          loading_unloading_status?: string | null
+          m1_temperature?: string | null
+          m2_temperature?: string | null
+          maintenance_notes?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          normal_operating_range?: string | null
+          operating_status?: string | null
+          running_hours?: string | null
+          safety_notes?: string | null
+          service?: string | null
+          suction_pressure?: string | null
+          trip?: string | null
+          updated_at?: string | null
+          upstream?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_identity_cards_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_spares: {
         Row: {
           equipment_id: string
