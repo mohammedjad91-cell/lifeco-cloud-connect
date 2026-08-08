@@ -343,6 +343,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           design_limits: string | null
+          detailed_running_data: Json | null
           discharge_pressure: string | null
           downstream: string | null
           equipment_name: string | null
@@ -357,7 +358,9 @@ export type Database = {
           manufacturer: string | null
           model: string | null
           normal_operating_range: string | null
+          operating_control: Json | null
           operating_status: string | null
+          protection_matrix: Json | null
           running_hours: string | null
           safety_notes: string | null
           service: string | null
@@ -374,6 +377,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           design_limits?: string | null
+          detailed_running_data?: Json | null
           discharge_pressure?: string | null
           downstream?: string | null
           equipment_name?: string | null
@@ -388,7 +392,9 @@ export type Database = {
           manufacturer?: string | null
           model?: string | null
           normal_operating_range?: string | null
+          operating_control?: Json | null
           operating_status?: string | null
+          protection_matrix?: Json | null
           running_hours?: string | null
           safety_notes?: string | null
           service?: string | null
@@ -405,6 +411,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           design_limits?: string | null
+          detailed_running_data?: Json | null
           discharge_pressure?: string | null
           downstream?: string | null
           equipment_name?: string | null
@@ -419,7 +426,9 @@ export type Database = {
           manufacturer?: string | null
           model?: string | null
           normal_operating_range?: string | null
+          operating_control?: Json | null
           operating_status?: string | null
+          protection_matrix?: Json | null
           running_hours?: string | null
           safety_notes?: string | null
           service?: string | null
