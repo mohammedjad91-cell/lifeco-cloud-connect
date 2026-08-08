@@ -315,41 +315,42 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
           )}
 
           <div className="max-w-3xl mx-auto">
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {modules.map((m, i) => (
-              <motion.button
-                key={m.key}
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => openModule(m)}
-                className="glass-card p-6 text-left hover:neon-border transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
-                    {ICONS[m.key] || <FileText className="w-7 h-7" />}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-foreground font-bold text-lg leading-tight">
-                      {lang === "ar" ? m.labelAr || m.label : m.label}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {modules.map((m, i) => (
+                <motion.button
+                  key={m.key}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => openModule(m)}
+                  className="glass-card p-6 text-left hover:neon-border transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary/20">
+                      {ICONS[m.key] || <FileText className="w-7 h-7" />}
                     </div>
-                    <div className="text-muted-foreground text-xs mt-1" dir={lang === "ar" ? "ltr" : "rtl"}>
-                      {lang === "ar" ? m.label : m.labelAr}
+                    <div className="min-w-0">
+                      <div className="text-foreground font-bold text-lg leading-tight">
+                        {lang === "ar" ? m.labelAr || m.label : m.label}
+                      </div>
+                      <div className="text-muted-foreground text-xs mt-1" dir={lang === "ar" ? "ltr" : "rtl"}>
+                        {lang === "ar" ? m.label : m.labelAr}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-          {modules.length === 0 && (
-            <div className="glass-card p-6 text-center text-muted-foreground">
-              {lang === "ar"
-                ? "لا توجد خانات متاحة لهذا المصنع"
-                : "No modules available for this plant"}
+                </motion.button>
+              ))}
             </div>
-          )}
+            {modules.length === 0 && (
+              <div className="glass-card p-6 text-center text-muted-foreground">
+                {lang === "ar"
+                  ? "لا توجد خانات متاحة لهذا المصنع"
+                  : "No modules available for this plant"}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
 
     </div>
   );
