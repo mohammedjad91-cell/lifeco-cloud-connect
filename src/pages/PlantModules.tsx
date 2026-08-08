@@ -11,7 +11,7 @@ import {
   ArrowLeft, LayoutDashboard, FileText, Wrench, Factory, FlaskConical,
   Image as ImageIcon, Video, BookOpen, ClipboardList, Package, Droplets,
   Activity, Gauge, Cog, FileBarChart, History as HistoryIcon, FileSpreadsheet, Layers,
-  Files, ShieldCheck, ClipboardCheck,
+  Files, ShieldCheck, ClipboardCheck, Info,
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 
