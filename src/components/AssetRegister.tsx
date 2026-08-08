@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/form/FormField";
+import { Badge } from "@/components/ui/badge";
 
-import { Plus, Wrench, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Plus, Wrench, ChevronDown, ChevronUp, Loader2, Info, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
 import { getAmmoniaSpec } from "@/lib/ammonia-equipment";
 import { TechSpecPanel, SparesRequisition } from "@/components/maintenance/EquipmentTechCard";
+import { EquipmentIdentityCard } from "@/components/maintenance/EquipmentIdentityCard";
 
 interface Asset {
   id: string;
@@ -19,7 +21,9 @@ interface Asset {
   asset_code: string;
   asset_name: string;
   is_custom: boolean;
+  status?: string;
 }
+
 
 interface Maintenance {
   id: string;
@@ -43,6 +47,9 @@ export default function AssetRegister({ department }: Props) {
   const [newCode, setNewCode] = useState("");
   const [newName, setNewName] = useState("");
   const [noteDraft, setNoteDraft] = useState<Record<string, string>>({});
+  const [identityCards, setIdentityCards] = useState<Record<string, any>>({});
+  const [loadingCard, setLoadingCard] = useState<string | null>(null);
+
 
   const fetchAssets = async () => {
     const { data } = await supabase
@@ -68,10 +75,30 @@ export default function AssetRegister({ department }: Props) {
     fetchAssets();
   }, [department]);
 
-  const toggle = (id: string) => {
-    setExpanded((prev) => (prev === id ? null : id));
-    if (!records[id]) fetchRecords(id);
+  const toggle = async (id: string, tag: string) => {
+    const isExpanding = expanded !== id;
+    setExpanded(isExpanding ? id : null);
+    
+    if (isExpanding) {
+      if (!records[id]) fetchRecords(id);
+      
+      // Fetch identity card if not loaded
+      if (!identityCards[id]) {
+        setLoadingCard(id);
+        const { data } = await supabase
+          .from("equipment_identity_cards")
+          .select("*")
+          .eq("equipment_tag", tag)
+          .maybeSingle();
+        
+        if (data) {
+          setIdentityCards(prev => ({ ...prev, [id]: data }));
+        }
+        setLoadingCard(null);
+      }
+    }
   };
+
 
   const addAsset = async () => {
     if (!newCode.trim() || !newName.trim()) return;
@@ -169,9 +196,10 @@ export default function AssetRegister({ department }: Props) {
         {assets.map((a) => (
           <div key={a.id} className="glass-card p-3">
             <button
-              onClick={() => toggle(a.id)}
+              onClick={() => toggle(a.id, a.asset_code)}
               className="w-full flex items-center justify-between text-left"
             >
+
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-primary text-sm">{a.asset_code}</span>
@@ -181,19 +209,47 @@ export default function AssetRegister({ department }: Props) {
                       مخصص
                     </span>
                   )}
+                  {a.status === 'Pending Verification' && (
+                    <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-500 flex gap-1 items-center">
+                      <ShieldAlert className="w-3 h-3" />
+                      Pending Verification
+                    </Badge>
+                  )}
                 </div>
               </div>
               {expanded === a.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
 
+
             {expanded === a.id && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="mt-3 space-y-3 overflow-hidden"
+                className="mt-3 space-y-4 overflow-hidden"
               >
+                {/* Identity Card Section */}
+                {loadingCard === a.id ? (
+                  <div className="flex items-center justify-center py-8 text-white/40 text-xs">
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading Identity Data...
+                  </div>
+                ) : identityCards[a.id] ? (
+                  <EquipmentIdentityCard 
+                    matrix={identityCards[a.id].protection_matrix}
+                    control={identityCards[a.id].operating_control}
+                    running={identityCards[a.id].detailed_running_data}
+                    ar={sessionStorage.getItem("lifeco_lang") === "ar"}
+                  />
+                ) : (
+                  <div className="p-3 rounded-lg bg-white/5 border border-white/5 text-[10px] text-white/40 italic">
+                    No technical identity card found for this tag.
+                  </div>
+                )}
+
+                <div className="h-px bg-white/10 my-2" />
+
                 {(() => {
                   const spec = getAmmoniaSpec(a.asset_code, a.asset_code);
+
                   if (!spec) return null;
                   return (
                     <div className="space-y-3">
