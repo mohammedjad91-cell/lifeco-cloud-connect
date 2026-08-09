@@ -18,6 +18,7 @@ import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverv
 import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
 import { N2PlantPage } from "@/components/maintenance/N2PlantPage";
 import { EquipmentDetailView } from "@/components/maintenance/EquipmentDetailView";
+import { N2EquipmentRegister } from "@/components/maintenance/N2EquipmentRegister";
 
 
 
@@ -123,6 +124,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const [plant, setPlant] = useState<Plant | null>(null);
   const [bg, setBg] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showEquipmentRegister, setShowEquipmentRegister] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -207,6 +209,12 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     };
 
     if (dashboardTabs[key]) {
+      if (key === "ops-logs" && plantCode === "N2-1") {
+        // Intercept N2-1 Operations & Records to allow equipment selection
+        sessionStorage.setItem("lifeco_dashboard_tab", "logs");
+        navigate("/dashboard");
+        return;
+      }
       sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
       navigate("/dashboard");
       return;
@@ -316,8 +324,19 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
                 <NitrogenGenerationProcess lang={lang as any} onSelectEquipment={setSelectedTag} />
               </div>
               
-              <AnimatePresence>
-                {selectedTag && (
+          <AnimatePresence>
+            {showEquipmentRegister && plantCode === "N2-1" && (
+              <N2EquipmentRegister 
+                plantCode={plantCode} 
+                lang={lang as any} 
+                onSelectEquipment={(tag) => {
+                  setSelectedTag(tag);
+                  // Optionally keep register open or close it
+                }}
+                onClose={() => setShowEquipmentRegister(false)}
+              />
+            )}
+            {selectedTag && (
                   <EquipmentDetailView 
                     tag={selectedTag} 
                     plantCode={plantCode} 
@@ -366,9 +385,5 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
         </div>
       </div>
 
-
-    </div>
-  );
-};
 
 export default PlantModules;
