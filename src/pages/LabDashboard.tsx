@@ -694,8 +694,6 @@ const LabDashboard = () => {
           </>
         ) : activeTab === "samples" ? (
           <>
-
-
             {/* Dynamic Sample Entry */}
             {readOnly ? (
               <div className="glass-card p-4 text-sm text-muted-foreground">
