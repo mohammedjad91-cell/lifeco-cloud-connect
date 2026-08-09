@@ -40,6 +40,11 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   let currentY = 55;
 
   const addSectionHeader = (title: string) => {
+    // If we're too close to the bottom, start a new page
+    if (currentY > 260) {
+      doc.addPage();
+      currentY = 20;
+    }
     doc.setFillColor(60, 60, 60);
     doc.rect(15, currentY, 180, 8, "F");
     doc.setTextColor(255, 255, 255);
@@ -49,7 +54,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
     currentY += 12;
   };
 
-  const addTable = (head: string[][], body: string[][]) => {
+  const addTable = (head: string[][], body: string[][], options = {}) => {
     (doc as any).autoTable({
       head,
       body,
@@ -58,45 +63,47 @@ export async function generateEquipmentPDF(data: any, tag: string) {
       theme: "grid",
       styles: { fontSize: 8, cellPadding: 2.5, lineColor: [180, 180, 180] },
       headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: "bold" },
-      didDrawPage: (data: any) => {
-         currentY = data.cursor.y + 10;
+      ...options,
+      didDrawPage: (d: any) => {
+         currentY = d.cursor.y + 10;
       }
     });
   };
 
-  // --- 1. EQUIPMENT IDENTITY ---
-  addSectionHeader("1. EQUIPMENT IDENTITY");
+  // --- SECTION 1: EQUIPMENT IDENTITY ---
+  addSectionHeader("SECTION 1 — EQUIPMENT IDENTITY");
   addTable([], [
     ["Tag", tag, "Name", data.equipment_name || asset.asset_name || "N/A"],
-    ["Type", data.equipment_type || "N/A", "Manufacturer", data.manufacturer || "N/A"],
-    ["Model", data.model || "N/A", "Serial Number", "Pending Verification"],
-    ["Service", data.service || "N/A", "Plant / Area", `N2-1 / ${asset.location || "NITROGEN GENERATION"}`]
+    ["Type", data.equipment_type || "N/A", "Plant", "N2-1"],
+    ["Area", asset.location || "NITROGEN GENERATION", "Service", data.service || "N/A"],
+    ["Manufacturer", data.manufacturer || "N/A", "Model", data.model || "N/A"],
+    ["Serial Number", "Pending Verification", "", ""]
   ]);
 
-  // --- 2. PROCESS / CONNECTIONS ---
-  addSectionHeader("2. PROCESS / CONNECTIONS");
+  // --- SECTION 2: PROCESS / CONNECTIONS ---
+  addSectionHeader("SECTION 2 — PROCESS / CONNECTIONS");
   addTable([], [
-    ["Upstream", data.upstream || "N/A", "Downstream", data.downstream || "N/A"],
-    ["Function", data.description || "N/A", "", ""]
+    ["Upstream", data.upstream || "N/A", "Function", data.description || "N/A"],
+    ["Downstream", data.downstream || "N/A", "", ""]
   ]);
 
-  // --- 3. OPERATING DATA ---
-  addSectionHeader("3. OPERATING DATA");
+  // --- SECTION 3: OPERATING DATA ---
+  addSectionHeader("SECTION 3 — OPERATING DATA");
   const opBody = tag.startsWith("60-1001") ? [
-    ["Outlet Pressure", control.discharge_pressure || "9.1", "bar(e)", "Verified"],
+    ["Operating Pressure", "9.1", "bar(e)", "Verified"],
     ["M1 Temperature", data.m1_temperature || "Pending Verification", "°C", "Pending"],
     ["M2 Temperature", data.m2_temperature || "Pending Verification", "°C", "Pending"],
     ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
     ["Loaded Hours", running.loaded_hours || "Pending Verification", "hrs", "Pending"]
   ] : [
     ["Operating Pressure", "Pending Verification", "bar(e)", "Pending"],
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"]
+    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
+    ["Loaded Hours", "Pending Verification", "hrs", "Pending"]
   ];
   addTable([["Parameter", "Value", "Unit", "Status"]], opBody);
 
-  // --- 4. PRESSURE PROTECTION ---
-  if (currentY > 220) { doc.addPage(); currentY = 20; }
-  addSectionHeader("4. PRESSURE PROTECTION");
+  // --- SECTION 4: PRESSURE PROTECTION ---
+  addSectionHeader("SECTION 4 — PRESSURE PROTECTION");
   const pressBody = [];
   if (tag.startsWith("60-1001")) {
     pressBody.push(["Outlet Pressure Warning", "14.0", "bar(e)", "Verified"]);
@@ -106,11 +113,12 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   } else {
     pressBody.push(["Outlet Pressure Warning", "Pending", "bar(e)", "Pending"]);
     pressBody.push(["Outlet Pressure Shutdown", "Pending", "bar(e)", "Pending"]);
+    pressBody.push(["Safety Valve Setpoint", "Pending", "bar(e)", "Pending"]);
   }
   addTable([["Parameter", "Value", "Unit", "Status"]], pressBody);
 
-  // --- 5. TEMPERATURE PROTECTION ---
-  addSectionHeader("5. TEMPERATURE PROTECTION");
+  // --- SECTION 5: TEMPERATURE PROTECTION ---
+  addSectionHeader("SECTION 5 — TEMPERATURE PROTECTION");
   const tempBody = [];
   if (tag.startsWith("60-1001")) {
     tempBody.push(["Element 1 Outlet Warning", "225", "°C", "Verified"]);
@@ -119,14 +127,15 @@ export async function generateEquipmentPDF(data: any, tag: string) {
     tempBody.push(["Element 2 Outlet Shutdown", "235", "°C", "Verified"]);
     tempBody.push(["Element 2 Inlet Warning", "65", "°C", "Verified"]);
     tempBody.push(["Element 2 Inlet Shutdown", "70", "°C", "Verified"]);
+    tempBody.push(["Oil Temperature Warning", "65", "°C", "Verified"]);
+    tempBody.push(["Oil Temperature Shutdown", "70", "°C", "Verified"]);
   } else {
     tempBody.push(["Operating Temperature", "Pending", "°C", "Pending"]);
   }
   addTable([["Parameter", "Value", "Unit", "Status"]], tempBody);
 
-  // --- 6. OIL PROTECTION ---
-  if (currentY > 220) { doc.addPage(); currentY = 20; }
-  addSectionHeader("6. OIL PROTECTION");
+  // --- SECTION 6: OIL PROTECTION ---
+  addSectionHeader("SECTION 6 — OIL PROTECTION");
   const oilBody = [];
   if (tag.startsWith("60-1001")) {
     oilBody.push(["Oil Pressure Warning", "1.3", "bar(e)", "Verified"]);
@@ -138,53 +147,64 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   }
   addTable([["Parameter", "Value", "Unit", "Status"]], oilBody);
 
-  // --- 7. MOTOR & STARTER ---
-  addSectionHeader("7. MOTOR & STARTER");
+  // --- SECTION 7: MOTOR & STARTER ---
+  addSectionHeader("SECTION 7 — MOTOR & STARTER");
   addTable([], [
-    ["Starter Type", "VSD / Electronic", "Motor Protection", "Pending Verification"],
+    ["Starter Type", "Pending Verification (YD / DOL)", "Motor Protection", "Pending Verification"],
     ["Start Delay", "Pending", "Signal Delay", "Pending"]
   ]);
 
-  // --- 8. OPERATING PROCEDURE ---
-  if (currentY > 220) { doc.addPage(); currentY = 20; }
-  addSectionHeader("8. OPERATING PROCEDURE");
+  // --- SECTION 8: OPERATING CONTROL ---
+  addSectionHeader("SECTION 8 — OPERATING CONTROL");
   addTable([], [
-    ["Start-up", "Refer to Manufacturer SOP Section 4.2"],
-    ["Normal Operation", "Auto-load regulation enabled"],
-    ["Normal Shutdown", "Sequence shutdown with 30s unload"],
-    ["Emergency Shutdown", "Immediate trip via E-Stop"]
+    ["Loading", "Auto-regulation enabled", "Unloading", "Sequence unload enabled"],
+    ["Start", "Manual/Remote enabled", "Stop", "Controlled sequence"],
+    ["Interlocks", "Pending Verification", "Alarms", "Active monitoring"],
+    ["Trips", "Verified Protection Matrix", "", ""]
   ]);
 
-  // --- 9. MAINTENANCE ---
-  addSectionHeader("9. MAINTENANCE");
+  // --- SECTION 9: RUNNING DATA ---
+  addSectionHeader("SECTION 9 — RUNNING DATA");
   addTable([], [
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "Loaded Hours", running.loaded_hours || "Pending"],
-    ["Inspection", "Weekly Visual Inspection Required", "Maintenance Notes", data.maintenance_notes || "Pending Verification"]
+    ["Running Hours", running.running_hours || asset.running_hours || "Pending Verification", "Loaded Hours", running.loaded_hours || "Pending Verification"],
+    ["Service Hours", "Pending Verification", "Start/Stop Cycles", "Pending Verification"]
   ]);
 
-  // --- 10. DOCUMENT CONTROL ---
-  addSectionHeader("10. DOCUMENT CONTROL");
+  // --- SECTION 10: MAINTENANCE ---
+  addSectionHeader("SECTION 10 — MAINTENANCE");
   addTable([], [
-    ["Source", "Internal Instruction Book", "Revision", "1.0"],
-    ["Generated Date", new Date().toLocaleDateString(), "Verification Status", "Engineering Checked"]
+    ["Inspection Date", "Pending Verification", "Maintenance Notes", data.maintenance_notes || "Pending Verification"],
+    ["Safety Notes", "Refer to MS-01 Safety Protocol", "Service History", "Pending Verification"]
+  ]);
+
+  // --- SECTION 11: DOCUMENT CONTROL ---
+  addSectionHeader("SECTION 11 — DOCUMENT CONTROL");
+  addTable([], [
+    ["Source", "Internal Instruction Book", "Instruction Book", "Verified"],
+    ["Datasheet", "Verified", "P&ID", "Verified"],
+    ["SOP", "Verified", "Revision", "1.1"],
+    ["Verification Status", "Engineering Checked", "Generated Date", new Date().toLocaleDateString()]
   ]);
 
   // --- QR CODE IN PDF ---
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://lifeco-pms.lovable.app';
   const qrUrl = `${baseUrl}/equipment/${tag}/pdf`;
   
-  if (currentY > 240) { doc.addPage(); currentY = 20; }
+  if (currentY > 230) { doc.addPage(); currentY = 20; }
   
   // Placeholder for QR in PDF
   doc.setDrawColor(200, 200, 200);
   doc.rect(85, currentY, 40, 40);
-  doc.setTextColor(150, 150, 150);
-  doc.setFontSize(7);
-  doc.text("SCAN FOR LATEST OFFICIAL", 105, currentY + 18, { align: "center" });
-  doc.text("ENGINEERING PDF", 105, currentY + 22, { align: "center" });
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.text("SCAN FOR LATEST", 105, currentY + 15, { align: "center" });
+  doc.text("EQUIPMENT PDF", 105, currentY + 20, { align: "center" });
   
-  // Actually render a QR placeholder text to be scanned if scanned from paper
+  // URL Text
   doc.setFontSize(6);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 100, 100);
   doc.text(qrUrl, 105, currentY + 45, { align: "center" });
 
   // --- FOOTER ---
