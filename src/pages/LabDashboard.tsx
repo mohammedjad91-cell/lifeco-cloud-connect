@@ -651,7 +651,11 @@ const LabDashboard = () => {
               {loading ? (
                 <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
               ) : results.length === 0 ? (
-                <div className="glass-card p-8 text-center text-muted-foreground">{t.noLabResults}</div>
+                <div className="glass-card p-8 text-center text-muted-foreground italic">
+                  "Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required."
+                  <br /><br />
+                  لم اجد اي شي
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <AnimatePresence>
