@@ -341,17 +341,17 @@ function SheetTable({
   };
 
   return (
-    <div className="border border-slate-200">
+    <div className="border-[1.5px] border-slate-900 overflow-hidden">
       <div className="bg-slate-900 px-3 py-1.5 flex items-center justify-between">
-        <h4 className="text-[10px] font-bold text-white uppercase tracking-widest">{title}</h4>
+        <h4 className="text-[10px] font-black text-white uppercase tracking-widest">{title}</h4>
       </div>
       <div className="overflow-x-auto">
         <Table className="border-collapse">
           <TableHeader>
-            <TableRow className="bg-slate-50 hover:bg-slate-50 border-b border-slate-200">
-              <TableHead className="w-[280px] text-slate-900 font-bold uppercase text-[9px] border-r border-slate-200">Parameter</TableHead>
+            <TableRow className="bg-slate-100 hover:bg-slate-100 border-b-[1.5px] border-slate-900">
+              <TableHead className="w-[280px] text-slate-900 font-black uppercase text-[10px] border-r-[1.5px] border-slate-900">Parameter</TableHead>
               {hours.map((h: string) => (
-                <TableHead key={h} className="text-center text-[9px] font-mono text-slate-500 border-r border-slate-200 min-w-[70px]">
+                <TableHead key={h} className="text-center text-[10px] font-mono font-black text-slate-900 border-r-[1.5px] border-slate-900 min-w-[70px]">
                   {h}:00
                 </TableHead>
               ))}
@@ -359,14 +359,14 @@ function SheetTable({
           </TableHeader>
           <TableBody>
             {instruments.map((ins: string, rIdx: number) => (
-              <TableRow key={ins} className="h-8 hover:bg-slate-50 border-b border-slate-100">
-                <TableCell className="py-1 px-3 font-mono text-[9px] text-slate-600 border-r border-slate-200">
+              <TableRow key={ins} className="h-8 hover:bg-slate-50 border-b-[1.5px] border-slate-400">
+                <TableCell className="py-1 px-3 font-mono font-bold text-[10px] text-slate-900 border-r-[1.5px] border-slate-900 bg-slate-50/50">
                   {ins}
                 </TableCell>
                 {hours.map((h: string, cIdx: number) => {
                   const tag = buildTag(sheetKey, ins, h);
                   return (
-                    <TableCell key={h} className="p-0 border-r border-slate-100">
+                    <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-400">
                       <Input
                         data-sheet={sheetKey}
                         data-row={rIdx}
@@ -375,9 +375,9 @@ function SheetTable({
                         onChange={(e) => onChange(tag, e.target.value)}
                         onBlur={() => cells[tag]?.trim() && onSaveCell(sheetKey, ins, h)}
                         onKeyDown={(e) => handleKeyDown(e, rIdx, cIdx)}
-                        placeholder="0.0"
+                        placeholder="—"
                         inputMode="decimal"
-                        className={`h-8 w-full text-center text-[10px] font-mono border-none rounded-none focus-visible:ring-1 focus-visible:ring-slate-300 ${saving === tag ? "bg-slate-50" : "bg-transparent"}`}
+                        className={`h-8 w-full text-center text-[11px] font-mono font-black border-none rounded-none focus-visible:ring-2 focus-visible:ring-blue-600 ${saving === tag ? "bg-blue-50" : "bg-transparent"} text-slate-900`}
                       />
                     </TableCell>
                   );
@@ -388,5 +388,6 @@ function SheetTable({
         </Table>
       </div>
     </div>
+
   );
 }

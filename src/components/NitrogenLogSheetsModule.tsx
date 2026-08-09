@@ -109,100 +109,105 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 bg-slate-100/95 overflow-y-auto print:bg-white"
+      className="fixed inset-0 z-50 bg-slate-100/98 overflow-y-auto print:bg-white"
     >
-      {/* FLOATING ACTION BAR */}
-      <div className="sticky top-0 z-[60] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
+      {/* FLOATING ACTION BAR - CRITICAL: PRESERVED & FULLY VISIBLE */}
+      <div className="sticky top-0 z-[100] bg-white border-b-2 border-slate-900 shadow-md p-4 print:hidden">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100">
-              <ChevronLeft className="w-6 h-6 text-slate-600" />
+            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100 border border-slate-200">
+              <ChevronLeft className="w-6 h-6 text-slate-900" />
             </Button>
             <div>
-              <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Nitrogen Plant Commissioning Log</h2>
-              <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{format(selectedDate, "dd MMM yyyy")} | 12-Hour Shift System</p>
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nitrogen Plant Operations Console</h2>
+              <p className="text-[10px] text-slate-600 font-mono font-bold uppercase tracking-widest">{format(selectedDate, "dd MMM yyyy")} | 12-Hour Shift System (Day/Night)</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" onClick={handleSave} className="bg-slate-900 hover:bg-slate-800 text-white border-none shadow-sm">
+          <div className="flex gap-3">
+            <Button size="sm" onClick={handleSave} className="bg-slate-900 hover:bg-black text-white border-none shadow-lg px-6 font-bold uppercase tracking-wider">
               <Save className="w-4 h-4 mr-2" /> Save Log
             </Button>
-            <Button size="sm" variant="outline" onClick={handleExportPDF} className="border-slate-300 text-slate-700">
-              <FileText className="w-4 h-4 mr-2" /> Download PDF
+            <Button size="sm" variant="outline" onClick={handleExportPDF} className="border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all">
+              <FileText className="w-4 h-4 mr-2" /> Export PDF
             </Button>
-            <Button size="sm" variant="outline" onClick={handlePrint} className="border-slate-300 text-slate-700">
-              <Printer className="w-4 h-4 mr-2" /> Print Sheet
+            <Button size="sm" variant="outline" onClick={handlePrint} className="border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all">
+              <Printer className="w-4 h-4 mr-2" /> Print
             </Button>
-            <Button size="sm" variant="outline" className="border-slate-300 text-slate-700">
-              <Share2 className="w-4 h-4 mr-2" /> Send via WhatsApp
+            <Button size="sm" variant="outline" className="border-2 border-slate-900 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all">
+              <Share2 className="w-4 h-4 mr-2" /> Send
             </Button>
           </div>
         </div>
       </div>
 
-      {/* PAPER LAYOUT */}
-      <div className="max-w-[1400px] mx-auto my-8 p-8 bg-white border border-slate-200 shadow-xl min-h-[1200px] print:m-0 print:p-0 print:border-none print:shadow-none">
-        <div className="space-y-12">
+      {/* COMPACT PAPER LAYOUT */}
+      <div className="max-w-[1400px] mx-auto my-6 p-10 bg-white border-[1.5px] border-slate-400 shadow-2xl min-h-[1400px] print:m-0 print:p-0 print:border-none print:shadow-none">
+        <div className="space-y-10">
           
           {/* HEADER SECTION */}
-          <div className="border-b-2 border-slate-900 pb-4 flex justify-between items-end">
+          <div className="border-b-[3px] border-slate-900 pb-6 flex justify-between items-end">
             <div>
-              <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">LIFECO PMS 2026</h1>
-              <p className="text-xs font-bold text-slate-600 uppercase">Ammonia Plants Dept. | Nitrogen Generation Section</p>
+              <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">LIFECO PMS 2026</h1>
+              <p className="text-sm font-black text-slate-800 uppercase mt-1">Ammonia Plants Dept. | Nitrogen Generation Section</p>
+              <div className="mt-2 flex gap-4 text-[10px] font-bold text-slate-600 uppercase">
+                <span>Unit: N2-1 PSA UNIT</span>
+                <span>Type: OFFICIAL LOG SHEET</span>
+              </div>
             </div>
-            <div className="text-right font-mono text-[10px] text-slate-500 uppercase">
-              Doc ID: N2-LOG-2026-REV1<br/>
-              Status: OFFICIAL COMMISSIONING RECORD
+            <div className="text-right font-mono text-[11px] text-slate-900 font-bold uppercase leading-tight">
+              DOC ID: N2-LOG-2026-REV1.2<br/>
+              DATE: {format(selectedDate, "yyyy-MM-dd")}<br/>
+              STATUS: <span className="text-blue-700">COMMISSIONING RECORD</span>
             </div>
           </div>
 
           {/* SHEET 1 */}
-          <section className="space-y-4">
-            <div className="bg-slate-100 p-2 border-l-4 border-slate-900">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">SHEET-1: Air Compressors (60-1001 A/B/C)</h3>
+          <section className="space-y-3">
+            <div className="bg-slate-900 py-1.5 px-3 border-l-[6px] border-blue-600">
+              <h3 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">SHEET-1: AIR COMPRESSORS (60-1001 A/B/C)</h3>
             </div>
             <CompressorTable cells={cells} setCells={setCells} hours={TWELVE_HOUR_TIMES} />
           </section>
 
           {/* SHEET 2 */}
-          <section className="space-y-4">
-            <div className="bg-slate-100 p-2 border-l-4 border-slate-900">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">SHEET-2: Nitrogen Plant & Utilities Matrix</h3>
+          <section className="space-y-3">
+            <div className="bg-slate-900 py-1.5 px-3 border-l-[6px] border-blue-600">
+              <h3 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">SHEET-2: NITROGEN PLANT & UTILITIES MATRIX</h3>
             </div>
             <UtilitiesTable cells={cells} setCells={setCells} hours={TWELVE_HOUR_TIMES} />
           </section>
 
           {/* SHEET 3 */}
-          <section className="space-y-4">
-            <div className="bg-slate-100 p-2 border-l-4 border-slate-900">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">SHEET-3: Hourly Operations Log</h3>
+          <section className="space-y-3">
+            <div className="bg-slate-900 py-1.5 px-3 border-l-[6px] border-blue-600">
+              <h3 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">SHEET-3: HOURLY OPERATIONS LOG (DCS PARAMETERS)</h3>
             </div>
             <HourlyOpsTable cells={cells} setCells={setCells} hours={TWELVE_HOUR_TIMES} />
           </section>
 
           {/* SIGNATURES SECTION */}
-          <div className="grid grid-cols-2 gap-8 mt-16 pt-8 border-t-2 border-slate-900">
+          <div className="grid grid-cols-2 gap-10 mt-12 pt-8 border-t-[3px] border-slate-900">
             {SHIFT_12H.map(shift => {
               const signed = !!signatures[`N2_SIGN_${shift.key.toUpperCase()}`];
               const sigData = signatures[`N2_SIGN_${shift.key.toUpperCase()}`];
               return (
-                <div key={shift.key} className="border border-slate-300 p-6 flex flex-col gap-4 bg-slate-50/50">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div key={shift.key} className="border-[1.5px] border-slate-900 p-6 flex flex-col gap-4 bg-slate-50">
+                  <div className="flex items-center justify-between border-b-[1.5px] border-slate-900 pb-2">
                     <span className="text-slate-900 font-black text-xs tracking-widest">{shift.label}</span>
-                    <span className="text-slate-500 text-[10px] font-mono">{shift.range}</span>
+                    <span className="text-slate-900 text-[10px] font-mono font-bold">{shift.range}</span>
                   </div>
-                  <div className="h-24 border border-dashed border-slate-300 rounded flex items-center justify-center relative group">
+                  <div className="h-28 border-[1.5px] border-dashed border-slate-400 rounded-sm flex items-center justify-center relative group bg-white">
                     {signed ? (
                       <div className="text-center">
-                        <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-1" />
-                        <span className="text-[10px] font-mono text-slate-600 uppercase">{sigData}</span>
+                        <CheckCircle2 className="w-10 h-10 text-slate-900 mx-auto mb-2" />
+                        <span className="text-[11px] font-mono text-slate-900 font-bold uppercase">{sigData}</span>
                       </div>
                     ) : (
-                      <span className="text-slate-300 text-[10px] uppercase font-mono tracking-tighter opacity-50">Authorized Signature Required</span>
+                      <span className="text-slate-400 text-[10px] uppercase font-mono font-bold tracking-tight opacity-40">AUTHORIZED SIGNATURE & STAMP REQUIRED</span>
                     )}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 print:hidden">
-                       <Button variant="outline" size="sm" onClick={() => signShift(shift.key)} className="text-[10px] border-slate-900 text-slate-900 font-bold uppercase">
-                          {signed ? "Resign" : "Sign Now"}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 print:hidden">
+                       <Button variant="outline" size="sm" onClick={() => signShift(shift.key)} className="text-[10px] border-2 border-slate-900 text-slate-900 font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white">
+                          {signed ? "OVERWRITE SIGNATURE" : "SIGN SHIFT NOW"}
                        </Button>
                     </div>
                   </div>
@@ -211,11 +216,12 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
             })}
           </div>
 
-          <div className="text-center text-[10px] text-slate-400 font-mono mt-8 uppercase tracking-[0.3em]">
-            LIFECO PMS 2026 | Engineering Document Control | Confidential
+          <div className="text-center text-[11px] text-slate-900 font-mono font-bold mt-10 uppercase tracking-[0.4em] opacity-30">
+            LIFECO PMS 2026 | DIGITAL LOGGING INFRASTRUCTURE | ENGINEERING CONTROL
           </div>
         </div>
       </div>
+
     </motion.div>
   );
 };
@@ -261,15 +267,15 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
   let rowCounter = 0;
 
   return (
-    <div className="border border-slate-300 overflow-hidden">
+    <div className="border-[1.5px] border-slate-900 overflow-hidden shadow-sm">
       <Table className="border-collapse">
         <TableHeader>
-          <TableRow className="bg-slate-900 hover:bg-slate-900 border-b border-slate-900 h-10">
-            <TableHead className="w-[300px] text-white font-bold uppercase text-[9px] tracking-widest border-r border-slate-700">
+          <TableRow className="bg-slate-900 hover:bg-slate-900 border-b-[1.5px] border-slate-900 h-10">
+            <TableHead className="w-[300px] text-white font-black uppercase text-[10px] tracking-widest border-r border-slate-700">
               Parameter / Tag ID
             </TableHead>
             {hours.map(h => (
-              <TableHead key={h} className="text-center text-white font-mono font-bold text-[10px] border-r border-slate-700 p-0 w-[80px]">
+              <TableHead key={h} className="text-center text-white font-mono font-black text-[11px] border-r border-slate-700 p-0 w-[80px]">
                 {h}:00
               </TableHead>
             ))}
@@ -278,22 +284,22 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         <TableBody>
           {groups.map((group, gIdx) => (
             <React.Fragment key={gIdx}>
-              <TableRow className="bg-slate-200/50 hover:bg-slate-200/50 h-8 border-b border-slate-300">
-                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-900 font-black uppercase text-[9px] tracking-widest border-r border-slate-300">
+              <TableRow className="bg-slate-200 hover:bg-slate-200 h-8 border-b-[1.5px] border-slate-900">
+                <TableCell colSpan={hours.length + 1} className="py-1 px-4 text-slate-900 font-black uppercase text-[10px] tracking-[0.15em] border-r border-slate-900">
                   {group.label}
                 </TableCell>
               </TableRow>
               {group.parameters.map((param, pIdx) => {
                 const currentRow = rowCounter++;
                 return (
-                  <TableRow key={pIdx} className="h-9 hover:bg-slate-50 transition-colors border-b border-slate-200">
-                    <TableCell className="py-1 px-3 font-mono text-[10px] text-slate-700 border-r border-slate-300">
+                  <TableRow key={pIdx} className="h-9 hover:bg-slate-50 transition-colors border-b-[1.5px] border-slate-900">
+                    <TableCell className="py-1 px-4 font-mono font-bold text-[11px] text-slate-900 border-r-[1.5px] border-slate-900 bg-slate-50/50">
                       {param}
                     </TableCell>
                     {hours.map((h, cIdx) => {
                       const tag = buildTag(group.label.includes("60-1001") ? `COMP-${group.label.split(":")[1].trim()}` : sheetKey, param, h);
                       return (
-                        <TableCell key={h} className="p-0 border-r border-slate-200">
+                        <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-900">
                           <Input
                             data-sheet={sheetKey}
                             data-row={currentRow}
@@ -301,8 +307,8 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                             value={cells[tag] || ""}
                             onChange={(e) => setCells(prev => ({ ...prev, [tag]: e.target.value }))}
                             onKeyDown={(e) => handleKeyDown(e, currentRow, cIdx, 1000, hours.length)}
-                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-mono text-[11px] text-slate-900 focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:bg-slate-50 placeholder:text-slate-200"
-                            placeholder="0.0"
+                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-mono font-black text-[12px] text-slate-900 focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:bg-blue-50/30 placeholder:text-slate-200"
+                            placeholder="—"
                             inputMode="decimal"
                           />
                         </TableCell>
@@ -316,6 +322,8 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         </TableBody>
       </Table>
     </div>
+
+
   );
 };
 
