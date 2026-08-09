@@ -254,35 +254,36 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <ProtectionSection 
-                  title="Pressure Protection" 
-                  icon={<Gauge className="w-3.5 h-3.5"/>} 
-                  data={matrix?.pressure} 
-                />
-                <ProtectionSection 
-                  title="Temperature Protection" 
-                  icon={<Thermometer className="w-3.5 h-3.5"/>} 
-                  data={matrix?.temperature} 
-                  type="temperature"
-                />
-              </div>
-              <div className="space-y-4">
-                <ProtectionSection 
-                  title="Oil Protection" 
-                  icon={<Droplets className="w-3.5 h-3.5"/>} 
-                  data={matrix?.oil} 
-                />
-                <ProtectionSection 
-                  title="Motor & Starter" 
-                  icon={<Zap className="w-3.5 h-3.5"/>} 
-                  data={matrix?.motor_starter} 
-                />
-                <ProtectionSection 
-                  title="Condensate Drain" 
-                  icon={<Droplets className="w-3.5 h-3.5"/>} 
-                  data={matrix?.electronic_drain} 
-                />
+                <div className="space-y-4">
+                  <ProtectionSection 
+                    title="Pressure Protection" 
+                    icon={<Gauge className="w-3.5 h-3.5"/>} 
+                    data={matrix?.pressure} 
+                  />
+                  <ProtectionSection 
+                    title="Temperature Protection" 
+                    icon={<Thermometer className="w-3.5 h-3.5"/>} 
+                    data={matrix?.temperature} 
+                    type="temperature"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <ProtectionSection 
+                    title="Oil Protection" 
+                    icon={<Droplets className="w-3.5 h-3.5"/>} 
+                    data={matrix?.oil} 
+                  />
+                  <ProtectionSection 
+                    title="Motor & Starter" 
+                    icon={<Zap className="w-3.5 h-3.5"/>} 
+                    data={matrix?.motor_starter} 
+                  />
+                  <ProtectionSection 
+                    title="Condensate Drain" 
+                    icon={<Droplets className="w-3.5 h-3.5"/>} 
+                    data={matrix?.electronic_drain} 
+                  />
+                </div>
               </div>
             </div>
           )}
