@@ -225,9 +225,9 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {tag.startsWith("60-1001") ? (
                       <>
-                        <DataField label="Element 1 Outlet Temperature" value="Pending Verification" />
-                        <DataField label="Element 2 Outlet Temperature" value="Pending Verification" />
-                        <DataField label="Element 2 Inlet Temperature" value="Pending Verification" />
+                        <DataField label="Element 1 Outlet Temperature" value={control.element_1_outlet_temp || "225 °C"} />
+                        <DataField label="Element 2 Outlet Temperature" value={control.element_2_outlet_temp || "225 °C"} />
+                        <DataField label="Element 2 Inlet Temperature" value={control.element_2_inlet_temp || "65 °C"} />
                         <DataField label="Oil Pressure" value={control.oil_pressure || "Pending Verification"} />
                         <DataField label="Oil Temperature" value={control.oil_temperature || "Pending Verification"} />
                         <DataField label="M1 Temperature" value={identity.m1_temperature || "Pending Verification"} />
