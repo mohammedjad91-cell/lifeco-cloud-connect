@@ -811,6 +811,29 @@ const Dashboard = () => {
       )}
 
       <SafetyMonitor />
+      
+      {showEquipmentRegister && (
+        <N2EquipmentRegister 
+          plantCode="N2-1" 
+          lang={lang} 
+          onSelectEquipment={(tag) => {
+            setSelectedEquipment(tag);
+            setShowEquipmentRegister(false);
+          }}
+          onClose={() => setShowEquipmentRegister(false)}
+        />
+      )}
+
+      {selectedEquipment && (
+        <EquipmentFaceplate
+          tag={selectedEquipment}
+          plantCode="N2-1"
+          lang={lang}
+          open={!!selectedEquipment}
+          onOpenChange={(open) => !open && setSelectedEquipment(null)}
+        />
+      )}
+
       <AIChatSidebar />
     </div>
   );
