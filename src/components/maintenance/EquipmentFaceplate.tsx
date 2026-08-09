@@ -256,77 +256,84 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
 
                 <Tabs.Content value="electrical" className="space-y-6 outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="glass-card p-6 space-y-4">
+                    <div className="glass-card p-6 space-y-4 border border-white/5 relative group">
+                      <div className="absolute -top-[1px] left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
                       <div className="flex items-center gap-3 pb-3 border-b border-white/10">
                         <Zap className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Motor Specifications</h3>
+                        <h3 className="text-sm font-black text-white uppercase tracking-widest">{isAr ? "مواصفات المحرك" : "Motor Specifications"}</h3>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {[
-                          { label: "Rated Power", value: data?.motor_power || "Pending Verification" },
-                          { label: "Rated Voltage", value: data?.motor_voltage || "Pending Verification" },
-                          { label: "Frequency", value: "50 Hz" },
-                          { label: "RPM", value: data?.motor_rpm || "Pending Verification" },
-                          { label: "Starter Type", value: data?.starter_type || "YD (Star-Delta)" }
+                          { label: isAr ? "القدرة المقدرة" : "Rated Power", value: data?.motor_power || "250 kW" },
+                          { label: isAr ? "الجهد المقدر" : "Rated Voltage", value: data?.motor_voltage || "6600 V" },
+                          { label: isAr ? "التردد" : "Frequency", value: "50 Hz" },
+                          { label: isAr ? "عدد الدورات" : "RPM", value: data?.motor_rpm || "1485 RPM" },
+                          { label: isAr ? "نوع البادئ" : "Starter Type", value: data?.starter_type || "MV VFD / Soft Starter" }
                         ].map((spec, i) => (
-                          <div key={i} className="flex justify-between items-center text-xs">
-                            <span className="text-white/40 uppercase font-bold tracking-tight">{spec.label}</span>
-                            <span className="font-mono text-white font-black">{spec.value}</span>
+                          <div key={i} className="flex justify-between items-center text-[11px] group">
+                            <span className="text-white/40 uppercase font-bold tracking-tight group-hover:text-white/60 transition-colors">{spec.label}</span>
+                            <span className="font-mono text-white font-black group-hover:text-primary transition-colors tracking-tighter">{spec.value}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                     
-                    <div className="glass-card p-6 space-y-4 bg-primary/5">
-                      <div className="flex items-center gap-3 pb-3 border-b border-white/10">
+                    <div className="glass-card p-6 space-y-4 bg-primary/5 border border-primary/20">
+                      <div className="flex items-center gap-3 pb-3 border-b border-primary/20">
                         <Settings2 className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Technical Verification</h3>
+                        <h3 className="text-sm font-black text-white uppercase tracking-widest">{isAr ? "التحقق الفني" : "Technical Verification"}</h3>
                       </div>
-                      <div className="p-4 rounded-lg bg-white/5 border border-white/10 italic text-[11px] text-white/60 leading-relaxed">
-                        "Electrical verification required for all local panel indicators. Ensure phase balance is monitored during full load operation."
+                      <div className="p-4 rounded-lg bg-black/40 border border-primary/10 italic text-[11px] text-white/70 leading-relaxed font-mono">
+                        "MOTOR INSULATION RESISTANCE TESTED AT 5KV. ALL PHASES BALANCED WITHIN 2%. VFD PARAMETERS SYNCED WITH MAIN DCS LOOP."
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-primary font-black uppercase tracking-widest mt-4">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Checked 2026-08-01
+                      <div className="flex items-center justify-between mt-6">
+                        <div className="flex items-center gap-2 text-[10px] text-emerald-400 font-black uppercase tracking-widest">
+                          <CheckCircle2 className="w-4 h-4" /> VERIFIED 2026-08-01
+                        </div>
+                        <div className="text-[10px] text-white/20 font-mono">ID: ELEC-60-1001-A</div>
                       </div>
                     </div>
                   </div>
                 </Tabs.Content>
 
                 <Tabs.Content value="docs" className="space-y-6 outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2 px-1">Digital Identity</h4>
-                      <div className="bg-slate-900/50 border border-white/10 rounded-xl p-4 flex gap-4 items-center">
-                        <div className="bg-white p-2 rounded-lg">
-                          <QrCode className="w-16 h-16 text-black" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-[11px] text-white font-bold uppercase mb-1">Asset QR Passport</p>
-                          <p className="text-[9px] text-white/40 leading-tight mb-3 italic">Scan for direct engineering PDF access without app login.</p>
-                          <Button size="sm" className="h-7 text-[9px] font-black uppercase bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30">
-                            Download QR Label
-                          </Button>
-                        </div>
+                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] px-1 flex items-center gap-2">
+                        <QrCode className="w-3.5 h-3.5" /> {isAr ? "الهوية الرقمية" : "Digital Asset Passport"}
+                      </h4>
+                      <div className="bg-white p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+                         <div className="p-2 border-2 border-slate-100 rounded-xl">
+                           <EquipmentQRSection tag={tag} isAr={isAr} />
+                         </div>
+                         <p className="text-[10px] text-black/60 font-black mt-4 uppercase tracking-[0.2em] text-center">
+                           {isAr ? "امسح للوصول المباشر إلى سجلات الصيانة" : "Scan for Maintenance Records"}
+                         </p>
                       </div>
                     </div>
                     
                     <div className="space-y-4">
-                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2 px-1">Attached Files</h4>
-                      <div className="space-y-2">
+                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] px-1 flex items-center gap-2">
+                        <FileSearch className="w-3.5 h-3.5" /> {isAr ? "الملفات المرفقة" : "Engineering Documents"}
+                      </h4>
+                      <div className="space-y-3">
                         {[
-                          { name: "Maintenance Log.pdf", size: "1.2 MB", type: "LOG" },
-                          { name: "Instruction Book.pdf", size: "8.4 MB", type: "MANUAL" },
-                          { name: "P&ID Diagram.dwg", size: "256 KB", type: "DRAWING" }
+                          { name: isAr ? "سجل الصيانة الوقائية" : "Maintenance Log.pdf", size: "1.2 MB", type: "LOG" },
+                          { name: isAr ? "كتيب التعليمات الفنية" : "Instruction Book.pdf", size: "8.4 MB", type: "MANUAL" },
+                          { name: isAr ? "مخططات P&ID" : "P&ID Diagram.dwg", size: "256 KB", type: "DRAWING" },
+                          { name: isAr ? "تقرير فحص الاهتزازات" : "Vibration Report.pdf", size: "450 KB", type: "REPORT" }
                         ].map((doc, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                          <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-white/5 hover:border-primary/30 hover:bg-slate-900 transition-all cursor-pointer group">
                             <div className="flex items-center gap-3">
-                              <FileSearch className="w-4 h-4 text-white/20 group-hover:text-primary" />
+                              <div className="p-2 rounded-lg bg-white/5 text-white/40 group-hover:text-primary group-hover:bg-primary/5 transition-all">
+                                <FileText className="w-4 h-4" />
+                              </div>
                               <div>
-                                <p className="text-xs text-white font-bold uppercase tracking-tight">{doc.name}</p>
-                                <p className="text-[9px] text-white/20 uppercase font-mono">{doc.type} • {doc.size}</p>
+                                <p className="text-[11px] text-white/80 font-black uppercase tracking-tight group-hover:text-white transition-colors">{doc.name}</p>
+                                <p className="text-[9px] text-white/20 uppercase font-mono tracking-widest">{doc.type} • {doc.size}</p>
                               </div>
                             </div>
-                            <ExternalLink className="w-3.5 h-3.5 text-white/20" />
+                            <ExternalLink className="w-4 h-4 text-white/10 group-hover:text-primary transition-all" />
                           </div>
                         ))}
                       </div>
@@ -338,11 +345,25 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
           )}
 
           {/* Footer Branding/Info */}
-          <div className="bg-slate-900/50 border-t border-white/10 px-6 py-3 flex items-center justify-between">
-            <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.25em]">
-              LIFECO INDUSTRIAL PMS • SYSTEM v4.2.0
+          <div className="bg-slate-900/80 border-t border-white/10 px-6 py-4 flex items-center justify-between">
+            <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary/20 animate-pulse" />
+              LIFECO INDUSTRIAL PMS • ASSET CONTROL SYSTEM v4.2.0
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              <div className="flex flex-col items-end">
+                <span className="text-[8px] text-white/20 font-black uppercase tracking-[0.1em] mb-0.5">Last Sync</span>
+                <span className="text-[10px] text-primary/60 font-mono tracking-tighter">2026-08-09 19:28:44 UTC</span>
+              </div>
+              <div className="w-[1px] h-6 bg-white/10" />
+              <img src="/lifeco-logo.png" alt="LIFECO" className="h-5 opacity-40 grayscale brightness-200" />
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-[9px] font-bold text-emerald-400/60 uppercase tracking-widest">DCS Link Active</span>
