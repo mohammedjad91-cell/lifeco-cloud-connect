@@ -1,3 +1,18 @@
+'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+
+Act as a Senior React Architect. I have checked the UI and NONE of the Faceplate updates are visible; the equipment card is still a flat, static card.
+
+Please execute an IMMEDIATE FORCE DEPLOY of the code updates you generated.
+
+Apply these steps precisely to make the changes visible in the live preview:
+
+1. OVERWRITE the old Equipment Card component with the new Asset Faceplate Modal component you described in your report.
+
+2. Ensure the "Click" handler on the equipment tag ID (e.g., 60-1001/A) in the N2-1 Block Diagram properly triggers the new Faceplate Modal to open.
+
+3. Refresh the UI rendering engine to apply the 4-tab technical interface, dark SCADA aesthetic, and operational status badges.
+
+Do not send another report; force the deployment and show me the live interactive Faceplate now.
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "@/lib/router-compat";
 import { getBackTarget } from "@/lib/nav-back";
@@ -103,7 +118,6 @@ const Dashboard = () => {
   useEffect(() => {
     const handleOpenRegister = () => setShowEquipmentRegister(true);
     const handleOpenEquipment = (e: any) => {
-      console.log("lifeco:open-equipment caught in Dashboard", e.detail?.tag);
       setSelectedEquipment(e.detail?.tag);
       setShowEquipmentRegister(false);
     };

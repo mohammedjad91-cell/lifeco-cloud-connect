@@ -15,7 +15,6 @@ export function N2EquipmentRegister({ plantCode, lang, onSelectEquipment, onClos
   
   useEffect(() => {
     const handleOpenEquipment = (e: any) => {
-      console.log("N2EquipmentRegister: closing register as equipment was selected", e.detail?.tag);
       onClose();
     };
     window.addEventListener('lifeco:open-equipment', handleOpenEquipment);

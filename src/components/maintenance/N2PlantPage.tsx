@@ -15,7 +15,6 @@ export function N2PlantPage({ plantCode, lang }: Props) {
 
   useEffect(() => {
     const handleOpenEquipment = (e: any) => {
-      console.log("N2PlantPage: local handler for", e.detail?.tag);
       setSelectedTag(e.detail?.tag);
     };
     window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
@@ -70,7 +69,6 @@ export function N2PlantPage({ plantCode, lang }: Props) {
             <div 
               key={tag} 
               onClick={() => {
-                console.log("Dispatching lifeco:open-equipment for", tag);
                 window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag } }));
               }}
               className="px-4 py-2 rounded bg-primary/10 border border-primary/30 text-primary font-mono text-sm cursor-pointer hover:bg-primary/20 transition-all hover:scale-105"
