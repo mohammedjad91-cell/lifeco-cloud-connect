@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Gauge, Layers, Droplets, ArrowRight, Settings2, ShieldAlert, Activity, FileText, Wrench, BookOpen, ChevronRight, X, Factory } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,14 @@ interface Props {
 export function N2EquipmentRegister({ plantCode, lang, onSelectEquipment, onClose }: Props) {
   const isAr = lang === "ar";
   
+  useEffect(() => {
+    const handleOpenEquipment = (e: any) => {
+      onClose();
+    };
+    window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
+    return () => window.removeEventListener('lifeco:open-equipment', handleOpenEquipment);
+  }, [onClose]);
+
   const equipment = [
     { tag: "60-1001A", name: isAr ? "ضاغط" : "Compressor" },
     { tag: "60-1001B", name: isAr ? "ضاغط" : "Compressor" },
@@ -58,7 +66,7 @@ export function N2EquipmentRegister({ plantCode, lang, onSelectEquipment, onClos
               <button
                 key={eq.tag}
                 onClick={() => {
-                  onSelectEquipment(eq.tag);
+                  window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: eq.tag } }));
                 }}
                 className="glass-card p-6 text-left hover:border-primary/50 hover:bg-primary/5 transition-all group flex items-center justify-between border border-white/10"
               >

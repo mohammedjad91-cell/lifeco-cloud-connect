@@ -102,7 +102,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const handleOpenRegister = () => setShowEquipmentRegister(true);
-    const handleOpenEquipment = (e: any) => setSelectedEquipment(e.detail?.tag);
+    const handleOpenEquipment = (e: any) => {
+      setSelectedEquipment(e.detail?.tag);
+      setShowEquipmentRegister(false);
+    };
     window.addEventListener('lifeco:open-equipment-register', handleOpenRegister);
     window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
     return () => {
