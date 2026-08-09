@@ -1,25 +1,60 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ShieldAlert, Gauge, Thermometer, Droplets, Zap, Activity, Clock, 
   Settings2, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2,
-  Info, BarChart3, AlertCircle, QrCode
+  Info, BarChart3, AlertCircle, QrCode, FileType, Eye, Download, Share2
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { generateEquipmentPDF } from "@/utils/equipment-pdf";
 
 interface ProtectionMatrixProps {
   matrix: any;
   control: any;
   running: any;
   ar: boolean;
+  tag: string;
+  fullData?: any;
 }
 
-export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any) {
+export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullData }: ProtectionMatrixProps) {
   const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const qrUrl = tag ? `${baseUrl}/equipment/${tag}` : '';
+
+  const handleViewPDF = async () => {
+    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
+    window.open(doc.output('bloburl'), '_blank');
+  };
+
+  const handleDownloadPDF = async () => {
+    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
+    doc.save(`${tag}-Equipment-Card.pdf`);
+  };
+
+  const handleSharePDF = async () => {
+    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
+    const blob = doc.output('blob');
+    const file = new File([blob], `${tag}-Equipment-Card.pdf`, { type: 'application/pdf' });
+    
+    if (navigator.share && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: `LIFECO Equipment Card: ${tag}`,
+          text: `Technical card for ${tag}`
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      // Fallback: copy link
+      navigator.clipboard.writeText(qrUrl);
+      alert("Link copied to clipboard! PDF sharing not supported on this browser.");
+    }
+  };
 
   const SectionHeader = ({ icon: Icon, title, subtitle }: any) => (
     <div className="flex items-center gap-3 mb-4 pb-2 border-b border-white/10">
@@ -57,7 +92,6 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any
           {Object.entries(data).map(([key, val]: [string, any]) => {
             const label = key.replace(/_/g, ' ').toUpperCase();
             
-            // Check for nested warning/shutdown structure
             if (val && typeof val === 'object' && !Array.isArray(val)) {
               if (val.warning || val.shutdown) {
                 return (
@@ -174,13 +208,6 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any
                   />
                 ))}
               </div>
-              <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
-                <p className="text-[10px] text-amber-200/70 italic leading-relaxed">
-                  These parameters are critical for automated load regulation. 
-                  Ensure verification from local controller or DCS before changing status.
-                </p>
-              </div>
             </div>
           )}
 
@@ -204,17 +231,43 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any
 
           {activeTab === "qr" && (
             <div className="glass-card p-6 border-l-2 border-l-primary/40 flex flex-col items-center text-center">
-              <SectionHeader icon={QrCode} title={ar ? "رمز الهوية الرقمية" : "Digital Identity QR"} subtitle={ar ? "امسح للوصول إلى أحدث بطاقة" : "Scan to access latest card"} />
-              <div className="bg-white p-6 rounded-2xl mb-4 shadow-inner">
-                {qrUrl && <QRCodeSVG value={qrUrl} size={180} level="H" />}
+              <SectionHeader icon={QrCode} title={ar ? "رمز الهوية الرقمية" : "DIGITAL IDENTITY QR"} subtitle={ar ? "امسح للوصول إلى أحدث بطاقة" : "Scan to access latest card"} />
+              
+              <div className="bg-white p-6 rounded-2xl mb-6 shadow-inner border border-slate-200">
+                {qrUrl && <QRCodeSVG value={qrUrl} size={180} level="H" includeMargin={true} />}
               </div>
-              <p className="text-[11px] text-white/60 max-w-xs mx-auto italic font-bold">
-                {ar 
-                  ? `مسح هذا الرمز من جهاز محمول يفتح بطاقة الهوية الرقمية الموثقة لـ ${tag || 'هذه الوحدة'}.`
-                  : `Scanning this code from a mobile device opens the verified digital identity card for ${tag || 'this unit'}.`}
-              </p>
-              <div className="mt-4 text-[9px] text-white/40 uppercase tracking-widest border-t border-white/10 pt-4 w-full">
-                Scan to open latest digital Equipment Card
+
+              <div className="w-full space-y-4">
+                <p className="text-[11px] text-white/60 max-w-xs mx-auto italic font-bold mb-4">
+                  {ar 
+                    ? `مسح هذا الرمز من جهاز محمول يفتح بطاقة الهوية الرقمية الموثقة لـ ${tag || 'هذه الوحدة'}.`
+                    : `Scanning this code from a mobile device opens the verified digital identity card for ${tag || 'this unit'}.`}
+                </p>
+
+                <div className="grid grid-cols-1 gap-3">
+                  <Button 
+                    className="w-full h-12 bg-primary text-white font-black uppercase tracking-tighter text-sm"
+                    onClick={handleDownloadPDF}
+                  >
+                    <FileType className="w-5 h-5 mr-2" /> EQUIPMENT CARD PDF
+                  </Button>
+                  
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button variant="outline" className="bg-white/5 h-10 text-[10px] font-bold" onClick={handleViewPDF}>
+                      <Eye className="w-3.5 h-3.5 mr-1" /> VIEW PDF
+                    </Button>
+                    <Button variant="outline" className="bg-white/5 h-10 text-[10px] font-bold" onClick={handleDownloadPDF}>
+                      <Download className="w-3.5 h-3.5 mr-1" /> DOWNLOAD
+                    </Button>
+                    <Button variant="outline" className="bg-white/5 h-10 text-[10px] font-bold" onClick={handleSharePDF}>
+                      <Share2 className="w-3.5 h-3.5 mr-1" /> SHARE
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-[9px] text-white/40 uppercase tracking-widest border-t border-white/10 pt-4 w-full font-black">
+                  Scan for latest digital Equipment Card
+                </div>
               </div>
             </div>
           )}

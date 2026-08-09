@@ -89,6 +89,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   const matrix = data?.protection_matrix || {};
   const control = data?.operating_control || data?.protection_matrix?.control || {};
   const running = data?.detailed_running_data || {};
+  const fullData = data;
 
   // Custom data overrides based on user instructions for specific tags
   const getCustomValue = (field: string, defaultValue: any) => {
