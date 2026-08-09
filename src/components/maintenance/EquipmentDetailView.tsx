@@ -278,21 +278,29 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
                               <span className="text-white/60">LOW PRESSURE SAFETY VALVE</span>
-                              <span className="font-mono font-bold text-white">3.7 bar(e)</span>
+                              <span className="font-mono font-bold text-white">
+                                {matrix.pressure?.low_pressure_safety_valve || "3.7 bar(e)"}
+                              </span>
                             </div>
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
                               <span className="text-white/60">HIGH PRESSURE SAFETY VALVE</span>
-                              <span className="font-mono font-bold text-white">11.0 bar(e)</span>
+                              <span className="font-mono font-bold text-white">
+                                {matrix.pressure?.high_pressure_safety_valve || "11.0 bar(e)"}
+                              </span>
                             </div>
                             <div className="flex flex-col gap-1 py-1 border-b border-white/5">
                               <span className="text-white/60 text-[10px]">COMPRESSOR OUTLET PRESSURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">14.0 bar(e)</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.pressure?.outlet_pressure_warning || "14.0 bar(e)"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">15.0 bar(e)</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.pressure?.outlet_pressure_shutdown || "15.0 bar(e)"}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -306,44 +314,60 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                               <span className="text-white/60 text-[10px]">ELEMENT 1 OUTLET TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">225 °C</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.temperature?.element_1_outlet?.warning || "225 °C"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">235 °C</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.temperature?.element_1_outlet?.shutdown || "235 °C"}
+                                </span>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 py-1 border-b border-white/5">
                               <span className="text-white/60 text-[10px]">ELEMENT 2 OUTLET TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">225 °C</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.temperature?.element_2_outlet?.warning || "225 °C"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">235 °C</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.temperature?.element_2_outlet?.shutdown || "235 °C"}
+                                </span>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 py-1 border-b border-white/5">
                               <span className="text-white/60 text-[10px]">ELEMENT 2 INLET TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">65 °C</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.temperature?.element_2_inlet?.warning || "65 °C"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">70 °C</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.temperature?.element_2_inlet?.shutdown || "70 °C"}
+                                </span>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 py-1 border-b border-white/5">
                               <span className="text-white/60 text-[10px]">OIL TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">65 °C</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.temperature?.oil_temperature?.warning || "65 °C"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">70 °C</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.temperature?.oil_temperature?.shutdown || "70 °C"}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -359,11 +383,15 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                               <span className="text-white/60 text-[10px]">OIL PRESSURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">1.3 bar(e)</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">
+                                  {matrix.oil?.shutdown_warning || matrix.oil_protections?.[0]?.warning || "1.3 bar(e)"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">1.2 bar(e)</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">
+                                  {matrix.oil?.shutdown || matrix.oil_protections?.[0]?.shutdown || "1.2 bar(e)"}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -377,22 +405,30 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                               <span className="text-white/60 text-[10px]">M1 TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40 italic">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
+                                  {matrix.temperature?.m1_temperature?.warning || "Pending Verification"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40 italic">Shutdown:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
+                                  {matrix.temperature?.m1_temperature?.shutdown || "Pending Verification"}
+                                </span>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 py-1 border-b border-white/5">
                               <span className="text-white/60 text-[10px]">M2 TEMPERATURE</span>
                               <div className="flex justify-between">
                                 <span className="text-white/40 italic">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
+                                  {matrix.temperature?.m2_temperature?.warning || "Pending Verification"}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-white/40 italic">Shutdown:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
+                                  {matrix.temperature?.m2_temperature?.shutdown || "Pending Verification"}
+                                </span>
                               </div>
                             </div>
                             <div className="mt-4 p-3 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-200/60 leading-relaxed italic">
