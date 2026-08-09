@@ -422,9 +422,7 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
-      {showN2LogSheets && (
-        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} selectedDate={selectedDate} />
-      )}
+      {/* The NitrogenLogSheetsModule is now rendered inside the TabsContent below to prevent double rendering and maintain the dashboard toolbar context */}
 
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
