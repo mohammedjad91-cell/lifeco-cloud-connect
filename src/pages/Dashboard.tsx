@@ -537,10 +537,10 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             
-            {/* Explicitly inserted main tab for Nitrogen Plant Logs */}
+            {/* Explicitly visible Nitrogen Plant Logs tab - Always displayed in primary bar */}
             <TabsTrigger 
               value="nitrogen-logs" 
-              className="gap-1.5 data-[state=active]:border-primary data-[state=active]:bg-primary/10"
+              className="gap-1.5 data-[state=active]:border-primary data-[state=active]:bg-primary/20 border-b-2 border-transparent transition-all"
             >
               <FileText className="w-3.5 h-3.5" /> 
               {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
