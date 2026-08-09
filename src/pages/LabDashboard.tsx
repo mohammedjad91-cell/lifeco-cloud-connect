@@ -564,7 +564,6 @@ const LabDashboard = () => {
         )}
 
         {activeTab === "classic" && !readOnly ? (
-
           <>
             {/* Classic Entry Form */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
