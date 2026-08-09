@@ -22,35 +22,41 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
   const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const qrUrl = tag ? `${baseUrl}/equipment/${tag}/pdf` : '';
+  const pdfApiUrl = tag ? `${baseUrl}/api/public/equipment/${tag}/pdf` : '';
 
   const handleViewPDF = () => {
-    window.location.href = qrUrl;
+    if (!pdfApiUrl) return;
+    window.open(pdfApiUrl, '_blank');
   };
 
-  const handleDownloadPDF = async () => {
-    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
-    doc.save(`N2-1_${tag}_Equipment_Card.pdf`);
+  const handleDownloadPDF = () => {
+    if (!pdfApiUrl) return;
+    const link = document.createElement('a');
+    link.href = pdfApiUrl;
+    link.download = `N2-1_${tag}_Equipment_Card.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSharePDF = async () => {
-    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
-    const blob = doc.output('blob');
-    const filename = `N2-1_${tag}_Equipment_Card.pdf`;
-    const file = new File([blob], filename, { type: 'application/pdf' });
-    
-    if (navigator.share && navigator.canShare({ files: [file] })) {
+    if (!pdfApiUrl) return;
+
+    if (navigator.share) {
       try {
         await navigator.share({
-          files: [file],
           title: `LIFECO Equipment Card: ${tag}`,
-          text: `Official Technical Documentation for N2-1 ${tag}`
+          text: `Official Technical Documentation for N2-1 ${tag}`,
+          url: pdfApiUrl
         });
       } catch (err) {
-        console.error("Error sharing:", err);
+        if ((err as Error).name !== 'AbortError') {
+          console.error("Error sharing:", err);
+          navigator.clipboard.writeText(pdfApiUrl);
+        }
       }
     } else {
-      window.open(qrUrl, '_blank');
+      navigator.clipboard.writeText(pdfApiUrl);
     }
   };
 

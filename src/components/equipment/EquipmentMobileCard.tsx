@@ -20,7 +20,7 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   const tag = data?.equipment_tag;
   const plantCode = "N2-1";
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const shareUrl = `${baseUrl}/equipment/${tag}/pdf`;
+  const pdfApiUrl = `${baseUrl}/api/public/equipment/${tag}/pdf`;
   const appUrl = `${baseUrl}/equipment/${tag}`;
 
   const tabs = [
@@ -33,41 +33,34 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   ];
 
   const handleViewPDF = () => {
-    window.location.href = shareUrl;
+    window.open(pdfApiUrl, '_blank');
   };
 
-  const handleDownloadPDF = async () => {
-    const doc = await generateEquipmentPDF(data, tag);
-    doc.save(`N2-1_${tag}_Equipment_Card.pdf`);
+  const handleDownloadPDF = () => {
+    const link = document.createElement('a');
+    link.href = pdfApiUrl;
+    link.download = `N2-1_${tag}_Equipment_Card.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSharePDF = async () => {
-    const doc = await generateEquipmentPDF(data, tag);
-    const blob = doc.output('blob');
-    const filename = `N2-1_${tag}_Equipment_Card.pdf`;
-    const file = new File([blob], filename, { type: 'application/pdf' });
-    
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    if (navigator.share) {
       try {
         await navigator.share({
-          files: [file],
           title: `LIFECO Equipment Card: ${tag}`,
-          text: `Technical card for ${tag}`
+          text: `Technical card for ${tag}`,
+          url: pdfApiUrl
         });
       } catch (err) {
-        console.error("Error sharing file:", err);
-        try {
-          await navigator.share({
-            title: `LIFECO Equipment Card: ${tag}`,
-            url: shareUrl
-          });
-        } catch (sErr) {
-          console.error("Error sharing URL:", sErr);
+        if ((err as Error).name !== 'AbortError') {
+          console.error("Error sharing:", err);
+          navigator.clipboard.writeText(pdfApiUrl);
         }
       }
     } else {
-      navigator.clipboard.writeText(shareUrl);
-      alert("Link copied to clipboard! PDF file sharing not supported on this browser.");
+      navigator.clipboard.writeText(pdfApiUrl);
     }
   };
 
@@ -161,7 +154,7 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
             
             {/* QR Section - Standard across all tabs in mobile or at bottom */}
             <div className="p-6 rounded-2xl bg-white flex flex-col items-center mt-6 border border-slate-200">
-              <QRCodeSVG value={shareUrl} size={200} level="H" includeMargin={true} />
+              <QRCodeSVG value={pdfApiUrl} size={200} level="H" includeMargin={true} />
               <p className="text-black text-[10px] font-black mt-4 uppercase tracking-widest text-center">
                 Scan for latest Digital Equipment Card
               </p>
