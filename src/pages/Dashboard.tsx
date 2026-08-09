@@ -28,6 +28,7 @@ import FieldOpsForm from "@/components/FieldOpsForm";
 import AssetRegister from "@/components/AssetRegister";
 import DailyReportGenerator from "@/components/DailyReportGenerator";
 import NitrogenLogSheets from "@/components/NitrogenLogSheets";
+import NitrogenLogSheetsModule from "@/components/NitrogenLogSheetsModule";
 import PlantTrainingSimulator from "@/components/PlantTrainingSimulator";
 import DateUserBanner from "@/components/DateUserBanner";
 import SafetyMonitor from "@/components/SafetyMonitor";
@@ -434,6 +435,10 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
+      {showN2LogSheets && (
+        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} />
+      )}
+
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
           <div
