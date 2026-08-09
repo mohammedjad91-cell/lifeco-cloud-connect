@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { autoTable } from "jspdf-autotable";
+import QRCode from "qrcode";
 
 /**
  * Generates a professional engineering equipment technical card.
@@ -92,13 +93,15 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   addSectionHeader("SECTION 3 — OPERATING DATA");
   const opBody = tag.startsWith("60-1001") ? [
     ["Operating Pressure", "9.1", "bar(e)", "Verified"],
-    ["M1 Temperature", data.m1_temperature || "Pending Verification", "°C", "Pending"],
-    ["M2 Temperature", data.m2_temperature || "Pending Verification", "°C", "Pending"],
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
-    ["Loaded Hours", running.loaded_hours || "Pending Verification", "hrs", "Pending"]
+    ["M1 Temperature", "Pending Verification", "°C", "Pending"],
+    ["M2 Temperature", "Pending Verification", "°C", "Pending"],
+    ["Running Hours", "Pending Verification", "hrs", "Pending"],
+    ["Loaded Hours", "Pending Verification", "hrs", "Pending"],
+    ["Service Hours", "Pending Verification", "hrs", "Pending"],
+    ["Start/Stop Cycles", "Pending Verification", "cycles", "Pending"]
   ] : [
     ["Operating Pressure", "Pending Verification", "bar(e)", "Pending"],
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
+    ["Running Hours", "Pending Verification", "hrs", "Pending"],
     ["Loaded Hours", "Pending Verification", "hrs", "Pending"]
   ];
   addTable([["Parameter", "Value", "Unit", "Status"]], opBody);
@@ -167,7 +170,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   // --- SECTION 9: RUNNING DATA ---
   addSectionHeader("SECTION 9 — RUNNING DATA");
   addTable([], [
-    ["Running Hours", running.running_hours || asset.running_hours || "Pending Verification", "Loaded Hours", running.loaded_hours || "Pending Verification"],
+    ["Running Hours", "Pending Verification", "Loaded Hours", "Pending Verification"],
     ["Service Hours", "Pending Verification", "Start/Stop Cycles", "Pending Verification"]
   ]);
 
@@ -193,21 +196,34 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   
   if (currentY > 230) { doc.addPage(); currentY = 20; }
   
-  // Render a placeholder for QR code in the PDF
-  // Note: For a real QR image, we would use doc.addImage() with a dataURL
-  doc.setDrawColor(200, 200, 200);
-  doc.rect(85, currentY, 40, 40);
+  try {
+    const qrDataUrl = await QRCode.toDataURL(pdfUrl, {
+      margin: 1,
+      width: 150,
+      color: {
+        dark: '#000000',
+        light: '#ffffff',
+      },
+    });
+    doc.addImage(qrDataUrl, "PNG", 85, currentY, 40, 40);
+  } catch (err) {
+    console.error("Failed to generate QR for PDF:", err);
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(85, currentY, 40, 40);
+  }
+
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.text("SCAN FOR LATEST", 105, currentY + 15, { align: "center" });
-  doc.text("EQUIPMENT PDF", 105, currentY + 20, { align: "center" });
+  doc.text("SCAN FOR LATEST", 105, currentY + 44, { align: "center" });
+  doc.text("EQUIPMENT PDF", 105, currentY + 48, { align: "center" });
   
   // URL Text
   doc.setFontSize(6);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text(pdfUrl, 105, currentY + 45, { align: "center" });
+  doc.text(pdfUrl, 105, currentY + 52, { align: "center" });
+  currentY += 60;
 
   // --- FOOTER ---
   const pageCount = (doc as any).internal.getNumberOfPages();
