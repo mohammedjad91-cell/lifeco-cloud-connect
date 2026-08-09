@@ -440,6 +440,19 @@ const Dashboard = () => {
           <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
         </div>
         <div className="flex items-center gap-2">
+          {sessionStorage.getItem("lifeco_plant") === "N2-1" && activeTab === "logs" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('lifeco:open-equipment'));
+                navigate(getBackTarget());
+              }}
+              className="gap-1.5 border-amber-500/40 text-amber-500 hover:bg-amber-500/10"
+            >
+              <Cog className="w-4 h-4" /> {lang === "ar" ? "معدات المصنع" : "Plant Equipment"}
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={() => navigate("/assistant")} className="gap-1.5 border-primary/40 text-primary">
             <Sparkles className="w-4 h-4" /> {lang === "ar" ? "المساعد الذكي" : "AI Assistant"}
           </Button>
