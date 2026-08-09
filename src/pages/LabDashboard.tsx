@@ -120,10 +120,12 @@ const LabDashboard = () => {
   const [savingSample, setSavingSample] = useState(false);
   const [samples, setSamples] = useState<SampleEntry[]>([]);
   const [allDates, setAllDates] = useState(true);
-  const [plantFilter, setPlantFilter] = useState<string>(() =>
-    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
-  // مهندس المصنع: عرض فقط — يُحدَّد عند الدخول من شاشة المصنع ولا يتغير بتغيير الفلتر
-  // نطاق إدارة (معمل الأمونيا / معمل اليوريا) — يعرض عينات مصانع تلك الإدارة فقط
+  const [plantFilter, setPlantFilter] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    const saved = sessionStorage.getItem("lifeco_lab_plant");
+    // If we have a saved plant (e.g. NITROGEN) from a previous session or redirect, use it
+    return saved || "";
+  });
   const [deptScope] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
   const [readOnly] = useState<boolean>(() =>
