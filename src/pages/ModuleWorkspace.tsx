@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WorkPermitForm from '@/components/forms/lifeco/WorkPermitForm';
 import WorkRequestForm from '@/components/forms/lifeco/WorkRequestForm';
 import ElectricalWorkPermitForm from '@/components/forms/lifeco/ElectricalWorkPermitForm';
@@ -6,6 +6,7 @@ import FormHistory from '@/components/forms/lifeco/FormHistory';
 import PermitCenter from '@/components/PermitCenter';
 import AssetRegister from '@/components/AssetRegister';
 import MaintenanceManagement from '@/components/maintenance/MaintenanceManagement';
+import { EquipmentFaceplate } from "@/components/maintenance/EquipmentFaceplate";
 import { useNavigate } from "@/lib/router-compat";
 import { ArrowLeft, Wrench, ShieldCheck, History as HistoryIcon, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,17 @@ import { useI18n } from "@/lib/i18n";
 const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKey: string }) => {
   const navigate = useNavigate();
   const { lang } = useI18n();
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
   
+  useEffect(() => {
+    const handleOpenEquipment = (e: any) => {
+      console.log("ModuleWorkspace: caught lifeco:open-equipment for", e.detail?.tag);
+      setSelectedEquipment(e.detail?.tag);
+    };
+    window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
+    return () => window.removeEventListener('lifeco:open-equipment', handleOpenEquipment);
+  }, []);
+
   const handleBackToPlant = () => {
     navigate(`/modules/${plantCode}`);
   };
@@ -119,7 +130,7 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
   }
   
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center relative">
       <div className="text-center space-y-4">
         <h1 className="text-2xl font-bold">Module Workspace</h1>
         <p className="text-slate-400">Module: {moduleKey} | Plant: {plantCode}</p>
@@ -128,6 +139,14 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
           Return to Plant
         </Button>
       </div>
+
+      <EquipmentFaceplate
+        tag={selectedEquipment || ""}
+        plantCode={plantCode}
+        lang={lang}
+        open={!!selectedEquipment}
+        onOpenChange={(open) => !open && setSelectedEquipment(null)}
+      />
     </div>
   );
 };
