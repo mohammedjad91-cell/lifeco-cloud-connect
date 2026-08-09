@@ -528,7 +528,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="glass-card border border-border">
+          <TabsList className="glass-card border border-border flex flex-wrap h-auto min-h-10 p-1">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
@@ -538,11 +538,16 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen-logs" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
-              </TabsTrigger>
-            )}
+            
+            {/* Explicitly inserted main tab for Nitrogen Plant Logs */}
+            <TabsTrigger 
+              value="nitrogen-logs" 
+              className="gap-1.5 data-[state=active]:border-primary data-[state=active]:bg-primary/10"
+            >
+              <FileText className="w-3.5 h-3.5" /> 
+              {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
+            </TabsTrigger>
+
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "التقرير" : "Report"}
             </TabsTrigger>
