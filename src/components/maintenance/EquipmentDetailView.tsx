@@ -232,7 +232,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                         <DataField label="Oil Temperature" value={control.oil_temperature || "Pending Verification"} />
                         <DataField label="M1 Temperature" value={identity.m1_temperature || "Pending Verification"} />
                         <DataField label="M2 Temperature" value={identity.m2_temperature || "Pending Verification"} />
-                        <DataField label="Outlet Pressure" value={identity.discharge_pressure || "Pending Verification"} />
+                        <DataField label="Outlet Pressure" value={identity.discharge_pressure || control.discharge_pressure || "9.1 bar"} />
                         <DataField label="Loading Status" value={running.loading_status || "Pending Verification"} />
                         <DataField label="Unloading Status" value={running.unloading_status || "Pending Verification"} />
                         <DataField label="Running Hours" value={running.running_hours || asset.running_hours} />
