@@ -30,8 +30,24 @@ export const LAB_PARAMETERS: Record<string, Record<string, string[]>> = {
     weekly: ["Oil & Grease", "Iron", "Silica", "Hardness", "Chlorides", "Sulfates", "TDS", "Alkalinity"],
   },
   NITROGEN: {
-    daily: ["pH", "Conductivity", "Hardness", "Dew Point", "N2 Purity", "O2", "Pressure", "Temp", "Flow Rate", "Moisture", "Compressor Oil"],
-    weekly: ["Oil Content", "Filter Condition", "Oxygen Analyzer Check", "Nitrogen Purity Check", "Moisture Analyzer"],
+    daily: [
+      "Oxygen content (60-AL-003)",
+      "Main Dew Point (60-AT-001 / 60-AI-001)",
+      "N2 Purity %",
+      "Instrument Air Moisture",
+      "Pressure",
+      "Temp",
+      "Flow Rate",
+      "Compressor Oil"
+    ],
+    weekly: [
+      "Cooling Water Analysis",
+      "Air Dryers Oil/Moisture",
+      "Filters Condensate",
+      "Oxygen Analyzer Check",
+      "Nitrogen Purity Check",
+      "Moisture Analyzer"
+    ],
   },
   DEMIN1: {
     daily: ["pH", "Conductivity", "Hardness", "Dew Point", "Silica", "Chlorides", "TDS", "Temp", "Iron", "Sodium", "Dissolved Oxygen"],
