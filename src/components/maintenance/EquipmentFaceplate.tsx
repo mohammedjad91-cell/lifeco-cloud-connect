@@ -62,19 +62,36 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
     status.toUpperCase() === "TRIP" ? "text-red-400 border-red-400/50 bg-red-400/10" :
     "text-amber-400 border-amber-400/50 bg-amber-400/10";
 
-  const ReadingCard = ({ icon: Icon, label, value, unit, color = "cyan" }: any) => (
-    <div className="bg-slate-900/50 border border-white/5 p-4 rounded-xl flex flex-col gap-1 hover:border-primary/30 transition-colors group">
-      <div className="flex items-center gap-2 mb-1">
-        <div className={cn("p-1.5 rounded-lg bg-opacity-10", color === "cyan" ? "bg-cyan-400 text-cyan-400" : "bg-amber-400 text-amber-400")}>
-          <Icon className="w-3.5 h-3.5" />
+  const ReadingCard = ({ icon: Icon, label, value, unit, color = "cyan", trend = "neutral" }: any) => (
+    <div className="bg-slate-900/80 border border-white/5 p-4 rounded-xl flex flex-col gap-1 hover:border-primary/40 transition-all group relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary/40 transition-colors" />
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <div className={cn(
+            "p-1.5 rounded-lg",
+            color === "cyan" ? "bg-cyan-500/10 text-cyan-400" : "bg-amber-500/10 text-amber-400"
+          )}>
+            <Icon className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">{label}</span>
         </div>
-        <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">{label}</span>
+        {trend === "up" && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
       </div>
-      <div className="flex items-baseline gap-1">
-        <span className={cn("text-2xl font-mono font-black tracking-tighter", color === "cyan" ? "text-cyan-400" : "text-amber-400")}>
+      <div className="flex items-baseline gap-1 mt-1">
+        <span className={cn(
+          "text-2xl font-mono font-black tracking-tighter",
+          color === "cyan" ? "text-cyan-400" : "text-amber-400"
+        )}>
           {value || "---"}
         </span>
         <span className="text-[10px] text-white/20 font-bold uppercase">{unit}</span>
+      </div>
+      <div className="mt-2 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+        <motion.div 
+          initial={{ width: "0%" }}
+          animate={{ width: "65%" }}
+          className={cn("h-full", color === "cyan" ? "bg-cyan-500/40" : "bg-amber-500/40")}
+        />
       </div>
     </div>
   );
