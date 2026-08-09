@@ -16,6 +16,7 @@ import {
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
 import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
+import { N2PlantPage } from "@/components/maintenance/N2PlantPage";
 
 
 
@@ -306,14 +307,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       <div className="flex-1 px-4 pb-10 relative z-10">
         <div className="max-w-5xl mx-auto space-y-8">
           {plantCode === "N2-1" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-8 space-y-12"
-            >
-              <PlantProcessOverview lang={lang as any} />
-              <NitrogenGenerationProcess lang={lang as any} />
-            </motion.div>
+            <N2PlantPage plantCode={plantCode} lang={lang as any} />
           )}
 
           <div className="max-w-3xl mx-auto">
