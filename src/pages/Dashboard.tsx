@@ -436,7 +436,7 @@ const Dashboard = () => {
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
       {showN2LogSheets && (
-        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} />
+        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} selectedDate={selectedDate} />
       )}
 
       {deptBg && (
