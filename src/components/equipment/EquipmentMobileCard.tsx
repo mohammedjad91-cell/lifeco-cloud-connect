@@ -20,7 +20,8 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   const tag = data?.equipment_tag;
   const plantCode = "N2-1";
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const shareUrl = `${baseUrl}/equipment/${tag}`;
+  const shareUrl = `${baseUrl}/equipment/${tag}/pdf`;
+  const appUrl = `${baseUrl}/equipment/${tag}`;
 
   const tabs = [
     { id: "identity", label: "IDENTITY", icon: Info },
@@ -31,14 +32,13 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
     { id: "documents", label: "DOCUMENTS", icon: FileText },
   ];
 
-  const handleViewPDF = async () => {
-    const doc = await generateEquipmentPDF(data, tag);
-    window.open(doc.output('bloburl'), '_blank');
+  const handleViewPDF = () => {
+    window.location.href = shareUrl;
   };
 
   const handleDownloadPDF = async () => {
     const doc = await generateEquipmentPDF(data, tag);
-    doc.save(`${tag}-Equipment-Card.pdf`);
+    doc.save(`N2-1_${tag}_Equipment_Card.pdf`);
   };
 
   const handleSharePDF = async () => {

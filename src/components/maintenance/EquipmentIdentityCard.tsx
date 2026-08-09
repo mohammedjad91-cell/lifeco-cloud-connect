@@ -22,7 +22,7 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
   const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const qrUrl = tag ? `${baseUrl}/equipment/${tag}` : '';
+  const qrUrl = tag ? `${baseUrl}/equipment/${tag}/pdf` : '';
 
   const handleViewPDF = async () => {
     const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);

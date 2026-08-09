@@ -13,7 +13,7 @@ interface EquipmentQRSectionProps {
 export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const qrUrl = `${baseUrl}/equipment/${tag}`;
+  const qrUrl = `${baseUrl}/equipment/${tag}/pdf`;
 
   const downloadLabel = async () => {
     if (!qrRef.current) return;
@@ -36,7 +36,7 @@ export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSec
         </h3>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" className="h-8 text-[10px]" onClick={() => window.open(qrUrl, '_blank')}>
-            <QrCode className="w-3 h-3 mr-1" /> View Mobile Card
+            <QrCode className="w-3 h-3 mr-1" /> View Official PDF
           </Button>
           <Button size="sm" variant="outline" className="h-8 text-[10px]" onClick={downloadLabel}>
             <Download className="w-3 h-3 mr-1" /> Download Label
@@ -61,7 +61,7 @@ export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSec
             <div className="text-2xl tracking-tighter mb-1">{tag}</div>
             <div className="text-[12px] leading-tight mb-1">{assetName}</div>
             <div className="text-[10px] bg-black text-white px-3 py-1 mb-2 inline-block">{plantCode} • NITROGEN GENERATION</div>
-            <div className="text-[9px] tracking-widest text-slate-600 mt-2 font-bold">SCAN FOR EQUIPMENT DIGITAL CARD</div>
+            <div className="text-[9px] tracking-widest text-slate-600 mt-2 font-bold uppercase">SCAN FOR OFFICIAL EQUIPMENT PDF</div>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSec
           <div className="p-4 rounded-lg bg-white/5 border border-white/10">
             <h4 className="text-xs font-bold text-white/80 uppercase mb-2">QR Functionality</h4>
             <ul className="text-[10px] text-white/40 space-y-1 list-disc pl-4">
-              <li>Direct link to Mobile Digital Card</li>
+              <li>Direct link to Official Equipment PDF</li>
               <li>Embedded PDF generation from mobile</li>
               <li>Direct sharing with Supervisors</li>
               <li>Static URL: independent of database ID</li>
