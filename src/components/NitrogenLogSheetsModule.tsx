@@ -292,14 +292,14 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
               {group.parameters.map((param, pIdx) => {
                 const currentRow = rowCounter++;
                 return (
-                  <TableRow key={pIdx} className="h-9 hover:bg-slate-50 transition-colors border-b-[1.5px] border-slate-400">
+                  <TableRow key={pIdx} className="h-9 hover:bg-slate-50 transition-colors border-b-[1.5px] border-slate-900">
                     <TableCell className="py-1 px-4 font-mono font-bold text-[11px] text-slate-900 border-r-[1.5px] border-slate-900 bg-slate-50/50">
                       {param}
                     </TableCell>
                     {hours.map((h, cIdx) => {
                       const tag = buildTag(group.label.includes("60-1001") ? `COMP-${group.label.split(":")[1].trim()}` : sheetKey, param, h);
                       return (
-                        <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-400">
+                        <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-900">
                           <Input
                             data-sheet={sheetKey}
                             data-row={currentRow}
@@ -322,6 +322,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         </TableBody>
       </Table>
     </div>
+
 
   );
 };
