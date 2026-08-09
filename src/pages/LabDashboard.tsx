@@ -213,7 +213,7 @@ const LabDashboard = () => {
               {deptScope === "AMMONIA" ? "Ammonia Department Plants" : "Urea Department Plants"}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {PLANT_GROUPS.find(g => g.dept === deptScope)?.plants.map((pl, i) => (
+              {PLANT_GROUPS.find((g: any) => g.dept === deptScope)?.plants.map((pl: any, i: number) => (
                 <button key={pl.code} onClick={() => setPlantFilter(pl.code)} className="glass-card p-6 text-center hover:neon-border transition-all group">
                   <Factory className="w-10 h-10 mx-auto mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
                   <div className="font-bold text-lg">{pl.ar}</div>
