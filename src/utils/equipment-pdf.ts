@@ -192,7 +192,8 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   
   if (currentY > 230) { doc.addPage(); currentY = 20; }
   
-  // Placeholder for QR in PDF
+  // Render a placeholder for QR code in the PDF
+  // Note: For a real QR image, we would use doc.addImage() with a dataURL
   doc.setDrawColor(200, 200, 200);
   doc.rect(85, currentY, 40, 40);
   doc.setTextColor(0, 0, 0);
