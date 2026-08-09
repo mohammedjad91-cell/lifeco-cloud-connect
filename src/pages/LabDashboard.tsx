@@ -15,7 +15,7 @@ import {
   SelectGroup, SelectLabel,
 } from "@/components/ui/select";
 import {
-  LogOut, FlaskConical, Clock, Loader2, Trash2,
+  LogOut, FlaskConical, Clock, Loader2, Trash2, ArrowLeft, Factory,
   CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save, Plus,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -122,14 +122,11 @@ const LabDashboard = () => {
   const [allDates, setAllDates] = useState(true);
   const [plantFilter, setPlantFilter] = useState<string>(() => {
     if (typeof window === "undefined") return "";
-    const saved = sessionStorage.getItem("lifeco_lab_plant");
-    // If we have a saved plant (e.g. NITROGEN) from a previous session or redirect, use it
-    return saved || "";
+    return sessionStorage.getItem("lifeco_lab_plant") || "";
   });
-  const [deptScope] = useState<string>(() =>
+  const [deptScope, setDeptScope] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
-  const [readOnly] = useState<boolean>(() =>
-    typeof window === "undefined" ? false : !!sessionStorage.getItem("lifeco_lab_plant"));
+  const [readOnly, setReadOnly] = useState<boolean>(false);
 
 
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
@@ -158,7 +155,13 @@ const LabDashboard = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  useEffect(() => { fetchResults(); fetchSamples(); }, [selectedDate, allDates, plantFilter, deptScope]);
+  useEffect(() => { 
+    fetchResults(); 
+    fetchSamples(); 
+    // If plantFilter is set, we are in a specific plant context (read-only if coming from plant module)
+    const isDirectPlantAccess = !!sessionStorage.getItem("lifeco_lab_plant");
+    setReadOnly(isDirectPlantAccess && !!plantFilter);
+  }, [selectedDate, allDates, plantFilter, deptScope]);
 
   const fetchDynamicFields = async () => {
     const { data } = await supabase.from("dynamic_fields").select("*")
@@ -431,9 +434,32 @@ const LabDashboard = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
-        <div>
-          <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
-          <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{t.laboratory}</p>
+        <div className="flex items-center gap-4">
+          {(plantFilter || deptScope) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                if (plantFilter && deptScope) {
+                  setPlantFilter("");
+                } else {
+                  setDeptScope("");
+                  setPlantFilter("");
+                }
+              }}
+              className="text-muted-foreground"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
+          <div>
+            <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
+            <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">
+              {t.laboratory}
+              {deptScope && ` — ${deptScope === "AMMONIA" ? "مختبر الأمونيا" : "مختبر اليوريا"}`}
+              {plantFilter && ` — ${PLANT_GROUPS.flatMap(g => g.plants).find(p => p.code === plantFilter)?.ar || plantFilter}`}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
@@ -445,18 +471,68 @@ const LabDashboard = () => {
           <Button variant="outline" size="sm" onClick={openPreview} className="gap-1.5">
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} className="gap-1.5 text-muted-foreground">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
             <LogOut className="w-4 h-4" /> {t.exit}
           </Button>
         </div>
       </header>
 
       <main className="flex-1 p-4 md:p-6 max-w-6xl mx-auto w-full space-y-6">
-        {/* Date Filter */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
-          <CalendarIcon className="w-4 h-4 text-primary" />
-          <span className="text-sm text-foreground font-medium">{t.dateFilter}</span>
-          <Popover>
+        {!deptScope && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
+            <button
+              onClick={() => setDeptScope("AMMONIA")}
+              className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <FlaskConical className="w-16 h-16 mx-auto mb-6 text-primary group-hover:scale-110 transition-transform" />
+              <h2 className="text-2xl font-bold mb-2">Ammonia Lab</h2>
+              <h3 className="text-xl text-muted-foreground">مختبر الأمونيا</h3>
+            </button>
+            <button
+              onClick={() => setDeptScope("UREA")}
+              className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <FlaskConical className="w-16 h-16 mx-auto mb-6 text-emerald-500 group-hover:scale-110 transition-transform" />
+              <h2 className="text-2xl font-bold mb-2">Urea Lab</h2>
+              <h3 className="text-xl text-muted-foreground">مختبر اليوريا</h3>
+            </button>
+          </motion.div>
+        )}
+
+        {deptScope && !plantFilter && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Factory className="w-6 h-6 text-primary" />
+                {deptScope === "AMMONIA" ? "Ammonia Department Plants" : "Urea Department Plants"}
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {PLANT_GROUPS.find(g => g.dept === deptScope)?.plants.map((pl, i) => (
+                <motion.button
+                  key={pl.code}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => setPlantFilter(pl.code)}
+                  className="glass-card p-6 text-center hover:neon-border transition-all group"
+                >
+                  <Factory className="w-10 h-10 mx-auto mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <div className="font-bold text-lg">{pl.ar}</div>
+                  <div className="text-xs text-muted-foreground uppercase mt-1">{pl.code}</div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+        {deptScope && plantFilter && (
+          <>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
+              <CalendarIcon className="w-4 h-4 text-primary" />
+              <span className="text-sm text-foreground font-medium">{t.dateFilter}</span>
+              <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="gap-2">
                 <CalendarIcon className="w-4 h-4" />
@@ -616,7 +692,7 @@ const LabDashboard = () => {
               )}
             </div>
           </>
-        ) : (
+        ) : activeTab === "samples" ? (
           <>
 
 
@@ -790,7 +866,7 @@ const LabDashboard = () => {
                 {savingSample ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {lang === "ar" ? "حفظ العينة" : "Save Sample"}
               </Button>
-            </motion.div>
+              </motion.div>
             )}
 
 
@@ -905,7 +981,7 @@ const LabDashboard = () => {
               )}
             </div>
           </>
-        )}
+        ) : null}
       </main>
 
       <footer className="border-t border-border px-6 py-3 text-center">
