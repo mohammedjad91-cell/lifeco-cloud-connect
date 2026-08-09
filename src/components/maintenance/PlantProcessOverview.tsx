@@ -129,7 +129,10 @@ export function PlantProcessOverview({ lang, onSelectEquipment }: Props) {
               2. NITROGEN GENERATION
             </h4>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-amber-500/5 rounded border border-amber-500/20">
+          <div 
+            onClick={() => onSelectEquipment?.("Nitrogen PSA Unit")}
+            className="flex items-center gap-3 p-3 bg-amber-500/5 rounded border border-amber-500/20 cursor-pointer hover:bg-amber-500/10 transition-colors"
+          >
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-mono text-amber-500 font-bold tracking-tighter">Nitrogen PSA Unit</span>
               <div className="text-[9px] text-amber-500/70 font-medium italic">
