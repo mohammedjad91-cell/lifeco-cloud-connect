@@ -6,7 +6,7 @@ interface Props {
   onSelectEquipment?: (tag: string) => void;
 }
 
-export function PlantProcessOverview({ lang }: Props) {
+export function PlantProcessOverview({ lang, onSelectEquipment }: Props) {
   const isAr = lang === "ar";
 
   const flowSteps = [
