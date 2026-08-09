@@ -83,6 +83,8 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   const identity = data || {};
   const asset = data?.asset || {};
   const matrix = data?.protection_matrix || {};
+  console.log("EQUIPMENT DATA:", data);
+  console.log("PROTECTION MATRIX:", matrix);
   const control = data?.operating_control || {};
   const running = data?.detailed_running_data || {};
 
