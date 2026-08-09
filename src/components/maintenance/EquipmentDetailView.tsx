@@ -3,11 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, Info, Gauge, Activity, ShieldAlert, Wrench, FileText, 
   Layers, Factory, Settings2, Thermometer, Clock, Droplets,
-  AlertTriangle, CheckCircle2, AlertCircle, Bookmark, FileSearch
+  AlertTriangle, CheckCircle2, AlertCircle, Bookmark, FileSearch,
+  QrCode
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+
+import { EquipmentQRSection } from "@/components/equipment/EquipmentQRSection";
 
 interface EquipmentDetailViewProps {
   tag: string;
@@ -49,6 +52,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
     { id: "process", label: isAr ? "العملية والتوصيلات" : "PROCESS & CONNECTIONS", icon: Layers },
     { id: "maintenance", label: isAr ? "الصيانة" : "MAINTENANCE", icon: Wrench },
     { id: "documents", label: isAr ? "الوثائق" : "DOCUMENTS", icon: FileText },
+    { id: "qr", label: isAr ? "رمز الاستجابة" : "QR CODE", icon: QrCode },
   ];
 
   const DataField = ({ label, value, warning = false, full = false }: any) => (
@@ -513,6 +517,16 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {activeTab === "qr" && (
+                <div className="space-y-8">
+                  <EquipmentQRSection 
+                    tag={tag} 
+                    assetName={identity.equipment_name || asset.asset_name || "Compressor"} 
+                    plantCode={plantCode} 
+                  />
                 </div>
               )}
             </motion.div>

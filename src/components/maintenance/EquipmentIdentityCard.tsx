@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ShieldAlert, Gauge, Thermometer, Droplets, Zap, Activity, Clock, 
   Settings2, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2,
-  Info, BarChart3, AlertCircle
+  Info, BarChart3, AlertCircle, QrCode
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Badge } from "@/components/ui/badge";
 
 interface ProtectionMatrixProps {
@@ -14,8 +15,11 @@ interface ProtectionMatrixProps {
   ar: boolean;
 }
 
-export function EquipmentIdentityCard({ matrix, control, running, ar }: ProtectionMatrixProps) {
-  const [activeTab, setActiveTab] = useState<"protection" | "control" | "running">("protection");
+export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any) {
+  const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
+  
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const qrUrl = tag ? `${baseUrl}/equipment/${tag}` : '';
 
   const SectionHeader = ({ icon: Icon, title, subtitle }: any) => (
     <div className="flex items-center gap-3 mb-4 pb-2 border-b border-white/10">
@@ -97,7 +101,8 @@ export function EquipmentIdentityCard({ matrix, control, running, ar }: Protecti
         {[
           { id: "protection", icon: ShieldAlert, label: ar ? "مصفوفة الحماية" : "Protection Matrix" },
           { id: "control", icon: Settings2, label: ar ? "التحكم التشغيلي" : "Operating Control" },
-          { id: "running", icon: Activity, label: ar ? "بيانات التشغيل" : "Running Data" }
+          { id: "running", icon: Activity, label: ar ? "بيانات التشغيل" : "Running Data" },
+          { id: "qr", icon: QrCode, label: ar ? "رمز الاستجابة" : "Digital QR" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -194,6 +199,18 @@ export function EquipmentIdentityCard({ matrix, control, running, ar }: Protecti
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {activeTab === "qr" && (
+            <div className="glass-card p-6 border-l-2 border-l-primary/40 flex flex-col items-center text-center">
+              <SectionHeader icon={QrCode} title="Digital Identity QR" subtitle="Scan to access latest card" />
+              <div className="bg-white p-4 rounded-xl mb-4 shadow-inner">
+                {qrUrl && <QRCodeSVG value={qrUrl} size={140} />}
+              </div>
+              <p className="text-[10px] text-white/60 max-w-xs mx-auto italic">
+                Scanning this code from a mobile device opens the verified digital identity card for {tag || 'this unit'}.
+              </p>
             </div>
           )}
         </motion.div>
