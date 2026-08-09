@@ -16,6 +16,7 @@ import {
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
 import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
+import { N2PlantPage } from "@/components/maintenance/N2PlantPage";
 
 
 
