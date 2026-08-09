@@ -87,28 +87,15 @@ const Dashboard = () => {
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
-    const saved = sessionStorage.getItem("lifeco_dashboard_tab");
-    // Default to 'logs' if no tab or if it's the specific N2 case that we'll handle in standard rendering
-    return saved || "logs";
+    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
   });
   const [showN2LogSheets, setShowN2LogSheets] = useState(false);
 
   useEffect(() => {
-    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    const plant = sessionStorage.getItem("lifeco_plant");
-    if (tab === "logs" && plant === "N2-1") {
-      setShowN2LogSheets(true);
-    }
-  }, []);
-  // Force single tab mode only for specific modules from PlantModules
-  const [singleTabMode] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    // If we're coming from the unified "Operations & Records" tile (ops-logs), we show all tabs.
-    // If we're coming from a specific tile like "Permits", we focus only on that.
-    const isUnifiedView = sessionStorage.getItem("lifeco_module") === "ops-logs";
-    return tab !== null && tab !== "logs" && !isUnifiedView;
-  });
+    sessionStorage.setItem("lifeco_dashboard_tab", activeTab);
+    setShowN2LogSheets(activeTab === "nitrogen-logs");
+  }, [activeTab]);
+
 
 
   const isOperations = department?.id === "OPERATIONS";
@@ -541,7 +528,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`glass-card border border-border ${singleTabMode ? "hidden" : ""}`}>
+          <TabsList className="glass-card border border-border">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
@@ -552,8 +539,8 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
+              <TabsTrigger value="nitrogen-logs" className="gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
               </TabsTrigger>
             )}
             <TabsTrigger value="report" className="gap-1.5">
@@ -566,6 +553,7 @@ const Dashboard = () => {
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="logs" className="space-y-6 mt-4">
             {/* Entry Form - only show if today & not locked */}
@@ -762,10 +750,11 @@ const Dashboard = () => {
 
 
           {department.id === "NITROGEN" && (
-            <TabsContent value="nitrogen" className="mt-4">
-              <NitrogenLogSheets selectedDate={selectedDate} />
+            <TabsContent value="nitrogen-logs" className="mt-4">
+              <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
             </TabsContent>
           )}
+
 
           <TabsContent value="report" className="mt-4 space-y-4">
             <div className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
