@@ -22,37 +22,35 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
   const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const qrUrl = tag ? `${baseUrl}/equipment/${tag}` : '';
+  const qrUrl = tag ? `${baseUrl}/equipment/${tag}/pdf` : '';
 
-  const handleViewPDF = async () => {
-    const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
-    window.open(doc.output('bloburl'), '_blank');
+  const handleViewPDF = () => {
+    window.location.href = qrUrl;
   };
 
   const handleDownloadPDF = async () => {
     const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
-    doc.save(`${tag}-Equipment-Card.pdf`);
+    doc.save(`N2-1_${tag}_Equipment_Card.pdf`);
   };
 
   const handleSharePDF = async () => {
     const doc = await generateEquipmentPDF(fullData || { protection_matrix: matrix, operating_control: control, detailed_running_data: running }, tag);
     const blob = doc.output('blob');
-    const file = new File([blob], `${tag}-Equipment-Card.pdf`, { type: 'application/pdf' });
+    const filename = `N2-1_${tag}_Equipment_Card.pdf`;
+    const file = new File([blob], filename, { type: 'application/pdf' });
     
     if (navigator.share && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
           files: [file],
           title: `LIFECO Equipment Card: ${tag}`,
-          text: `Technical card for ${tag}`
+          text: `Official Technical Documentation for N2-1 ${tag}`
         });
       } catch (err) {
         console.error("Error sharing:", err);
       }
     } else {
-      // Fallback: copy link
-      navigator.clipboard.writeText(qrUrl);
-      alert("Link copied to clipboard! PDF sharing not supported on this browser.");
+      window.open(qrUrl, '_blank');
     }
   };
 

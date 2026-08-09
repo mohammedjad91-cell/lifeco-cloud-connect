@@ -20,7 +20,8 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   const tag = data?.equipment_tag;
   const plantCode = "N2-1";
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const shareUrl = `${baseUrl}/equipment/${tag}`;
+  const shareUrl = `${baseUrl}/equipment/${tag}/pdf`;
+  const appUrl = `${baseUrl}/equipment/${tag}`;
 
   const tabs = [
     { id: "identity", label: "IDENTITY", icon: Info },
@@ -31,22 +32,22 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
     { id: "documents", label: "DOCUMENTS", icon: FileText },
   ];
 
-  const handleViewPDF = async () => {
-    const doc = await generateEquipmentPDF(data, tag);
-    window.open(doc.output('bloburl'), '_blank');
+  const handleViewPDF = () => {
+    window.location.href = shareUrl;
   };
 
   const handleDownloadPDF = async () => {
     const doc = await generateEquipmentPDF(data, tag);
-    doc.save(`${tag}-Equipment-Card.pdf`);
+    doc.save(`N2-1_${tag}_Equipment_Card.pdf`);
   };
 
   const handleSharePDF = async () => {
     const doc = await generateEquipmentPDF(data, tag);
     const blob = doc.output('blob');
-    const file = new File([blob], `${tag}-Equipment-Card.pdf`, { type: 'application/pdf' });
+    const filename = `N2-1_${tag}_Equipment_Card.pdf`;
+    const file = new File([blob], filename, { type: 'application/pdf' });
     
-    if (navigator.share && navigator.canShare({ files: [file] })) {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
           files: [file],
@@ -54,11 +55,19 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
           text: `Technical card for ${tag}`
         });
       } catch (err) {
-        console.error("Error sharing:", err);
+        console.error("Error sharing file:", err);
+        try {
+          await navigator.share({
+            title: `LIFECO Equipment Card: ${tag}`,
+            url: shareUrl
+          });
+        } catch (sErr) {
+          console.error("Error sharing URL:", sErr);
+        }
       }
     } else {
       navigator.clipboard.writeText(shareUrl);
-      alert("Link copied to clipboard! PDF sharing not supported on this browser.");
+      alert("Link copied to clipboard! PDF file sharing not supported on this browser.");
     }
   };
 
