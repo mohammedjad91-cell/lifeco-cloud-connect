@@ -238,12 +238,6 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
                 </Tabs.Content>
 
                 <Tabs.Content value="protections" className="space-y-6 outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20 mb-4 flex items-center gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-500" />
-                    <p className="text-[10px] text-red-400/80 font-bold uppercase tracking-wider italic">
-                      Critical Safety Parameters - Unauthorized Modification Prohibited
-                    </p>
-                  </div>
                   <EquipmentIdentityCard 
                     matrix={matrix} 
                     control={control}

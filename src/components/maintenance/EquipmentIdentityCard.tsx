@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ShieldAlert, Gauge, Thermometer, Droplets, Zap, Activity, Clock, 
   Settings2, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2,
-  Info, BarChart3, AlertCircle, QrCode, FileType, Eye, Download, Share2
+  Info, BarChart3, AlertCircle, QrCode, FileType, Eye, Download, Share2,
+  Lock, Unlock, ShieldCheck
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,19 @@ interface ProtectionMatrixProps {
 
 export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullData }: ProtectionMatrixProps) {
   const [activeTab, setActiveTab] = useState<"protection" | "control" | "running" | "qr">("protection");
+  const [isLocked, setIsLocked] = useState(true);
+  const [passcode, setPasscode] = useState("");
+  const [showPasscodeDialog, setShowPasscodeDialog] = useState(false);
+
+  const handleUnlock = () => {
+    if (passcode === "9999") {
+      setIsLocked(false);
+      setShowPasscodeDialog(false);
+      setPasscode("");
+    } else {
+      alert(ar ? "رمز غير صحيح" : "Invalid Passcode");
+    }
+  };
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const pdfApiUrl = tag ? `${baseUrl}/api/public/equipment/${tag}/pdf` : '';
@@ -126,11 +141,17 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
                     <div className="text-[10px] text-white/60 mb-1">{label}</div>
                     <div className="flex justify-between gap-4">
                       <div className="flex flex-col">
-                        <span className="text-[8px] text-white/40 uppercase">Warning</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[8px] text-white/40 uppercase">Warning</span>
+                          <Lock className="w-2 h-2 text-white/20" />
+                        </div>
                         <span className="text-xs font-mono font-bold text-amber-400">{val.warning || "Pending"}</span>
                       </div>
                       <div className="flex flex-col text-right">
-                        <span className="text-[8px] text-white/40 uppercase">Shutdown</span>
+                        <div className="flex items-center justify-end gap-1">
+                          <Lock className="w-2 h-2 text-white/20" />
+                          <span className="text-[8px] text-white/40 uppercase">Shutdown</span>
+                        </div>
                         <span className="text-xs font-mono font-bold text-red-500">{val.shutdown || "Pending"}</span>
                       </div>
                     </div>
@@ -188,36 +209,81 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
           className="space-y-4"
         >
           {activeTab === "protection" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <ProtectionSection 
-                  title="Pressure Protection" 
-                  icon={<Gauge className="w-3.5 h-3.5"/>} 
-                  data={matrix?.pressure} 
-                />
-                <ProtectionSection 
-                  title="Temperature Protection" 
-                  icon={<Thermometer className="w-3.5 h-3.5"/>} 
-                  data={matrix?.temperature} 
-                  type="temperature"
-                />
+            <div className="space-y-4">
+              <div className="relative overflow-hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-pulse-slow">
+                <div className="absolute top-0 left-0 w-full h-full border-2 border-red-500/20 rounded-xl animate-ping opacity-20" />
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-3">
+                    <ShieldAlert className="w-5 h-5 text-red-500" />
+                    <p className="text-[10px] text-red-500 font-black uppercase tracking-[0.2em]">
+                      {ar ? "⚠️ معايير السلامة الحرجة - التعديل غير المصرح به ممنوع" : "⚠️ CRITICAL SAFETY PARAMETERS - UNAUTHORIZED MODIFICATION PROHIBITED"}
+                    </p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => isLocked ? setShowPasscodeDialog(true) : setIsLocked(true)}
+                    className={cn(
+                      "h-8 text-[9px] font-black uppercase tracking-widest border-red-500/30",
+                      isLocked ? "bg-red-500/10 text-red-500" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                    )}
+                  >
+                    {isLocked ? (
+                      <><Lock className="w-3 h-3 mr-2" /> {ar ? "فتح الإعدادات" : "Unlock Setpoints"}</>
+                    ) : (
+                      <><Unlock className="w-3 h-3 mr-2" /> {ar ? "قفل الإعدادات" : "Lock Setpoints"}</>
+                    )}
+                  </Button>
+                </div>
               </div>
-              <div className="space-y-4">
-                <ProtectionSection 
-                  title="Oil Protection" 
-                  icon={<Droplets className="w-3.5 h-3.5"/>} 
-                  data={matrix?.oil} 
-                />
-                <ProtectionSection 
-                  title="Motor & Starter" 
-                  icon={<Zap className="w-3.5 h-3.5"/>} 
-                  data={matrix?.motor_starter} 
-                />
-                <ProtectionSection 
-                  title="Condensate Drain" 
-                  icon={<Droplets className="w-3.5 h-3.5"/>} 
-                  data={matrix?.electronic_drain} 
-                />
+
+              {showPasscodeDialog && (
+                <div className="p-4 rounded-xl bg-slate-900 border border-white/10 flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex-1">
+                    <input 
+                      type="password" 
+                      placeholder="ENGINEER PASSCODE"
+                      value={passcode}
+                      onChange={(e) => setPasscode(e.target.value)}
+                      className="w-full bg-black/50 border border-white/20 rounded px-3 py-2 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                  <Button size="sm" onClick={handleUnlock}>VERIFY</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setShowPasscodeDialog(false)}>CANCEL</Button>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <ProtectionSection 
+                    title="Pressure Protection" 
+                    icon={<Gauge className="w-3.5 h-3.5"/>} 
+                    data={matrix?.pressure} 
+                  />
+                  <ProtectionSection 
+                    title="Temperature Protection" 
+                    icon={<Thermometer className="w-3.5 h-3.5"/>} 
+                    data={matrix?.temperature} 
+                    type="temperature"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <ProtectionSection 
+                    title="Oil Protection" 
+                    icon={<Droplets className="w-3.5 h-3.5"/>} 
+                    data={matrix?.oil} 
+                  />
+                  <ProtectionSection 
+                    title="Motor & Starter" 
+                    icon={<Zap className="w-3.5 h-3.5"/>} 
+                    data={matrix?.motor_starter} 
+                  />
+                  <ProtectionSection 
+                    title="Condensate Drain" 
+                    icon={<Droplets className="w-3.5 h-3.5"/>} 
+                    data={matrix?.electronic_drain} 
+                  />
+                </div>
               </div>
             </div>
           )}
