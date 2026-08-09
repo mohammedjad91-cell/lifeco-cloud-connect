@@ -979,6 +979,8 @@ const LabDashboard = () => {
             </div>
           </>
         ) : null}
+        </>
+        )}
       </main>
 
       <footer className="border-t border-border px-6 py-3 text-center">
