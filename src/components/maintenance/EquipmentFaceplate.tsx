@@ -304,7 +304,7 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
                       </h4>
                       <div className="bg-white p-6 rounded-2xl flex flex-col items-center justify-center border border-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
                          <div className="p-2 border-2 border-slate-100 rounded-xl">
-                           <EquipmentQRSection tag={tag} isAr={isAr} />
+                           <EquipmentQRSection tag={tag} assetName={data?.equipment_name || asset.asset_name || "ASSET"} plantCode={plantCode} />
                          </div>
                          <p className="text-[10px] text-black/60 font-black mt-4 uppercase tracking-[0.2em] text-center">
                            {isAr ? "امسح للوصول المباشر إلى سجلات الصيانة" : "Scan for Maintenance Records"}
