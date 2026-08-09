@@ -229,7 +229,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                         <DataField label="Element 2 Outlet Temperature" value={control.element_2_outlet_temp || "225 °C"} />
                         <DataField label="Element 2 Inlet Temperature" value={control.element_2_inlet_temp || "65 °C"} />
                         <DataField label="Oil Pressure" value={control.oil_pressure || "Pending Verification"} />
-                        <DataField label="Oil Temperature" value={control.oil_temperature || "Pending Verification"} />
+                        <DataField label="Oil Temperature" value={control.oil_temperature || "65 °C"} />
                         <DataField label="M1 Temperature" value={identity.m1_temperature || "Pending Verification"} />
                         <DataField label="M2 Temperature" value={identity.m2_temperature || "Pending Verification"} />
                         <DataField label="Outlet Pressure" value={identity.discharge_pressure || control.discharge_pressure || "9.1 bar"} />
