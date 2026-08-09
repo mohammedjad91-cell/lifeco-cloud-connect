@@ -3,9 +3,10 @@ import { Info, ShieldAlert, ArrowRight, Gauge, Layers, Droplets } from "lucide-r
 
 interface Props {
   lang: "ar" | "en";
+  onSelectEquipment?: (tag: string) => void;
 }
 
-export function PlantProcessOverview({ lang }: Props) {
+export function PlantProcessOverview({ lang, onSelectEquipment }: Props) {
   const isAr = lang === "ar";
 
   const flowSteps = [
@@ -59,7 +60,11 @@ export function PlantProcessOverview({ lang }: Props) {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {step.tags.map(tag => (
-                    <span key={tag} className="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-primary-foreground/70">
+                    <span 
+                      key={tag} 
+                      onClick={() => onSelectEquipment?.(tag)}
+                      className="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-primary-foreground/70 cursor-pointer hover:bg-primary/20 hover:border-primary/30 transition-colors"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -124,7 +129,10 @@ export function PlantProcessOverview({ lang }: Props) {
               2. NITROGEN GENERATION
             </h4>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-amber-500/5 rounded border border-amber-500/20">
+          <div 
+            onClick={() => onSelectEquipment?.("Nitrogen PSA Unit")}
+            className="flex items-center gap-3 p-3 bg-amber-500/5 rounded border border-amber-500/20 cursor-pointer hover:bg-amber-500/10 transition-colors"
+          >
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-mono text-amber-500 font-bold tracking-tighter">Nitrogen PSA Unit</span>
               <div className="text-[9px] text-amber-500/70 font-medium italic">
