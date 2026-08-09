@@ -174,7 +174,7 @@ const LabDashboard = () => {
             <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">
               {t.laboratory}
               {deptScope && ` — ${deptScope === "AMMONIA" ? "مختبر الأمونيا" : "مختبر اليوريا"}`}
-              {plantFilter && ` — ${PLANT_GROUPS.flatMap(g => g.plants).find(p => p.code === plantFilter)?.ar || plantFilter}`}
+              {plantFilter && ` — ${PLANT_GROUPS.flatMap((g: any) => g.plants).find((p: any) => p.code === plantFilter)?.ar || plantFilter}`}
             </p>
           </div>
         </div>
