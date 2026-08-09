@@ -38,6 +38,7 @@ import { Route as EquipmentTagRouteImport } from './routes/equipment/$tag'
 import { Route as DeptDeptIdRouteImport } from './routes/dept.$deptId'
 import { Route as ModulePlantCodeModuleKeyRouteImport } from './routes/module.$plantCode.$moduleKey'
 import { Route as EquipmentTagPdfRouteImport } from './routes/equipment.$tag.pdf'
+import { Route as ApiPublicEquipmentTagPdfRouteImport } from './routes/api/public/equipment.$tag.pdf'
 
 const UreaRoute = UreaRouteImport.update({
   id: '/urea',
@@ -185,6 +186,12 @@ const EquipmentTagPdfRoute = EquipmentTagPdfRouteImport.update({
   path: '/pdf',
   getParentRoute: () => EquipmentTagRoute,
 } as any)
+const ApiPublicEquipmentTagPdfRoute =
+  ApiPublicEquipmentTagPdfRouteImport.update({
+    id: '/api/public/equipment/$tag/pdf',
+    path: '/api/public/equipment/$tag/pdf',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/lab-reports/': typeof LabReportsIndexRoute
   '/equipment/$tag/pdf': typeof EquipmentTagPdfRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
+  '/api/public/equipment/$tag/pdf': typeof ApiPublicEquipmentTagPdfRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -247,6 +255,7 @@ export interface FileRoutesByTo {
   '/lab-reports': typeof LabReportsIndexRoute
   '/equipment/$tag/pdf': typeof EquipmentTagPdfRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
+  '/api/public/equipment/$tag/pdf': typeof ApiPublicEquipmentTagPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -279,6 +288,7 @@ export interface FileRoutesById {
   '/lab-reports/': typeof LabReportsIndexRoute
   '/equipment/$tag/pdf': typeof EquipmentTagPdfRoute
   '/module/$plantCode/$moduleKey': typeof ModulePlantCodeModuleKeyRoute
+  '/api/public/equipment/$tag/pdf': typeof ApiPublicEquipmentTagPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/lab-reports/'
     | '/equipment/$tag/pdf'
     | '/module/$plantCode/$moduleKey'
+    | '/api/public/equipment/$tag/pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/lab-reports'
     | '/equipment/$tag/pdf'
     | '/module/$plantCode/$moduleKey'
+    | '/api/public/equipment/$tag/pdf'
   id:
     | '__root__'
     | '/'
@@ -374,6 +386,7 @@ export interface FileRouteTypes {
     | '/lab-reports/'
     | '/equipment/$tag/pdf'
     | '/module/$plantCode/$moduleKey'
+    | '/api/public/equipment/$tag/pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -405,6 +418,7 @@ export interface RootRouteChildren {
   ModulesPlantCodeRoute: typeof ModulesPlantCodeRoute
   LabReportsIndexRoute: typeof LabReportsIndexRoute
   ModulePlantCodeModuleKeyRoute: typeof ModulePlantCodeModuleKeyRoute
+  ApiPublicEquipmentTagPdfRoute: typeof ApiPublicEquipmentTagPdfRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -612,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipmentTagPdfRouteImport
       parentRoute: typeof EquipmentTagRoute
     }
+    '/api/public/equipment/$tag/pdf': {
+      id: '/api/public/equipment/$tag/pdf'
+      path: '/api/public/equipment/$tag/pdf'
+      fullPath: '/api/public/equipment/$tag/pdf'
+      preLoaderRoute: typeof ApiPublicEquipmentTagPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -656,6 +677,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModulesPlantCodeRoute: ModulesPlantCodeRoute,
   LabReportsIndexRoute: LabReportsIndexRoute,
   ModulePlantCodeModuleKeyRoute: ModulePlantCodeModuleKeyRoute,
+  ApiPublicEquipmentTagPdfRoute: ApiPublicEquipmentTagPdfRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

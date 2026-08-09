@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 /**
  * Generates a professional engineering equipment technical card.
@@ -55,7 +56,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   };
 
   const addTable = (head: string[][], body: string[][], options = {}) => {
-    (doc as any).autoTable({
+    autoTable(doc, {
       head,
       body,
       startY: currentY,
@@ -188,7 +189,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
 
   // --- QR CODE IN PDF ---
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://lifeco-pms.lovable.app';
-  const qrUrl = `${baseUrl}/equipment/${tag}/pdf`;
+  const pdfUrl = `${baseUrl}/api/public/equipment/${tag}/pdf`;
   
   if (currentY > 230) { doc.addPage(); currentY = 20; }
   
@@ -206,7 +207,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   doc.setFontSize(6);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text(qrUrl, 105, currentY + 45, { align: "center" });
+  doc.text(pdfUrl, 105, currentY + 45, { align: "center" });
 
   // --- FOOTER ---
   const pageCount = (doc as any).internal.getNumberOfPages();
