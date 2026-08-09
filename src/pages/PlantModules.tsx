@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeptBg } from "@/lib/dept-backgrounds";
 import { getDepartmentById } from "@/lib/departments";
