@@ -96,8 +96,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   useEffect(() => {
     const handler = () => plant && setBg(getDeptBg(plant.department_key));
+    const eqHandler = () => setShowEquipmentRegister(true);
     window.addEventListener("lifeco:bg-changed", handler);
-    return () => window.removeEventListener("lifeco:bg-changed", handler);
+    window.addEventListener("lifeco:open-equipment", eqHandler);
+    return () => {
+      window.removeEventListener("lifeco:bg-changed", handler);
+      window.removeEventListener("lifeco:open-equipment", eqHandler);
+    };
   }, [plant]);
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
