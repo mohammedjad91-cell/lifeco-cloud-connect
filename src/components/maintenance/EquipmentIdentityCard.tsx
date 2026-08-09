@@ -29,34 +29,56 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
     window.open(pdfApiUrl, '_blank');
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (!pdfApiUrl) return;
-    const link = document.createElement('a');
-    link.href = pdfApiUrl;
-    link.download = `N2-1_${tag}_Equipment_Card.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      const response = await fetch(pdfApiUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `N2-1_${tag}_Equipment_Card.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback to direct link if fetch fails
+      window.open(pdfApiUrl, '_blank');
+    }
   };
 
   const handleSharePDF = async () => {
     if (!pdfApiUrl) return;
 
-    if (navigator.share) {
-      try {
+    try {
+      const response = await fetch(pdfApiUrl);
+      const blob = await response.blob();
+      const file = new File([blob], `N2-1_${tag}_Equipment_Card.pdf`, { type: 'application/pdf' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `LIFECO Equipment Card: ${tag}`,
+          text: `Official Technical Documentation for N2-1 ${tag}`,
+        });
+      } else if (navigator.share) {
+        // Fallback to sharing the URL if file sharing is not supported
         await navigator.share({
           title: `LIFECO Equipment Card: ${tag}`,
           text: `Official Technical Documentation for N2-1 ${tag}`,
           url: pdfApiUrl
         });
-      } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          console.error("Error sharing:", err);
-          navigator.clipboard.writeText(pdfApiUrl);
-        }
+      } else {
+        throw new Error("Sharing not supported");
       }
-    } else {
-      navigator.clipboard.writeText(pdfApiUrl);
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        console.error("Error sharing:", err);
+        navigator.clipboard.writeText(pdfApiUrl);
+        alert(ar ? "تم نسخ رابط PDF إلى الحافظة" : "PDF link copied to clipboard");
+      }
     }
   };
 

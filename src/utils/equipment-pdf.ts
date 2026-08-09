@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { autoTable } from "jspdf-autotable";
+import QRCode from "qrcode";
 
 /**
  * Generates a professional engineering equipment technical card.
@@ -193,21 +194,34 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   
   if (currentY > 230) { doc.addPage(); currentY = 20; }
   
-  // Render a placeholder for QR code in the PDF
-  // Note: For a real QR image, we would use doc.addImage() with a dataURL
-  doc.setDrawColor(200, 200, 200);
-  doc.rect(85, currentY, 40, 40);
+  try {
+    const qrDataUrl = await QRCode.toDataURL(pdfUrl, {
+      margin: 1,
+      width: 150,
+      color: {
+        dark: '#000000',
+        light: '#ffffff',
+      },
+    });
+    doc.addImage(qrDataUrl, "PNG", 85, currentY, 40, 40);
+  } catch (err) {
+    console.error("Failed to generate QR for PDF:", err);
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(85, currentY, 40, 40);
+  }
+
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.text("SCAN FOR LATEST", 105, currentY + 15, { align: "center" });
-  doc.text("EQUIPMENT PDF", 105, currentY + 20, { align: "center" });
+  doc.text("SCAN FOR LATEST", 105, currentY + 44, { align: "center" });
+  doc.text("EQUIPMENT PDF", 105, currentY + 48, { align: "center" });
   
   // URL Text
   doc.setFontSize(6);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text(pdfUrl, 105, currentY + 45, { align: "center" });
+  doc.text(pdfUrl, 105, currentY + 52, { align: "center" });
+  currentY += 60;
 
   // --- FOOTER ---
   const pageCount = (doc as any).internal.getNumberOfPages();
