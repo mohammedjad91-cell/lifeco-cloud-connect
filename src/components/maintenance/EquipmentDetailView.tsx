@@ -43,10 +43,10 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   }, [tag]);
 
   const tabs = [
-    { id: "identity", label: isAr ? "الهوية" : "IDENTITY", icon: Info },
-    { id: "process", label: isAr ? "العمليات" : "PROCESS", icon: Layers },
+    { id: "identity", label: isAr ? "بطاقة التعريف" : "IDENTITY", icon: Info },
     { id: "operating", label: isAr ? "التشغيل" : "OPERATING", icon: Activity },
-    { id: "protection", label: isAr ? "الحماية" : "PROTECTION", icon: ShieldAlert },
+    { id: "protection", label: isAr ? "الحماية والإنذارات" : "PROTECTION & ALARMS", icon: ShieldAlert },
+    { id: "process", label: isAr ? "العملية والتوصيلات" : "PROCESS & CONNECTIONS", icon: Layers },
     { id: "maintenance", label: isAr ? "الصيانة" : "MAINTENANCE", icon: Wrench },
     { id: "documents", label: isAr ? "الوثائق" : "DOCUMENTS", icon: FileText },
   ];
@@ -146,6 +146,9 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
               <h2 className="text-3xl font-black text-white tracking-tighter uppercase">
                 EQUIPMENT: <span className="text-primary">{tag}</span>
               </h2>
+              <div className="text-[10px] font-mono text-primary/60 font-bold tracking-widest mt-0.5 uppercase">
+                STATUS: {asset.status || "Pending Verification"}
+              </div>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} className="text-white/40 hover:text-white hover:bg-white/10 rounded-full h-12 w-12">
@@ -221,14 +224,23 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                   <SectionHeader title={isAr ? "البيانات التشغيلية" : "OPERATING DATA"} icon={Activity} />
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <DataField label="Operating Pressure" value={getCustomValue("Operating Pressure", control.operating_pressure || identity.discharge_pressure || "Pending Verification")} />
-                    <DataField label="Operating Temperature" value={identity.m1_temperature || "Pending Verification"} />
-                    <DataField label="Flow" value={running.flow || "Pending Verification"} />
-                    <DataField label="Normal Operating Range" value={identity.normal_operating_range} />
+                    <DataField label="Outlet Pressure" value={identity.discharge_pressure || "Pending Verification"} />
+                    <DataField label="M1 Temperature" value={identity.m1_temperature || "Pending Verification"} />
+                    <DataField label="M2 Temperature" value={identity.m2_temperature || "Pending Verification"} />
+                    <DataField label="Oil Pressure" value={control.oil_pressure || "Pending Verification"} />
+                    <DataField label="Oil Temperature" value={control.oil_temperature || "Pending Verification"} />
+                    <DataField label="Loading Status" value={running.loading_status || "Pending Verification"} />
+                    <DataField label="Unloading Status" value={running.unloading_status || "Pending Verification"} />
                     <DataField label="Running Hours" value={running.running_hours || asset.running_hours} />
                     <DataField label="Loaded Hours" value={running.loaded_hours || "Pending Verification"} />
-                    <DataField label="Operating Status" value={asset.status || identity.operating_status} />
-                    <DataField label="Operating Notes" value="Pending Verification" full />
+                    <DataField label="Start/Stop Status" value={asset.status || identity.operating_status} />
+                    <DataField label="Normal Operating Range" value={identity.normal_operating_range} />
                   </div>
+                  {tag.startsWith("60-1001") && (
+                    <div className="mt-4 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 text-[10px] text-amber-200/60 italic">
+                      M1/M2 = Pending Verification unless confirmed to match Element 1/2.
+                    </div>
+                  )}
                 </div>
               )}
 

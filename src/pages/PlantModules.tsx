@@ -18,8 +18,7 @@ import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverv
 import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
 import { N2PlantPage } from "@/components/maintenance/N2PlantPage";
 import { EquipmentDetailView } from "@/components/maintenance/EquipmentDetailView";
-
-
+import { N2EquipmentRegister } from "@/components/maintenance/N2EquipmentRegister";
 
 interface Plant {
   id: string;
@@ -38,7 +37,6 @@ const ICONS: Record<string, React.ReactNode> = {
   "lab-readings": <FlaskConical className="w-6 h-6" />,
   "lab-equipment": <Cog className="w-6 h-6" />,
   "chemical-store": <Package className="w-6 h-6" />,
-
   process: <Layers className="w-6 h-6" />,
   utilities: <Droplets className="w-6 h-6" />,
   documents: <FileText className="w-6 h-6" />,
@@ -66,7 +64,6 @@ const ICONS: Record<string, React.ReactNode> = {
   history: <HistoryIcon className="w-6 h-6" />,
 };
 
-
 const SIMPLE_MODULES: PlantModule[] = [
   { key: "ops-logs", label: "Operations & Records", labelAr: "السجلات والتشغيل" },
   { key: "lab-readings", label: "Lab Readings", labelAr: "قراءات المعمل" },
@@ -78,51 +75,13 @@ const SIMPLE_MODULES: PlantModule[] = [
   { key: "general-info", label: "General Information", labelAr: "المعلومات العامة" },
 ];
 
-const OPS_TAB: Record<string, string> = {
-  "ops-logs": "logs",
-  "ops-fieldops": "fieldOps",
-  "ops-maintenance": "assets",
-  "ops-report": "report",
-  "ops-ots": "ots",
-  "ops-analytics": "analytics",
-};
-
-
-// خانات خاصة بإدارة المعمل فقط
-const LAB_MODULES: PlantModule[] = [
-  { key: "lab", label: "Samples & Results", labelAr: "العينات والنتائج" },
-  { key: "lab-reports", label: "Laboratory Reports", labelAr: "تقارير المعمل" },
-];
-
-// معمل الأمونيا / معمل اليوريا — يفتح مباشرة على العينات والنتائج الخاصة بالإدارة
-const LAB_AMM_MODULES: PlantModule[] = [
-  { key: "lab-dept-ammonia", label: "Ammonia Samples & Results", labelAr: "عينات ونتائج الأمونيا" },
-];
-const LAB_UREA_MODULES: PlantModule[] = [
-  { key: "lab-dept-urea", label: "Urea Samples & Results", labelAr: "عينات ونتائج اليوريا" },
-];
-
-// معدات المختبر (المعدات المستخدمة داخل المعمل فقط)
-const LAB_EQUIPMENT_MODULES: PlantModule[] = [
-  { key: "lab-equipment", label: "Laboratory Equipment", labelAr: "معدات المختبر" },
-];
-
-// المخزن الكيميائي (قائمة تخزين المواد)
-const LAB_CHEM_MODULES: PlantModule[] = [
-  { key: "chemical-store", label: "Chemical Store", labelAr: "المخزن الكيميائي" },
-];
-
-
-
-
-
-
 const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const navigate = useNavigate();
   const { lang } = useI18n();
   const [plant, setPlant] = useState<Plant | null>(null);
   const [bg, setBg] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showEquipmentRegister, setShowEquipmentRegister] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -137,90 +96,48 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
   useEffect(() => {
     const handler = () => plant && setBg(getDeptBg(plant.department_key));
+    const eqHandler = () => setShowEquipmentRegister(true);
     window.addEventListener("lifeco:bg-changed", handler);
-    return () => window.removeEventListener("lifeco:bg-changed", handler);
+    window.addEventListener("lifeco:open-equipment", eqHandler);
+    return () => {
+      window.removeEventListener("lifeco:bg-changed", handler);
+      window.removeEventListener("lifeco:open-equipment", eqHandler);
+    };
   }, [plant]);
 
   const dept = plant ? getDepartmentById(plant.department_key) : null;
   const bgImage = bg || heroPlant;
-  // خانة التشغيل متاحة فقط لمصانع الأمونيا واليوريا (والمعمل له خاناته)
   const OPS_DEPTS = ["AMMONIA", "UREA"];
   const deptKey = plant?.department_key || "";
-  const modules =
-    deptKey === "LAB"
-      ? plantCode === "LAB-EQ"
-        ? LAB_EQUIPMENT_MODULES
-        : plantCode === "LAB-CHEM"
-          ? LAB_CHEM_MODULES
-          : plantCode === "LAB-AMM"
-            ? LAB_AMM_MODULES
-            : plantCode === "LAB-UREA"
-              ? LAB_UREA_MODULES
-              : LAB_MODULES
-      : OPS_DEPTS.includes(deptKey)
-        ? SIMPLE_MODULES
-        : [];
-
-
+  
+  const modules = OPS_DEPTS.includes(deptKey) ? SIMPLE_MODULES : [];
 
   const openModule = (m: PlantModule) => {
     const key = m.key.toLowerCase();
-    const name = m.label.toLowerCase();
-    const text = `${key} ${name}`;
-    const departmentKey = plant?.department_key || sessionStorage.getItem("lifeco_dept") || "AMMONIA";
+    const departmentKey = plant?.department_key || "AMMONIA";
 
     sessionStorage.setItem("lifeco_plant", plantCode);
     sessionStorage.setItem("lifeco_dept", departmentKey);
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
-    // Direct Navigation for specific Plant Modules
-    const plantWorkspaces: Record<string, string> = {
-      "permits": "permits",
-      "maintenance": "maintenance",
-      "history": "form-history",
-      "documents": "digital-library",
-      "general-info": "overview"
-    };
-
-    if (plantWorkspaces[key]) {
-      // Some specialized routes exist outside ModuleWorkspace
-      if (key === "documents") {
-        navigate(`/dept/${deptKey}/library`);
-        return;
-      }
-      if (key === "general-info") {
-        navigate("/overview");
-        return;
-      }
-      
-      navigate(`/module/${plantCode}/${plantWorkspaces[key]}`);
-      return;
-    }
-
-    // Unified view for Operations, Logs, Records, etc.
-    const dashboardTabs: Record<string, string> = {
-      "ops-logs": "logs",
-      "lab-readings": "labReadings",
-      "safety": "report",
-      "reports": "analytics",
-    };
-
-    if (dashboardTabs[key]) {
-      sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
+    if (key === "ops-logs" && plantCode === "N2-1") {
+      // In N2-1, we open a specialized dashboard view where we can also see the equipment button.
+      sessionStorage.setItem("lifeco_dashboard_tab", "logs");
       navigate("/dashboard");
       return;
     }
 
+    const plantWorkspaces: Record<string, string> = {
+      "work-permit": "work-permit",
+      "electrical-permit": "electrical-work-permit",
+      "work-request": "work-request",
+      "maintenance": "maintenance",
+      "form-history": "form-history",
+    };
 
-
-    if (key === "maintenance") {
-      navigate(`/module/${plantCode}/work-request`);
-      return;
-    }
-
-    if (key === "history") {
-      navigate(`/module/${plantCode}/form-history`);
+    if (plantWorkspaces[key]) {
+      navigate(`/module/${plantCode}/${plantWorkspaces[key]}`);
       return;
     }
 
@@ -229,38 +146,19 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       return;
     }
 
+    const dashboardTabs: Record<string, string> = {
+      "ops-logs": "logs",
+      "lab-readings": "labReadings",
+    };
 
-    if (key === "lab") {
-      sessionStorage.setItem("lifeco_lab_tab", "samples");
-      sessionStorage.removeItem("lifeco_lab_plant");
-      sessionStorage.removeItem("lifeco_lab_dept");
-      navigate("/lab");
-      return;
-    }
-
-    if (
-      text.includes("document") || text.includes("manual") || text.includes("drawing") ||
-      text.includes("archive") || text.includes("library") || text.includes("photo") ||
-      text.includes("video") || text.includes("certificate") || text.includes("datasheet") ||
-      text.includes("procedure") || text.includes("standard") || text.includes("msds") ||
-      key === "sop" || key === "pfd" || key === "pid" || key === "pdf" || key === "documents"
-    ) {
-      sessionStorage.setItem("lifeco_library_category", key === "documents" ? "manuals" : key);
-      navigate("/digital-library");
-      return;
-    }
-
-    if (m.route) {
-      navigate(m.route.split("#")[0]);
+    if (dashboardTabs[key]) {
+      sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
+      navigate("/dashboard");
       return;
     }
 
     navigate(`/module/${plantCode}/${encodeURIComponent(m.key)}`);
   };
-
-
-
-
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
@@ -308,27 +206,6 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
       <div className="flex-1 px-4 pb-10 relative z-10">
         <div className="max-w-5xl mx-auto space-y-8">
-          {plantCode === "N2-1" && (
-            <>
-              <N2PlantPage plantCode={plantCode} lang={lang as any} />
-              <div className="space-y-12">
-                <PlantProcessOverview lang={lang as any} onSelectEquipment={setSelectedTag} />
-                <NitrogenGenerationProcess lang={lang as any} onSelectEquipment={setSelectedTag} />
-              </div>
-              
-              <AnimatePresence>
-                {selectedTag && (
-                  <EquipmentDetailView 
-                    tag={selectedTag} 
-                    plantCode={plantCode} 
-                    lang={lang as any} 
-                    onClose={() => setSelectedTag(null)} 
-                  />
-                )}
-              </AnimatePresence>
-            </>
-          )}
-
           <div className="max-w-3xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {modules.map((m, i) => (
@@ -363,10 +240,27 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
               </div>
             )}
           </div>
+
+          <AnimatePresence>
+            {showEquipmentRegister && plantCode === "N2-1" && (
+              <N2EquipmentRegister 
+                plantCode={plantCode} 
+                lang={lang as any} 
+                onSelectEquipment={(tag) => setSelectedTag(tag)}
+                onClose={() => setShowEquipmentRegister(false)}
+              />
+            )}
+            {selectedTag && (
+              <EquipmentDetailView 
+                tag={selectedTag} 
+                plantCode={plantCode} 
+                lang={lang as any} 
+                onClose={() => setSelectedTag(null)} 
+              />
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-
     </div>
   );
 };
