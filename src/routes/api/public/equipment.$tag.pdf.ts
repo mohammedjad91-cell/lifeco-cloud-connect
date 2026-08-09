@@ -21,21 +21,25 @@ export const Route = createFileRoute('/api/public/equipment/$tag/pdf')({
           }
 
           const doc = await generateEquipmentPDF(assetData, tag);
-          const pdfBuffer = doc.output('arraybuffer');
+          // jsPDF .output('arraybuffer') works in most environments
+          const pdfData = doc.output('arraybuffer');
           
-          return new Response(pdfBuffer, {
+          return new Response(pdfData, {
             headers: {
               'Content-Type': 'application/pdf',
               'Content-Disposition': `inline; filename="N2-1_${tag}_Equipment_Card.pdf"`,
-              'Cache-Control': 'public, max-age=3600'
+              'Cache-Control': 'no-cache'
             }
           });
           
         } catch (err: any) {
+          // Provide more detail in the response for debugging if needed
+          const errorMsg = err instanceof Error ? err.message : String(err);
           console.error("PDF generation failed:", err);
-          return new Response("Failed to generate official equipment PDF.", { status: 500 });
+          return new Response(`PDF generation failed: ${errorMsg}`, { status: 500 });
         }
       }
     }
   }
 })
+
