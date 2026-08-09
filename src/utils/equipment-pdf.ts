@@ -1,8 +1,5 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { QRCodeSVG } from "qrcode.react";
-import ReactDomServer from "react-dom/server";
-import React from "react";
 
 /**
  * Generates a professional engineering equipment technical card.
