@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LogOut, Plus, FileDown, FileSpreadsheet, Clock, Tag, Hash, CheckCircle,
   Loader2, Trash2, Edit2, Lock, CalendarIcon, History, BarChart3, Globe, User, FlaskConical,
-  Wrench, Sparkles, FileText, AlertCircle, Inbox, ClipboardCheck,
+  Wrench, Sparkles, FileText, AlertCircle, Inbox, ClipboardCheck, Cog,
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
