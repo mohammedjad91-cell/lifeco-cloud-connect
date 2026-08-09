@@ -180,8 +180,8 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   doc.rect(85, currentY, 40, 40);
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(7);
-  doc.text("SCAN FOR LATEST", 105, currentY + 18, { align: "center" });
-  doc.text("EQUIPMENT PDF", 105, currentY + 22, { align: "center" });
+  doc.text("SCAN FOR LATEST OFFICIAL", 105, currentY + 18, { align: "center" });
+  doc.text("ENGINEERING PDF", 105, currentY + 22, { align: "center" });
   
   // Actually render a QR placeholder text to be scanned if scanned from paper
   doc.setFontSize(6);
