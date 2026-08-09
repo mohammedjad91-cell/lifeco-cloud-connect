@@ -309,9 +309,10 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mb-8"
+              className="mb-8 space-y-12"
             >
               <PlantProcessOverview lang={lang as any} />
+              <NitrogenGenerationProcess lang={lang as any} />
             </motion.div>
           )}
 
