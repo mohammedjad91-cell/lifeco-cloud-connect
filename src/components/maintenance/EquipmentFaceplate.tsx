@@ -115,7 +115,10 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
                 variant="ghost" 
                 size="icon" 
                 className="text-white/40 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg h-9 w-9 transition-colors"
-                onClick={() => window.open(`/equipment/${tag}`, '_blank')}
+                onClick={() => {
+                  const url = `/equipment/${tag}`;
+                  window.open(url, '_blank');
+                }}
                 title="Expand to Full Page View"
               >
                 <Maximize2 className="w-4 h-4" />
