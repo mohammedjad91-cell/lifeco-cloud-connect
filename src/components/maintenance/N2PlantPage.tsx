@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Gauge, Layers, Droplets, ArrowRight, Settings2, ShieldAlert, Activity, FileText, Wrench, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,15 @@ interface Props {
 export function N2PlantPage({ plantCode, lang }: Props) {
   const isAr = lang === "ar";
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleOpenEquipment = (e: any) => {
+      console.log("N2PlantPage: local handler for", e.detail?.tag);
+      setSelectedTag(e.detail?.tag);
+    };
+    window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
+    return () => window.removeEventListener('lifeco:open-equipment', handleOpenEquipment);
+  }, []);
 
   const tabs = [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview" },
