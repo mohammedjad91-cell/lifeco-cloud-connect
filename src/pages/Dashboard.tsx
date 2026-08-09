@@ -528,7 +528,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`glass-card border border-border ${singleTabMode ? "hidden" : ""}`}>
+          <TabsList className="glass-card border border-border">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
@@ -539,8 +539,8 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
+              <TabsTrigger value="nitrogen-logs" className="gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
               </TabsTrigger>
             )}
             <TabsTrigger value="report" className="gap-1.5">
@@ -553,6 +553,7 @@ const Dashboard = () => {
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="logs" className="space-y-6 mt-4">
             {/* Entry Form - only show if today & not locked */}
