@@ -41,8 +41,9 @@ export function EquipmentIdentityCard({ matrix, control, running, ar }: Protecti
     </div>
   );
 
-  const ProtectionSection = ({ title, data, icon }: any) => {
+  const ProtectionSection = ({ title, data, icon, type }: any) => {
     if (!data) return null;
+    
     return (
       <div className="glass-card p-4 border-l-2 border-l-primary/40">
         <div className="flex items-center gap-2 mb-3 text-xs font-bold text-primary uppercase">
@@ -51,16 +52,37 @@ export function EquipmentIdentityCard({ matrix, control, running, ar }: Protecti
         <div className="space-y-1">
           {Object.entries(data).map(([key, val]: [string, any]) => {
             const label = key.replace(/_/g, ' ').toUpperCase();
-            if (typeof val === 'object' && val !== null) {
+            
+            // Check for nested warning/shutdown structure
+            if (val && typeof val === 'object' && !Array.isArray(val)) {
+              if (val.warning || val.shutdown) {
+                return (
+                  <div key={key} className="py-2 border-b border-white/5 last:border-0">
+                    <div className="text-[10px] text-white/60 mb-1">{label}</div>
+                    <div className="flex justify-between gap-4">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-white/40 uppercase">Warning</span>
+                        <span className="text-xs font-mono font-bold text-amber-400">{val.warning || "Pending"}</span>
+                      </div>
+                      <div className="flex flex-col text-right">
+                        <span className="text-[8px] text-white/40 uppercase">Shutdown</span>
+                        <span className="text-xs font-mono font-bold text-red-500">{val.shutdown || "Pending"}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              
               return (
                 <DataRow 
                   key={key} 
                   label={label} 
-                  value={val.factory} 
+                  value={val.factory || val.value || "Pending"} 
                   subValue={val.max ? `Max: ${val.max}` : undefined} 
                 />
               );
             }
+            
             return <DataRow key={key} label={label} value={val} />;
           })}
         </div>
@@ -111,6 +133,7 @@ export function EquipmentIdentityCard({ matrix, control, running, ar }: Protecti
                   title="Temperature Protection" 
                   icon={<Thermometer className="w-3.5 h-3.5"/>} 
                   data={matrix?.temperature} 
+                  type="temperature"
                 />
               </div>
               <div className="space-y-4">
