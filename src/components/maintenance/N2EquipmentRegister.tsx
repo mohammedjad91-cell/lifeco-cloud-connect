@@ -58,7 +58,7 @@ export function N2EquipmentRegister({ plantCode, lang, onSelectEquipment, onClos
               <button
                 key={eq.tag}
                 onClick={() => {
-                  onSelectEquipment(eq.tag);
+                  window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: eq.tag } }));
                 }}
                 className="glass-card p-6 text-left hover:border-primary/50 hover:bg-primary/5 transition-all group flex items-center justify-between border border-white/10"
               >

@@ -60,7 +60,10 @@ export function N2PlantPage({ plantCode, lang }: Props) {
           {["60-1001A", "60-1001B", "60-1001C"].map(tag => (
             <div 
               key={tag} 
-              onClick={() => setSelectedTag(tag)}
+              onClick={() => {
+                console.log("Dispatching lifeco:open-equipment for", tag);
+                window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag } }));
+              }}
               className="px-4 py-2 rounded bg-primary/10 border border-primary/30 text-primary font-mono text-sm cursor-pointer hover:bg-primary/20 transition-all hover:scale-105"
             >
               {tag}
@@ -68,7 +71,7 @@ export function N2PlantPage({ plantCode, lang }: Props) {
           ))}
           <div className="text-white/30">↓</div>
           <div 
-            onClick={() => setSelectedTag("60-2002")}
+            onClick={() => window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: "60-2002" } }))}
             className="px-4 py-2 rounded bg-white/5 border border-white/20 text-white font-mono text-sm cursor-pointer hover:bg-white/10 transition-all hover:scale-105"
           >
             60-2002
@@ -78,7 +81,7 @@ export function N2PlantPage({ plantCode, lang }: Props) {
             {["60-2201", "60-2202"].map(tag => (
               <div 
                 key={tag}
-                onClick={() => setSelectedTag(tag)}
+                onClick={() => window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag } }))}
                 className="px-4 py-2 rounded bg-white/5 border border-white/20 text-white font-mono text-sm cursor-pointer hover:bg-white/10 transition-all hover:scale-105"
               >
                 {tag}
@@ -87,7 +90,7 @@ export function N2PlantPage({ plantCode, lang }: Props) {
           </div>
           <div className="text-white/30">↓</div>
           <div 
-            onClick={() => setSelectedTag("60-2003")}
+            onClick={() => window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: "60-2003" } }))}
             className="px-4 py-2 rounded bg-white/5 border border-white/20 text-white font-mono text-sm cursor-pointer hover:bg-white/10 transition-all hover:scale-105"
           >
             60-2003
@@ -96,14 +99,14 @@ export function N2PlantPage({ plantCode, lang }: Props) {
           <div className="px-4 py-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-500 font-mono text-sm">MAIN HEADER</div>
           <div className="text-white/30">↓</div>
           <div 
-            onClick={() => setSelectedTag("04-04")}
+            onClick={() => window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: "04-04" } }))}
             className="px-4 py-2 rounded bg-white/5 border border-white/20 text-white font-mono text-sm cursor-pointer hover:bg-white/10 transition-all hover:scale-105"
           >
             04-04
           </div>
           <div className="flex gap-16 mt-4 border-t border-white/10 pt-4 w-full justify-center">
             <div 
-              onClick={() => setSelectedTag("Nitrogen PSA Unit")}
+              onClick={() => window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: "Nitrogen PSA Unit" } }))}
               className="px-4 py-2 rounded bg-primary/10 border border-primary/30 text-primary font-mono text-sm cursor-pointer hover:bg-primary/20 transition-all hover:scale-105"
             >
               PSA
