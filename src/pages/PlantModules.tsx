@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
+import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
 
 
 
@@ -308,9 +309,10 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mb-8"
+              className="mb-8 space-y-12"
             >
               <PlantProcessOverview lang={lang as any} />
+              <NitrogenGenerationProcess lang={lang as any} />
             </motion.div>
           )}
 
