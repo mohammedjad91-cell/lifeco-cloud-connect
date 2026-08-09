@@ -120,19 +120,22 @@ export function PlantProcessOverview({ lang }: Props) {
         >
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-bold text-amber-500 flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4" />
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
               2. NITROGEN GENERATION
             </h4>
           </div>
           <div className="flex items-center gap-3 p-3 bg-amber-500/5 rounded border border-amber-500/20">
-            <div className="text-xs text-amber-500/70 font-medium italic">
-              → Equipment Identification Pending
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-mono text-amber-500 font-bold tracking-tighter">Nitrogen PSA Unit</span>
+              <div className="text-[9px] text-amber-500/70 font-medium italic">
+                {isAr ? "في انتظار التحقق من البيانات الفنية" : "Pending Technical Verification"}
+              </div>
             </div>
           </div>
           <p className="mt-4 text-[10px] text-white/40 leading-relaxed">
             {isAr
-              ? "لم يتم تحديد معدات توليد النيتروجين في الوثائق المتاحة بعد. لا توجد اتصالات مؤكدة حالياً."
-              : "Downstream nitrogen equipment not yet identified in available documentation. No confirmed connections."}
+              ? "يتم تزويد وحدة PSA بالهواء من 60-2003 لإنتاج النيتروجين. (Status: Pending Tag Verification)"
+              : "PSA unit supplied with air from 60-2003 to produce Nitrogen. (Status: Pending Tag Verification)"}
           </p>
         </motion.div>
       </div>

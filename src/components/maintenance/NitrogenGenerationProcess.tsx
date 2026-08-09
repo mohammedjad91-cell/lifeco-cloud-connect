@@ -56,8 +56,8 @@ export function NitrogenGenerationProcess({ lang }: Props) {
             <p className="text-sm font-bold text-amber-500">Nitrogen Generation</p>
           </div>
           <div className="glass-card p-4">
-            <p className="text-[10px] text-white/40 uppercase mb-1">{isAr ? "حالة المعدات downstream" : "Downstream Status"}</p>
-            <p className="text-sm font-bold text-amber-500/70 italic">Pending Equipment Identification</p>
+            <p className="text-[10px] text-white/40 uppercase mb-1">{isAr ? "معدات توليد النيتروجين" : "Nitrogen Generation Equipment"}</p>
+            <p className="text-sm font-bold text-amber-500">Nitrogen PSA Unit</p>
           </div>
         </div>
       </section>
@@ -76,8 +76,8 @@ export function NitrogenGenerationProcess({ lang }: Props) {
               <span className="font-bold text-amber-500 uppercase tracking-widest text-xs">NITROGEN GENERATION</span>
             </div>
             <ArrowRight className="w-6 h-6 text-white/20 rotate-90" />
-            <div className="px-6 py-3 glass-card border-white/10 bg-white/5 border-dashed">
-              <span className="text-white/30 italic text-xs">Equipment Pending Identification</span>
+            <div className="px-6 py-3 glass-card border-amber-500/50 bg-amber-500/10">
+              <span className="text-amber-500 font-bold text-xs">Nitrogen PSA Unit</span>
             </div>
           </div>
         </div>
@@ -101,13 +101,29 @@ export function NitrogenGenerationProcess({ lang }: Props) {
         <h3 className="text-lg font-bold text-white/80 border-b border-white/5 pb-2">
           4. EQUIPMENT REGISTER
         </h3>
-        <div className="glass-card p-8 border-dashed border-white/10 flex flex-col items-center justify-center text-center">
-          <h4 className="text-white/80 font-bold mb-2">Nitrogen Generation Equipment</h4>
-          <p className="text-xs text-white/40 max-w-md italic">
-            {isAr 
-              ? "لا تضف أي معدات حتى يتم تحديد الـTags الحقيقية من المخططات المعتمدة."
-              : "No equipment records available. Awaiting official tag identification from GIS/P&ID."}
-          </p>
+        <div className="glass-card overflow-hidden">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-white/5 text-white/40 uppercase">
+              <tr>
+                <th className="p-3 font-bold">{isAr ? "التاج" : "Tag"}</th>
+                <th className="p-3 font-bold">{isAr ? "الاسم" : "Name"}</th>
+                <th className="p-3 font-bold">{isAr ? "النوع" : "Type"}</th>
+                <th className="p-3 font-bold">{isAr ? "الحالة" : "Status"}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              <tr>
+                <td className="p-3 font-mono text-amber-500">Nitrogen PSA Unit</td>
+                <td className="p-3 text-white/80">PSA Nitrogen Generator</td>
+                <td className="p-3 text-white/60">PSA Unit</td>
+                <td className="p-3">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[10px]">
+                    Pending Verification
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -138,7 +154,8 @@ export function NitrogenGenerationProcess({ lang }: Props) {
         <ul className="text-[10px] text-red-500/70 list-disc list-inside space-y-1">
           <li>{isAr ? "ممنوع استخدام PSA-1 كمعدة تشغيلية." : "Do not use PSA-1 as an operational asset."}</li>
           <li>{isAr ? "لا تعد المعدات المؤرشفة للعمل." : "Do not restore archived legacy equipment."}</li>
-          <li>{isAr ? "ممنوع إنشاء Tags وهمية أو تخمينية." : "No creation of speculative or placeholder Tags (PSA-01, K-101, etc)."}</li>
+          <li>{isAr ? "إذا لم يوجد Tag حقيقي للـPSA، استخدم Nitrogen PSA Unit." : "Use 'Nitrogen PSA Unit' if no official tag is found."}</li>
+          <li>{isAr ? "كل البيانات غير الموثقة تبقي Pending Verification." : "All unverified data remains 'Pending Verification'."}</li>
         </ul>
       </section>
     </div>
