@@ -53,6 +53,13 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
             />
           </div>
         </div>
+        <EquipmentFaceplate
+          tag={selectedEquipment || ""}
+          plantCode={plantCode}
+          lang={lang}
+          open={!!selectedEquipment}
+          onOpenChange={(open) => !open && setSelectedEquipment(null)}
+        />
       </div>
     );
   }
@@ -108,6 +115,13 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
             </div>
           </div>
         </div>
+        <EquipmentFaceplate
+          tag={selectedEquipment || ""}
+          plantCode={plantCode}
+          lang={lang}
+          open={!!selectedEquipment}
+          onOpenChange={(open) => !open && setSelectedEquipment(null)}
+        />
       </div>
     );
   }
