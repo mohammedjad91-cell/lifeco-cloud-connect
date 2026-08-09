@@ -356,7 +356,6 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                       )}
                     </div>
                   </div>
-                  </div>
                 </div>
               )}
 
