@@ -116,7 +116,7 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
 
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100 border border-slate-200">
+            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100 border border-slate-200 hidden">
               <ChevronLeft className="w-6 h-6 text-slate-900" />
             </Button>
             <div>
