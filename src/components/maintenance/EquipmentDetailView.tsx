@@ -277,16 +277,23 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                           </h4>
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OUTLET WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">14.0 bar(e)</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OUTLET SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">15.0 bar(e)</span>
+                              <span className="text-white/60">LOW PRESSURE SAFETY VALVE</span>
+                              <span className="font-mono font-bold text-white">3.7 bar(e)</span>
                             </div>
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
                               <span className="text-white/60">HIGH PRESSURE SAFETY VALVE</span>
                               <span className="font-mono font-bold text-white">11.0 bar(e)</span>
+                            </div>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">COMPRESSOR OUTLET PRESSURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">14.0 bar(e)</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">15.0 bar(e)</span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -295,29 +302,49 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                             <Thermometer className="w-4 h-4" /> TEMPERATURE PROTECTION
                           </h4>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 1 OUTLET WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">225°C</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">ELEMENT 1 OUTLET TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">225 °C</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">235 °C</span>
+                              </div>
                             </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 1 OUTLET SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">235°C</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">ELEMENT 2 OUTLET TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">225 °C</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">235 °C</span>
+                              </div>
                             </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 2 OUTLET WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">225°C</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">ELEMENT 2 INLET TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">65 °C</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">70 °C</span>
+                              </div>
                             </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 2 OUTLET SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">235°C</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 2 INLET WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">65°C</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 2 INLET SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">70°C</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">OIL TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">65 °C</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">70 °C</span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -328,21 +355,16 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                             <Droplets className="w-4 h-4" /> OIL PROTECTION
                           </h4>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OIL PRESSURE WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">1.3 bar(e)</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OIL PRESSURE SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">1.2 bar(e)</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OIL TEMPERATURE WARNING</span>
-                              <span className="font-mono font-bold text-amber-500">65°C</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">OIL TEMPERATURE SHUTDOWN</span>
-                              <span className="font-mono font-bold text-red-500">70°C</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">OIL PRESSURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500 text-xs">1.3 bar(e)</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40">Shutdown:</span>
+                                <span className="font-mono font-bold text-red-500 text-xs">1.2 bar(e)</span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -351,21 +373,27 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                             <AlertCircle className="w-4 h-4" /> MOTOR PROTECTION (PENDING VERIFICATION)
                           </h4>
                           <div className="space-y-2">
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">M1 TEMPERATURE WARNING</span>
-                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">M1 TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40 italic">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40 italic">Shutdown:</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                              </div>
                             </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">M1 TEMPERATURE SHUTDOWN</span>
-                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">M2 TEMPERATURE WARNING</span>
-                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">M2 TEMPERATURE SHUTDOWN</span>
-                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
+                              <span className="text-white/60 text-[10px]">M2 TEMPERATURE</span>
+                              <div className="flex justify-between">
+                                <span className="text-white/40 italic">Warning:</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/40 italic">Shutdown:</span>
+                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">Pending Verification</span>
+                              </div>
                             </div>
                             <div className="mt-4 p-3 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-200/60 leading-relaxed italic">
                               "M1/M2 are not assumed to correspond to Element 1/2 until verified from the actual local/DCS display."
