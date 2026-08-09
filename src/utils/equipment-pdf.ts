@@ -56,7 +56,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   };
 
   const addTable = (head: string[][], body: string[][], options = {}) => {
-    (doc as any).autoTable({
+    autoTable(doc, {
       head,
       body,
       startY: currentY,
