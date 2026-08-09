@@ -44,9 +44,10 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   const handleSharePDF = async () => {
     const doc = await generateEquipmentPDF(data, tag);
     const blob = doc.output('blob');
-    const file = new File([blob], `${tag}-Equipment-Card.pdf`, { type: 'application/pdf' });
+    const filename = `N2-1_${tag}_Equipment_Card.pdf`;
+    const file = new File([blob], filename, { type: 'application/pdf' });
     
-    if (navigator.share && navigator.canShare({ files: [file] })) {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
           files: [file],
@@ -54,11 +55,19 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
           text: `Technical card for ${tag}`
         });
       } catch (err) {
-        console.error("Error sharing:", err);
+        console.error("Error sharing file:", err);
+        try {
+          await navigator.share({
+            title: `LIFECO Equipment Card: ${tag}`,
+            url: shareUrl
+          });
+        } catch (sErr) {
+          console.error("Error sharing URL:", sErr);
+        }
       }
     } else {
       navigator.clipboard.writeText(shareUrl);
-      alert("Link copied to clipboard! PDF sharing not supported on this browser.");
+      alert("Link copied to clipboard! PDF file sharing not supported on this browser.");
     }
   };
 
