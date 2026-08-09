@@ -33,7 +33,8 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   ];
 
   const handleViewPDF = () => {
-    window.open(pdfApiUrl, '_blank');
+    const viewUrl = `${pdfApiUrl}?mode=view`;
+    window.open(viewUrl, '_blank');
   };
 
   const handleDownloadPDF = async () => {

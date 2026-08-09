@@ -93,8 +93,8 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   addSectionHeader("SECTION 3 — OPERATING DATA");
   const opBody = tag.startsWith("60-1001") ? [
     ["Operating Pressure", "9.1", "bar(e)", "Verified"],
-    ["M1 Temperature", data.m1_temperature || "Pending Verification", "°C", "Pending"],
-    ["M2 Temperature", data.m2_temperature || "Pending Verification", "°C", "Pending"],
+    ["M1 Temperature", "Pending Verification", "°C", "Pending"],
+    ["M2 Temperature", "Pending Verification", "°C", "Pending"],
     ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
     ["Loaded Hours", running.loaded_hours || "Pending Verification", "hrs", "Pending"]
   ] : [

@@ -5,7 +5,9 @@ import { generateEquipmentPDF } from '@/utils/equipment-pdf'
 export const Route = createFileRoute('/api/public/equipment/$tag/pdf')({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
+        const url = new URL(request.url);
+        const mode = url.searchParams.get('mode');
         const { tag } = params
         
         try {
@@ -27,7 +29,7 @@ export const Route = createFileRoute('/api/public/equipment/$tag/pdf')({
           return new Response(pdfData, {
             headers: {
               'Content-Type': 'application/pdf',
-              'Content-Disposition': `inline; filename="N2-1_${tag}_Equipment_Card.pdf"`,
+              'Content-Disposition': `${mode === 'view' ? 'inline' : 'attachment'}; filename="N2-1_${tag}_Equipment_Card.pdf"`,
               'Cache-Control': 'no-cache'
             }
           });

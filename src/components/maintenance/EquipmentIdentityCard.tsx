@@ -26,7 +26,8 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
 
   const handleViewPDF = () => {
     if (!pdfApiUrl) return;
-    window.open(pdfApiUrl, '_blank');
+    const viewUrl = `${pdfApiUrl}?mode=view`;
+    window.open(viewUrl, '_blank');
   };
 
   const handleDownloadPDF = async () => {
