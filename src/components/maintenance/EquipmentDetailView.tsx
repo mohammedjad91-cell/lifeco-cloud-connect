@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 
 import { EquipmentQRSection } from "@/components/equipment/EquipmentQRSection";
+import { EquipmentIdentityCard } from "@/components/maintenance/EquipmentIdentityCard";
 
 interface EquipmentDetailViewProps {
   tag: string;
@@ -272,188 +273,14 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                 <div className="space-y-8">
                   <SectionHeader title={isAr ? "نظام الحماية" : "PROTECTION SYSTEM"} icon={ShieldAlert} />
                   
-                  {/* Compressors specific protection view if tag matches */}
-                  {tag.startsWith("60-1001") ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-6">
-                        <div className="glass-card p-6 border-l-2 border-l-primary/40">
-                          <h4 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
-                            <Gauge className="w-4 h-4" /> PRESSURE PROTECTION
-                          </h4>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">LOW PRESSURE SAFETY VALVE</span>
-                              <span className="font-mono font-bold text-white">
-                                {matrix.pressure?.low_pressure_safety_valve || "3.7 bar(e)"}
-                              </span>
-                            </div>
-                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">HIGH PRESSURE SAFETY VALVE</span>
-                              <span className="font-mono font-bold text-white">
-                                {matrix.pressure?.high_pressure_safety_valve || "11.0 bar(e)"}
-                              </span>
-                            </div>
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">COMPRESSOR OUTLET PRESSURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.pressure?.outlet_pressure_warning || "14.0 bar(e)"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.pressure?.outlet_pressure_shutdown || "15.0 bar(e)"}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="glass-card p-6 border-l-2 border-l-amber-500/40">
-                          <h4 className="text-sm font-bold text-amber-500 mb-4 flex items-center gap-2">
-                            <Thermometer className="w-4 h-4" /> TEMPERATURE PROTECTION
-                          </h4>
-                          <div className="space-y-2">
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">ELEMENT 1 OUTLET TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.temperature?.element_1_outlet?.warning || "225 °C"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.temperature?.element_1_outlet?.shutdown || "235 °C"}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">ELEMENT 2 OUTLET TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.temperature?.element_2_outlet?.warning || "225 °C"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.temperature?.element_2_outlet?.shutdown || "235 °C"}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">ELEMENT 2 INLET TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.temperature?.element_2_inlet?.warning || "65 °C"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.temperature?.element_2_inlet?.shutdown || "70 °C"}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">OIL TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.temperature?.oil_temperature?.warning || "65 °C"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.temperature?.oil_temperature?.shutdown || "70 °C"}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="space-y-6">
-                        <div className="glass-card p-6 border-l-2 border-l-blue-500/40">
-                          <h4 className="text-sm font-bold text-blue-500 mb-4 flex items-center gap-2">
-                            <Droplets className="w-4 h-4" /> OIL PROTECTION
-                          </h4>
-                          <div className="space-y-2">
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">OIL PRESSURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500 text-xs">
-                                  {matrix.oil?.shutdown_warning || matrix.oil_protections?.[0]?.warning || "1.3 bar(e)"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40">Shutdown:</span>
-                                <span className="font-mono font-bold text-red-500 text-xs">
-                                  {matrix.oil?.shutdown || matrix.oil_protections?.[0]?.shutdown || "1.2 bar(e)"}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="glass-card p-6 border-l-2 border-l-red-500/40">
-                          <h4 className="text-sm font-bold text-red-500 mb-4 flex items-center gap-2">
-                            <AlertCircle className="w-4 h-4" /> MOTOR PROTECTION (PENDING VERIFICATION)
-                          </h4>
-                          <div className="space-y-2">
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">M1 TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40 italic">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
-                                  {matrix.temperature?.m1_temperature?.warning || "Pending Verification"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40 italic">Shutdown:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
-                                  {matrix.temperature?.m1_temperature?.shutdown || "Pending Verification"}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1 py-1 border-b border-white/5">
-                              <span className="text-white/60 text-[10px]">M2 TEMPERATURE</span>
-                              <div className="flex justify-between">
-                                <span className="text-white/40 italic">Warning:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
-                                  {matrix.temperature?.m2_temperature?.warning || "Pending Verification"}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-white/40 italic">Shutdown:</span>
-                                <span className="font-mono font-bold text-amber-500/70 italic text-xs">
-                                  {matrix.temperature?.m2_temperature?.shutdown || "Pending Verification"}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="mt-4 p-3 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-200/60 leading-relaxed italic">
-                              "M1/M2 are not assumed to correspond to Element 1/2 until verified from the actual local/DCS display."
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <DataField label="Alarm" value={identity.alarm} />
-                      <DataField label="Trip" value={identity.trip} />
-                      <DataField label="Interlock" value={identity.interlock} />
-                      <DataField label="Safety Valve" value={matrix.safety_valve || "Pending Verification"} />
-                      <DataField label="Warning Limits" value="Pending Verification" />
-                      <DataField label="Shutdown Limits" value="Pending Verification" />
-                      <DataField label="Protection Notes" value={matrix.notes || "Pending Verification"} full />
-                    </div>
-                  )}
+                  <EquipmentIdentityCard 
+                    matrix={matrix} 
+                    control={control}
+                    running={running}
+                    ar={isAr}
+                    tag={tag}
+                    fullData={fullData}
+                  />
                 </div>
               )}
 
@@ -467,28 +294,6 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                     <DataField label="Next Maintenance" value={asset.next_maintenance_at || "Pending Verification"} />
                     <DataField label="Inspection" value="Pending Verification" />
                     <DataField label="Maintenance Notes" value={identity.maintenance_notes} full />
-                    <div className="col-span-full space-y-4">
-                      <DataField label="Spare Parts" value="Pending Verification" />
-                      {(tag === "60-2201" || tag === "60-2202") && (
-                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-                          <div className="text-[10px] text-primary uppercase tracking-widest mb-2 font-bold">Vessel Configuration</div>
-                          <div className="text-sm text-white font-bold">Dual Vessel System (Vessel 1 & 2)</div>
-                        </div>
-                      )}
-                      {tag === "60-2003" && (
-                        <div className="p-4 rounded-lg bg-red-500/5 border border-red-500/20">
-                          <div className="text-[10px] text-red-500 uppercase tracking-widest mb-2 font-bold">Critical Consumers</div>
-                          <ul className="text-xs text-white/80 space-y-1 list-disc list-inside">
-                            <li>Ammonia Plant 1</li>
-                            <li>Ammonia Plant 2</li>
-                            <li>Ammonia Storage</li>
-                          </ul>
-                          <div className="mt-3 p-2 bg-red-500/10 rounded text-[10px] text-red-200 italic">
-                            Classification: Critical Continuous Service
-                          </div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               )}

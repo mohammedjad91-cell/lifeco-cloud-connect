@@ -238,6 +238,8 @@ export default function AssetRegister({ department }: Props) {
                     control={identityCards[a.id].operating_control}
                     running={identityCards[a.id].detailed_running_data}
                     ar={sessionStorage.getItem("lifeco_lang") === "ar"}
+                    tag={a.asset_code}
+                    fullData={identityCards[a.id]}
                   />
                 ) : (
                   <div className="p-3 rounded-lg bg-white/5 border border-white/5 text-[10px] text-white/40 italic">
