@@ -6,7 +6,7 @@ interface Props {
   onSelectEquipment?: (tag: string) => void;
 }
 
-export function NitrogenGenerationProcess({ lang }: Props) {
+export function NitrogenGenerationProcess({ lang, onSelectEquipment }: Props) {
   const isAr = lang === "ar";
 
   const documentationFields = [
@@ -114,7 +114,7 @@ export function NitrogenGenerationProcess({ lang }: Props) {
             </thead>
             <tbody className="divide-y divide-white/5">
               <tr>
-                <td className="p-3 font-mono text-amber-500">Nitrogen PSA Unit</td>
+                <td className="p-3 font-mono text-amber-500 cursor-pointer hover:underline" onClick={() => onSelectEquipment?.("Nitrogen PSA Unit")}>Nitrogen PSA Unit</td>
                 <td className="p-3 text-white/80">PSA Nitrogen Generator</td>
                 <td className="p-3 text-white/60">PSA Unit</td>
                 <td className="p-3">

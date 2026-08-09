@@ -17,6 +17,7 @@ import heroPlant from "@/assets/lifeco-hero-1.webp";
 import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
 import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
 import { N2PlantPage } from "@/components/maintenance/N2PlantPage";
+import { EquipmentDetailView } from "@/components/maintenance/EquipmentDetailView";
 
 
 
@@ -121,6 +122,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const { lang } = useI18n();
   const [plant, setPlant] = useState<Plant | null>(null);
   const [bg, setBg] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -307,7 +309,24 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
       <div className="flex-1 px-4 pb-10 relative z-10">
         <div className="max-w-5xl mx-auto space-y-8">
           {plantCode === "N2-1" && (
-            <N2PlantPage plantCode={plantCode} lang={lang as any} />
+            <>
+              <N2PlantPage plantCode={plantCode} lang={lang as any} />
+              <div className="space-y-12">
+                <PlantProcessOverview lang={lang as any} onSelectEquipment={setSelectedTag} />
+                <NitrogenGenerationProcess lang={lang as any} onSelectEquipment={setSelectedTag} />
+              </div>
+              
+              <AnimatePresence>
+                {selectedTag && (
+                  <EquipmentDetailView 
+                    tag={selectedTag} 
+                    plantCode={plantCode} 
+                    lang={lang as any} 
+                    onClose={() => setSelectedTag(null)} 
+                  />
+                )}
+              </AnimatePresence>
+            </>
           )}
 
           <div className="max-w-3xl mx-auto">
