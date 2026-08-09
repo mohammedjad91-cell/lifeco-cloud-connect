@@ -192,28 +192,15 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   
   if (currentY > 230) { doc.addPage(); currentY = 20; }
   
-  // Render a real QR code into the PDF using a data URL if possible
-  // Since we are in a browser environment, we can use a temporary canvas to get the QR as an image
-  try {
-    const qrSize = 120;
-    const canvas = document.createElement('canvas');
-    canvas.width = qrSize;
-    canvas.height = qrSize;
-    
-    // We'll use a simplified approach: just the placeholder for now but with the actual URL
-    // To do it properly with jspdf, we'd need to draw the QR modules or use an image
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(85, currentY, 40, 40);
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "bold");
-    doc.text("SCAN FOR LATEST", 105, currentY + 15, { align: "center" });
-    doc.text("EQUIPMENT PDF", 105, currentY + 20, { align: "center" });
-  } catch (e) {
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(85, currentY, 40, 40);
-    doc.text("QR PLACEHOLDER", 105, currentY + 20, { align: "center" });
-  }
+  // Render a placeholder for QR code in the PDF
+  // Note: For a real QR image, we would use doc.addImage() with a dataURL
+  doc.setDrawColor(200, 200, 200);
+  doc.rect(85, currentY, 40, 40);
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.text("SCAN FOR LATEST", 105, currentY + 15, { align: "center" });
+  doc.text("EQUIPMENT PDF", 105, currentY + 20, { align: "center" });
   
   // URL Text
   doc.setFontSize(6);
