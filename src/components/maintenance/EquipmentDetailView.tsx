@@ -86,6 +86,44 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   const control = data?.operating_control || {};
   const running = data?.detailed_running_data || {};
 
+  // Custom data overrides based on user instructions for specific tags
+  const getCustomValue = (field: string, defaultValue: any) => {
+    if (tag === "60-2002") {
+      if (field === "Function") return "Air Receiver / Buffer";
+      if (field === "Upstream") return "60-1001A/B/C";
+      if (field === "Downstream") return "60-2201 / 60-2202";
+      if (field === "Operating Pressure") return "approximately 9.1 bar";
+    }
+    if (tag === "60-2201" || tag === "60-2202") {
+      if (field === "Type") return "Dryer";
+      if (field === "Model") return "BD 1100 ZP";
+      if (field === "Vessel Count") return "2";
+      if (field === "Upstream") return "60-2002";
+      if (field === "Downstream") return "60-2003";
+    }
+    if (tag === "60-2003") {
+      if (field === "Type") return "Air Receiver / Distribution";
+      if (field === "Upstream") return "60-2201 / 60-2202";
+      if (field === "Function") return "Dry Air Buffer / Distribution";
+      if (field === "Service") return "Critical Instrument Air Distribution";
+    }
+    if (tag === "04-04") {
+      if (field === "Type") return "Control Valve";
+      if (field === "Service") return "Main Air Distribution";
+      if (field === "Upstream") return "60-2003";
+    }
+    if (tag === "Nitrogen PSA Unit") {
+      if (field === "Name") return "Nitrogen PSA Unit";
+      if (field === "Type") return "PSA Nitrogen Generator";
+      if (field === "Upstream") return "60-2003 → 04-04";
+      if (field === "Function") return "Nitrogen Generation";
+    }
+    if (tag.startsWith("60-1001")) {
+      if (field === "Operating Pressure") return "approximately 9.1 bar";
+    }
+    return defaultValue;
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
