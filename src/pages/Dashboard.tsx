@@ -86,8 +86,19 @@ const Dashboard = () => {
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
-    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
+    const saved = sessionStorage.getItem("lifeco_dashboard_tab");
+    // Default to 'logs' if no tab or if it's the specific N2 case that we'll handle in standard rendering
+    return saved || "logs";
   });
+  const [showN2LogSheets, setShowN2LogSheets] = useState(false);
+
+  useEffect(() => {
+    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
+    const plant = sessionStorage.getItem("lifeco_plant");
+    if (tab === "logs" && plant === "N2-1") {
+      setShowN2LogSheets(true);
+    }
+  }, []);
   // Force single tab mode only for specific modules from PlantModules
   const [singleTabMode] = useState(() => {
     if (typeof window === "undefined") return false;
