@@ -60,7 +60,11 @@ export function PlantProcessOverview({ lang, onSelectEquipment }: Props) {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {step.tags.map(tag => (
-                    <span key={tag} className="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-primary-foreground/70">
+                    <span 
+                      key={tag} 
+                      onClick={() => onSelectEquipment?.(tag)}
+                      className="text-[10px] font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-primary-foreground/70 cursor-pointer hover:bg-primary/20 hover:border-primary/30 transition-colors"
+                    >
                       {tag}
                     </span>
                   ))}
