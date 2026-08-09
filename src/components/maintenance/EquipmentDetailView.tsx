@@ -186,18 +186,18 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                   <SectionHeader title={isAr ? "بيانات التعريف" : "IDENTITY CARD"} icon={Info} />
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <DataField label="Tag" value={tag} />
-                    <DataField label="Name" value={identity.equipment_name || asset.asset_name} />
-                    <DataField label="Type" value={identity.equipment_type} />
-                    <DataField label="Service" value={identity.service} />
-                    <DataField label="Function" value={identity.description} />
+                    <DataField label="Name" value={getCustomValue("Name", identity.equipment_name || asset.asset_name)} />
+                    <DataField label="Type" value={getCustomValue("Type", identity.equipment_type)} />
+                    <DataField label="Service" value={getCustomValue("Service", identity.service)} />
+                    <DataField label="Function" value={getCustomValue("Function", identity.description)} />
                     <DataField label="Plant" value={plantCode} />
                     <DataField label="Area" value={asset.location || "NITROGEN GENERATION"} />
                     <DataField label="Manufacturer" value={identity.manufacturer || asset.manufacturer} />
-                    <DataField label="Model" value={identity.model} />
+                    <DataField label="Model" value={getCustomValue("Model", identity.model)} />
                     <DataField label="Serial Number" value="Pending Verification" />
                     <DataField label="Capacity" value={identity.capacity} />
-                    <DataField label="Upstream" value={identity.upstream} />
-                    <DataField label="Downstream" value={identity.downstream} />
+                    <DataField label="Upstream" value={getCustomValue("Upstream", identity.upstream)} />
+                    <DataField label="Downstream" value={getCustomValue("Downstream", identity.downstream)} />
                   </div>
                 </div>
               )}
@@ -206,12 +206,12 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                 <div className="space-y-8">
                   <SectionHeader title={isAr ? "بيانات العمليات" : "PROCESS DATA"} icon={Layers} />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <DataField label="Process Function" value={identity.description} full />
+                    <DataField label="Process Function" value={getCustomValue("Function", identity.description)} full />
                     <DataField label="Inlet" value="Pending Verification" />
                     <DataField label="Outlet" value="Pending Verification" />
-                    <DataField label="Upstream Equipment" value={identity.upstream} />
-                    <DataField label="Downstream Equipment" value={identity.downstream} />
-                    <DataField label="Process Description" value={identity.description} full />
+                    <DataField label="Upstream Equipment" value={getCustomValue("Upstream", identity.upstream)} />
+                    <DataField label="Downstream Equipment" value={getCustomValue("Downstream", identity.downstream)} />
+                    <DataField label="Process Description" value={getCustomValue("Function", identity.description)} full />
                   </div>
                 </div>
               )}
@@ -220,7 +220,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                 <div className="space-y-8">
                   <SectionHeader title={isAr ? "البيانات التشغيلية" : "OPERATING DATA"} icon={Activity} />
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <DataField label="Operating Pressure" value={control.operating_pressure || identity.discharge_pressure || "Pending Verification"} />
+                    <DataField label="Operating Pressure" value={getCustomValue("Operating Pressure", control.operating_pressure || identity.discharge_pressure || "Pending Verification")} />
                     <DataField label="Operating Temperature" value={identity.m1_temperature || "Pending Verification"} />
                     <DataField label="Flow" value={running.flow || "Pending Verification"} />
                     <DataField label="Normal Operating Range" value={identity.normal_operating_range} />
@@ -333,7 +333,29 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                     <DataField label="Next Maintenance" value={asset.next_maintenance_at || "Pending Verification"} />
                     <DataField label="Inspection" value="Pending Verification" />
                     <DataField label="Maintenance Notes" value={identity.maintenance_notes} full />
-                    <DataField label="Spare Parts" value="Pending Verification" full />
+                    <div className="col-span-full space-y-4">
+                      <DataField label="Spare Parts" value="Pending Verification" />
+                      {(tag === "60-2201" || tag === "60-2202") && (
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                          <div className="text-[10px] text-primary uppercase tracking-widest mb-2 font-bold">Vessel Configuration</div>
+                          <div className="text-sm text-white font-bold">Dual Vessel System (Vessel 1 & 2)</div>
+                        </div>
+                      )}
+                      {tag === "60-2003" && (
+                        <div className="p-4 rounded-lg bg-red-500/5 border border-red-500/20">
+                          <div className="text-[10px] text-red-500 uppercase tracking-widest mb-2 font-bold">Critical Consumers</div>
+                          <ul className="text-xs text-white/80 space-y-1 list-disc list-inside">
+                            <li>Ammonia Plant 1</li>
+                            <li>Ammonia Plant 2</li>
+                            <li>Ammonia Storage</li>
+                          </ul>
+                          <div className="mt-3 p-2 bg-red-500/10 rounded text-[10px] text-red-200 italic">
+                            Classification: Critical Continuous Service
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   </div>
                 </div>
               )}
