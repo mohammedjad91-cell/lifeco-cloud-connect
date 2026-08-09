@@ -25,19 +25,21 @@ function EquipmentPdfRedirect() {
 
         if (dbError) throw dbError;
         if (!assetData) {
-          setError("Equipment technical data not found.");
+          setError(`Equipment technical data for ${tag} not found.`);
           return;
         }
 
+        // Generate the PDF
         const doc = await generateEquipmentPDF(assetData, tag);
+        
+        // Output as blob
         const pdfBlob = doc.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         
-        // Use a timeout to ensure the user sees the "Generating" state briefly
-        // and to avoid browser blocking immediate location changes on some devices
-        setTimeout(() => {
-          window.location.replace(pdfUrl);
-        }, 800);
+        // We want to force the browser to handle this as a PDF file
+        // For mobile devices, replacing the location with a blob URL usually triggers the built-in PDF viewer
+        window.location.replace(pdfUrl);
+        
       } catch (err: any) {
         console.error("PDF generation failed:", err);
         setError(err.message || "Failed to generate official equipment PDF.");
@@ -64,28 +66,32 @@ function EquipmentPdfRedirect() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white p-6 font-mono">
-      <div className="relative">
-        <div className="w-20 h-20 border-2 border-primary/20 rounded-full"></div>
-        <div className="absolute top-0 left-0 w-20 h-20 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white p-6 font-mono text-center">
+      <div className="relative mb-10">
+        <div className="w-24 h-24 border-4 border-primary/20 rounded-full"></div>
+        <div className="absolute top-0 left-0 w-24 h-24 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
       
-      <div className="mt-10 text-center">
-        <h1 className="text-2xl font-black tracking-tighter uppercase mb-2">OFFICIAL PDF ACCESS</h1>
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold rounded border border-primary/30 uppercase tracking-widest">
-            {tag}
-          </span>
-          <span className="text-white/20 text-[10px]">|</span>
-          <span className="text-white/40 text-[10px] uppercase tracking-widest">N2-1 NITROGEN</span>
-        </div>
-        <p className="text-primary/60 font-bold tracking-[0.3em] text-[9px] uppercase animate-pulse">
-          Retrieving Technical Documentation...
+      <h1 className="text-3xl font-black tracking-tighter uppercase mb-4">ENGINEERING PDF GENERATOR</h1>
+      <div className="flex items-center justify-center gap-3 mb-8">
+        <span className="px-3 py-1 bg-primary/20 text-primary text-xs font-bold rounded border border-primary/30 uppercase tracking-widest">
+          UNIT: {tag}
+        </span>
+        <span className="text-white/20">|</span>
+        <span className="text-white/40 text-xs uppercase tracking-widest">N2-1 NITROGEN PLANT</span>
+      </div>
+      
+      <div className="space-y-2">
+        <p className="text-primary/60 font-bold tracking-[0.2em] text-[10px] uppercase animate-pulse">
+          Accessing Technical Metadata...
+        </p>
+        <p className="text-white/20 text-[9px] uppercase tracking-widest">
+          System will direct to PDF viewer automatically
         </p>
       </div>
 
-      <div className="fixed bottom-10 left-0 right-0 text-center">
-        <p className="text-white/10 text-[8px] uppercase tracking-[0.5em]">LIFECO PMS ENGINEERING SERVICES</p>
+      <div className="fixed bottom-10 left-0 right-0">
+        <p className="text-white/10 text-[8px] uppercase tracking-[0.4em]">OFFICIAL ENGINEERING SERVICES PORTAL</p>
       </div>
     </div>
   )
