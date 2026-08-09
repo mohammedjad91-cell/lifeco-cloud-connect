@@ -35,6 +35,9 @@ export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSec
           <QrCode className="w-5 h-5 text-primary" /> Equipment QR Management
         </h3>
         <div className="flex gap-2">
+          <Button size="sm" variant="outline" className="h-8 text-[10px]" onClick={() => window.open(qrUrl, '_blank')}>
+            <QrCode className="w-3 h-3 mr-1" /> View Mobile Card
+          </Button>
           <Button size="sm" variant="outline" className="h-8 text-[10px]" onClick={downloadLabel}>
             <Download className="w-3 h-3 mr-1" /> Download Label
           </Button>
@@ -56,25 +59,28 @@ export function EquipmentQRSection({ tag, assetName, plantCode }: EquipmentQRSec
           </div>
           <div className="text-center font-black uppercase">
             <div className="text-2xl tracking-tighter mb-1">{tag}</div>
-            <div className="text-[10px] leading-tight mb-1">{assetName}</div>
-            <div className="text-[10px] bg-black text-white px-2 py-0.5 mb-2">{plantCode} • NITROGEN GENERATION</div>
-            <div className="text-[8px] tracking-widest text-slate-500 mt-2">SCAN FOR DIGITAL EQUIPMENT CARD</div>
+            <div className="text-[12px] leading-tight mb-1">{assetName}</div>
+            <div className="text-[10px] bg-black text-white px-3 py-1 mb-2 inline-block">{plantCode} • NITROGEN GENERATION</div>
+            <div className="text-[9px] tracking-widest text-slate-600 mt-2 font-bold">SCAN FOR EQUIPMENT DIGITAL CARD</div>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-            <h4 className="text-xs font-bold text-primary uppercase mb-2">QR Status: Active & Static</h4>
-            <p className="text-[10px] text-white/60 leading-relaxed">
-              This QR code is uniquely linked to the equipment identity. It remains fixed even when maintenance records or technical thresholds are updated.
+            <h4 className="text-xs font-bold text-primary uppercase mb-2">High-Resolution Label</h4>
+            <p className="text-[10px] text-white/60 leading-relaxed italic">
+              Use "Print Label" for physical attachment to equipment. The label contains the tag, name, plant area, and instructions.
             </p>
           </div>
           
           <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-            <h4 className="text-xs font-bold text-white/80 uppercase mb-2">Security Note</h4>
-            <p className="text-[10px] text-white/40 leading-relaxed">
-              Scanning this code provides read-only access to the digital equipment card. Any modifications require secure authenticated access.
-            </p>
+            <h4 className="text-xs font-bold text-white/80 uppercase mb-2">QR Functionality</h4>
+            <ul className="text-[10px] text-white/40 space-y-1 list-disc pl-4">
+              <li>Direct link to Mobile Digital Card</li>
+              <li>Embedded PDF generation from mobile</li>
+              <li>Direct sharing with Supervisors</li>
+              <li>Static URL: independent of database ID</li>
+            </ul>
           </div>
         </div>
       </div>

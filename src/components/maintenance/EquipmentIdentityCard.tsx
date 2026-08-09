@@ -204,13 +204,18 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag }: any
 
           {activeTab === "qr" && (
             <div className="glass-card p-6 border-l-2 border-l-primary/40 flex flex-col items-center text-center">
-              <SectionHeader icon={QrCode} title="Digital Identity QR" subtitle="Scan to access latest card" />
-              <div className="bg-white p-4 rounded-xl mb-4 shadow-inner">
-                {qrUrl && <QRCodeSVG value={qrUrl} size={140} />}
+              <SectionHeader icon={QrCode} title={ar ? "رمز الهوية الرقمية" : "Digital Identity QR"} subtitle={ar ? "امسح للوصول إلى أحدث بطاقة" : "Scan to access latest card"} />
+              <div className="bg-white p-6 rounded-2xl mb-4 shadow-inner">
+                {qrUrl && <QRCodeSVG value={qrUrl} size={180} level="H" />}
               </div>
-              <p className="text-[10px] text-white/60 max-w-xs mx-auto italic">
-                Scanning this code from a mobile device opens the verified digital identity card for {tag || 'this unit'}.
+              <p className="text-[11px] text-white/60 max-w-xs mx-auto italic font-bold">
+                {ar 
+                  ? `مسح هذا الرمز من جهاز محمول يفتح بطاقة الهوية الرقمية الموثقة لـ ${tag || 'هذه الوحدة'}.`
+                  : `Scanning this code from a mobile device opens the verified digital identity card for ${tag || 'this unit'}.`}
               </p>
+              <div className="mt-4 text-[9px] text-white/40 uppercase tracking-widest border-t border-white/10 pt-4 w-full">
+                Scan to open latest digital Equipment Card
+              </div>
             </div>
           )}
         </motion.div>

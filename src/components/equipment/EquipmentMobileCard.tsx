@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { 
   Info, Activity, ShieldAlert, Layers, Wrench, FileText, 
-  MapPin, Factory, AlertTriangle, FileDown, Printer, QrCode
+  MapPin, Factory, AlertTriangle, FileDown, Printer, QrCode, Share2, Download, FileType
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { EquipmentIdentityCard } from "@/components/maintenance/EquipmentIdentit
 import { motion, AnimatePresence } from "framer-motion";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { QRCodeSVG } from "qrcode.react";
 
 interface EquipmentMobileCardProps {
   data: any;
@@ -18,15 +19,17 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
   const [activeTab, setActiveTab] = useState("identity");
   const asset = data?.asset || {};
   const tag = data?.equipment_tag;
-  const plantCode = "N2-1"; // Specific to this request scope
+  const plantCode = "N2-1";
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const shareUrl = `${baseUrl}/equipment/${tag}`;
 
   const tabs = [
-    { id: "identity", label: "Identity", icon: Info },
-    { id: "process", label: "Process", icon: Layers },
-    { id: "operating", label: "Operating", icon: Activity },
-    { id: "protection", label: "Protection", icon: ShieldAlert },
-    { id: "maintenance", label: "Maintenance", icon: Wrench },
-    { id: "documents", label: "Documents", icon: FileText },
+    { id: "identity", label: "IDENTITY", icon: Info },
+    { id: "process", label: "PROCESS", icon: Layers },
+    { id: "operating", label: "OPERATING", icon: Activity },
+    { id: "protection", label: "PROTECTION", icon: ShieldAlert },
+    { id: "maintenance", label: "MAINTENANCE", icon: Wrench },
+    { id: "documents", label: "DOCUMENTS", icon: FileText },
   ];
 
   const DataField = ({ label, value, warning = false }: any) => (
@@ -44,45 +47,61 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
     const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#020617" });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-    const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${tag}-identity-card.pdf`);
+    pdf.save(`${tag}-Equipment-Card.pdf`);
+  };
+
+  const shareCard = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `LIFECO Equipment Card: ${tag}`,
+          text: `Digital Identity Card for ${tag} (${data.equipment_name})`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Link copied to clipboard!");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col font-sans pb-10">
       {/* Mobile Header */}
       <div className="p-5 bg-slate-900 border-b border-white/10 sticky top-0 z-20 backdrop-blur-md">
         <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-primary/80 uppercase mb-1">
           <MapPin className="w-3 h-3" /> {plantCode} | {asset.location || "NITROGEN GENERATION"}
         </div>
         <h1 className="text-3xl font-black tracking-tighter uppercase">{tag}</h1>
-        <div className="text-xs text-white/60 mb-3">{data.equipment_name || asset.asset_name}</div>
+        <div className="text-xs text-white/60 mb-4">{data.equipment_name || asset.asset_name}</div>
         
-        <div className="flex items-center justify-between">
-          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-mono text-[10px]">
-            {asset.status || "ACTIVE"}
-          </Badge>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-[10px] bg-white/5 border-white/10" onClick={generatePDF}>
-              <FileDown className="w-3 h-3 mr-1" /> PDF
+        <div className="flex flex-col gap-2">
+          <Button className="w-full h-10 font-bold bg-primary text-white" onClick={generatePDF}>
+            <FileType className="w-4 h-4 mr-2" /> 📄 Equipment Card PDF
+          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" className="h-10 text-xs bg-white/5" onClick={shareCard}>
+              <Share2 className="w-4 h-4 mr-2" /> 📤 Share
             </Button>
-            <Button size="sm" variant="outline" className="h-8 text-[10px] bg-white/5 border-white/10" onClick={() => window.print()}>
-              <Printer className="w-3 h-3 mr-1" /> PRINT
+            <Button variant="outline" className="h-10 text-xs bg-white/5" onClick={generatePDF}>
+              <Download className="w-4 h-4 mr-2" /> Download
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Navigation - Horizontal Scroll */}
-      <div className="flex overflow-x-auto bg-slate-900/50 border-b border-white/10 no-scrollbar sticky top-[133px] z-10 backdrop-blur-sm">
+      {/* Navigation */}
+      <div className="flex overflow-x-auto bg-slate-900/50 border-b border-white/10 no-scrollbar sticky top-[180px] z-10 backdrop-blur-sm">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-5 py-3 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 whitespace-nowrap
+            className={`flex items-center gap-2 px-5 py-4 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 whitespace-nowrap
               ${activeTab === tab.id 
                 ? "border-primary text-primary bg-primary/5" 
                 : "border-transparent text-white/40"}`}
@@ -101,60 +120,40 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
             className="space-y-6"
           >
             {activeTab === "identity" && (
               <div className="grid grid-cols-2 gap-3">
+                <DataField label="Tag" value={tag} />
+                <DataField label="Plant" value={plantCode} />
                 <DataField label="Manufacturer" value={data.manufacturer} />
                 <DataField label="Model" value={data.model} />
-                <DataField label="Serial No" value="Pending Verification" />
-                <DataField label="Capacity" value={data.capacity} />
                 <DataField label="Service" value={data.service} />
-                <DataField label="Upstream" value={data.upstream} />
-                <DataField label="Downstream" value={data.downstream} />
+                <DataField label="Status" value={asset.status || "ACTIVE"} />
               </div>
             )}
 
             {activeTab === "protection" && (
-              <div className="space-y-4">
+              <div className="p-4 rounded-lg bg-white/5 border border-white/10">
                 <EquipmentIdentityCard 
                   matrix={data.protection_matrix} 
                   control={data.operating_control}
                   running={data.detailed_running_data}
                   ar={false}
+                  tag={tag}
                 />
               </div>
             )}
-
-            {activeTab === "operating" && (
-              <div className="grid grid-cols-2 gap-3">
-                <DataField label="Operating Pressure" value={data.operating_control?.operating_pressure || "9.1 bar"} />
-                <DataField label="Running Hours" value={data.detailed_running_data?.running_hours || asset.running_hours} />
-                <DataField label="Status" value={asset.status} />
-              </div>
-            )}
             
-            {/* Other tabs simplified for mobile overview */}
-            {["process", "maintenance", "documents"].includes(activeTab) && (
-              <div className="flex flex-col items-center justify-center py-10 text-white/20">
-                <AlertTriangle className="w-12 h-12 mb-2" />
-                <p className="text-xs uppercase tracking-widest font-bold">Standard Data Applies</p>
-                <p className="text-[10px] mt-2">View full desktop card for documentation.</p>
-              </div>
-            )}
+            {/* QR Section - Specific requirement */}
+            <div className="p-6 rounded-2xl bg-white flex flex-col items-center mt-6">
+              <QRCodeSVG value={shareUrl} size={200} level="H" />
+              <p className="text-black text-xs font-bold mt-4 uppercase tracking-widest text-center">
+                Scan for latest Digital Equipment Card
+              </p>
+            </div>
           </motion.div>
         </AnimatePresence>
-      </div>
-
-      {/* Footer Info */}
-      <div className="p-5 border-t border-white/10 text-center bg-slate-900/30">
-        <div className="flex justify-center mb-4 opacity-50">
-          <QrCode className="w-12 h-12" />
-        </div>
-        <p className="text-[10px] text-white/40 uppercase tracking-widest font-mono">
-          LIFECO DIGITAL EQUIPMENT CARD • SECURE SYSTEM
-        </p>
       </div>
     </div>
   );
