@@ -57,8 +57,10 @@ export function N2EquipmentRegister({ plantCode, lang, onSelectEquipment, onClos
             {equipment.map((eq) => (
               <button
                 key={eq.tag}
-                onClick={() => onSelectEquipment(eq.tag)}
-                className="glass-card p-6 text-left hover:neon-border transition-all group flex items-center justify-between"
+                onClick={() => {
+                  onSelectEquipment(eq.tag);
+                }}
+                className="glass-card p-6 text-left hover:border-primary/50 hover:bg-primary/5 transition-all group flex items-center justify-between border border-white/10"
               >
                 <div>
                   <div className="text-primary font-mono text-lg font-black tracking-tighter group-hover:scale-105 transition-transform origin-left">

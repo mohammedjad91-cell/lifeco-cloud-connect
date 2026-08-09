@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Gauge, Layers, Droplets, ArrowRight, Settings2, ShieldAlert, Activity, FileText, Wrench, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EquipmentDetailView } from "./EquipmentDetailView";
+import { EquipmentFaceplate } from "./EquipmentFaceplate";
 
 interface Props {
   plantCode: string;
@@ -45,16 +45,13 @@ export function N2PlantPage({ plantCode, lang }: Props) {
         </div>
       </div>
 
-      <AnimatePresence>
-        {selectedTag && (
-          <EquipmentDetailView 
-            tag={selectedTag} 
-            plantCode={plantCode} 
-            lang={lang} 
-            onClose={() => setSelectedTag(null)} 
-          />
-        )}
-      </AnimatePresence>
+      <EquipmentFaceplate 
+        tag={selectedTag || ""} 
+        plantCode={plantCode} 
+        lang={lang} 
+        open={!!selectedTag}
+        onOpenChange={(open) => !open && setSelectedTag(null)} 
+      />
 
       {/* Block Diagram Section */}
       <div className="glass-card p-8 border border-primary/20">

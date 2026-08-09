@@ -32,6 +32,8 @@ import NitrogenLogSheetsModule from "@/components/NitrogenLogSheetsModule";
 import PlantTrainingSimulator from "@/components/PlantTrainingSimulator";
 import DateUserBanner from "@/components/DateUserBanner";
 import SafetyMonitor from "@/components/SafetyMonitor";
+import { N2EquipmentRegister } from "@/components/maintenance/N2EquipmentRegister";
+import { EquipmentFaceplate } from "@/components/maintenance/EquipmentFaceplate";
 import AIChatSidebar from "@/components/AIChatSidebar";
 import ShiftCharts from "@/components/ShiftCharts";
 import ShiftReportButton from "@/components/ShiftReportButton";
@@ -90,11 +92,24 @@ const Dashboard = () => {
     return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
   });
   const [showN2LogSheets, setShowN2LogSheets] = useState(false);
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
+  const [showEquipmentRegister, setShowEquipmentRegister] = useState(false);
 
   useEffect(() => {
     sessionStorage.setItem("lifeco_dashboard_tab", activeTab);
     setShowN2LogSheets(activeTab === "nitrogen-logs");
   }, [activeTab]);
+
+  useEffect(() => {
+    const handleOpenRegister = () => setShowEquipmentRegister(true);
+    const handleOpenEquipment = (e: any) => setSelectedEquipment(e.detail?.tag);
+    window.addEventListener('lifeco:open-equipment-register', handleOpenRegister);
+    window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
+    return () => {
+      window.removeEventListener('lifeco:open-equipment-register', handleOpenRegister);
+      window.removeEventListener('lifeco:open-equipment', handleOpenEquipment);
+    };
+  }, []);
 
 
 
@@ -446,8 +461,8 @@ const Dashboard = () => {
               variant="outline"
               size="sm"
               onClick={() => {
-                window.dispatchEvent(new CustomEvent('lifeco:open-equipment'));
-                navigate(getBackTarget());
+                const event = new CustomEvent('lifeco:open-equipment-register');
+                window.dispatchEvent(event);
               }}
               className="gap-1.5 border-amber-500/40 text-amber-500 hover:bg-amber-500/10"
             >
@@ -796,6 +811,29 @@ const Dashboard = () => {
       )}
 
       <SafetyMonitor />
+      
+      {showEquipmentRegister && (
+        <N2EquipmentRegister 
+          plantCode="N2-1" 
+          lang={lang} 
+          onSelectEquipment={(tag) => {
+            setSelectedEquipment(tag);
+            setShowEquipmentRegister(false);
+          }}
+          onClose={() => setShowEquipmentRegister(false)}
+        />
+      )}
+
+      {selectedEquipment && (
+        <EquipmentFaceplate
+          tag={selectedEquipment}
+          plantCode="N2-1"
+          lang={lang}
+          open={!!selectedEquipment}
+          onOpenChange={(open) => !open && setSelectedEquipment(null)}
+        />
+      )}
+
       <AIChatSidebar />
     </div>
   );
