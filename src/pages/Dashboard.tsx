@@ -178,9 +178,13 @@ const Dashboard = () => {
   };
 
   const fetchLabResults = async () => {
-    if (!department || isOperations) return;
+    if (!department) return;
     const start = new Date(selectedDate); start.setHours(0, 0, 0, 0);
     const end = new Date(selectedDate); end.setHours(23, 59, 59, 999);
+    
+    // For Operations view, we might want to see all lab results for that plant
+    // Lab results are synced to operations_logs with unit_tag like "LAB|..."
+    // But we also fetch directly from lab_results for high-fidelity display
     const { data } = await supabase.from("lab_results").select("*")
       .eq("plant", department.id)
       .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString())

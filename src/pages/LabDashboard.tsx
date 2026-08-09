@@ -1,33 +1,23 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "@/lib/router-compat";
-import { getBackTarget } from "@/lib/nav-back";
-
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "@/lib/router-compat";
 import { supabase } from "@/integrations/supabase/client";
-import { LAB_PARAMETERS } from "@/lib/departments";
+import { LAB_PARAMETERS, PLANT_GROUPS } from "@/lib/departments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-  SelectGroup, SelectLabel,
-} from "@/components/ui/select";
-import {
-  LogOut, FlaskConical, Clock, Loader2, Trash2, ArrowLeft, Factory,
-  CalendarIcon, Globe, User, FileDown, FileSpreadsheet, Save, Plus,
-} from "lucide-react";
-import { format } from "date-fns";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { exportAllSampleResultsPDF, exportSampleResultsPDF } from "@/lib/lab-pdf";
-import SampleResultsDialog from "@/components/lab/SampleResultsDialog";
-import * as XLSX from "xlsx";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { 
+  FlaskConical, User, Save, ArrowLeft, Factory, 
+  Calendar, CheckCircle2, AlertCircle, Loader2,
+  Clock, LogOut, Globe, FileDown, FileSpreadsheet,
+  Plus, Trash2, CalendarIcon, Edit2
+} from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import ExportPreviewDialog, { ExportPreviewData } from "@/components/ExportPreviewDialog";
 import { getLabRange, isInRange, statusColorClasses } from "@/lib/ranges";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 
 interface LabEntry {
   id: string;
@@ -41,59 +31,6 @@ interface LabEntry {
   created_at: string;
 }
 
-interface DynamicField {
-  id: string;
-  field_name: string;
-  field_label: string;
-  field_type: string;
-  dropdown_options: string[];
-  department: string | null;
-  is_active: boolean;
-}
-
-interface SampleEntry {
-  id: string;
-  sample_name: string;
-  department: string;
-  analysis_type: string;
-  status: string;
-  employee_id: string;
-  technician_name: string;
-  sample_date: string;
-  dynamic_data: Record<string, any>;
-  notes: string | null;
-  created_at: string;
-}
-
-// كل مصانع إدارة الأمونيا واليوريا متاحة داخل عينات المعمل
-const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string }[] }[] = [
-  {
-    dept: "AMMONIA", deptAr: "إدارة الأمونيا",
-    plants: [
-      { code: "AMM1", ar: "مصنع الأمونيا 1" },
-      { code: "AMM2", ar: "مصنع الأمونيا 2" },
-      { code: "NITROGEN", ar: "مصنع النيتروجين" },
-      { code: "DEMIN1", ar: "مصنع الديمن 1" },
-      { code: "DEMIN2", ar: "مصنع الديمن 2" },
-      { code: "UTILITIES", ar: "الخدمات (Utilities)" },
-      { code: "PROC-ENG", ar: "هندسة العمليات" },
-    ],
-  },
-  {
-    dept: "UREA", deptAr: "إدارة اليوريا",
-    plants: [
-      { code: "UREA-1", ar: "مصنع اليوريا 1" },
-      { code: "UREA-2", ar: "مصنع اليوريا 2" },
-      { code: "AMM-STORAGE", ar: "خزانات الأمونيا" },
-      { code: "AMM-LOAD", ar: "تحميل الأمونيا" },
-      { code: "UREA-LOAD", ar: "تحميل اليوريا" },
-      { code: "WATER-1", ar: "وحدة معالجة المياه" },
-    ],
-  },
-];
-const PLANTS = PLANT_GROUPS.flatMap(g => g.plants.map(p => p.code));
-
-
 const LabDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -101,6 +38,7 @@ const LabDashboard = () => {
 
   const [technicianName, setTechnicianName] = useState("");
   const [employeeId, setEmployeeId] = useState("");
+  const [verified, setVerified] = useState(false);
   const [plant, setPlant] = useState("");
   const [sampleType, setSampleType] = useState<"daily" | "weekly">("daily");
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
@@ -108,347 +46,126 @@ const LabDashboard = () => {
   const [results, setResults] = useState<LabEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
-  // Dynamic fields & samples
-  const [dynamicFields, setDynamicFields] = useState<DynamicField[]>([]);
-  const [sampleName, setSampleName] = useState("");
-  const [analysisType, setAnalysisType] = useState("routine");
-  const [dynamicValues, setDynamicValues] = useState<Record<string, string>>({});
-  const [sampleNotes, setSampleNotes] = useState("");
-  const [sampleResults, setSampleResults] = useState("");
-  const [customParams, setCustomParams] = useState<{ name: string; value: string }[]>([]);
-  const [savingSample, setSavingSample] = useState(false);
-  const [samples, setSamples] = useState<SampleEntry[]>([]);
-  const [allDates, setAllDates] = useState(true);
-  const [plantFilter, setPlantFilter] = useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return sessionStorage.getItem("lifeco_lab_plant") || "";
-  });
+  
   const [deptScope, setDeptScope] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
-  const [readOnly, setReadOnly] = useState<boolean>(false);
+  const [plantFilter, setPlantFilter] = useState<string>(() =>
+    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
 
-
-  const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
-    if (typeof window === "undefined") return "classic";
-    const savedTab = sessionStorage.getItem("lifeco_lab_tab");
-    return savedTab === "samples" || window.location.hash === "#samples" ? "samples" : "classic";
-  });
-  const [previewData, setPreviewData] = useState<ExportPreviewData | null>(null);
-  const [resultsSample, setResultsSample] = useState<SampleEntry | null>(null);
-
-  const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
-  const GENERIC_PARAMS = {
-    daily: ["pH", "Conductivity", "Hardness", "Temp", "Pressure", "TDS", "Chlorides"],
-    weekly: ["Iron", "Silica", "Sulfates", "Alkalinity", "Oil & Grease"],
-  } as const;
-  const parameters = !plant ? []
-    : LAB_PARAMETERS[plant]?.[sampleType] || [...GENERIC_PARAMS[sampleType]];
+  const parameters = !plant ? [] : LAB_PARAMETERS[plant]?.[sampleType] || [];
 
   useEffect(() => {
-    fetchDynamicFields();
-    // Realtime — keep results & samples in sync with other modules
+    fetchResults();
     const ch = supabase.channel("lab_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "lab_results" }, () => fetchResults())
-      .on("postgres_changes", { event: "*", schema: "public", table: "samples" }, () => fetchSamples())
       .subscribe();
     return () => { supabase.removeChannel(ch); };
-  }, []);
-
-  useEffect(() => { 
-    fetchResults(); 
-    fetchSamples(); 
-    // If plantFilter is set, we are in a specific plant context (read-only if coming from plant module)
-    const isDirectPlantAccess = !!sessionStorage.getItem("lifeco_lab_plant");
-    setReadOnly(isDirectPlantAccess && !!plantFilter);
-  }, [selectedDate, allDates, plantFilter, deptScope]);
-
-  const fetchDynamicFields = async () => {
-    const { data } = await supabase.from("dynamic_fields").select("*")
-      .eq("is_active", true).order("sort_order");
-    if (data) setDynamicFields(data as DynamicField[]);
-  };
+  }, [selectedDate, plantFilter, deptScope]);
 
   const fetchResults = async () => {
     setLoading(true);
     const start = new Date(selectedDate); start.setHours(0, 0, 0, 0);
     const end = new Date(selectedDate); end.setHours(23, 59, 59, 999);
-    const { data } = await supabase.from("lab_results").select("*")
-      .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString())
-      .order("timestamp", { ascending: false });
+    
+    let q = supabase.from("lab_results").select("*")
+      .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString());
+      
+    if (plantFilter) q = q.eq("plant", plantFilter);
+    else if (deptScope) {
+      const codes = PLANT_GROUPS.find(g => g.dept === deptScope)?.plants.map(p => p.code) || [];
+      if (codes.length) q = q.in("plant", codes);
+    }
+
+    const { data } = await q.order("timestamp", { ascending: false });
     if (data) setResults(data as LabEntry[]);
     setLoading(false);
   };
 
-  const fetchSamples = async () => {
-    let q = supabase.from("samples").select("*");
-    if (!allDates) q = q.eq("sample_date", format(selectedDate, "yyyy-MM-dd"));
-    if (plantFilter) q = q.eq("department", plantFilter);
-    else if (deptScope) {
-      const codes = PLANT_GROUPS.find((g) => g.dept === deptScope)?.plants.map((p) => p.code) ?? [];
-      if (codes.length) q = q.in("department", codes);
-    }
-    const { data } = await q.order("sample_date", { ascending: false })
-      .order("created_at", { ascending: false }).limit(300);
-    if (data) setSamples(data as SampleEntry[]);
-  };
-
-  const labelOf = (key: string) =>
-    dynamicFields.find(f => f.field_name === key)?.field_label || key;
-
-  const filteredDynamicFields = dynamicFields.filter(f =>
-    !f.department || f.department === "all" || f.department === plant
-  );
-
-  const handleSaveAll = async () => {
-    if (!technicianName || !employeeId || !plant) {
-      toast({ title: t.labMissingFields, variant: "destructive" });
+  const handleVerify = () => {
+    if (!technicianName || !employeeId) {
+      toast({ title: lang === "ar" ? "يرجى إدخال اسم المحلل والرقم الوظيفي" : "Please enter Analyst Name and ID", variant: "destructive" });
       return;
     }
+    setVerified(true);
+    setPlant(plantFilter);
+  };
+
+  const handleSaveAll = async () => {
+    if (!technicianName || !employeeId || !plant) return;
+    
     const entries = Object.entries(paramValues).filter(([_, v]) => v !== "" && !isNaN(parseFloat(v)));
     if (entries.length === 0) {
       toast({ title: t.labMissingFields, variant: "destructive" });
       return;
     }
+
     setSaving(true);
-    const rows = entries.map(([param, val]) => ({
-      plant, sample_type: sampleType, parameter_name: param,
-      value: parseFloat(val), technician_name: technicianName,
-      employee_id: employeeId, timestamp: new Date().toISOString(),
+    const timestamp = new Date().toISOString();
+    
+    // 1. Insert into lab_results
+    const labRows = entries.map(([param, val]) => ({
+      plant,
+      sample_type: sampleType,
+      parameter_name: param,
+      value: parseFloat(val),
+      technician_name: technicianName,
+      employee_id: employeeId,
+      timestamp,
     }));
-    const { error } = await supabase.from("lab_results").insert(rows);
-    if (error) {
+
+    const { error: labError } = await supabase.from("lab_results").insert(labRows);
+
+    // 2. Critical Sync to operations_logs (Schedules & Operations)
+    const opsRows = entries.map(([param, val]) => ({
+      department: plant,
+      unit_tag: `LAB|${param}`,
+      value: parseFloat(val),
+      employee_id: employeeId,
+      timestamp,
+    }));
+    
+    await supabase.from("operations_logs").insert(opsRows);
+
+    if (labError) {
       toast({ title: t.errorSaving, variant: "destructive" });
     } else {
-      toast({ title: t.labSaved });
+      toast({ title: lang === "ar" ? "تم الحفظ والنشر بنجاح" : "Saved & Published successfully" });
       setParamValues({});
       fetchResults();
-      supabase.from("activity_logs").insert({
-        action: "LAB_ENTRY", department: "LABORATORY",
-        details: `${plant} ${sampleType}: ${entries.length} params by ${technicianName} (${employeeId})`,
+      
+      await supabase.from("activity_logs").insert({
+        action: "LAB_PUBLISH",
+        department: plant,
+        details: `Lab results published for ${plant} by ${technicianName}`,
       });
     }
     setSaving(false);
   };
 
-  const handleSaveSample = async () => {
-    if (!technicianName || !employeeId || !plant || !sampleName) {
-      toast({ title: t.labMissingFields, variant: "destructive" });
-      return;
-    }
-    setSavingSample(true);
-    const dynData: Record<string, any> = {};
-    filteredDynamicFields.forEach(f => {
-      const v = dynamicValues[f.field_name];
-      if (v !== undefined && v !== "") {
-        dynData[f.field_name] = f.field_type === "number" ? parseFloat(v) : v;
-      }
-    });
-    // Non-routine / ad-hoc parameters typed by the technician
-    customParams.forEach(p => {
-      if (p.name.trim() !== "" && p.value !== "") {
-        const num = parseFloat(p.value);
-        dynData[p.name.trim()] = Number.isNaN(num) ? p.value : num;
-      }
-    });
-    if (sampleResults.trim() !== "") {
-      dynData["نتائج العينة"] = sampleResults.trim();
-    }
-
-    const { error } = await supabase.from("samples").insert({
-      sample_name: sampleName,
-      department: plant,
-      analysis_type: analysisType,
-      employee_id: employeeId,
-      technician_name: technicianName,
-      sample_date: format(selectedDate, "yyyy-MM-dd"),
-      dynamic_data: dynData,
-      notes: sampleNotes || null,
-      status: sampleResults.trim() !== "" ? "completed" : "pending",
-    });
-
-    if (error) {
-      toast({ title: t.errorSaving, variant: "destructive" });
-    } else {
-      toast({ title: lang === "ar" ? "تم حفظ العينة" : "Sample saved" });
-      setDynamicValues({}); setSampleName(""); setSampleNotes(""); setSampleResults(""); setCustomParams([]);
-      fetchSamples();
-    }
-    setSavingSample(false);
-  };
-
   const handleDeleteEntry = async (id: string) => {
     await supabase.from("lab_results").delete().eq("id", id);
-    toast({ title: t.deleted }); fetchResults();
+    toast({ title: t.deleted });
+    fetchResults();
   };
 
-  const handleDeleteSample = async (id: string) => {
-    await supabase.from("samples").delete().eq("id", id);
-    toast({ title: t.deleted }); fetchSamples();
-  };
-
-  const handleUpdateSampleStatus = async (id: string, status: string) => {
-    await supabase.from("samples").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
-    fetchSamples();
-  };
-
-  const buildLabPreview = (): ExportPreviewData => {
-    const headers = ["#", lang === "ar" ? "المصنع" : "Plant", lang === "ar" ? "نوع العينة" : "Sample Type",
-      lang === "ar" ? "الرقم الوظيفي" : "Employee ID", lang === "ar" ? "الفني" : "Technician",
-      lang === "ar" ? "المعامل" : "Parameter", lang === "ar" ? "القيمة" : "Value", lang === "ar" ? "الوقت" : "Time"];
-    const rows = results.map((r, i) => [
-      i + 1, r.plant, r.sample_type, r.employee_id, r.technician_name,
-      r.parameter_name, r.value, format(new Date(r.timestamp), "HH:mm:ss"),
-    ]);
-    // Add samples if any
-    if (samples.length > 0) {
-      const dynFieldNames = dynamicFields.filter(f => f.is_active).map(f => f.field_label);
-      const sHeaders = ["#", lang === "ar" ? "العينة" : "Sample", lang === "ar" ? "القسم" : "Dept",
-        lang === "ar" ? "التحليل" : "Analysis", lang === "ar" ? "الحالة" : "Status",
-        lang === "ar" ? "الموظف" : "Employee", lang === "ar" ? "الفني" : "Technician", ...dynFieldNames];
-      // Combine both for preview
+  const resetSelection = () => {
+    if (verified) {
+      setVerified(false);
+    } else if (plantFilter) {
+      setPlantFilter("");
+    } else {
+      setDeptScope("");
     }
-    return {
-      title: "LIFECO PMS 2026 — " + (lang === "ar" ? "المختبر" : "LABORATORY"),
-      subtitle: `${format(selectedDate, "dd/MM/yyyy")} — ${results.length} ${lang === "ar" ? "نتيجة" : "results"}`,
-      headers, rows,
-    };
-  };
-
-  const openPreview = () => {
-    setPreviewData(buildLabPreview());
-  };
-
-  const handleExportPDF = () => {
-    const doc = new jsPDF({ orientation: "landscape" });
-    doc.setFontSize(18);
-    doc.text("LIFECO PMS 2026 - Lab Report", 14, 22);
-    doc.setFontSize(12);
-    doc.text(`Date: ${format(selectedDate, "dd/MM/yyyy")}`, 14, 32);
-
-    const grouped: Record<string, LabEntry[]> = {};
-    results.forEach(r => { (grouped[r.plant] = grouped[r.plant] || []).push(r); });
-
-    let startY = 40;
-    const colors: Record<string, [number, number, number]> = {
-      AMM1: [0, 100, 140], AMM2: [0, 80, 120], NITROGEN: [40, 100, 60],
-      DEMIN1: [120, 60, 20], DEMIN2: [100, 50, 30],
-    };
-
-    Object.entries(grouped).forEach(([p, entries]) => {
-      autoTable(doc, {
-        startY,
-        head: [[p, "Sample Type", "Employee ID", "Technician", "Parameter", "Value", "Time"]],
-        body: entries.map((e, i) => [i + 1, e.sample_type, e.employee_id, e.technician_name, e.parameter_name, e.value, format(new Date(e.timestamp), "HH:mm:ss")]),
-        theme: "grid",
-        headStyles: { fillColor: colors[p] || [0, 60, 100], fontSize: 10 },
-      });
-      startY = (doc as any).lastAutoTable.finalY + 10;
-    });
-
-    if (samples.length > 0) {
-      const dynFieldNames = dynamicFields.filter(f => f.is_active).map(f => f.field_label);
-      autoTable(doc, {
-        startY,
-        head: [["Sample", "Dept", "Analysis", "Status", "Employee", "Technician", ...dynFieldNames]],
-        body: samples.map(s => [
-          s.sample_name, s.department, s.analysis_type, s.status,
-          s.employee_id, s.technician_name,
-          ...dynamicFields.filter(f => f.is_active).map(f => s.dynamic_data?.[f.field_name] ?? "-"),
-        ]),
-        theme: "grid",
-        headStyles: { fillColor: [80, 40, 120], fontSize: 9 },
-      });
-    }
-
-    doc.setFontSize(9);
-    doc.text("LIFECO PMS 2026 | Prepared by: Eng. Mohammed Gadallah", 14, doc.internal.pageSize.height - 10);
-    doc.save(`LIFECO_Lab_${selectedDateStr}.pdf`);
-  };
-
-  // Power BI Ready Excel
-  const handleExportExcel = () => {
-    const wb = XLSX.utils.book_new();
-
-    // Fact: Lab Results (normalized)
-    const factRows = results.map(r => ({
-      record_id: r.id,
-      date: format(new Date(r.timestamp), "yyyy-MM-dd"),
-      time: format(new Date(r.timestamp), "HH:mm:ss"),
-      timestamp_iso: r.timestamp,
-      plant_id: r.plant,
-      sample_type: r.sample_type,
-      parameter_name: r.parameter_name,
-      reading_value: r.value,
-      employee_id: r.employee_id,
-      technician_name: r.technician_name,
-    }));
-    const ws1 = XLSX.utils.json_to_sheet(factRows);
-    ws1["!cols"] = [{ wch: 36 }, { wch: 12 }, { wch: 10 }, { wch: 24 }, { wch: 12 }, { wch: 12 }, { wch: 22 }, { wch: 14 }, { wch: 16 }, { wch: 20 }];
-    XLSX.utils.book_append_sheet(wb, ws1, "FactLabResults");
-
-    // Fact: Samples (normalized - flatten dynamic_data)
-    if (samples.length > 0) {
-      const sampleRows = samples.map(s => {
-        const row: Record<string, any> = {
-          record_id: s.id,
-          date: s.sample_date,
-          sample_name: s.sample_name,
-          department_id: s.department,
-          analysis_type: s.analysis_type,
-          status: s.status,
-          employee_id: s.employee_id,
-          technician_name: s.technician_name,
-        };
-        dynamicFields.filter(f => f.is_active).forEach(f => {
-          row[`field_${f.field_name}`] = s.dynamic_data?.[f.field_name] ?? "";
-        });
-        row["notes"] = s.notes || "";
-        return row;
-      });
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sampleRows), "FactSamples");
-    }
-
-    // Dim: Plants
-    const plantSet = new Set(results.map(r => r.plant));
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
-      Array.from(plantSet).map(p => ({ plant_id: p, plant_name: p }))
-    ), "DimPlant");
-
-    // Dim: Parameters
-    const paramSet = new Set(results.map(r => r.parameter_name));
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
-      Array.from(paramSet).map(p => ({ parameter_name: p, plant_id: results.find(r => r.parameter_name === p)?.plant || "" }))
-    ), "DimParameter");
-
-    XLSX.writeFile(wb, `LIFECO_Lab_PowerBI_${selectedDateStr}.xlsx`);
   };
 
   const now = new Date();
-  const statusColors: Record<string, string> = {
-    pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    completed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    alert: "bg-red-500/20 text-red-400 border-red-500/30",
-  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none">
+      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          {(plantFilter || deptScope) && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                if (plantFilter && deptScope) {
-                  setPlantFilter("");
-                } else {
-                  setDeptScope("");
-                  setPlantFilter("");
-                }
-              }}
-              className="text-muted-foreground"
-            >
+          {(deptScope || plantFilter || verified) && (
+            <Button variant="ghost" size="icon" onClick={resetSelection} className="text-muted-foreground">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           )}
@@ -465,12 +182,6 @@ const LabDashboard = () => {
           <Button variant="outline" size="sm" onClick={() => setLang(lang === "en" ? "ar" : "en")} className="gap-1.5">
             <Globe className="w-4 h-4" /> {t.language}
           </Button>
-          <Button variant="outline" size="sm" onClick={openPreview} className="gap-1.5">
-            <FileDown className="w-4 h-4" /> {t.pdf}
-          </Button>
-          <Button variant="outline" size="sm" onClick={openPreview} className="gap-1.5">
-            <FileSpreadsheet className="w-4 h-4" /> {t.excel}
-          </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-1.5 text-muted-foreground">
             <LogOut className="w-4 h-4" /> {t.exit}
           </Button>
@@ -480,19 +191,13 @@ const LabDashboard = () => {
       <main className="flex-1 p-4 md:p-6 max-w-6xl mx-auto w-full space-y-6">
         {!deptScope && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
-            <button
-              onClick={() => setDeptScope("AMMONIA")}
-              className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden"
-            >
+            <button onClick={() => setDeptScope("AMMONIA")} className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               <FlaskConical className="w-16 h-16 mx-auto mb-6 text-primary group-hover:scale-110 transition-transform" />
               <h2 className="text-2xl font-bold mb-2">Ammonia Lab</h2>
               <h3 className="text-xl text-muted-foreground">مختبر الأمونيا</h3>
             </button>
-            <button
-              onClick={() => setDeptScope("UREA")}
-              className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden"
-            >
+            <button onClick={() => setDeptScope("UREA")} className="glass-card p-10 text-center hover:neon-border transition-all group relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               <FlaskConical className="w-16 h-16 mx-auto mb-6 text-emerald-500 group-hover:scale-110 transition-transform" />
               <h2 className="text-2xl font-bold mb-2">Urea Lab</h2>
@@ -503,534 +208,138 @@ const LabDashboard = () => {
 
         {deptScope && !plantFilter && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Factory className="w-6 h-6 text-primary" />
-                {deptScope === "AMMONIA" ? "Ammonia Department Plants" : "Urea Department Plants"}
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Factory className="w-6 h-6 text-primary" />
+              {deptScope === "AMMONIA" ? "Ammonia Department Plants" : "Urea Department Plants"}
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {PLANT_GROUPS.find(g => g.dept === deptScope)?.plants.map((pl, i) => (
-                <motion.button
-                  key={pl.code}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  onClick={() => setPlantFilter(pl.code)}
-                  className="glass-card p-6 text-center hover:neon-border transition-all group"
-                >
+                <button key={pl.code} onClick={() => setPlantFilter(pl.code)} className="glass-card p-6 text-center hover:neon-border transition-all group">
                   <Factory className="w-10 h-10 mx-auto mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
                   <div className="font-bold text-lg">{pl.ar}</div>
                   <div className="text-xs text-muted-foreground uppercase mt-1">{pl.code}</div>
-                </motion.button>
+                </button>
               ))}
             </div>
           </motion.div>
         )}
-        {deptScope && plantFilter && (
-          <>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 flex flex-wrap items-center gap-4">
-              <CalendarIcon className="w-4 h-4 text-primary" />
-              <span className="text-sm text-foreground font-medium">{t.dateFilter}</span>
-              <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <CalendarIcon className="w-4 h-4" />
-                {format(selectedDate, "dd/MM/yyyy")}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="single" selected={selectedDate}
-                onSelect={(d) => { if (d) { setSelectedDate(d); setAllDates(false); } }}
-                className="p-3 pointer-events-auto" />
-            </PopoverContent>
-          </Popover>
-          <div className="flex items-center gap-2 text-muted-foreground text-sm">
-            <Clock className="w-4 h-4" />
-            <span>{format(now, "dd/MM/yyyy")} — {format(now, "HH:mm:ss")}</span>
-          </div>
-        </motion.div>
 
-        {/* Tab Selector */}
-        {!readOnly && (
-          <div className="flex gap-2">
-            <Button variant={activeTab === "classic" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("classic")}>
-              {lang === "ar" ? "الإدخال الكلاسيكي" : "Classic Entry"}
-            </Button>
-            <Button variant={activeTab === "samples" ? "default" : "outline"} size="sm" onClick={() => setActiveTab("samples")}>
-              {lang === "ar" ? "العينات الديناميكية" : "Dynamic Samples"}
-            </Button>
-          </div>
+        {plantFilter && !verified && (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md mx-auto pt-10">
+            <div className="glass-card p-8 neon-border space-y-6">
+              <div className="text-center">
+                <User className="w-12 h-12 mx-auto text-primary mb-2" />
+                <h2 className="text-xl font-bold">{lang === "ar" ? "تحقق المحلل" : "Analyst Verification"}</h2>
+                <p className="text-sm text-muted-foreground">{lang === "ar" ? "يرجى إدخال البيانات للمتابعة" : "Enter details to proceed"}</p>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">{lang === "ar" ? "اسم المحلل" : "Employee Name"}</label>
+                  <Input value={technicianName} onChange={(e) => setTechnicianName(e.target.value)} placeholder="Name..." className="bg-secondary/50" />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">{lang === "ar" ? "الرقم الوظيفي" : "Employee ID / Badge"}</label>
+                  <Input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} placeholder="ID..." className="bg-secondary/50" />
+                </div>
+                <Button onClick={handleVerify} className="w-full h-12 text-lg font-bold">
+                  {lang === "ar" ? "دخول ونظام العينات" : "Verify & Open Samples"}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
         )}
 
-        {activeTab === "classic" && !readOnly ? (
-          <>
-            {/* Classic Entry Form */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
-              <div className="flex items-center gap-2 mb-4">
-                <FlaskConical className="w-5 h-5 text-primary" />
-                <h2 className="text-foreground font-semibold">{t.newLogEntry}</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" /> {t.technicianName}
-                  </label>
-                  <Input value={technicianName} onChange={(e) => setTechnicianName(e.target.value)}
-                    placeholder={t.technicianNamePlaceholder} className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" /> {t.employeeId}
-                  </label>
-                  <Input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}
-                    placeholder={t.employeeIdPlaceholder} className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
-                  <Select value={plant} onValueChange={(v) => { setPlant(v); setParamValues({}); }}>
-                    <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{(deptScope ? PLANT_GROUPS.filter(g => g.dept === deptScope) : PLANT_GROUPS).map(g => (
-                      <SelectGroup key={g.dept}>
-                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
-                        {g.plants.map(pl => (
-                          <SelectItem key={pl.code} value={pl.code}>
-                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    ))}</SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">{t.sampleType}</label>
-                  <Select value={sampleType} onValueChange={(v) => { setSampleType(v as "daily" | "weekly"); setParamValues({}); }}>
-                    <SelectTrigger className="bg-secondary/50 border-border"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">{t.daily}</SelectItem>
-                      <SelectItem value="weekly">{t.weekly}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              {parameters.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">{t.parameter} — {plant} ({sampleType})</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {parameters.map((param, idx) => (
-                      <div key={param} className="bg-secondary/30 rounded-lg p-3">
-                        <label className="text-xs text-muted-foreground block mb-1">{param}</label>
-                        <Input type="number" value={paramValues[param] || ""}
-                          id={`param-${idx}`}
-                          onChange={(e) => setParamValues(prev => ({ ...prev, [param]: e.target.value }))}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              const next = document.getElementById(`param-${idx + 1}`);
-                              if (next) (next as HTMLInputElement).focus();
-                              else handleSaveAll();
-                            }
-                          }}
-                          placeholder="0.00" className="bg-secondary/50 border-border text-lg font-bold text-primary h-10" />
-                      </div>
-                    ))}
+        {verified && (
+          <div className="space-y-6">
+            <div className="glass-card p-6 neon-border">
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    <span className="font-bold">{format(selectedDate, "dd/MM/yyyy")}</span>
                   </div>
-                  <Button onClick={handleSaveAll} disabled={saving} className="w-full md:w-auto gap-2 mt-2">
-                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    {t.saveSample}
-                  </Button>
+                  <div className="h-4 w-px bg-border" />
+                  <div className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-primary" />
+                    <span className="font-mono font-bold">{technicianName} ({employeeId})</span>
+                  </div>
                 </div>
-              )}
-            </motion.div>
+                <div className="flex bg-secondary/50 p-1 rounded-lg">
+                  <button onClick={() => setSampleType("daily")} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${sampleType === "daily" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}>
+                    {lang === "ar" ? "العينات اليومية" : "Daily Samples"}
+                  </button>
+                  <button onClick={() => setSampleType("weekly")} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${sampleType === "weekly" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"}`}>
+                    {lang === "ar" ? "العينات الأسبوعية" : "Weekly Samples"}
+                  </button>
+                </div>
+              </div>
 
-            {/* Classic Results */}
-            <div>
-              <h2 className="text-foreground font-semibold mb-3 flex items-center gap-2">
-                <FlaskConical className="w-4 h-4 text-primary" /> {t.labResults} — {format(selectedDate, "dd/MM/yyyy")}
-              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {parameters.map((param) => (
+                  <div key={param} className="bg-secondary/30 p-4 rounded-xl border border-border/50 hover:border-primary/50 transition-colors">
+                    <label className="text-xs font-black uppercase text-muted-foreground mb-2 block tracking-tighter">{param}</label>
+                    <Input 
+                      type="number" 
+                      value={paramValues[param] || ""} 
+                      onChange={(e) => setParamValues(prev => ({ ...prev, [param]: e.target.value }))}
+                      placeholder="0.00" 
+                      className="text-2xl font-black bg-background border-none text-primary h-12"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <Button onClick={handleSaveAll} disabled={saving} className="w-full h-14 text-xl font-black uppercase tracking-widest gap-3 shadow-xl shadow-primary/20">
+                {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
+                {lang === "ar" ? "حفظ وإرسال للسجلات التشغيلية" : "Save & Publish to Operations"}
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                {lang === "ar" ? "النتائج المسجلة اليوم" : "Results Logged Today"}
+              </h3>
+              
               {loading ? (
-                <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+                <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
               ) : results.length === 0 ? (
-                <div className="glass-card p-8 text-center text-muted-foreground italic">
-                  '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
-                                            
-                                            Act as a Senior React UI Developer. Please RESTORE and RE-ACTIVATE the pre-existing Laboratory module architecture that was configured previously under the "Lab Readings / المختبر" section.
-
-1. RE-ENABLE PREVIOUS LAB HIERARCHY:
-
-- Main Selection View: Selecting "Lab Readings" in the top navigation bar must render the main laboratory selection interface:
-
-  * [Ammonia Lab / مختبر الأمونيا]
-
-  * [Urea Lab / مختبر اليوريا]
-
-2. AMMONIA LAB PLANT DRILL-DOWN:
-
-- When clicking on [Ammonia Lab / مختبر الأمونيا], display all plants/units under the Ammonia Department, with a primary focus on the Nitrogen Plant (مصنع النيتروجين).
-
-3. NITROGEN PLANT LAB SAMPLES FORM:
-
-- Clicking on [Nitrogen Plant / مصنع النيتروجين] inside Ammonia Lab must open the dedicated sampling and analytical entry forms:
-
-  * Daily Samples (العينات اليومية): Entry fields for Oxygen content (60-AL-003), Main Dew Point (60-AT-001 / 60-AI-001), Nitrogen Purity %, and Instrument Air moisture checks.
-
-  * Weekly Samples (العينات الأسبوعية): Entry fields for Cooling Water chemical analysis, Oil/Moisture condensate checks on Air Dryers & Filters, and routine quality logs.
-
-4. PRESERVE & LINK ROUTING:
-
-- Ensure all existing routing/state parameters for the Lab module are fully re-connected to the main navigation toolbar without deleting or altering the new Nitrogen Plant Commissioning Log Sheets.
+                <div className="glass-card p-12 text-center text-muted-foreground italic border-dashed">
+                  {lang === "ar" ? "لا توجد نتائج مسجلة لهذا اليوم" : "No results logged for today yet"}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <AnimatePresence>
-                    {results.map((entry, i) => {
-                      const range = getLabRange(entry.parameter_name);
-                      const ok = isInRange(entry.value, range);
-                      const colors = statusColorClasses(ok);
-                      return (
-                      <motion.div key={entry.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.03 }}
-                        className={`glass-card p-4 hover:neon-border transition-all duration-300 border ${colors.border}`}>
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-primary font-semibold text-sm">{entry.parameter_name}</span>
-                              <span className="text-[10px] bg-secondary/50 text-muted-foreground px-1.5 py-0.5 rounded">{entry.plant}</span>
-                              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">{entry.sample_type}</span>
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded border ${colors.bg} ${colors.text} ${colors.border}`}>
-                                {ok ? (lang === "ar" ? "طبيعي" : "Normal") : (lang === "ar" ? "خارج النطاق" : "Out of Range")}
-                              </span>
-                            </div>
-                            <p className={`text-3xl font-bold mt-1 ${colors.text}`}>{entry.value}{range?.unit ? <span className="text-sm opacity-60 ml-1">{range.unit}</span> : null}</p>
-                            <p className="text-xs text-muted-foreground mt-1">{entry.technician_name} • {entry.employee_id}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {results.map((r) => {
+                    const range = getLabRange(r.parameter_name);
+                    const ok = isInRange(r.value, range);
+                    return (
+                      <motion.div key={r.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className={`glass-card p-5 border-l-4 ${ok ? "border-l-emerald-500" : "border-l-red-500"}`}>
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <span className="text-[10px] font-black uppercase bg-secondary px-2 py-0.5 rounded text-muted-foreground">{r.sample_type}</span>
+                            <h4 className="font-bold text-lg leading-tight mt-1">{r.parameter_name}</h4>
                           </div>
-                          <div className="flex flex-col items-end gap-1">
-                            <span className="text-xs text-muted-foreground">{format(new Date(entry.timestamp), "dd/MM/yyyy — HH:mm:ss")}</span>
-                            <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive hover:text-destructive" onClick={() => handleDeleteEntry(entry.id)}>
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
-                          </div>
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteEntry(r.id)} className="h-8 w-8 text-destructive">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                          <span className={`text-3xl font-black ${ok ? "text-emerald-500" : "text-red-500"}`}>{r.value}</span>
+                          <span className="text-xs text-muted-foreground">{range?.unit}</span>
+                        </div>
+                        <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-[10px] font-mono text-muted-foreground">
+                          <span>{format(new Date(r.timestamp), "HH:mm:ss")}</span>
+                          <span>{r.technician_name}</span>
                         </div>
                       </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
+                    );
+                  })}
                 </div>
               )}
             </div>
-          </>
-        ) : activeTab === "samples" ? (
-          <>
-            {/* Dynamic Sample Entry */}
-            {readOnly ? (
-              <div className="glass-card p-4 text-sm text-muted-foreground">
-                {lang === "ar"
-                  ? "وضع العرض فقط — إدخال العينات وكتابة النتائج من صلاحية المعمل."
-                  : "View-only mode — sample entry and results are handled by the laboratory."}
-              </div>
-            ) : (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 neon-border">
-
-              <div className="flex items-center gap-2 mb-4">
-                <FlaskConical className="w-5 h-5 text-primary" />
-                <h2 className="text-foreground font-semibold">
-                  {lang === "ar" ? "إدخال عينة جديدة" : "New Sample Entry"}
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" /> {t.technicianName}
-                  </label>
-                  <Input value={technicianName} onChange={(e) => setTechnicianName(e.target.value)}
-                    placeholder={t.technicianNamePlaceholder} className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" /> {t.employeeId}
-                  </label>
-                  <Input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}
-                    placeholder={t.employeeIdPlaceholder} className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">
-                    {lang === "ar" ? "اسم العينة" : "Sample Name"}
-                  </label>
-                  <Input value={sampleName} onChange={(e) => setSampleName(e.target.value)}
-                    placeholder={lang === "ar" ? "أدخل اسم العينة..." : "Enter sample name..."}
-                    className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">{t.selectPlant}</label>
-                  <Select value={plant} onValueChange={setPlant}>
-                    <SelectTrigger className="bg-secondary/50 border-border"><SelectValue placeholder={t.selectPlant} /></SelectTrigger>
-                    <SelectContent>{(deptScope ? PLANT_GROUPS.filter(g => g.dept === deptScope) : PLANT_GROUPS).map(g => (
-                      <SelectGroup key={g.dept}>
-                        <SelectLabel>{lang === "ar" ? g.deptAr : g.dept}</SelectLabel>
-                        {g.plants.map(pl => (
-                          <SelectItem key={pl.code} value={pl.code}>
-                            {lang === "ar" ? `${pl.ar} — ${pl.code}` : pl.code}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    ))}</SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">
-                    {lang === "ar" ? "نوع التحليل" : "Analysis Type"}
-                  </label>
-                  <Select value={analysisType} onValueChange={setAnalysisType}>
-                    <SelectTrigger className="bg-secondary/50 border-border"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="routine">{lang === "ar" ? "روتيني" : "Routine"}</SelectItem>
-                      <SelectItem value="non_routine">{lang === "ar" ? "غير روتيني" : "Non-Routine"}</SelectItem>
-                      <SelectItem value="special">{lang === "ar" ? "خاص" : "Special"}</SelectItem>
-                      <SelectItem value="emergency">{lang === "ar" ? "طارئ" : "Emergency"}</SelectItem>
-                      <SelectItem value="troubleshooting">{lang === "ar" ? "تشخيص مشكلة" : "Troubleshooting"}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">
-                    {lang === "ar" ? "نتائج العينة" : "Sample Results"}
-                  </label>
-                  <Input value={sampleResults} onChange={(e) => setSampleResults(e.target.value)}
-                    placeholder={lang === "ar" ? "اكتب نتائج العينة..." : "Enter sample results..."}
-                    className="bg-secondary/50 border-border" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1.5">
-                    {lang === "ar" ? "ملاحظات" : "Notes"}
-                  </label>
-                  <Input value={sampleNotes} onChange={(e) => setSampleNotes(e.target.value)}
-                    placeholder={lang === "ar" ? "ملاحظات اختيارية..." : "Optional notes..."}
-                    className="bg-secondary/50 border-border" />
-                </div>
-              </div>
-
-              {/* Dynamic Fields */}
-              {filteredDynamicFields.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    {lang === "ar" ? "الحقول الديناميكية" : "Dynamic Fields"}
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDynamicFields.map(field => (
-                      <div key={field.id} className="bg-secondary/30 rounded-lg p-3">
-                        <label className="text-xs text-muted-foreground block mb-1">{field.field_label}</label>
-                        {field.field_type === "dropdown" ? (
-                          <Select value={dynamicValues[field.field_name] || ""} onValueChange={(v) => setDynamicValues(prev => ({ ...prev, [field.field_name]: v }))}>
-                            <SelectTrigger className="bg-secondary/50 border-border h-10"><SelectValue placeholder="..." /></SelectTrigger>
-                            <SelectContent>
-                              {(field.dropdown_options || []).map((opt: string) => (
-                                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <Input
-                            type={field.field_type === "number" ? "number" : "text"}
-                            value={dynamicValues[field.field_name] || ""}
-                            onChange={(e) => setDynamicValues(prev => ({ ...prev, [field.field_name]: e.target.value }))}
-                            placeholder={field.field_type === "number" ? "0.00" : "..."}
-                            className="bg-secondary/50 border-border text-lg font-bold text-primary h-10"
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Non-routine / custom parameters */}
-              <div className="space-y-3 mt-4">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    {lang === "ar" ? "معاملات غير روتينية (إضافة يدوية)" : "Non-Routine Parameters (manual)"}
-                  </h3>
-                  <Button type="button" variant="outline" size="sm" className="gap-1.5"
-                    onClick={() => setCustomParams(prev => [...prev, { name: "", value: "" }])}>
-                    <Plus className="w-3.5 h-3.5" />
-                    {lang === "ar" ? "إضافة معامل" : "Add Parameter"}
-                  </Button>
-                </div>
-                {customParams.length === 0 ? (
-                  <p className="text-muted-foreground text-xs">
-                    {lang === "ar"
-                      ? "اضغط «إضافة معامل» لتسجيل أي تحليل غير روتيني غير موجود في القوائم."
-                      : "Click “Add Parameter” to record any non-routine analysis not listed above."}
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {customParams.map((p, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <Input
-                          value={p.name}
-                          onChange={(e) => setCustomParams(prev => prev.map((c, i) => i === idx ? { ...c, name: e.target.value } : c))}
-                          placeholder={lang === "ar" ? "اسم المعامل (مثال: زيت وشحوم)" : "Parameter name"}
-                          className="bg-secondary/50 border-border"
-                        />
-                        <Input
-                          value={p.value}
-                          onChange={(e) => setCustomParams(prev => prev.map((c, i) => i === idx ? { ...c, value: e.target.value } : c))}
-                          placeholder={lang === "ar" ? "القيمة" : "Value"}
-                          className="bg-secondary/50 border-border w-32 font-bold text-primary"
-                        />
-                        <Button type="button" variant="ghost" size="icon"
-                          onClick={() => setCustomParams(prev => prev.filter((_, i) => i !== idx))}>
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <Button onClick={handleSaveSample} disabled={savingSample} className="w-full md:w-auto gap-2 mt-4">
-                {savingSample ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                {lang === "ar" ? "حفظ العينة" : "Save Sample"}
-              </Button>
-              </motion.div>
-            )}
-
-
-            {/* Samples List */}
-            <div>
-              <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-                <h2 className="text-foreground font-semibold flex items-center gap-2">
-                  <FlaskConical className="w-4 h-4 text-primary" />
-                  {lang === "ar" ? "نتائج العينات" : "Sample Results"} —{" "}
-                  {allDates
-                    ? (lang === "ar" ? "كل العينات المسجّلة" : "All recorded samples")
-                    : format(selectedDate, "dd/MM/yyyy")}
-                  <span className="text-xs text-muted-foreground">({samples.length})</span>
-                  {plantFilter && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-primary/15 border border-primary/40 text-primary">
-                      {plantFilter}
-                    </span>
-                  )}
-                </h2>
-                {plantFilter && (
-                  <Button variant="ghost" size="sm"
-                    onClick={() => { sessionStorage.removeItem("lifeco_lab_plant"); setPlantFilter(""); }}>
-                    {lang === "ar" ? "عرض كل المصانع" : "Show all plants"}
-                  </Button>
-                )}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Button variant={allDates ? "default" : "outline"} size="sm"
-                    onClick={() => setAllDates(true)}>
-                    {lang === "ar" ? "كل التواريخ" : "All dates"}
-                  </Button>
-                  <Button variant={!allDates ? "default" : "outline"} size="sm"
-                    onClick={() => setAllDates(false)}>
-                    {lang === "ar" ? "تاريخ محدد" : "Selected date"}
-                  </Button>
-                  <Button variant="outline" size="sm" className="gap-1.5" disabled={samples.length === 0}
-                    onClick={() => exportAllSampleResultsPDF(samples as any, selectedDate, labelOf)}>
-                    <FileDown className="w-4 h-4" />
-                    {lang === "ar" ? "سحب PDF لكل النتائج" : "Export All Results PDF"}
-                  </Button>
-                </div>
-              </div>
-
-              {samples.length === 0 ? (
-                <div className="glass-card p-8 text-center text-muted-foreground">
-                  {lang === "ar"
-                    ? (allDates ? "لا توجد عينات مسجّلة بعد" : "لا توجد عينات لهذا التاريخ")
-                    : (allDates ? "No samples recorded yet" : "No samples for this date")}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {samples.map((sample, i) => (
-                    <motion.div key={sample.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }} className="glass-card p-4 hover:neon-border transition-all duration-300">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-primary font-semibold">{sample.sample_name}</span>
-                          <Badge variant="outline" className="text-[10px]">{sample.department}</Badge>
-                          <Badge variant="outline" className="text-[10px]">{sample.sample_date}</Badge>
-                          <Badge variant="secondary" className="text-[10px]">{sample.analysis_type}</Badge>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusColors[sample.status]}`}>
-                            {sample.status}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          {!readOnly && (
-                            <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
-                              onClick={() => setResultsSample(sample)}>
-                              <Save className="w-3.5 h-3.5" />
-                              {lang === "ar" ? "كتابة النتائج" : "Write Results"}
-                            </Button>
-                          )}
-                          <Button variant="outline" size="sm" className="h-7 gap-1 text-xs"
-                            onClick={() => exportSampleResultsPDF(sample as any, labelOf)}>
-                            <FileDown className="w-3.5 h-3.5" /> PDF
-                          </Button>
-                          {!readOnly && (
-                            <>
-                              <Select value={sample.status} onValueChange={(v) => handleUpdateSampleStatus(sample.id, v)}>
-                                <SelectTrigger className="w-28 h-7 text-xs bg-secondary/50"><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="pending">{lang === "ar" ? "معلّق" : "Pending"}</SelectItem>
-                                  <SelectItem value="completed">{lang === "ar" ? "مكتمل" : "Completed"}</SelectItem>
-                                  <SelectItem value="alert">{lang === "ar" ? "تنبيه" : "Alert"}</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <Button variant="ghost" size="icon" className="w-7 h-7 text-destructive" onClick={() => handleDeleteSample(sample.id)}>
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                        {Object.entries(sample.dynamic_data || {}).map(([key, val]) => {
-                          const fieldDef = dynamicFields.find(f => f.field_name === key);
-                          return (
-                            <div key={key} className="bg-secondary/20 rounded p-2">
-                              <span className="text-xs text-muted-foreground">{fieldDef?.field_label || key}</span>
-                              <p className="text-foreground font-semibold">{String(val)}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {sample.technician_name} • {sample.employee_id}
-                        {sample.notes && ` • ${sample.notes}`}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        ) : null}
-        </>
+          </div>
         )}
       </main>
-
-      <footer className="border-t border-border px-6 py-3 text-center">
-        <p className="text-muted-foreground text-xs" dir="rtl">{t.footer}</p>
-      </footer>
-
-      <SampleResultsDialog
-        sample={resultsSample as any}
-        onClose={() => setResultsSample(null)}
-        onSaved={fetchSamples}
-        labelOf={labelOf}
-      />
-
-      {previewData && (
-        <ExportPreviewDialog
-          open={!!previewData}
-          onClose={() => setPreviewData(null)}
-          data={previewData}
-          onExportPDF={handleExportPDF}
-          onExportExcel={handleExportExcel}
-        />
-      )}
     </div>
   );
 };
