@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { 
   Info, Activity, ShieldAlert, Layers, Wrench, FileText, 
-  MapPin, Factory, AlertTriangle, FileDown, Printer, QrCode, Share2, Download, FileType
+  MapPin, Factory, AlertTriangle, FileDown, Printer, QrCode, Share2, Download, FileType, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EquipmentIdentityCard } from "@/components/maintenance/EquipmentIdentityCard";
 import { motion, AnimatePresence } from "framer-motion";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 import { QRCodeSVG } from "qrcode.react";
+import { generateEquipmentPDF } from "@/utils/equipment-pdf";
 
 interface EquipmentMobileCardProps {
   data: any;
@@ -32,6 +31,37 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
     { id: "documents", label: "DOCUMENTS", icon: FileText },
   ];
 
+  const handleViewPDF = async () => {
+    const doc = await generateEquipmentPDF(data, tag);
+    window.open(doc.output('bloburl'), '_blank');
+  };
+
+  const handleDownloadPDF = async () => {
+    const doc = await generateEquipmentPDF(data, tag);
+    doc.save(`${tag}-Equipment-Card.pdf`);
+  };
+
+  const handleSharePDF = async () => {
+    const doc = await generateEquipmentPDF(data, tag);
+    const blob = doc.output('blob');
+    const file = new File([blob], `${tag}-Equipment-Card.pdf`, { type: 'application/pdf' });
+    
+    if (navigator.share && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: `LIFECO Equipment Card: ${tag}`,
+          text: `Technical card for ${tag}`
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Link copied to clipboard! PDF sharing not supported on this browser.");
+    }
+  };
+
   const DataField = ({ label, value, warning = false }: any) => (
     <div className="p-3 rounded-lg bg-white/5 border border-white/10">
       <div className="text-[9px] text-white/40 uppercase tracking-widest mb-1 font-bold">{label}</div>
@@ -40,35 +70,6 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
       </div>
     </div>
   );
-
-  const generatePDF = async () => {
-    const element = document.getElementById("mobile-card-content");
-    if (!element) return;
-    const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#020617" });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${tag}-Equipment-Card.pdf`);
-  };
-
-  const shareCard = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `LIFECO Equipment Card: ${tag}`,
-          text: `Digital Identity Card for ${tag} (${data.equipment_name})`,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error("Error sharing:", err);
-      }
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      alert("Link copied to clipboard!");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col font-sans pb-10">
@@ -81,22 +82,25 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
         <div className="text-xs text-white/60 mb-4">{data.equipment_name || asset.asset_name}</div>
         
         <div className="flex flex-col gap-2">
-          <Button className="w-full h-10 font-bold bg-primary text-white" onClick={generatePDF}>
-            <FileType className="w-4 h-4 mr-2" /> 📄 Equipment Card PDF
+          <Button className="w-full h-12 font-black bg-primary text-white uppercase tracking-tighter" onClick={handleDownloadPDF}>
+            <FileType className="w-5 h-5 mr-2" /> 📄 EQUIPMENT CARD PDF
           </Button>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" className="h-10 text-xs bg-white/5" onClick={shareCard}>
-              <Share2 className="w-4 h-4 mr-2" /> 📤 Share
+          <div className="grid grid-cols-3 gap-2">
+            <Button variant="outline" className="h-10 text-[10px] font-bold bg-white/5" onClick={handleViewPDF}>
+              <Eye className="w-4 h-4 mr-1" /> VIEW
             </Button>
-            <Button variant="outline" className="h-10 text-xs bg-white/5" onClick={generatePDF}>
-              <Download className="w-4 h-4 mr-2" /> Download
+            <Button variant="outline" className="h-10 text-[10px] font-bold bg-white/5" onClick={handleDownloadPDF}>
+              <Download className="w-4 h-4 mr-1" /> DOWNLOAD
+            </Button>
+            <Button variant="outline" className="h-10 text-[10px] font-bold bg-white/5" onClick={handleSharePDF}>
+              <Share2 className="w-4 h-4 mr-1" /> SHARE
             </Button>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex overflow-x-auto bg-slate-900/50 border-b border-white/10 no-scrollbar sticky top-[180px] z-10 backdrop-blur-sm">
+      <div className="flex overflow-x-auto bg-slate-900/50 border-b border-white/10 no-scrollbar sticky top-[200px] z-10 backdrop-blur-sm">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -113,7 +117,7 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 p-5 overflow-y-auto" id="mobile-card-content">
+      <div className="flex-1 p-5 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -141,14 +145,15 @@ export function EquipmentMobileCard({ data }: EquipmentMobileCardProps) {
                   running={data.detailed_running_data}
                   ar={false}
                   tag={tag}
+                  fullData={data}
                 />
               </div>
             )}
             
-            {/* QR Section - Specific requirement */}
-            <div className="p-6 rounded-2xl bg-white flex flex-col items-center mt-6">
-              <QRCodeSVG value={shareUrl} size={200} level="H" />
-              <p className="text-black text-xs font-bold mt-4 uppercase tracking-widest text-center">
+            {/* QR Section - Standard across all tabs in mobile or at bottom */}
+            <div className="p-6 rounded-2xl bg-white flex flex-col items-center mt-6 border border-slate-200">
+              <QRCodeSVG value={shareUrl} size={200} level="H" includeMargin={true} />
+              <p className="text-black text-[10px] font-black mt-4 uppercase tracking-widest text-center">
                 Scan for latest Digital Equipment Card
               </p>
             </div>
