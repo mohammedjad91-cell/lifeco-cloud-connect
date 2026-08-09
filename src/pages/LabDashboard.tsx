@@ -652,9 +652,33 @@ const LabDashboard = () => {
                 <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
               ) : results.length === 0 ? (
                 <div className="glass-card p-8 text-center text-muted-foreground italic">
-                  "Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required."
-                  <br /><br />
-                  لم اجد اي شي
+                  '''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''
+                                            
+                                            Act as a Senior React UI Developer. Please RESTORE and RE-ACTIVATE the pre-existing Laboratory module architecture that was configured previously under the "Lab Readings / المختبر" section.
+
+1. RE-ENABLE PREVIOUS LAB HIERARCHY:
+
+- Main Selection View: Selecting "Lab Readings" in the top navigation bar must render the main laboratory selection interface:
+
+  * [Ammonia Lab / مختبر الأمونيا]
+
+  * [Urea Lab / مختبر اليوريا]
+
+2. AMMONIA LAB PLANT DRILL-DOWN:
+
+- When clicking on [Ammonia Lab / مختبر الأمونيا], display all plants/units under the Ammonia Department, with a primary focus on the Nitrogen Plant (مصنع النيتروجين).
+
+3. NITROGEN PLANT LAB SAMPLES FORM:
+
+- Clicking on [Nitrogen Plant / مصنع النيتروجين] inside Ammonia Lab must open the dedicated sampling and analytical entry forms:
+
+  * Daily Samples (العينات اليومية): Entry fields for Oxygen content (60-AL-003), Main Dew Point (60-AT-001 / 60-AI-001), Nitrogen Purity %, and Instrument Air moisture checks.
+
+  * Weekly Samples (العينات الأسبوعية): Entry fields for Cooling Water chemical analysis, Oil/Moisture condensate checks on Air Dryers & Filters, and routine quality logs.
+
+4. PRESERVE & LINK ROUTING:
+
+- Ensure all existing routing/state parameters for the Lab module are fully re-connected to the main navigation toolbar without deleting or altering the new Nitrogen Plant Commissioning Log Sheets.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
