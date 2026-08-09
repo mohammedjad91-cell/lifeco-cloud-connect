@@ -146,6 +146,9 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
               <h2 className="text-3xl font-black text-white tracking-tighter uppercase">
                 EQUIPMENT: <span className="text-primary">{tag}</span>
               </h2>
+              <div className="text-[10px] font-mono text-primary/60 font-bold tracking-widest mt-0.5 uppercase">
+                STATUS: {asset.status || "Pending Verification"}
+              </div>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} className="text-white/40 hover:text-white hover:bg-white/10 rounded-full h-12 w-12">
