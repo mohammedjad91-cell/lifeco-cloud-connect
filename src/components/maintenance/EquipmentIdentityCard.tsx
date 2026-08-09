@@ -238,7 +238,7 @@ export function EquipmentIdentityCard({ matrix, control, running, ar, tag, fullD
               <SectionHeader icon={QrCode} title={ar ? "رمز الهوية الرقمية" : "DIGITAL IDENTITY QR"} subtitle={ar ? "امسح للوصول إلى أحدث بطاقة" : "Scan to access latest card"} />
               
               <div className="bg-white p-6 rounded-2xl mb-6 shadow-inner border border-slate-200">
-                {qrUrl && <QRCodeSVG value={qrUrl} size={180} level="H" includeMargin={true} />}
+                {pdfApiUrl && <QRCodeSVG value={pdfApiUrl} size={180} level="H" includeMargin={true} />}
               </div>
 
               <div className="w-full space-y-4">
