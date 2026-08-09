@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client"
 import { useEffect, useState } from 'react'
 import { generateEquipmentPDF } from '@/utils/equipment-pdf'
 
+const PDF_CACHE_PREFIX = 'pdf_cache_'
+const CACHE_TTL = 1000 * 60 * 60 * 24 // 24 hours
+
 export const Route = createFileRoute('/equipment/$tag/pdf')({
   loader: async ({ params }) => {
     return { tag: params.tag }
@@ -17,6 +20,24 @@ function EquipmentPdfRedirect() {
   useEffect(() => {
     async function init() {
       try {
+        const cacheKey = `${PDF_CACHE_PREFIX}${tag}`;
+        const cached = localStorage.getItem(cacheKey);
+        
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          // Only use cache if it's less than 24h old
+          if (Date.now() - timestamp < CACHE_TTL) {
+            console.log(`Using cached PDF for ${tag}`);
+            
+            // Re-generate from cached metadata to ensure UI-linked elements (like QR) are fresh
+            const doc = await generateEquipmentPDF(data, tag);
+            const pdfBlob = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            window.location.replace(pdfUrl);
+            return;
+          }
+        }
+
         const { data: assetData, error: dbError } = await supabase
           .from("equipment_identity_cards")
           .select(`*, asset:equipment_assets(*)`)
@@ -29,6 +50,12 @@ function EquipmentPdfRedirect() {
           return;
         }
 
+        // Cache the metadata for faster subsequent generations
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: assetData,
+          timestamp: Date.now()
+        }));
+
         // Generate the PDF
         const doc = await generateEquipmentPDF(assetData, tag);
         
@@ -36,8 +63,6 @@ function EquipmentPdfRedirect() {
         const pdfBlob = doc.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         
-        // We want to force the browser to handle this as a PDF file
-        // For mobile devices, replacing the location with a blob URL usually triggers the built-in PDF viewer
         window.location.replace(pdfUrl);
         
       } catch (err: any) {
