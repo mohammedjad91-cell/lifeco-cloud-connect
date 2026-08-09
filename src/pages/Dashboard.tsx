@@ -754,11 +754,9 @@ const Dashboard = () => {
           )}
 
 
-          {department.id === "NITROGEN" && (
-            <TabsContent value="nitrogen-logs" className="mt-4">
-              <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
-            </TabsContent>
-          )}
+          <TabsContent value="nitrogen-logs" className="mt-4">
+            <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
+          </TabsContent>
 
 
           <TabsContent value="report" className="mt-4 space-y-4">
