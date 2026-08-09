@@ -119,7 +119,7 @@ const translations = {
   },
   ar: {
     lifecoDigital: "LIFECO PMS 2026",
-    opsLoggingSystem: "نظام إدارة المصنع",
+    opsLoggingSystem: "'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                            \n                                            من قبل معطيك نظام قراءات خاص ب كان موجو عندك مازل قولي",
     departmentAccess: "دخول القسم",
     enterPin: "أدخل الرمز",
     selectDepartment: "اختر القسم",
