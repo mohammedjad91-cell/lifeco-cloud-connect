@@ -95,11 +95,13 @@ export async function generateEquipmentPDF(data: any, tag: string) {
     ["Operating Pressure", "9.1", "bar(e)", "Verified"],
     ["M1 Temperature", "Pending Verification", "°C", "Pending"],
     ["M2 Temperature", "Pending Verification", "°C", "Pending"],
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
-    ["Loaded Hours", running.loaded_hours || "Pending Verification", "hrs", "Pending"]
+    ["Running Hours", "Pending Verification", "hrs", "Pending"],
+    ["Loaded Hours", "Pending Verification", "hrs", "Pending"],
+    ["Service Hours", "Pending Verification", "hrs", "Pending"],
+    ["Start/Stop Cycles", "Pending Verification", "cycles", "Pending"]
   ] : [
     ["Operating Pressure", "Pending Verification", "bar(e)", "Pending"],
-    ["Running Hours", running.running_hours || asset.running_hours || "N/A", "hrs", "Verified"],
+    ["Running Hours", "Pending Verification", "hrs", "Pending"],
     ["Loaded Hours", "Pending Verification", "hrs", "Pending"]
   ];
   addTable([["Parameter", "Value", "Unit", "Status"]], opBody);
@@ -168,7 +170,7 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   // --- SECTION 9: RUNNING DATA ---
   addSectionHeader("SECTION 9 — RUNNING DATA");
   addTable([], [
-    ["Running Hours", running.running_hours || asset.running_hours || "Pending Verification", "Loaded Hours", running.loaded_hours || "Pending Verification"],
+    ["Running Hours", "Pending Verification", "Loaded Hours", "Pending Verification"],
     ["Service Hours", "Pending Verification", "Start/Stop Cycles", "Pending Verification"]
   ]);
 
