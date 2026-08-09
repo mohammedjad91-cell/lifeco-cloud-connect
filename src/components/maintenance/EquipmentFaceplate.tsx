@@ -364,14 +364,3 @@ export function EquipmentFaceplate({ tag, plantCode, lang, open, onOpenChange }:
     </Dialog.Root>
   );
 }
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[9px] font-bold text-emerald-400/60 uppercase tracking-widest">DCS Link Active</span>
-              </div>
-            </div>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
-}
