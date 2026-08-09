@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 /**
  * Generates a professional engineering equipment technical card.
