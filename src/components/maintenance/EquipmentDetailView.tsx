@@ -237,8 +237,8 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                     <DataField label="Normal Operating Range" value={identity.normal_operating_range} />
                   </div>
                   {tag.startsWith("60-1001") && (
-                    <div className="mt-4 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 text-[10px] text-amber-200/60 italic">
-                      M1/M2 = Pending Verification unless confirmed to match Element 1/2.
+                    <div className="mt-4 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 text-[10px] text-amber-200/60 leading-relaxed italic">
+                      "M1/M2 are not assumed to correspond to Element 1/2 until verified from the actual local/DCS display."
                     </div>
                   )}
                 </div>
@@ -277,11 +277,19 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                           </h4>
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 1 WARNING</span>
+                              <span className="text-white/60">ELEMENT 1 OUTLET WARNING</span>
                               <span className="font-mono font-bold text-amber-500">225°C</span>
                             </div>
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
-                              <span className="text-white/60">ELEMENT 1 SHUTDOWN</span>
+                              <span className="text-white/60">ELEMENT 1 OUTLET SHUTDOWN</span>
+                              <span className="font-mono font-bold text-red-500">235°C</span>
+                            </div>
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">ELEMENT 2 OUTLET WARNING</span>
+                              <span className="font-mono font-bold text-amber-500">225°C</span>
+                            </div>
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">ELEMENT 2 OUTLET SHUTDOWN</span>
                               <span className="font-mono font-bold text-red-500">235°C</span>
                             </div>
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
@@ -316,6 +324,32 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                             <div className="flex justify-between text-xs py-1 border-b border-white/5">
                               <span className="text-white/60">OIL TEMPERATURE SHUTDOWN</span>
                               <span className="font-mono font-bold text-red-500">70°C</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="glass-card p-6 border-l-2 border-l-red-500/40">
+                          <h4 className="text-sm font-bold text-red-500 mb-4 flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4" /> MOTOR PROTECTION (PENDING VERIFICATION)
+                          </h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">M1 TEMPERATURE WARNING</span>
+                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            </div>
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">M1 TEMPERATURE SHUTDOWN</span>
+                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            </div>
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">M2 TEMPERATURE WARNING</span>
+                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            </div>
+                            <div className="flex justify-between text-xs py-1 border-b border-white/5">
+                              <span className="text-white/60">M2 TEMPERATURE SHUTDOWN</span>
+                              <span className="font-mono font-bold text-amber-500/70 italic">Pending Verification</span>
+                            </div>
+                            <div className="mt-4 p-3 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-200/60 leading-relaxed italic">
+                              "M1/M2 are not assumed to correspond to Element 1/2 until verified from the actual local/DCS display."
                             </div>
                           </div>
                         </div>
