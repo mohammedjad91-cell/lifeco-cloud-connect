@@ -91,6 +91,33 @@ export const FIELD_OPS_EQUIPMENT: Record<string, string[]> = {
   ],
 };
 
+// كل مصانع إدارة الأمونيا واليوريا متاحة داخل عينات المعمل
+export const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string }[] }[] = [
+  {
+    dept: "AMMONIA", deptAr: "إدارة الأمونيا",
+    plants: [
+      { code: "AMM1", ar: "مصنع الأمونيا 1" },
+      { code: "AMM2", ar: "مصنع الأمونيا 2" },
+      { code: "NITROGEN", ar: "مصنع النيتروجين" },
+      { code: "DEMIN1", ar: "مصنع الديمن 1" },
+      { code: "DEMIN2", ar: "مصنع الديمن 2" },
+      { code: "UTILITIES", ar: "الخدمات (Utilities)" },
+      { code: "PROC-ENG", ar: "هندسة العمليات" },
+    ],
+  },
+  {
+    dept: "UREA", deptAr: "إدارة اليوريا",
+    plants: [
+      { code: "UREA-1", ar: "مصنع اليوريا 1" },
+      { code: "UREA-2", ar: "مصنع اليوريا 2" },
+      { code: "AMM-STORAGE", ar: "خزانات الأمونيا" },
+      { code: "AMM-LOAD", ar: "تحميل الأمونيا" },
+      { code: "UREA-LOAD", ar: "تحميل اليوريا" },
+      { code: "WATER-1", ar: "وحدة معالجة المياه" },
+    ],
+  },
+];
+
 export const DEPARTMENTS: Department[] = [
   {
     id: "AMMONIA",
