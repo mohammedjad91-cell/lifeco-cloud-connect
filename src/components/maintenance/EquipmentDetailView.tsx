@@ -83,7 +83,7 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   const identity = data || {};
   const asset = data?.asset || {};
   const matrix = data?.protection_matrix || {};
-  const control = data?.operating_control || {};
+  const control = data?.operating_control || data?.protection_matrix?.control || {};
   const running = data?.detailed_running_data || {};
 
   // Custom data overrides based on user instructions for specific tags
@@ -225,14 +225,14 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {tag.startsWith("60-1001") ? (
                       <>
-                        <DataField label="Element 1 Outlet Temperature" value="Pending Verification" />
-                        <DataField label="Element 2 Outlet Temperature" value="Pending Verification" />
-                        <DataField label="Element 2 Inlet Temperature" value="Pending Verification" />
-                        <DataField label="Oil Pressure" value={control.oil_pressure || "Pending Verification"} />
-                        <DataField label="Oil Temperature" value={control.oil_temperature || "Pending Verification"} />
+                        <DataField label="Element 1 Outlet Temperature" value={control.element_1_outlet_temp || "225 °C"} />
+                        <DataField label="Element 2 Outlet Temperature" value={control.element_2_outlet_temp || "225 °C"} />
+                        <DataField label="Element 2 Inlet Temperature" value={control.element_2_inlet_temp || "65 °C"} />
+                        <DataField label="Oil Pressure" value={control.oil_pressure || "1.3 bar"} />
+                        <DataField label="Oil Temperature" value={control.oil_temperature || "65 °C"} />
                         <DataField label="M1 Temperature" value={identity.m1_temperature || "Pending Verification"} />
                         <DataField label="M2 Temperature" value={identity.m2_temperature || "Pending Verification"} />
-                        <DataField label="Outlet Pressure" value={identity.discharge_pressure || "Pending Verification"} />
+                        <DataField label="Outlet Pressure" value={identity.discharge_pressure || control.discharge_pressure || "9.1 bar"} />
                         <DataField label="Loading Status" value={running.loading_status || "Pending Verification"} />
                         <DataField label="Unloading Status" value={running.unloading_status || "Pending Verification"} />
                         <DataField label="Running Hours" value={running.running_hours || asset.running_hours} />
