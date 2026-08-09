@@ -43,10 +43,10 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
   }, [tag]);
 
   const tabs = [
-    { id: "identity", label: isAr ? "الهوية" : "IDENTITY", icon: Info },
-    { id: "process", label: isAr ? "العمليات" : "PROCESS", icon: Layers },
+    { id: "identity", label: isAr ? "بطاقة التعريف" : "IDENTITY", icon: Info },
     { id: "operating", label: isAr ? "التشغيل" : "OPERATING", icon: Activity },
-    { id: "protection", label: isAr ? "الحماية" : "PROTECTION", icon: ShieldAlert },
+    { id: "protection", label: isAr ? "الحماية والإنذارات" : "PROTECTION & ALARMS", icon: ShieldAlert },
+    { id: "process", label: isAr ? "العملية والتوصيلات" : "PROCESS & CONNECTIONS", icon: Layers },
     { id: "maintenance", label: isAr ? "الصيانة" : "MAINTENANCE", icon: Wrench },
     { id: "documents", label: isAr ? "الوثائق" : "DOCUMENTS", icon: FileText },
   ];
