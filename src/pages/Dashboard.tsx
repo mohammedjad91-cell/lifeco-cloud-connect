@@ -422,9 +422,7 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
-      {showN2LogSheets && (
-        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} selectedDate={selectedDate} />
-      )}
+      {/* The NitrogenLogSheetsModule is now rendered inside the TabsContent below to prevent double rendering and maintain the dashboard toolbar context */}
 
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
@@ -528,7 +526,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="glass-card border border-border">
+          <TabsList className="glass-card border border-border flex flex-wrap h-auto min-h-10 p-1">
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
@@ -538,11 +536,16 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen-logs" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
-              </TabsTrigger>
-            )}
+            
+            {/* Explicitly visible Nitrogen Plant Logs tab - Always displayed in primary bar */}
+            <TabsTrigger 
+              value="nitrogen-logs" 
+              className="gap-1.5 data-[state=active]:border-primary data-[state=active]:bg-primary/20 border-b-2 border-transparent transition-all"
+            >
+              <FileText className="w-3.5 h-3.5" /> 
+              {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
+            </TabsTrigger>
+
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "التقرير" : "Report"}
             </TabsTrigger>
@@ -749,11 +752,9 @@ const Dashboard = () => {
           )}
 
 
-          {department.id === "NITROGEN" && (
-            <TabsContent value="nitrogen-logs" className="mt-4">
-              <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
-            </TabsContent>
-          )}
+          <TabsContent value="nitrogen-logs" className="mt-4">
+            <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
+          </TabsContent>
 
 
           <TabsContent value="report" className="mt-4 space-y-4">
