@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import heroPlant from "@/assets/lifeco-hero-1.webp";
 import { PlantProcessOverview } from "@/components/maintenance/PlantProcessOverview";
+import { NitrogenGenerationProcess } from "@/components/maintenance/NitrogenGenerationProcess";
 
 
 
