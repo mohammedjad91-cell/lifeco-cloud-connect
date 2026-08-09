@@ -519,6 +519,16 @@ export function EquipmentDetailView({ tag, plantCode, lang, onClose }: Equipment
                   </div>
                 </div>
               )}
+
+              {activeTab === "qr" && (
+                <div className="space-y-8">
+                  <EquipmentQRSection 
+                    tag={tag} 
+                    assetName={identity.equipment_name || asset.asset_name || "Compressor"} 
+                    plantCode={plantCode} 
+                  />
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
