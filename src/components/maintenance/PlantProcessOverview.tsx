@@ -3,6 +3,7 @@ import { Info, ShieldAlert, ArrowRight, Gauge, Layers, Droplets } from "lucide-r
 
 interface Props {
   lang: "ar" | "en";
+  onSelectEquipment?: (tag: string) => void;
 }
 
 export function PlantProcessOverview({ lang }: Props) {
