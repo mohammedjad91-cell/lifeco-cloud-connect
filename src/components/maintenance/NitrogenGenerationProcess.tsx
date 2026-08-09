@@ -3,6 +3,7 @@ import { Info, ShieldAlert, ArrowRight, Gauge, Layers, Droplets, Activity, Flask
 
 interface Props {
   lang: "ar" | "en";
+  onSelectEquipment?: (tag: string) => void;
 }
 
 export function NitrogenGenerationProcess({ lang }: Props) {
