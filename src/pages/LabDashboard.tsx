@@ -72,7 +72,7 @@ const LabDashboard = () => {
       
     if (plantFilter) q = q.eq("plant", plantFilter);
     else if (deptScope) {
-      const codes = PLANT_GROUPS.find(g => g.dept === deptScope)?.plants.map(p => p.code) || [];
+      const codes = PLANT_GROUPS.find((g: any) => g.dept === deptScope)?.plants.map((p: any) => p.code) || [];
       if (codes.length) q = q.in("plant", codes);
     }
 
