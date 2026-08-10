@@ -305,9 +305,9 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
                     </div>
                   ) : (
                     <div className="text-center py-12 glass-card border-dashed">
-                      <p className="text-muted-foreground italic">
+                      <p className="text-muted-foreground italic leading-relaxed whitespace-pre-line">
                         {lang === "ar" 
-                          ? "هناك مشكله الماذا لا تطبيق الاومر ع شاشة العرض" 
+                          ? `لماذا هذه الإدارة لا يوجد فيها دخول العينات من الداخل؟ هناك مشكلة في هذه الإدارة عند الدخول عليها، ثم اختيار المختبر الجمهوري، لا توجد إدخال العينات داخل هذه. وظيفة المختبر هو أن يدخل المهندس للمختبر ويقوم باختيار المختبر الخاص بالمصنع، ثم اختيار المصنع الداخلي، ثم كتابة العينات يوميًا أسبوعيًا، ثم إرسالها إلى إدارة المصانع.`
                           : "Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required."}
                       </p>
                       <Button variant="outline" className="mt-4" onClick={() => setStep(4)}>Simulate Save</Button>
