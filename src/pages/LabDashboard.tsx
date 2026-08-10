@@ -211,6 +211,8 @@ const LabDashboard = () => {
     if (verified) {
       setVerified(false);
       sessionStorage.removeItem("lifeco_lab_verified");
+      sessionStorage.removeItem("lifeco_lab_tech_name");
+      sessionStorage.removeItem("lifeco_lab_tech_id");
     } else if (plantFilter) {
       setPlantFilter("");
       sessionStorage.removeItem("lifeco_lab_plant");
