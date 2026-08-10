@@ -471,8 +471,15 @@ const Dashboard = () => {
           <Button variant="outline" size="sm" onClick={openOpsPreview} className="gap-1.5">
             <FileSpreadsheet className="w-4 h-4" /> {t.excel}
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate(getBackTarget())} className="gap-1.5 text-muted-foreground">
-            <LogOut className="w-4 h-4" /> {lang === "ar" ? "العودة للرئيسية" : "Back to Main"}
+          <Button variant="ghost" size="sm" onClick={() => {
+            const plant = sessionStorage.getItem("lifeco_plant");
+            if (plant) {
+              navigate(`/modules/${plant}`);
+            } else {
+              navigate(getBackTarget());
+            }
+          }} className="gap-1.5 text-muted-foreground">
+            <LogOut className="w-4 h-4" /> {lang === "ar" ? "رجوع" : "Back"}
           </Button>
         </div>
       </header>
