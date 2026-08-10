@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Save, X, FlaskConical, ClipboardCheck, Info, UserCheck } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Save, X, FlaskConical, ClipboardCheck, Info, UserCheck, Beaker } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
+import { LAB_SOURCES } from "./AnalyticalParameters";
 
 interface SampleEntryFormProps {
   sourceId: string;
@@ -18,6 +19,7 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
   const { lang } = useI18n();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const sourceConfig = (LAB_SOURCES as any)[sourceId] || LAB_SOURCES.NITROGEN;
 
   const [formData, setFormData] = useState({
     sample_id: `LAB-${sourceId}-${Math.floor(1000 + Math.random() * 9000)}`,
