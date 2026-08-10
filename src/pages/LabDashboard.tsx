@@ -52,7 +52,7 @@ const LabDashboard = () => {
   const [analyst, setAnalyst] = useState({ name: "", badge: "" });
   
   // Selection
-  const [selectedPlant, setSelectedPlant] = useState<string | null>("NITROGEN");
+  const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const [sampleType, setSampleType] = useState<"daily" | "weekly">("daily");
   
   // Data Entry
@@ -172,8 +172,8 @@ const LabDashboard = () => {
           </div>
         </div>
         <div className="flex gap-2">
-           <Button variant="outline" className="border-white/10 hover:bg-white/5" onClick={() => window.location.reload()}>
-             <LogOut className="w-4 h-4 mr-2" /> Reset
+           <Button variant="outline" className="border-white/10 hover:bg-white/5" onClick={() => navigate(getBackTarget())}>
+             <LogOut className="w-4 h-4 mr-2" /> Exit
            </Button>
         </div>
       </header>
