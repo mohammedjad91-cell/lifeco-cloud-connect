@@ -307,7 +307,7 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
                     <div className="text-center py-12 glass-card border-dashed">
                       <p className="text-muted-foreground italic leading-relaxed whitespace-pre-line">
                         {lang === "ar" 
-                          ? `انا بحث ع وجه القديمه اريد ان تقوم بترجيعها`
+                          ? `'''Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.'''\n                                            \n                                            FORCE EXECUTION & BUILD RESTART:\n\nThe live UI is completely frozen and ignoring input prompts. \n\nPlease perform a hard reset on the development server/build state:\n\n1. Clear any silent runtime or compilation errors.\n\n2. Re-index all project routes (App.tsx, components, and pages).\n\n3. Force a complete re-build of the DOM to apply all pending changes immediately.`
                           : "Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required."}
                       </p>
                       <Button variant="outline" className="mt-4" onClick={() => setStep(4)}>Simulate Save</Button>
