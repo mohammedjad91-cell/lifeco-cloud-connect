@@ -82,7 +82,7 @@ const LabDashboard = () => {
     }
   }, [deptScope, plantFilter]);
 
-  const parameters = !plant ? [] : LAB_PARAMETERS[plant]?.[sampleType] || [];
+  const parameters = !plant ? [] : (LAB_PARAMETERS[plant]?.[sampleType] || []);
 
   useEffect(() => {
     fetchResults();
