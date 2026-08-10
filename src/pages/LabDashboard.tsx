@@ -189,8 +189,12 @@ const LabDashboard = () => {
           </div>
         </div>
         <div className="flex gap-2">
-           <Button variant="outline" className="border-white/10 hover:bg-white/5" onClick={() => navigate(getBackTarget())}>
-             <LogOut className="w-4 h-4 mr-2" /> {lang === "ar" ? "خروج" : "Exit"}
+           <Button 
+             variant="secondary" 
+             className="bg-white/10 border border-white/30 text-white hover:bg-white/20" 
+             onClick={() => navigate(getBackTarget())}
+           >
+             <LogOut className="w-4 h-4 mr-2" /> {lang === "ar" ? "رجوع" : "Back"}
            </Button>
         </div>
       </header>
@@ -272,37 +276,45 @@ const LabDashboard = () => {
               </TabsList>
               
               <TabsContent value="daily" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                    {Object.keys(readings).map(param => (
-                     <div key={param} className="glass-card p-4 border-white/5 bg-slate-900/40 hover:bg-slate-900/60 transition-colors">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 block">{param}</label>
-                        <Input 
-                          value={readings[param]}
-                          onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
-                          className="bg-slate-950 border-slate-800 text-primary font-bold text-xl h-12"
-                        />
+                     <div key={param} className="p-4 rounded-lg border-2 border-slate-900 bg-slate-900/20 hover:border-primary/50 transition-all group">
+                        <label className="text-[11px] font-bold uppercase text-slate-400 mb-2 block group-hover:text-primary transition-colors">{param}</label>
+                        <div className="relative">
+                          <Input 
+                            value={readings[param]}
+                            onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
+                            className="bg-slate-950 border-slate-800 text-primary font-mono text-2xl h-14 text-center border-2 focus:border-primary"
+                          />
+                        </div>
                      </div>
                    ))}
                    {Object.keys(readings).length === 0 && (
-                     <div className="col-span-2 py-20 text-center text-slate-500 italic">No parameters defined for this plant/type.</div>
+                     <div className="col-span-full py-20 text-center text-slate-500 italic bg-slate-900/20 rounded-xl border border-dashed border-slate-800">
+                       No parameters defined for this plant/type.
+                     </div>
                    )}
                 </div>
               </TabsContent>
 
               <TabsContent value="weekly" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                    {Object.keys(readings).map(param => (
-                     <div key={param} className="glass-card p-4 border-white/5 bg-slate-900/40 hover:bg-slate-900/60 transition-colors">
-                        <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 block">{param}</label>
-                        <Input 
-                          value={readings[param]}
-                          onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
-                          className="bg-slate-950 border-slate-800 text-primary font-bold text-xl h-12"
-                        />
+                     <div key={param} className="p-4 rounded-lg border-2 border-slate-900 bg-slate-900/20 hover:border-primary/50 transition-all group">
+                        <label className="text-[11px] font-bold uppercase text-slate-400 mb-2 block group-hover:text-primary transition-colors">{param}</label>
+                        <div className="relative">
+                          <Input 
+                            value={readings[param]}
+                            onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
+                            className="bg-slate-950 border-slate-800 text-primary font-mono text-2xl h-14 text-center border-2 focus:border-primary"
+                          />
+                        </div>
                      </div>
                    ))}
                    {Object.keys(readings).length === 0 && (
-                     <div className="col-span-2 py-20 text-center text-slate-500 italic">No weekly parameters defined.</div>
+                     <div className="col-span-full py-20 text-center text-slate-500 italic bg-slate-900/20 rounded-xl border border-dashed border-slate-800">
+                       No weekly parameters defined.
+                     </div>
                    )}
                 </div>
               </TabsContent>
