@@ -83,12 +83,53 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const handleSave = () => {
-    toast({ title: "Syncing...", description: "All entries synchronized with DCS database." });
+  const handleSave = async () => {
+    if (!operator) {
+      toast({ title: "Operator login required", variant: "destructive" });
+      return;
+    }
+    
+    setLoading(true);
+    const timestamp = new Date().toISOString();
+    const opsRows = Object.entries(cells).map(([tag, val]) => ({
+      department: "NITROGEN",
+      unit_tag: tag,
+      value: parseFloat(val) || 0,
+      employee_id: operator.employeeId,
+      timestamp: timestamp
+    }));
+
+    if (opsRows.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.from("operations_logs").insert(opsRows);
+    
+    if (error) {
+      toast({ title: "Sync Failed", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Sync Successful", description: "All entries synchronized with DCS database." });
+    }
+    setLoading(false);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     toast({ title: "Exporting...", description: "Generating professional engineering PDF layout..." });
+    const readings: Record<string, any> = {};
+    Object.entries(cells).forEach(([tag, val]) => {
+      readings[tag] = val;
+    });
+    
+    const doc = await generateLabPdf({
+      plant: "NITROGEN",
+      sampleType: "Daily Log Sheet",
+      analyst: operator?.name || "Field Operator",
+      badge: operator?.employeeId || "N/A",
+      readings,
+      timestamp: new Date().toISOString()
+    });
+    doc.save(`N2_LogSheet_${dateStr}.pdf`);
   };
 
   const handlePrint = () => {
@@ -150,7 +191,21 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
             <Button size="sm" variant="outline" onClick={handlePrint} className="border-slate-300 text-slate-700">
               <Printer className="w-4 h-4 mr-2" /> Print Sheet
             </Button>
-            <Button size="sm" variant="outline" className="border-slate-300 text-slate-700">
+            <Button size="sm" variant="outline" onClick={async () => {
+              const readings: Record<string, any> = {};
+              Object.entries(cells).forEach(([tag, val]) => {
+                readings[tag] = val;
+              });
+              const doc = await generateLabPdf({
+                plant: "NITROGEN",
+                sampleType: "Daily Log Sheet",
+                analyst: operator?.name || "Field Operator",
+                badge: operator?.employeeId || "N/A",
+                readings,
+                timestamp: new Date().toISOString()
+              });
+              await shareLabPdf(doc, `N2_LogSheet_${dateStr}.pdf`);
+            }} className="border-slate-300 text-slate-700">
               <Share2 className="w-4 h-4 mr-2" /> Send via WhatsApp
             </Button>
           </div>
