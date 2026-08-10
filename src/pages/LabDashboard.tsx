@@ -74,11 +74,12 @@ const LabDashboard = () => {
 
   useEffect(() => {
     if (selectedPlant === "NITROGEN") {
-      setReadings(N2_DEFAULTS[sampleType]);
+      setReadings({ ...N2_DEFAULTS[sampleType] });
     } else if (selectedPlant === "AMM1" || selectedPlant === "AMM2") {
-      // Mock data for Ammonia Plants
       setReadings({
-        "NH3 Concentration": selectedPlant === "AMM1" ? "99.8" : "99.7",
+        "pH": "8.5",
+        "Conductivity": "120",
+        "NH3 Concentration": "99.8",
         "H2 Content": "74.5",
         "N2 Content": "24.8",
         "CH4 Content": "0.5",
