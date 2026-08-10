@@ -136,7 +136,11 @@ export default function WorkRequestForm({ formId, initialData, plantCode, onBack
         await exportToPDF();
         toast.info("تم إرسال طلب العمل وحفظ نسخة PDF بنجاح.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/maintenance`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="work-request-document" className="bg-white text-slate-900 shadow-2xl border-[3px] border-slate-900">

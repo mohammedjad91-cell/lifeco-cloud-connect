@@ -123,7 +123,11 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
         await exportToPDF();
         toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/permits`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="electrical-permit-document" className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">

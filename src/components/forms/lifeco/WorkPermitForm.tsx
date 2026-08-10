@@ -156,7 +156,11 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
         await exportToPDF();
         toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/permits`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="work-permit-document" className="bg-white text-slate-900 flex flex-col">

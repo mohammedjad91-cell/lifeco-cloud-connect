@@ -16,7 +16,15 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
   const { lang } = useI18n();
   
   const handleBackToPlant = () => {
-    navigate(`/modules/${plantCode}`);
+    // If we have a specific plant code in URL params, go to that plant's modules.
+    if (plantCode) {
+      navigate(`/modules/${plantCode}`);
+    } else {
+      // Fallback to nav-back logic
+      const plant = sessionStorage.getItem("lifeco_plant");
+      if (plant) navigate(`/modules/${plant}`);
+      else navigate("/");
+    }
   };
 
   // Dedicated View for Permits Center
@@ -115,7 +123,10 @@ const ModuleWorkspace = ({ plantCode, moduleKey }: { plantCode: string, moduleKe
   }
 
   if (moduleKey === 'form-history') {
-    return <FormHistory plantCode={plantCode} onBack={() => navigate(`/module/${plantCode}/maintenance`)} />;
+    return <FormHistory plantCode={plantCode} onBack={() => {
+      // If we came from maintenance hub, go back there.
+      navigate(`/module/${plantCode}/maintenance`);
+    }} />;
   }
   
   return (
