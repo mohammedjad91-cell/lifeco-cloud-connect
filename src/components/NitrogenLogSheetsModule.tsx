@@ -77,23 +77,23 @@ const NitrogenLogSheetsModule = ({ onClose }: LogSheetProps) => {
             </TabsTrigger>
           </TabsList>
           
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 print:p-0">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 bg-white print:p-0">
             <TabsContent value="sheet-1" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Commissioning Log Sheet - SHEET-1
               </h3>
               <CompressorSheet />
             </TabsContent>
             
             <TabsContent value="sheet-2" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Ammonia plants dept. - Nitrogen plant Commissioning log sheet
               </h3>
               <UtilitiesSheet />
             </TabsContent>
             
             <TabsContent value="sheet-3" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Nitrogen Plant Hourly Operations
               </h3>
               <HourlyOpsSheet />
