@@ -56,12 +56,17 @@ const LabDashboard = () => {
     return sessionStorage.getItem("lifeco_lab_plant") || "";
   });
 
+  // Load from session storage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const isVerified = sessionStorage.getItem("lifeco_lab_verified") === "true";
       const savedName = sessionStorage.getItem("lifeco_lab_tech_name") || "";
       const savedId = sessionStorage.getItem("lifeco_lab_tech_id") || "";
       const savedPlant = sessionStorage.getItem("lifeco_lab_plant") || "";
+      const savedDept = sessionStorage.getItem("lifeco_lab_dept") || "";
+      
+      if (savedDept) setDeptScope(savedDept);
+      if (savedPlant) setPlantFilter(savedPlant);
       
       if (isVerified && savedName && savedId && savedPlant) {
         setVerified(true);
@@ -72,6 +77,7 @@ const LabDashboard = () => {
     }
   }, []);
 
+  // Update session storage whenever state changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (deptScope) sessionStorage.setItem("lifeco_lab_dept", deptScope);
@@ -79,8 +85,14 @@ const LabDashboard = () => {
       
       if (plantFilter) sessionStorage.setItem("lifeco_lab_plant", plantFilter);
       else sessionStorage.removeItem("lifeco_lab_plant");
+
+      if (verified) {
+        sessionStorage.setItem("lifeco_lab_verified", "true");
+        sessionStorage.setItem("lifeco_lab_tech_name", technicianName);
+        sessionStorage.setItem("lifeco_lab_tech_id", employeeId);
+      }
     }
-  }, [deptScope, plantFilter]);
+  }, [deptScope, plantFilter, verified, technicianName, employeeId]);
 
   const parameters = !plant ? [] : (LAB_PARAMETERS[plant]?.[sampleType] || []);
   const hasModules = !!parameters.length;
@@ -199,6 +211,8 @@ const LabDashboard = () => {
     if (verified) {
       setVerified(false);
       sessionStorage.removeItem("lifeco_lab_verified");
+      sessionStorage.removeItem("lifeco_lab_tech_name");
+      sessionStorage.removeItem("lifeco_lab_tech_id");
     } else if (plantFilter) {
       setPlantFilter("");
       sessionStorage.removeItem("lifeco_lab_plant");
