@@ -307,7 +307,7 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
                     <div className="text-center py-12 glass-card border-dashed">
                       <p className="text-muted-foreground italic">
                         {lang === "ar" 
-                          ? "مفروض يوجد بي دخل هذي خانة كتابت العينات" 
+                          ? "هناك مشكله الماذا لا تطبيق الاومر ع شاشة العرض" 
                           : "Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required."}
                       </p>
                       <Button variant="outline" className="mt-4" onClick={() => setStep(4)}>Simulate Save</Button>
