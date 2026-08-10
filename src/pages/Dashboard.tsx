@@ -542,8 +542,8 @@ const Dashboard = () => {
               </TabsTrigger>
             )}
             {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen" className="gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
+              <TabsTrigger value="nitrogen" className="gap-1.5 border-amber-500/40 text-amber-500 data-[state=active]:bg-amber-500/10">
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
               </TabsTrigger>
             )}
             <TabsTrigger value="report" className="gap-1.5">
