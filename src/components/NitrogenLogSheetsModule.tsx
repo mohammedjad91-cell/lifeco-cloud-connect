@@ -443,7 +443,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                 const currentRow = rowCounter++;
                 return (
                   <TableRow key={pIdx} className="h-9 hover:bg-slate-100 transition-colors border-b border-slate-400">
-                    <TableCell className="py-1 px-3 font-bold text-[11px] text-slate-900 border-r-2 border-slate-900 bg-slate-50/50">
+                    <TableCell className="py-1 px-3 font-black text-[11px] text-slate-950 border-r-2 border-slate-900 bg-slate-100/50">
                       {param}
                     </TableCell>
                     {hours.map((h, cIdx) => {
