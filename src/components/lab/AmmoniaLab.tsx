@@ -62,11 +62,11 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
   };
 
   const handleSave = async () => {
-    if (selectedPlant === "NITROGEN") {
-       if (!results.oxygen || !results.dewPoint || !results.purity) {
+    if (selectedPlant === "NITROGEN" || selectedPlant === "AMM1" || selectedPlant === "AMM2") {
+       if (!results.oxygen && !results.dewPoint && !results.purity) {
          toast({ 
            title: "Incomplete Data", 
-           description: "Please fill all mandatory analysis parameters.",
+           description: "Please fill at least one analysis parameter.",
            variant: "destructive" 
          });
          return;
@@ -93,23 +93,25 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
 
       if (sampleError) throw sampleError;
 
-      // 2. Create Analysis Results for Nitrogen
-      if (selectedPlant === "NITROGEN") {
-        const params = [
-          { sample_id: (sample as any).id, parameter: "Oxygen Content in N2", result: results.oxygen, unit: "ppm", spec_limit: "< 5-10", status: "Approved" },
-          { sample_id: (sample as any).id, parameter: "Main N2 Dew Point", result: results.dewPoint, unit: "°C", spec_limit: "-40 to -60", status: "Approved" },
-          { sample_id: (sample as any).id, parameter: "Nitrogen Purity", result: results.purity, unit: "%", spec_limit: "99.99", status: "Approved" },
-        ];
-        await supabase.from("lifeco_lab_analysis_results" as any).insert(params);
+      // 2. Create Analysis Results for Nitrogen/Ammonia
+      if (selectedPlant === "NITROGEN" || selectedPlant === "AMM1" || selectedPlant === "AMM2") {
+        const params = [];
+        if (results.oxygen) params.push({ sample_id: (sample as any).id, parameter: "Oxygen Content", result: results.oxygen, unit: "ppm", status: "Approved" });
+        if (results.dewPoint) params.push({ sample_id: (sample as any).id, parameter: "Dew Point", result: results.dewPoint, unit: "°C", status: "Approved" });
+        if (results.purity) params.push({ sample_id: (sample as any).id, parameter: "Purity", result: results.purity, unit: "%", status: "Approved" });
+        
+        if (params.length > 0) {
+          await supabase.from("lifeco_lab_analysis_results" as any).insert(params);
 
-        // 3. Sync to Operations Logs (Simulated for this requirement)
-        await supabase.from("operations_logs" as any).insert([{
-          plant_id: "N2-1",
-          tag_name: "LAB_ANALYSIS",
-          value: `O2: ${results.oxygen}ppm, DP: ${results.dewPoint}°C, Purity: ${results.purity}%`,
-          recorded_by: verification.analystName,
-          log_type: "lab_update"
-        }]);
+          // 3. Sync to Operations Logs
+          await supabase.from("operations_logs" as any).insert([{
+            department: selectedPlant === "NITROGEN" ? "NITROGEN" : selectedPlant,
+            unit_tag: "LAB_ANALYSIS",
+            value: 0,
+            employee_id: verification.employeeId,
+            timestamp: new Date().toISOString()
+          }]);
+        }
       }
 
       toast({ 
@@ -257,17 +259,21 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
                     <p className="text-muted-foreground">Enter values for {selectedPlant}</p>
                   </div>
 
-                  {selectedPlant === "NITROGEN" ? (
+                  {(selectedPlant === "NITROGEN" || selectedPlant === "AMM1" || selectedPlant === "AMM2") ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Oxygen %</label>
+                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                          {selectedPlant === "NITROGEN" ? "Oxygen %" : "NH3 Concentration"}
+                        </label>
                         <div className="relative">
                           <Input 
                             value={results.oxygen} onChange={e => setResults({...results, oxygen: e.target.value})}
                             className="bg-secondary/30 h-14 pl-4 pr-16 text-xl font-mono text-primary"
                             placeholder="0.00"
                           />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">%</span>
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">
+                            {selectedPlant === "NITROGEN" ? "%" : "ppm"}
+                          </span>
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -282,14 +288,18 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">N2 Purity %</label>
+                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                          {selectedPlant === "NITROGEN" ? "N2 Purity %" : "pH Level"}
+                        </label>
                         <div className="relative">
                           <Input 
                             value={results.purity} onChange={e => setResults({...results, purity: e.target.value})}
                             className="bg-secondary/30 h-14 pl-4 pr-16 text-xl font-mono text-primary"
-                            placeholder="99.99"
+                            placeholder={selectedPlant === "NITROGEN" ? "99.99" : "7.0"}
                           />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">%</span>
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">
+                            {selectedPlant === "NITROGEN" ? "%" : "pH"}
+                          </span>
                         </div>
                       </div>
                     </div>
