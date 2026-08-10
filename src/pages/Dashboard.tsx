@@ -87,15 +87,15 @@ const Dashboard = () => {
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
-    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
+    const saved = sessionStorage.getItem("lifeco_dashboard_tab");
+    if (saved === "n2-logs") return "nitrogen-logs";
+    return saved || "logs";
   });
-  const [showN2LogSheets, setShowN2LogSheets] = useState(false);
 
   useEffect(() => {
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
     if (tab === "n2-logs") {
-      setActiveTab("nitrogen");
-      setShowN2LogSheets(true);
+      setActiveTab("nitrogen-logs");
     }
   }, []);
 
