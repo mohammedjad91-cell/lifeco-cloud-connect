@@ -181,16 +181,16 @@ const LabDashboard = () => {
             <FlaskConical className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-black uppercase tracking-tighter">Laboratory Command Center</h1>
+            <h1 className="text-xl font-black uppercase tracking-tighter">{lang === "ar" ? "مركز قيادة المختبرات" : "Laboratory Command Center"}</h1>
             <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono uppercase">
               <ShieldCheck className="w-3 h-3 text-emerald-500" />
-              Verified Analyst: {analyst.name} ({analyst.badge})
+              {lang === "ar" ? "المحلل المعتمد" : "Verified Analyst"}: {analyst.name} ({analyst.badge})
             </div>
           </div>
         </div>
         <div className="flex gap-2">
            <Button variant="outline" className="border-white/10 hover:bg-white/5" onClick={() => navigate(getBackTarget())}>
-             <LogOut className="w-4 h-4 mr-2" /> Exit
+             <LogOut className="w-4 h-4 mr-2" /> {lang === "ar" ? "خروج" : "Exit"}
            </Button>
         </div>
       </header>
@@ -200,7 +200,7 @@ const LabDashboard = () => {
         {/* Plant Selector */}
         <section className="space-y-4">
           <div className="flex items-center gap-2 border-l-4 border-primary pl-3">
-            <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">Select Operational Plant</h2>
+            <h2 className="text-sm font-black uppercase text-slate-400 tracking-widest">{lang === "ar" ? "اختر المصنع التشغيلي" : "Select Operational Plant"}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {AMMONIA_LAB_PLANTS.map(p => (
@@ -239,7 +239,7 @@ const LabDashboard = () => {
                   <Clock className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white uppercase">{selectedPlant} Analysis Form</h3>
+                  <h3 className="text-lg font-bold text-white uppercase">{selectedPlant} {lang === "ar" ? "نموذج التحليل" : "Analysis Form"}</h3>
                   <p className="text-[10px] text-slate-400 font-mono">{format(new Date(), "dd MMMM yyyy | HH:mm")}</p>
                 </div>
               </div>
@@ -255,7 +255,7 @@ const LabDashboard = () => {
                 </Button>
                 <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white border-none px-8">
                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save & Publish
+                  {lang === "ar" ? "حفظ ونشر" : "Save & Publish"}
                 </Button>
               </div>
             </div>
