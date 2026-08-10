@@ -109,15 +109,17 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 bg-slate-100/95 overflow-y-auto print:bg-white"
+      className="bg-slate-100/95 overflow-y-auto print:bg-white rounded-xl shadow-lg border border-slate-200"
     >
       {/* FLOATING ACTION BAR */}
-      <div className="sticky top-0 z-[60] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
+      <div className="sticky top-0 z-[40] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100">
-              <ChevronLeft className="w-6 h-6 text-slate-600" />
-            </Button>
+            <div className="hidden">
+              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100">
+                <ChevronLeft className="w-6 h-6 text-slate-600" />
+              </Button>
+            </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Nitrogen Plant Commissioning Log</h2>
               <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{format(selectedDate, "dd MMM yyyy")} | 12-Hour Shift System</p>
