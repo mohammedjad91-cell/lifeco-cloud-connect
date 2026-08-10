@@ -756,7 +756,7 @@ const Dashboard = () => {
           )}
 
 
-          {department.id === "NITROGEN" && (
+          {(department.id === "NITROGEN" || sessionStorage.getItem("lifeco_plant") === "N2-1") && (
             <TabsContent value="nitrogen-logs" className="mt-4">
               <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
             </TabsContent>
