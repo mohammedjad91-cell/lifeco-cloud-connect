@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Save, FileText, Printer, Share2, ChevronLeft, CheckCircle2, PenLine, Loader2 } from "lucide-react";
+import { 
+  Save, FileText, Printer, Share2, ChevronLeft, 
+  CheckCircle2, PenLine, Loader2, FlaskConical, Beaker,
+  Clock, User, BadgeCheck, Download
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { generateLabPdf, shareLabPdf } from "@/utils/lab-pdf-advanced";
 
 interface LogSheetProps {
   onClose: () => void;
