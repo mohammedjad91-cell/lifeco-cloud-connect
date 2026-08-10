@@ -105,10 +105,9 @@ const LabDashboard = () => {
       const opsRows = Object.entries(readings).map(([param, val]) => ({
         department: selectedPlant,
         unit_tag: `LAB|${param}`,
-        value: val,
-        operator_name: analyst.name,
-        timestamp: timestamp,
-        notes: `Analyst: ${analyst.name} (${analyst.badge})`
+        value: parseFloat(val) || 0,
+        employee_id: analyst.badge,
+        timestamp: timestamp
       }));
 
       const { error: opsError } = await supabase.from("operations_logs").insert(opsRows);
