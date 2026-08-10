@@ -38,6 +38,7 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
   const [cells, setCells] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [signatures, setSignatures] = useState<Record<string, string>>({});
+  const [labReadings, setLabReadings] = useState<any[]>([]);
   const dateStr = format(selectedDate, "yyyy-MM-dd");
 
   const loadData = useCallback(async () => {
@@ -49,15 +50,24 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
 
     const { data: logs } = await supabase
       .from("operations_logs")
-      .select("unit_tag, value")
+      .select("unit_tag, value, employee_id, timestamp")
       .eq("department", "NITROGEN")
       .gte("timestamp", dayStart.toISOString())
-      .lte("timestamp", dayEnd.toISOString())
-      .like("unit_tag", `${SHEET_PREFIX}|%`);
+      .lte("timestamp", dayEnd.toISOString());
 
     const map: Record<string, string> = {};
-    (logs ?? []).forEach((l: any) => { map[l.unit_tag] = String(l.value); });
+    const labs: any[] = [];
+    
+    (logs ?? []).forEach((l: any) => { 
+      if (l.unit_tag.startsWith("LAB|")) {
+        labs.push(l);
+      } else if (l.unit_tag.startsWith(SHEET_PREFIX + "|")) {
+        map[l.unit_tag] = String(l.value); 
+      }
+    });
+    
     setCells(map);
+    setLabReadings(labs);
 
     const { data: sigs } = await supabase
       .from("activity_logs")
