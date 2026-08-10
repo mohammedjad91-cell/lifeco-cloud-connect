@@ -88,13 +88,14 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
     const saved = sessionStorage.getItem("lifeco_dashboard_tab");
-    if (saved === "n2-logs") return "nitrogen-logs";
+    // Ensure "n2-logs" maps to "nitrogen-logs" for the Tabs value
+    if (saved === "n2-logs" || saved === "nitrogen-logs") return "nitrogen-logs";
     return saved || "logs";
   });
 
   useEffect(() => {
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    if (tab === "n2-logs") {
+    if (tab === "n2-logs" || tab === "nitrogen-logs") {
       setActiveTab("nitrogen-logs");
     }
   }, []);
