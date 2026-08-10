@@ -29,10 +29,14 @@ const AMMONIA_LAB_PLANTS = [
 // --- NITROGEN DUMMY DATA ---
 const N2_DEFAULTS = {
   daily: {
-    "Oxygen Content in N2 (60-AL-003)": "3.2",
-    "Nitrogen Purity %": "99.98",
-    "Main N2 Dew Point (60-AT-001 / 60-AI-001)": "-48.5",
-    "Instrument Air Dew Point & Moisture Check": "Normal"
+    "pH": "7.2",
+    "Conductivity": "420",
+    "Hardness": "0.02",
+    "Dew Point": "-48.5",
+    "N2 Purity": "99.98",
+    "O2": "3.2",
+    "Pressure": "7.5",
+    "Temp": "24.5"
   },
   weekly: {
     "Cooling Water pH": "7.8",
