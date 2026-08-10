@@ -33,20 +33,6 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
     remarks: ""
   });
 
-  const plantMapping: Record<string, string> = {
-    "NITROGEN": "N2-1",
-    "AMM1": "AMMONIA PLANT 1",
-    "AMM2": "AMMONIA PLANT 2",
-    "AMM_STORAGE": "AMMONIA STORAGE"
-  };
-
-  const sampleTypes: Record<string, string[]> = {
-    "NITROGEN": ["Nitrogen Process Sample", "Nitrogen Product Sample", "Other / Pending Verification"],
-    "AMM1": ["Process Sample", "Product Sample", "Other / Pending Verification"],
-    "AMM2": ["Process Sample", "Product Sample", "Other / Pending Verification"],
-    "AMM_STORAGE": ["Storage Sample", "Product Sample", "Other / Pending Verification"]
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.operator_analyst || !formData.sample_type) {
@@ -59,12 +45,23 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
     }
 
     setLoading(true);
-    const { error } = await supabase.from("lifeco_lab_samples" as any).insert([formData]);
+    const { data: sampleData, error: sampleError } = await supabase.from("lifeco_lab_samples" as any).insert([formData]).select().single();
 
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: lang === "ar" ? "تم الحفظ" : "Saved", description: lang === "ar" ? "تم تسجيل العينة بنجاح" : "Sample recorded successfully" });
+    if (sampleError) {
+      toast({ title: "Error", description: sampleError.message, variant: "destructive" });
+    } else if (sampleData) {
+      // Auto-insert configured parameters for analysis
+      const paramsToInsert = sourceConfig.parameters.map((p: any) => ({
+        sample_id: (sampleData as any).id,
+        parameter: p.name,
+        unit: p.unit,
+        spec_limit: p.spec,
+        status: "Pending Verification"
+      }));
+
+      await supabase.from("lifeco_lab_analysis_results" as any).insert(paramsToInsert);
+
+      toast({ title: lang === "ar" ? "تم الحفظ" : "Saved", description: lang === "ar" ? "تم تسجيل العينة وإدراج المؤشرات بنجاح" : "Sample recorded and parameters added successfully" });
       onSuccess();
     }
     setLoading(false);
@@ -109,18 +106,22 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1">
               <Info className="w-3 h-3" /> {lang === "ar" ? "المصنع / المصدر" : "Plant / Source"}
             </label>
-            <Input value={plantMapping[sourceId]} readOnly className="bg-secondary/50 font-bold" />
+            <Input value={sourceConfig.plant} readOnly className="bg-secondary/50 font-bold" />
           </div>
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1">
               {lang === "ar" ? "نقطة أخذ العينة" : "Sampling Point"}
             </label>
-            <Input 
-              value={formData.sampling_point} 
-              onChange={e => setFormData({...formData, sampling_point: e.target.value})} 
-              placeholder="e.g. 60-AL-003, Outlet Vent..."
-              className="bg-secondary/30" 
-            />
+            <Select value={formData.sampling_point} onValueChange={v => setFormData({...formData, sampling_point: v})}>
+              <SelectTrigger className="bg-secondary/30 h-11">
+                <SelectValue placeholder="Select Point" />
+              </SelectTrigger>
+              <SelectContent>
+                {sourceConfig.points.map((p: any) => (
+                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1">
@@ -131,7 +132,7 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
                 <SelectValue placeholder={lang === "ar" ? "اختر نوع العينة" : "Select Sample Type"} />
               </SelectTrigger>
               <SelectContent>
-                {sampleTypes[sourceId].map(type => (
+                {sourceConfig.sampleTypes.map((type: any) => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
               </SelectContent>
