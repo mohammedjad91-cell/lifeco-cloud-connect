@@ -84,6 +84,13 @@ const LabDashboard = () => {
 
   const parameters = !plant ? [] : (LAB_PARAMETERS[plant]?.[sampleType] || []);
 
+  // Sync plant state to plantFilter to ensure UI consistency
+  useEffect(() => {
+    if (plantFilter && !verified) {
+      setPlant(plantFilter);
+    }
+  }, [plantFilter, verified]);
+
   useEffect(() => {
     fetchResults();
     const ch = supabase.channel("lab_realtime")
