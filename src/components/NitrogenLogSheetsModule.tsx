@@ -417,15 +417,15 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
   let rowCounter = 0;
 
   return (
-    <div className="border-2 border-slate-900 overflow-hidden shadow-md">
+    <div className="border-4 border-slate-900 overflow-hidden shadow-2xl">
       <Table className="border-collapse w-full">
         <TableHeader>
           <TableRow className="bg-slate-900 hover:bg-slate-900 border-b-2 border-slate-900 h-10">
-            <TableHead className="w-[300px] text-white font-bold uppercase text-[10px] tracking-widest border-r-2 border-slate-700">
+            <TableHead className="w-[300px] text-white font-black uppercase text-[10px] tracking-widest border-r-2 border-slate-700">
               Parameter / Tag ID
             </TableHead>
             {hours.map(h => (
-              <TableHead key={h} className="text-center text-white font-mono font-bold text-[11px] border-r border-slate-700 p-0 w-[80px]">
+              <TableHead key={h} className="text-center text-white font-mono font-black text-[12px] border-r border-slate-700 p-0 w-[80px]">
                 {h}:00
               </TableHead>
             ))}
@@ -434,8 +434,8 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         <TableBody>
           {groups.map((group, gIdx) => (
             <React.Fragment key={gIdx}>
-              <TableRow className="bg-slate-200 hover:bg-slate-200 h-8 border-b-2 border-slate-900">
-                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-900 font-black uppercase text-[10px] tracking-widest border-r border-slate-900">
+              <TableRow className="bg-slate-300 hover:bg-slate-300 h-8 border-b-2 border-slate-900">
+                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-950 font-black uppercase text-[10px] tracking-widest border-r border-slate-900">
                   {group.label}
                 </TableCell>
               </TableRow>
@@ -443,13 +443,13 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                 const currentRow = rowCounter++;
                 return (
                   <TableRow key={pIdx} className="h-9 hover:bg-slate-100 transition-colors border-b border-slate-400">
-                    <TableCell className="py-1 px-3 font-bold text-[11px] text-slate-900 border-r-2 border-slate-900 bg-slate-50/50">
+                    <TableCell className="py-1 px-3 font-black text-[11px] text-slate-950 border-r-2 border-slate-900 bg-slate-100/50">
                       {param}
                     </TableCell>
                     {hours.map((h, cIdx) => {
                       const tag = buildTag(group.label.includes("60-1001") ? `COMP-${group.label.split(":")[1].trim()}` : sheetKey, param, h);
                       return (
-                        <TableCell key={h} className="p-0 border-r border-slate-300">
+                        <TableCell key={h} className="p-0 border-r-2 border-slate-900">
                           <Input
                             data-sheet={sheetKey}
                             data-row={currentRow}
@@ -457,7 +457,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                             value={cells[tag] || ""}
                             onChange={(e) => setCells(prev => ({ ...prev, [tag]: e.target.value }))}
                             onKeyDown={(e) => handleKeyDown(e, currentRow, cIdx, 1000, hours.length)}
-                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-bold text-[12px] text-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:bg-white placeholder:text-slate-300"
+                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-black text-[13px] text-slate-950 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:bg-white placeholder:text-slate-400"
                             placeholder="0.0"
                             inputMode="decimal"
                           />
