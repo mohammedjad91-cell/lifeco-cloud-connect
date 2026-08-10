@@ -116,8 +116,20 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
 
   const handleExportPDF = async () => {
     toast({ title: "Exporting...", description: "Generating professional engineering PDF layout..." });
-    // This would typically involve a dedicated N2 PDF generator
-    // For now, we reuse the generic lab one or notify user
+    const readings: Record<string, any> = {};
+    Object.entries(cells).forEach(([tag, val]) => {
+      readings[tag] = val;
+    });
+    
+    const doc = await generateLabPdf({
+      plant: "NITROGEN",
+      sampleType: "Daily Log Sheet",
+      analyst: operator?.name || "Field Operator",
+      badge: operator?.employeeId || "N/A",
+      readings,
+      timestamp: new Date().toISOString()
+    });
+    doc.save(`N2_LogSheet_${dateStr}.pdf`);
   };
 
   const handlePrint = () => {
@@ -179,7 +191,21 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
             <Button size="sm" variant="outline" onClick={handlePrint} className="border-slate-300 text-slate-700">
               <Printer className="w-4 h-4 mr-2" /> Print Sheet
             </Button>
-            <Button size="sm" variant="outline" className="border-slate-300 text-slate-700">
+            <Button size="sm" variant="outline" onClick={async () => {
+              const readings: Record<string, any> = {};
+              Object.entries(cells).forEach(([tag, val]) => {
+                readings[tag] = val;
+              });
+              const doc = await generateLabPdf({
+                plant: "NITROGEN",
+                sampleType: "Daily Log Sheet",
+                analyst: operator?.name || "Field Operator",
+                badge: operator?.employeeId || "N/A",
+                readings,
+                timestamp: new Date().toISOString()
+              });
+              await shareLabPdf(doc, `N2_LogSheet_${dateStr}.pdf`);
+            }} className="border-slate-300 text-slate-700">
               <Share2 className="w-4 h-4 mr-2" /> Send via WhatsApp
             </Button>
           </div>
