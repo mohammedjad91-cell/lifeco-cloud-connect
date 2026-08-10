@@ -32,8 +32,6 @@ import NitrogenLogSheetsModule from "@/components/NitrogenLogSheetsModule";
 import PlantTrainingSimulator from "@/components/PlantTrainingSimulator";
 import DateUserBanner from "@/components/DateUserBanner";
 import SafetyMonitor from "@/components/SafetyMonitor";
-import { N2EquipmentRegister } from "@/components/maintenance/N2EquipmentRegister";
-import { EquipmentFaceplate } from "@/components/maintenance/EquipmentFaceplate";
 import AIChatSidebar from "@/components/AIChatSidebar";
 import ShiftCharts from "@/components/ShiftCharts";
 import ShiftReportButton from "@/components/ShiftReportButton";
@@ -90,33 +88,27 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
     const saved = sessionStorage.getItem("lifeco_dashboard_tab");
-    // If someone is still trying to use the old labReadings tab, redirect them to the new Lab module
-    if (saved === "labReadings") return "logs";
+    // Default to 'logs' if no tab or if it's the specific N2 case that we'll handle in standard rendering
     return saved || "logs";
   });
   const [showN2LogSheets, setShowN2LogSheets] = useState(false);
-  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
-  const [showEquipmentRegister, setShowEquipmentRegister] = useState(false);
 
   useEffect(() => {
-    sessionStorage.setItem("lifeco_dashboard_tab", activeTab);
-    setShowN2LogSheets(activeTab === "nitrogen-logs");
-  }, [activeTab]);
-
-  useEffect(() => {
-    const handleOpenRegister = () => setShowEquipmentRegister(true);
-    const handleOpenEquipment = (e: any) => {
-      setSelectedEquipment(e.detail?.tag);
-      setShowEquipmentRegister(false);
-    };
-    window.addEventListener('lifeco:open-equipment-register', handleOpenRegister);
-    window.addEventListener('lifeco:open-equipment', handleOpenEquipment);
-    return () => {
-      window.removeEventListener('lifeco:open-equipment-register', handleOpenRegister);
-      window.removeEventListener('lifeco:open-equipment', handleOpenEquipment);
-    };
+    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
+    const plant = sessionStorage.getItem("lifeco_plant");
+    if (tab === "logs" && plant === "N2-1") {
+      setShowN2LogSheets(true);
+    }
   }, []);
-
+  // Force single tab mode only for specific modules from PlantModules
+  const [singleTabMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const tab = sessionStorage.getItem("lifeco_dashboard_tab");
+    // If we're coming from the unified "Operations & Records" tile (ops-logs), we show all tabs.
+    // If we're coming from a specific tile like "Permits", we focus only on that.
+    const isUnifiedView = sessionStorage.getItem("lifeco_module") === "ops-logs";
+    return tab !== null && tab !== "logs" && !isUnifiedView;
+  });
 
 
   const isOperations = department?.id === "OPERATIONS";
@@ -181,13 +173,9 @@ const Dashboard = () => {
   };
 
   const fetchLabResults = async () => {
-    if (!department) return;
+    if (!department || isOperations) return;
     const start = new Date(selectedDate); start.setHours(0, 0, 0, 0);
     const end = new Date(selectedDate); end.setHours(23, 59, 59, 999);
-    
-    // For Operations view, we might want to see all lab results for that plant
-    // Lab results are synced to operations_logs with unit_tag like "LAB|..."
-    // But we also fetch directly from lab_results for high-fidelity display
     const { data } = await supabase.from("lab_results").select("*")
       .eq("plant", department.id)
       .gte("timestamp", start.toISOString()).lte("timestamp", end.toISOString())
@@ -447,7 +435,9 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
-      {/* The NitrogenLogSheetsModule is now rendered inside the TabsContent below to prevent double rendering and maintain the dashboard toolbar context */}
+      {showN2LogSheets && (
+        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} />
+      )}
 
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
@@ -471,8 +461,8 @@ const Dashboard = () => {
               variant="outline"
               size="sm"
               onClick={() => {
-                const event = new CustomEvent('lifeco:open-equipment-register');
-                window.dispatchEvent(event);
+                window.dispatchEvent(new CustomEvent('lifeco:open-equipment'));
+                navigate(getBackTarget());
               }}
               className="gap-1.5 border-amber-500/40 text-amber-500 hover:bg-amber-500/10"
             >
@@ -551,7 +541,7 @@ const Dashboard = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="glass-card border border-border flex flex-wrap h-auto min-h-10 p-1">
+          <TabsList className={`glass-card border border-border ${singleTabMode ? "hidden" : ""}`}>
             <TabsTrigger value="logs">{t.logs}</TabsTrigger>
             <TabsTrigger value="fieldOps" className="gap-1.5">
               <Wrench className="w-3.5 h-3.5" /> {t.fieldOps}
@@ -561,16 +551,11 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            
-            {/* Explicitly visible Nitrogen Plant Logs tab - Always displayed in primary bar */}
-            <TabsTrigger 
-              value="nitrogen-logs" 
-              className="gap-1.5 data-[state=active]:border-primary data-[state=active]:bg-primary/20 border-b-2 border-transparent transition-all"
-            >
-              <FileText className="w-3.5 h-3.5" /> 
-              {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
-            </TabsTrigger>
-
+            {department.id === "NITROGEN" && (
+              <TabsTrigger value="nitrogen" className="gap-1.5">
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "سجلات النيتروجين" : "N2 Log Sheets"}
+              </TabsTrigger>
+            )}
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "التقرير" : "Report"}
             </TabsTrigger>
@@ -581,7 +566,6 @@ const Dashboard = () => {
               <BarChart3 className="w-3.5 h-3.5" /> {t.analytics}
             </TabsTrigger>
           </TabsList>
-
 
           <TabsContent value="logs" className="space-y-6 mt-4">
             {/* Entry Form - only show if today & not locked */}
@@ -777,10 +761,11 @@ const Dashboard = () => {
           )}
 
 
-          <TabsContent value="nitrogen-logs" className="mt-4">
-            <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
-          </TabsContent>
-
+          {department.id === "NITROGEN" && (
+            <TabsContent value="nitrogen" className="mt-4">
+              <NitrogenLogSheets selectedDate={selectedDate} />
+            </TabsContent>
+          )}
 
           <TabsContent value="report" className="mt-4 space-y-4">
             <div className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
@@ -821,29 +806,6 @@ const Dashboard = () => {
       )}
 
       <SafetyMonitor />
-      
-      {showEquipmentRegister && (
-        <N2EquipmentRegister 
-          plantCode="N2-1" 
-          lang={lang} 
-          onSelectEquipment={(tag) => {
-            setSelectedEquipment(tag);
-            setShowEquipmentRegister(false);
-          }}
-          onClose={() => setShowEquipmentRegister(false)}
-        />
-      )}
-
-      {selectedEquipment && (
-        <EquipmentFaceplate
-          tag={selectedEquipment}
-          plantCode="N2-1"
-          lang={lang}
-          open={!!selectedEquipment}
-          onOpenChange={(open) => !open && setSelectedEquipment(null)}
-        />
-      )}
-
       <AIChatSidebar />
     </div>
   );

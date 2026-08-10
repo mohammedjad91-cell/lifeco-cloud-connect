@@ -11,8 +11,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getOperator, getStamp } from "@/lib/session";
 
-// 12-Hour Shift System Times
-const TWELVE_HOUR_TIMES = ["08", "10", "12", "14", "16", "18", "20", "22", "00", "02", "04", "06"];
+// ---- Sheet definitions ---------------------------------------------------
+
+const DCS_TIMES = ["08", "10", "12", "14", "16", "18", "20", "24", "02", "04", "06"];
+const LOCAL_TIMES = ["08", "12", "16", "20", "24", "04"];
 
 const DCS_INSTRUMENTS = [
   "60-PIC-006 PRESSURE/OPENING%",
@@ -81,9 +83,10 @@ const LOCAL2_INSTRUMENTS = [
   "60-AL-003 P.S.A Oxygen cont",
 ];
 
-const SHIFTS_12H = [
-  { key: "day", label: "وردية النهار (Day Shift)", range: "08:00 — 20:00" },
-  { key: "night", label: "الوردية الليلية (Night Shift)", range: "20:00 — 08:00" },
+const SHIFTS = [
+  { key: "morning", label: "الوردية الصباحية", range: "06:00 — 14:00" },
+  { key: "afternoon", label: "وردية بعد الظهر", range: "14:00 — 22:00" },
+  { key: "night", label: "الوردية الليلية", range: "22:00 — 06:00" },
 ];
 
 const SHEET_PREFIX = "N2";
@@ -98,7 +101,9 @@ function hourToTimestamp(date: Date, hour: string) {
   return d.toISOString();
 }
 
-type CellMap = Record<string, string>;
+// ---- Component -----------------------------------------------------------
+
+type CellMap = Record<string, string>; // key=tag -> value
 
 interface Props {
   selectedDate?: Date;
@@ -113,6 +118,10 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
   const [signatures, setSignatures] = useState<Record<string, string>>({});
 
   const dateStr = format(selectedDate, "yyyy-MM-dd");
+  const isNightHour = useMemo(() => {
+    const h = new Date().getHours();
+    return h >= 22 || h < 6;
+  }, []);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -157,11 +166,12 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
     if (!raw) return;
     const num = parseFloat(raw);
     if (isNaN(num)) {
-      toast({ title: "Invalid Number", description: `${instrument} @ ${hour}:00`, variant: "destructive" });
+      toast({ title: "رقم غير صالح", description: `${instrument} @ ${hour}:00`, variant: "destructive" });
       return;
     }
     setSaving(tag);
     const ts = hourToTimestamp(selectedDate, hour);
+    // upsert: delete existing then insert
     await supabase.from("operations_logs")
       .delete()
       .eq("department", "NITROGEN")
@@ -178,7 +188,7 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
     });
     setSaving(null);
     if (error) {
-      toast({ title: "Save Failed", description: error.message, variant: "destructive" });
+      toast({ title: "فشل الحفظ", description: error.message, variant: "destructive" });
       return;
     }
     const stamp = getStamp();
@@ -189,9 +199,17 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
     });
   };
 
+  const saveRow = async (sheet: string, instrument: string, hours: string[]) => {
+    for (const h of hours) {
+      const tag = buildTag(sheet, instrument, h);
+      if (cells[tag]?.trim()) await saveCell(sheet, instrument, h);
+    }
+    toast({ title: "تم حفظ الصف", description: instrument });
+  };
+
   const signShift = async (shiftKey: string) => {
     if (!operator) {
-      toast({ title: "Operator login required", variant: "destructive" });
+      toast({ title: "مطلوب تسجيل المشغّل", description: "الرجاء تسجيل الدخول كمشغّل أولًا.", variant: "destructive" });
       return;
     }
     const stamp = getStamp(operator);
@@ -203,27 +221,33 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
       details,
     });
     setSignatures((s) => ({ ...s, [action]: details }));
-    toast({ title: "Shift Signed", description: stamp.formatted });
+    toast({ title: "تم توقيع الوردية", description: stamp.formatted });
   };
 
   if (loading) {
     return (
-      <div className="bg-slate-50 p-12 rounded-xl flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-500" />
+      <div className="glass-card p-12 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 md:p-10 border border-slate-200 shadow-sm space-y-12 print:p-0 print:shadow-none print:border-none">
-      {/* Paper Header */}
-      <div className="border-b-2 border-slate-900 pb-4 flex justify-between items-end">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">N2 PLANT DIGITAL LOG</h2>
-          <p className="text-[10px] font-bold text-slate-500 uppercase">Official Operations Record | {format(selectedDate, "EEEE, dd MMM yyyy")}</p>
+    <div className="space-y-6">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+        className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <FileText className="w-5 h-5 text-primary" />
+          <div>
+            <h2 className="font-display text-lg neon-text tracking-wider">مصنع النيتروجين — سجلات القراءات الرقمية</h2>
+            <p className="text-xs text-muted-foreground">
+              {format(selectedDate, "EEEE, dd MMM yyyy")} — المشغّل: {operator ? `${operator.name} (${operator.employeeId})` : "—"}
+            </p>
+          </div>
         </div>
-        <div className="flex gap-2 print:hidden">
-          {SHIFTS_12H.map((s) => {
+        <div className="flex gap-2 flex-wrap">
+          {SHIFTS.map((s) => {
             const signed = !!signatures[`N2_SIGN_${s.key.toUpperCase()}`];
             return (
               <Button
@@ -231,163 +255,162 @@ export default function NitrogenLogSheets({ selectedDate = new Date() }: Props) 
                 size="sm"
                 variant={signed ? "default" : "outline"}
                 onClick={() => signShift(s.key)}
-                className="h-8 text-[10px] font-bold uppercase tracking-widest border-slate-300"
+                className="gap-1.5"
                 title={s.range}
               >
-                {signed ? <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> : <PenLine className="w-3.5 h-3.5 mr-1" />}
+                {signed ? <CheckCircle2 className="w-3.5 h-3.5" /> : <PenLine className="w-3.5 h-3.5" />}
                 {s.label}
               </Button>
             );
           })}
         </div>
+      </motion.div>
+
+      {/* Sheet 1 — DCS PANEL */}
+      <SheetTable
+        title="جدول 1 — لوحة نظام التحكم الموزع (DCS)"
+        sheetKey="DCS"
+        instruments={DCS_INSTRUMENTS}
+        hours={DCS_TIMES}
+        cells={cells}
+        saving={saving}
+        isNightHour={isNightHour}
+        onChange={handleChange}
+        onSaveCell={saveCell}
+        onSaveRow={saveRow}
+      />
+
+      {/* Sheet 2 — LOCAL Compressors */}
+      <div className="space-y-4">
+        <h3 className="font-display text-md neon-text tracking-wider">جدول 2 — السجل المحلي (الضواغط)</h3>
+        {COMPRESSOR_UNITS.map((unit) => (
+          <SheetTable
+            key={unit}
+            title={`الضاغط ${unit}`}
+            sheetKey={`COMP-${unit}`}
+            instruments={COMPRESSOR_INSTRUMENTS}
+            hours={LOCAL_TIMES}
+            cells={cells}
+            saving={saving}
+            isNightHour={isNightHour}
+            onChange={handleChange}
+            onSaveCell={saveCell}
+            onSaveRow={saveRow}
+            compact
+          />
+        ))}
       </div>
 
-      {/* Sheet Tables Stacked */}
-      <div className="space-y-10">
-        <SheetTable
-          title="SHEET 1: Air Compressors (60-1001 A/B/C)"
-          sheetKey="DCS"
-          instruments={DCS_INSTRUMENTS}
-          hours={TWELVE_HOUR_TIMES}
-          cells={cells}
-          saving={saving}
-          onChange={handleChange}
-          onSaveCell={saveCell}
-        />
-
-        <div className="space-y-6">
-          <h3 className="text-xs font-black text-slate-900 uppercase border-l-4 border-slate-900 pl-2">SHEET 2: Compressor Local Readings</h3>
-          {COMPRESSOR_UNITS.map((unit) => (
-            <SheetTable
-              key={unit}
-              title={`Unit ${unit}`}
-              sheetKey={`COMP-${unit}`}
-              instruments={COMPRESSOR_INSTRUMENTS}
-              hours={TWELVE_HOUR_TIMES}
-              cells={cells}
-              saving={saving}
-              onChange={handleChange}
-              onSaveCell={saveCell}
-              compact
-            />
-          ))}
-        </div>
-
-        <SheetTable
-          title="SHEET 3: General System & Utilities"
-          sheetKey="LOCAL-GEN"
-          instruments={LOCAL2_INSTRUMENTS}
-          hours={TWELVE_HOUR_TIMES}
-          cells={cells}
-          saving={saving}
-          onChange={handleChange}
-          onSaveCell={saveCell}
-        />
-      </div>
-
-      {/* Signature Area */}
-      <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-200">
-        {SHIFTS_12H.map(shift => {
-          const signed = !!signatures[`N2_SIGN_${shift.key.toUpperCase()}`];
-          const sigData = signatures[`N2_SIGN_${shift.key.toUpperCase()}`];
-          return (
-            <div key={shift.key} className="border border-slate-100 p-4 bg-slate-50/50 rounded flex flex-col gap-2">
-              <div className="flex justify-between items-center text-[9px] font-bold uppercase text-slate-400">
-                <span>{shift.label}</span>
-                <span>{shift.range}</span>
-              </div>
-              <div className="h-16 border border-dashed border-slate-200 rounded flex items-center justify-center font-mono text-[9px] text-slate-400 uppercase italic">
-                {signed ? sigData : "Waiting for Authorization"}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Sheet 3 — LOCAL General */}
+      <SheetTable
+        title="جدول 3 — السجل المحلي (النظام العام)"
+        sheetKey="LOCAL-GEN"
+        instruments={LOCAL2_INSTRUMENTS}
+        hours={LOCAL_TIMES}
+        cells={cells}
+        saving={saving}
+        isNightHour={isNightHour}
+        onChange={handleChange}
+        onSaveCell={saveCell}
+        onSaveRow={saveRow}
+      />
     </div>
   );
 }
 
-// --- Internal Table Component ---
-function SheetTable({
-  title, sheetKey, instruments, hours, cells, saving,
-  onChange, onSaveCell, compact,
-}: any) {
-  
-  const handleKeyDown = (e: any, row: number, col: number) => {
-    const selector = (r: number, c: number) => `input[data-sheet="${sheetKey}"][data-row="${r}"][data-col="${c}"]`;
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      const next = document.querySelector(selector(row + 1, col)) as HTMLInputElement;
-      if (next) next.focus();
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const prev = document.querySelector(selector(row - 1, col)) as HTMLInputElement;
-      if (prev) prev.focus();
-    } else if (e.key === 'ArrowRight') {
-      const input = e.currentTarget;
-      if (input.selectionStart === input.value.length) {
-        e.preventDefault();
-        const next = document.querySelector(selector(row, col + 1)) as HTMLInputElement;
-        if (next) next.focus();
-      }
-    } else if (e.key === 'ArrowLeft') {
-      const input = e.currentTarget;
-      if (input.selectionStart === 0) {
-        e.preventDefault();
-        const prev = document.querySelector(selector(row, col - 1)) as HTMLInputElement;
-        if (prev) prev.focus();
-      }
-    }
-  };
+// ---- Sheet sub-table -----------------------------------------------------
 
+interface SheetTableProps {
+  title: string;
+  sheetKey: string;
+  instruments: string[];
+  hours: string[];
+  cells: CellMap;
+  saving: string | null;
+  isNightHour: boolean;
+  onChange: (tag: string, v: string) => void;
+  onSaveCell: (sheet: string, instrument: string, hour: string) => void;
+  onSaveRow: (sheet: string, instrument: string, hours: string[]) => void;
+  compact?: boolean;
+}
+
+function SheetTable({
+  title, sheetKey, instruments, hours, cells, saving, isNightHour,
+  onChange, onSaveCell, onSaveRow, compact,
+}: SheetTableProps) {
+  const currentHour = new Date().getHours();
   return (
-    <div className="border-[1.5px] border-slate-900 overflow-hidden">
-      <div className="bg-slate-900 px-3 py-1.5 flex items-center justify-between">
-        <h4 className="text-[10px] font-black text-white uppercase tracking-widest">{title}</h4>
+    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+      className="glass-card neon-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-border bg-secondary/30 flex items-center justify-between">
+        <h3 className={`font-semibold text-foreground ${compact ? "text-sm" : ""}`}>{title}</h3>
+        <span className="text-[10px] text-muted-foreground">جميع القيم تُختم تلقائيًا عند الحفظ</span>
       </div>
       <div className="overflow-x-auto">
-        <Table className="border-collapse">
+        <Table>
           <TableHeader>
-            <TableRow className="bg-slate-100 hover:bg-slate-100 border-b-[1.5px] border-slate-900">
-              <TableHead className="w-[280px] text-slate-900 font-black uppercase text-[10px] border-r-[1.5px] border-slate-900">Parameter</TableHead>
-              {hours.map((h: string) => (
-                <TableHead key={h} className="text-center text-[10px] font-mono font-black text-slate-900 border-r-[1.5px] border-slate-900 min-w-[70px]">
-                  {h}:00
-                </TableHead>
-              ))}
+            <TableRow className="bg-secondary/40">
+              <TableHead className="sticky left-0 bg-secondary/80 z-10 min-w-[260px]">الجهاز</TableHead>
+              {hours.map((h) => {
+                const hr = parseInt(h, 10);
+                const active = hr === currentHour || (h === "24" && currentHour === 0);
+                return (
+                  <TableHead key={h} className={`text-center text-xs ${active ? "text-primary neon-text" : ""}`}>
+                    {h}:00
+                  </TableHead>
+                );
+              })}
+              <TableHead className="text-center text-xs">حفظ</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {instruments.map((ins: string, rIdx: number) => (
-              <TableRow key={ins} className="h-8 hover:bg-slate-50 border-b-[1.5px] border-slate-400">
-                <TableCell className="py-1 px-3 font-mono font-bold text-[10px] text-slate-900 border-r-[1.5px] border-slate-900 bg-slate-50/50">
-                  {ins}
-                </TableCell>
-                {hours.map((h: string, cIdx: number) => {
-                  const tag = buildTag(sheetKey, ins, h);
-                  return (
-                    <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-400">
-                      <Input
-                        data-sheet={sheetKey}
-                        data-row={rIdx}
-                        data-col={cIdx}
-                        value={cells[tag] ?? ""}
-                        onChange={(e) => onChange(tag, e.target.value)}
-                        onBlur={() => cells[tag]?.trim() && onSaveCell(sheetKey, ins, h)}
-                        onKeyDown={(e) => handleKeyDown(e, rIdx, cIdx)}
-                        placeholder="—"
-                        inputMode="decimal"
-                        className={`h-8 w-full text-center text-[11px] font-mono font-black border-none rounded-none focus-visible:ring-2 focus-visible:ring-blue-600 ${saving === tag ? "bg-blue-50" : "bg-transparent"} text-slate-900`}
-                      />
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
+            {instruments.map((ins, idx) => {
+              const rowHighlight = isNightHour && idx % 2 === 0 ? "bg-primary/5" : "";
+              return (
+                <TableRow key={ins} className={`${rowHighlight} hover:bg-primary/10 transition-colors`}>
+                  <TableCell className="sticky left-0 bg-background/80 z-10 font-mono text-[11px] text-foreground/90">
+                    {ins}
+                  </TableCell>
+                  {hours.map((h) => {
+                    const tag = buildTag(sheetKey, ins, h);
+                    const hr = parseInt(h, 10);
+                    const isCurrent = hr === currentHour || (h === "24" && currentHour === 0);
+                    return (
+                      <TableCell key={h} className="p-1">
+                        <Input
+                          value={cells[tag] ?? ""}
+                          onChange={(e) => onChange(tag, e.target.value)}
+                          onBlur={() => cells[tag]?.trim() && onSaveCell(sheetKey, ins, h)}
+                          placeholder="—"
+                          inputMode="decimal"
+                          className={`h-8 text-center text-xs bg-secondary/40 border-border ${
+                            isCurrent ? "ring-1 ring-primary/60 neon-border" : ""
+                          } ${saving === tag ? "opacity-60" : ""}`}
+                        />
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell className="p-1 text-center">
+                    <Button
+                      size="sm" variant="ghost"
+                      onClick={() => onSaveRow(sheetKey, ins, hours)}
+                      className="h-7 px-2"
+                      title="حفظ جميع القيم في هذا الصف"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
-    </div>
-
+    </motion.div>
   );
 }
+
+function buildTagExport(sheet: string, ins: string, hour: string) {
+  return buildTag(sheet, ins, hour);
+}
+export { buildTagExport };

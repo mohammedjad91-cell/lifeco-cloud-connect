@@ -196,9 +196,7 @@ export default function AssetRegister({ department }: Props) {
         {assets.map((a) => (
           <div key={a.id} className="glass-card p-3">
             <button
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('lifeco:open-equipment', { detail: { tag: a.asset_code } }));
-              }}
+              onClick={() => toggle(a.id, a.asset_code)}
               className="w-full flex items-center justify-between text-left"
             >
 

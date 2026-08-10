@@ -30,17 +30,8 @@ export const LAB_PARAMETERS: Record<string, Record<string, string[]>> = {
     weekly: ["Oil & Grease", "Iron", "Silica", "Hardness", "Chlorides", "Sulfates", "TDS", "Alkalinity"],
   },
   NITROGEN: {
-    daily: [
-      "Oxygen Content in N2 (60-AL-003)",
-      "Nitrogen Purity %",
-      "Main N2 Dew Point (60-AT-001 / 60-AI-001)",
-      "Instrument Air Moisture / Dew Point"
-    ],
-    weekly: [
-      "Cooling Water pH & Conductivity",
-      "Boiler Feed Condensate Analysis",
-      "Dryer & Filter Oil / Moisture Carryover Check"
-    ],
+    daily: ["pH", "Conductivity", "Hardness", "Dew Point", "N2 Purity", "O2", "Pressure", "Temp", "Flow Rate", "Moisture", "Compressor Oil"],
+    weekly: ["Oil Content", "Filter Condition", "Oxygen Analyzer Check", "Nitrogen Purity Check", "Moisture Analyzer"],
   },
   DEMIN1: {
     daily: ["pH", "Conductivity", "Hardness", "Dew Point", "Silica", "Chlorides", "TDS", "Temp", "Iron", "Sodium", "Dissolved Oxygen"],
@@ -83,28 +74,6 @@ export const FIELD_OPS_EQUIPMENT: Record<string, string[]> = {
     "DEMIN-1", "DEMIN-2",
   ],
 };
-
-// كل مصانع إدارة الأمونيا واليوريا متاحة داخل عينات المعمل
-export const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string; hasModules?: boolean; active?: boolean }[] }[] = [
-  {
-    dept: "AMMONIA", deptAr: "إدارة الأمونيا",
-    plants: [
-      { code: "AMM1", ar: "Ammonia Plant 1", hasModules: true, active: true },
-      { code: "AMM2", ar: "Ammonia Plant 2", hasModules: true, active: true },
-      { code: "DEMIN1", ar: "Demin Water Plant 1", hasModules: true, active: true },
-      { code: "DEMIN2", ar: "Demin Water Plant 2", hasModules: true, active: true },
-      { code: "NITROGEN", ar: "Nitrogen Plant", hasModules: true, active: true },
-    ],
-  },
-  {
-    dept: "UREA", deptAr: "إدارة اليوريا",
-    plants: [
-      { code: "UREA-1", ar: "Urea Plant 1", hasModules: true, active: true },
-      { code: "UREA-2", ar: "Urea Plant 2", hasModules: true, active: true },
-      { code: "AMM-STORAGE", ar: "Ammonia Storage", hasModules: true, active: true },
-    ],
-  },
-];
 
 export const DEPARTMENTS: Department[] = [
   {
