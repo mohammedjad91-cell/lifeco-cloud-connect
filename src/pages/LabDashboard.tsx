@@ -83,6 +83,7 @@ const LabDashboard = () => {
   }, [deptScope, plantFilter]);
 
   const parameters = !plant ? [] : (LAB_PARAMETERS[plant]?.[sampleType] || []);
+  const hasModules = !!parameters.length;
 
   // Sync plant state to plantFilter to ensure UI consistency
   useEffect(() => {
@@ -123,12 +124,17 @@ const LabDashboard = () => {
       toast({ title: lang === "ar" ? "يرجى إدخال اسم المحلل والرقم الوظيفي" : "Please enter Analyst Name and ID", variant: "destructive" });
       return;
     }
+    
+    // Clear previous values when verifying a new plant entry session
+    setParamValues({});
     setVerified(true);
     setPlant(plantFilter);
+    
     // Persist to session storage to ensure state is maintained on refresh/navigation
     sessionStorage.setItem("lifeco_lab_verified", "true");
     sessionStorage.setItem("lifeco_lab_tech_name", technicianName);
     sessionStorage.setItem("lifeco_lab_tech_id", employeeId);
+    sessionStorage.setItem("lifeco_lab_plant", plantFilter);
   };
 
   const handleSaveAll = async () => {
@@ -318,24 +324,37 @@ const LabDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {parameters.map((param) => (
-                  <div key={param} className="bg-secondary/30 p-4 rounded-xl border border-border/50 hover:border-primary/50 transition-colors">
-                    <label className="text-xs font-black uppercase text-muted-foreground mb-2 block tracking-tighter">{param}</label>
-                    <Input 
-                      type="number" 
-                      value={paramValues[param] || ""} 
-                      onChange={(e) => setParamValues(prev => ({ ...prev, [param]: e.target.value }))}
-                      placeholder="0.00" 
-                      className="text-2xl font-black bg-background border-none text-primary h-12"
-                    />
-                  </div>
-                ))}
-              </div>
+              {parameters.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  {parameters.map((param) => (
+                    <div key={param} className="bg-secondary/30 p-4 rounded-xl border border-border/50 hover:border-primary/50 transition-colors">
+                      <label className="text-xs font-black uppercase text-muted-foreground mb-2 block tracking-tighter">{param}</label>
+                      <Input 
+                        type="number" 
+                        value={paramValues[param] || ""} 
+                        onChange={(e) => setParamValues(prev => ({ ...prev, [param]: e.target.value }))}
+                        placeholder="0.00" 
+                        className="text-2xl font-black bg-background border-none text-primary h-12"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-secondary/20 border border-dashed border-border rounded-xl p-12 text-center mb-6">
+                  <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground font-bold italic">
+                    {lang === "ar" ? "لا توجد معايير محددة لهذا المصنع حالياً" : "No analytical parameters defined for this plant yet"}
+                  </p>
+                </div>
+              )}
 
-              <Button onClick={handleSaveAll} disabled={saving} className="w-full h-14 text-xl font-black uppercase tracking-widest gap-3 shadow-xl shadow-primary/20">
+              <Button 
+                onClick={handleSaveAll} 
+                disabled={saving || !parameters.length} 
+                className="w-full h-14 text-xl font-black uppercase tracking-widest gap-3 shadow-xl shadow-primary/20"
+              >
                 {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
-                {lang === "ar" ? "حفظ وإرسال للسجلات التشغيلية" : "Save & Publish to Operations"}
+                {lang === "ar" ? "حفظ ونشر لسجلات التشغيل (Save & Publish)" : "Save & Publish to Operations Logs"}
               </Button>
             </div>
 

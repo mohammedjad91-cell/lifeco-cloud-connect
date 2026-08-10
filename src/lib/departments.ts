@@ -31,22 +31,15 @@ export const LAB_PARAMETERS: Record<string, Record<string, string[]>> = {
   },
   NITROGEN: {
     daily: [
-      "Oxygen content (60-AL-003)",
-      "Main Dew Point (60-AT-001 / 60-AI-001)",
-      "N2 Purity %",
-      "Instrument Air Moisture",
-      "Pressure",
-      "Temp",
-      "Flow Rate",
-      "Compressor Oil"
+      "Oxygen Content in N2 (60-AL-003)",
+      "Nitrogen Purity %",
+      "Main N2 Dew Point (60-AT-001 / 60-AI-001)",
+      "Instrument Air Moisture / Dew Point"
     ],
     weekly: [
-      "Cooling Water Analysis",
-      "Air Dryers Oil/Moisture",
-      "Filters Condensate",
-      "Oxygen Analyzer Check",
-      "Nitrogen Purity Check",
-      "Moisture Analyzer"
+      "Cooling Water pH & Conductivity",
+      "Boiler Feed Condensate Analysis",
+      "Dryer & Filter Oil / Moisture Carryover Check"
     ],
   },
   DEMIN1: {
@@ -92,28 +85,28 @@ export const FIELD_OPS_EQUIPMENT: Record<string, string[]> = {
 };
 
 // كل مصانع إدارة الأمونيا واليوريا متاحة داخل عينات المعمل
-export const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string }[] }[] = [
+export const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: string; ar: string; hasModules?: boolean; active?: boolean }[] }[] = [
   {
     dept: "AMMONIA", deptAr: "إدارة الأمونيا",
     plants: [
-      { code: "AMM1", ar: "مصنع الأمونيا 1" },
-      { code: "AMM2", ar: "مصنع الأمونيا 2" },
-      { code: "NITROGEN", ar: "مصنع النيتروجين" },
-      { code: "DEMIN1", ar: "مصنع الديمن 1" },
-      { code: "DEMIN2", ar: "مصنع الديمن 2" },
-      { code: "UTILITIES", ar: "الخدمات (Utilities)" },
-      { code: "PROC-ENG", ar: "هندسة العمليات" },
+      { code: "AMM1", ar: "مصنع الأمونيا الأول", hasModules: true, active: true },
+      { code: "AMM2", ar: "مصنع الأمونيا الثاني", hasModules: true, active: true },
+      { code: "DEMIN1", ar: "مصنع المياه الخالية من المعادن - الدمن الأول", hasModules: true, active: true },
+      { code: "DEMIN2", ar: "مصنع المياه الخالية من المعادن - الدمن الثاني", hasModules: true, active: true },
+      { code: "NITROGEN", ar: "مصنع النيتروجين", hasModules: true, active: true },
+      { code: "UTILITIES", ar: "الخدمات (Utilities)", hasModules: true, active: true },
+      { code: "PROC-ENG", ar: "هندسة العمليات", hasModules: true, active: true },
     ],
   },
   {
     dept: "UREA", deptAr: "إدارة اليوريا",
     plants: [
-      { code: "UREA-1", ar: "مصنع اليوريا 1" },
-      { code: "UREA-2", ar: "مصنع اليوريا 2" },
-      { code: "AMM-STORAGE", ar: "خزانات الأمونيا" },
-      { code: "AMM-LOAD", ar: "تحميل الأمونيا" },
-      { code: "UREA-LOAD", ar: "تحميل اليوريا" },
-      { code: "WATER-1", ar: "وحدة معالجة المياه" },
+      { code: "UREA-1", ar: "مصنع اليوريا 1", hasModules: true, active: true },
+      { code: "UREA-2", ar: "مصنع اليوريا 2", hasModules: true, active: true },
+      { code: "AMM-STORAGE", ar: "خزانات الأمونيا", hasModules: true, active: true },
+      { code: "AMM-LOAD", ar: "تحميل الأمونيا", hasModules: true, active: true },
+      { code: "UREA-LOAD", ar: "تحميل اليوريا", hasModules: true, active: true },
+      { code: "WATER-1", ar: "وحدة معالجة المياه", hasModules: true, active: true },
     ],
   },
 ];
