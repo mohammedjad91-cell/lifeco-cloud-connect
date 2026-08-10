@@ -153,7 +153,9 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
 
     if (dashboardTabs[key]) {
       if (key === "lab-readings") {
-        // Direct route to the dedicated laboratory entry page
+        if (plantCode === "N2-1") {
+          sessionStorage.setItem("lifeco_lab_plant", "NITROGEN");
+        }
         navigate("/lab");
       } else {
         sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
