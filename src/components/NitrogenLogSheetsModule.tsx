@@ -109,7 +109,7 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-slate-100/95 overflow-y-auto print:bg-white rounded-xl shadow-lg border border-slate-200 min-h-screen"
+      className="bg-slate-100/95 overflow-y-auto print:bg-white rounded-xl shadow-lg border border-slate-200"
     >
       {/* FLOATING ACTION BAR */}
       <div className="sticky top-0 z-[40] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
