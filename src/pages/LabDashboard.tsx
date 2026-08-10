@@ -287,7 +287,7 @@ const LabDashboard = () => {
               <TabsContent value="daily" className="mt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                    {Object.keys(readings).map(param => (
-                     <div key={param} className="p-4 rounded-lg border-2 border-slate-900 bg-slate-900/20 hover:border-primary/50 transition-all group">
+                     <div key={param} className="p-4 rounded-lg border-4 border-slate-900 bg-slate-900/40 hover:border-primary transition-all group shadow-xl">
                         <label className="text-[11px] font-bold uppercase text-slate-400 mb-2 block group-hover:text-primary transition-colors">{param}</label>
                         <div className="relative">
                           <Input 
@@ -309,7 +309,7 @@ const LabDashboard = () => {
               <TabsContent value="weekly" className="mt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                    {Object.keys(readings).map(param => (
-                     <div key={param} className="p-4 rounded-lg border-2 border-slate-900 bg-slate-900/20 hover:border-primary/50 transition-all group">
+                     <div key={param} className="p-4 rounded-lg border-4 border-slate-900 bg-slate-900/40 hover:border-primary transition-all group shadow-xl">
                         <label className="text-[11px] font-bold uppercase text-slate-400 mb-2 block group-hover:text-primary transition-colors">{param}</label>
                         <div className="relative">
                           <Input 

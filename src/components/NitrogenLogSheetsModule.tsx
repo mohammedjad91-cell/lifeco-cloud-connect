@@ -417,15 +417,15 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
   let rowCounter = 0;
 
   return (
-    <div className="border-2 border-slate-900 overflow-hidden shadow-md">
+    <div className="border-4 border-slate-900 overflow-hidden shadow-2xl">
       <Table className="border-collapse w-full">
         <TableHeader>
           <TableRow className="bg-slate-900 hover:bg-slate-900 border-b-2 border-slate-900 h-10">
-            <TableHead className="w-[300px] text-white font-bold uppercase text-[10px] tracking-widest border-r-2 border-slate-700">
+            <TableHead className="w-[300px] text-white font-black uppercase text-[10px] tracking-widest border-r-2 border-slate-700">
               Parameter / Tag ID
             </TableHead>
             {hours.map(h => (
-              <TableHead key={h} className="text-center text-white font-mono font-bold text-[11px] border-r border-slate-700 p-0 w-[80px]">
+              <TableHead key={h} className="text-center text-white font-mono font-black text-[12px] border-r border-slate-700 p-0 w-[80px]">
                 {h}:00
               </TableHead>
             ))}
@@ -449,7 +449,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                     {hours.map((h, cIdx) => {
                       const tag = buildTag(group.label.includes("60-1001") ? `COMP-${group.label.split(":")[1].trim()}` : sheetKey, param, h);
                       return (
-                        <TableCell key={h} className="p-0 border-r border-slate-300">
+                        <TableCell key={h} className="p-0 border-r-2 border-slate-900">
                           <Input
                             data-sheet={sheetKey}
                             data-row={currentRow}
