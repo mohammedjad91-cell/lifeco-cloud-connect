@@ -12,8 +12,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { Zap, ShieldCheck, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "@/lib/router-compat";
 
 export default function ElectricalWorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
+  const navigate = useNavigate();
   const [data, setData] = useState(initialData?.form_data || {
     general: {
       permitNo: "",
@@ -123,7 +125,11 @@ export default function ElectricalWorkPermitForm({ formId, initialData, plantCod
         await exportToPDF();
         toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/permits`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="electrical-permit-document" className="bg-[#eef5ee] text-slate-900 shadow-2xl border-[3px] border-slate-900 min-h-[1100px] flex flex-col">

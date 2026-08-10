@@ -12,8 +12,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { Building2, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "@/lib/router-compat";
 
 export default function WorkRequestForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
+  const navigate = useNavigate();
   const [data, setData] = useState(initialData?.form_data || {
     header: {
       wrNo: "",
@@ -136,7 +138,11 @@ export default function WorkRequestForm({ formId, initialData, plantCode, onBack
         await exportToPDF();
         toast.info("تم إرسال طلب العمل وحفظ نسخة PDF بنجاح.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/maintenance`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="work-request-document" className="bg-white text-slate-900 shadow-2xl border-[3px] border-slate-900">

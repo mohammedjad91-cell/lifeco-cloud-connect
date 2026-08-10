@@ -12,8 +12,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { Zap, ShieldCheck, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "@/lib/router-compat";
 
 export default function WorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
+  const navigate = useNavigate();
   const [data, setData] = useState(initialData?.form_data || {
     general: {
       workType: "COLD",
@@ -156,7 +158,11 @@ export default function WorkPermitForm({ formId, initialData, plantCode, onBack 
         await exportToPDF();
         toast.info("تم إرسال التصريح وحفظ نسخة PDF. تم تحويل الطلب إلى إدارة الصيانة.");
       }}
-      onBack={onBack}
+      onBack={onBack || (() => {
+        const plant = sessionStorage.getItem("lifeco_plant");
+        if (plant) navigate(`/module/${plant}/permits`);
+        else navigate("/");
+      })}
       isSubmitted={initialData?.status === 'submitted'}
     >
       <div id="work-permit-document" className="bg-white text-slate-900 flex flex-col">
