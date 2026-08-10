@@ -77,23 +77,23 @@ const NitrogenLogSheetsModule = ({ onClose }: LogSheetProps) => {
             </TabsTrigger>
           </TabsList>
           
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 print:p-0">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 bg-white print:p-0">
             <TabsContent value="sheet-1" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Commissioning Log Sheet - SHEET-1
               </h3>
               <CompressorSheet />
             </TabsContent>
             
             <TabsContent value="sheet-2" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Ammonia plants dept. - Nitrogen plant Commissioning log sheet
               </h3>
               <UtilitiesSheet />
             </TabsContent>
             
             <TabsContent value="sheet-3" className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h3 className="text-white font-black text-2xl uppercase tracking-tighter border-b border-primary/30 pb-2">
+              <h3 className="text-slate-900 font-black text-2xl uppercase tracking-tighter border-b-2 border-slate-900 pb-2">
                 Nitrogen Plant Hourly Operations
               </h3>
               <HourlyOpsSheet />
@@ -148,16 +148,16 @@ const DataTable = ({ groups, hours }: DataTableProps) => {
   let globalRowCounter = 0;
 
   return (
-    <div className="border border-white/10 rounded-xl overflow-hidden shadow-2xl bg-slate-900/40">
+    <div className="border-[1.5px] border-slate-900 rounded-none overflow-hidden shadow-none bg-white">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-900 border-white/10 hover:bg-slate-900">
-              <TableHead className="w-[350px] text-primary font-bold uppercase text-[10px] tracking-widest border-r border-white/5">
+            <TableRow className="bg-slate-100 border-b-[1.5px] border-slate-900 hover:bg-slate-100">
+              <TableHead className="w-[350px] text-slate-900 font-black uppercase text-[10px] tracking-widest border-r-[1.5px] border-slate-900">
                 Parameters / Instruments
               </TableHead>
               {hours.map(h => (
-                <TableHead key={h} className="text-center text-white font-mono font-black text-sm border-r border-white/5 min-w-[100px]">
+                <TableHead key={h} className="text-center text-slate-900 font-mono font-black text-sm border-r-[1.5px] border-slate-900 min-w-[100px]">
                   {h}
                 </TableHead>
               ))}
@@ -166,28 +166,28 @@ const DataTable = ({ groups, hours }: DataTableProps) => {
           <TableBody>
             {groups.map((group, groupIdx) => (
               <React.Fragment key={groupIdx}>
-                <TableRow className="bg-primary/5 hover:bg-primary/10 border-white/10">
-                  <TableCell colSpan={hours.length + 1} className="py-2 px-4 text-primary font-black uppercase text-[10px] tracking-[0.3em]">
+                <TableRow className="bg-slate-50 border-b-[1.5px] border-slate-900">
+                  <TableCell colSpan={hours.length + 1} className="py-2 px-4 text-slate-900 font-black uppercase text-[10px] tracking-[0.3em]">
                     {group.label}
                   </TableCell>
                 </TableRow>
                 {group.parameters.map((param, paramIdx) => {
                   const currentRowIndex = globalRowCounter++;
                   return (
-                    <TableRow key={paramIdx} className="border-white/5 hover:bg-white/5 transition-colors group">
-                      <TableCell className="py-2 px-4 font-mono text-[11px] text-white/80 border-r border-white/5 group-hover:text-primary transition-colors">
+                    <TableRow key={paramIdx} className="border-b-[1.5px] border-slate-900 hover:bg-slate-50 transition-colors group">
+                      <TableCell className="py-2 px-4 font-mono text-[11px] font-bold text-slate-800 border-r-[1.5px] border-slate-900 group-hover:text-black transition-colors">
                         {param}
                       </TableCell>
                       {hours.map((h, colIdx) => {
                         const cellId = `${group.label}-${param}-${h}`;
                         return (
-                          <TableCell key={h} className="p-0 border-r border-white/5">
+                          <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-900">
                             <Input
                               data-pos={`${currentRowIndex}-${colIdx}`}
                               value={data[cellId] || ""}
                               onChange={(e) => setData(prev => ({ ...prev, [cellId]: e.target.value }))}
                               onKeyDown={(e) => handleKeyDown(e, currentRowIndex, colIdx, 1000, hours.length)}
-                              className="h-10 w-full bg-transparent border-none rounded-none text-center font-mono text-sm text-white focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:bg-primary/5 placeholder:text-white/5 transition-all"
+                              className="h-10 w-full bg-transparent border-none rounded-none text-center font-mono text-sm text-slate-950 font-bold focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:bg-slate-50 placeholder:text-slate-300 transition-all"
                               placeholder="0.0"
                               inputMode="decimal"
                             />
@@ -270,17 +270,17 @@ const SignaturesSection = () => {
     { label: "NIGHT SHIFT", time: "22:00 - 06:00" },
   ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 print:mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 print:mt-8 pb-12">
       {shifts.map(shift => (
-        <div key={shift.label} className="glass-card p-6 border border-white/10 flex flex-col gap-4">
+        <div key={shift.label} className="bg-slate-50 p-6 border-[1.5px] border-slate-900 flex flex-col gap-4 shadow-none">
           <div className="flex items-center justify-between">
-            <span className="text-primary font-black text-[10px] tracking-widest">{shift.label}</span>
-            <span className="text-white/20 text-[9px] font-mono">{shift.time}</span>
+            <span className="text-slate-900 font-black text-[10px] tracking-widest">{shift.label}</span>
+            <span className="text-slate-400 text-[9px] font-mono">{shift.time}</span>
           </div>
-          <div className="h-20 border-b border-white/5 flex items-end justify-center pb-2 text-white/10 italic text-[10px] uppercase font-mono tracking-widest">
+          <div className="h-20 border-b border-slate-900/10 flex items-end justify-center pb-2 text-slate-300 italic text-[10px] uppercase font-mono tracking-widest">
             Digital Signature Area
           </div>
-          <Button variant="ghost" size="sm" className="w-full text-[10px] font-bold uppercase tracking-widest border border-white/5 hover:bg-white/5 text-white/40">
+          <Button variant="outline" size="sm" className="w-full text-[10px] font-bold uppercase tracking-widest border border-slate-900/20 hover:bg-slate-900/5 text-slate-600">
             Sign Off
           </Button>
         </div>
