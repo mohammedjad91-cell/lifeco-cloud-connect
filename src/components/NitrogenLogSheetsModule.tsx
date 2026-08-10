@@ -270,17 +270,17 @@ const SignaturesSection = () => {
     { label: "NIGHT SHIFT", time: "22:00 - 06:00" },
   ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 print:mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 print:mt-8 pb-12">
       {shifts.map(shift => (
-        <div key={shift.label} className="glass-card p-6 border border-white/10 flex flex-col gap-4">
+        <div key={shift.label} className="bg-slate-50 p-6 border-[1.5px] border-slate-900 flex flex-col gap-4 shadow-none">
           <div className="flex items-center justify-between">
-            <span className="text-primary font-black text-[10px] tracking-widest">{shift.label}</span>
-            <span className="text-white/20 text-[9px] font-mono">{shift.time}</span>
+            <span className="text-slate-900 font-black text-[10px] tracking-widest">{shift.label}</span>
+            <span className="text-slate-400 text-[9px] font-mono">{shift.time}</span>
           </div>
-          <div className="h-20 border-b border-white/5 flex items-end justify-center pb-2 text-white/10 italic text-[10px] uppercase font-mono tracking-widest">
+          <div className="h-20 border-b border-slate-900/10 flex items-end justify-center pb-2 text-slate-300 italic text-[10px] uppercase font-mono tracking-widest">
             Digital Signature Area
           </div>
-          <Button variant="ghost" size="sm" className="w-full text-[10px] font-bold uppercase tracking-widest border border-white/5 hover:bg-white/5 text-white/40">
+          <Button variant="outline" size="sm" className="w-full text-[10px] font-bold uppercase tracking-widest border border-slate-900/20 hover:bg-slate-900/5 text-slate-600">
             Sign Off
           </Button>
         </div>
