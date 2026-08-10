@@ -87,15 +87,16 @@ const Dashboard = () => {
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
-    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
+    const saved = sessionStorage.getItem("lifeco_dashboard_tab");
+    // Ensure "n2-logs" maps to "nitrogen-logs" for the Tabs value
+    if (saved === "n2-logs" || saved === "nitrogen-logs") return "nitrogen-logs";
+    return saved || "logs";
   });
-  const [showN2LogSheets, setShowN2LogSheets] = useState(false);
 
   useEffect(() => {
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
-    if (tab === "n2-logs") {
-      setActiveTab("nitrogen");
-      setShowN2LogSheets(true);
+    if (tab === "n2-logs" || tab === "nitrogen-logs") {
+      setActiveTab("nitrogen-logs");
     }
   }, []);
 
@@ -426,8 +427,8 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
-      {showN2LogSheets && (
-        <NitrogenLogSheetsModule onClose={() => setShowN2LogSheets(false)} selectedDate={selectedDate} />
+      {activeTab === "nitrogen-logs" && (
+        <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
       )}
 
       {deptBg && (
@@ -545,8 +546,8 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
-            {department.id === "NITROGEN" && (
-              <TabsTrigger value="nitrogen" className="gap-1.5 border-amber-500/40 text-amber-500 data-[state=active]:bg-amber-500/10">
+            {(department.id === "NITROGEN" || sessionStorage.getItem("lifeco_plant") === "N2-1") && (
+              <TabsTrigger value="nitrogen-logs" className="gap-1.5 border-amber-500/40 text-amber-500 data-[state=active]:bg-amber-500/10 shrink-0">
                 <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
               </TabsTrigger>
             )}
@@ -755,8 +756,8 @@ const Dashboard = () => {
           )}
 
 
-          {department.id === "NITROGEN" && (
-            <TabsContent value="nitrogen" className="mt-4">
+          {(department.id === "NITROGEN" || sessionStorage.getItem("lifeco_plant") === "N2-1") && (
+            <TabsContent value="nitrogen-logs" className="mt-4">
               <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
             </TabsContent>
           )}
