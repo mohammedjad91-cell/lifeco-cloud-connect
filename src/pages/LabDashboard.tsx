@@ -11,6 +11,8 @@ import AmmoniaLab from "@/components/lab/AmmoniaLab";
 const LabDashboard = () => {
   const navigate = useNavigate();
   const { t, lang, setLang } = useI18n();
+  
+  // Initialize view based on session storage
   const [view, setView] = useState<"DEPT_SELECT" | "AMMONIA_LAB">(
     sessionStorage.getItem("lifeco_lab_plant") ? "AMMONIA_LAB" : "DEPT_SELECT"
   );
@@ -25,6 +27,12 @@ const LabDashboard = () => {
   };
 
   const preSelected = sessionStorage.getItem("lifeco_lab_plant");
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col font-sans" dir={lang === "ar" ? "rtl" : "ltr"}>
+      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={handleBack} className="text-muted-foreground">
             <ArrowLeft className={`w-5 h-5 ${lang === "ar" ? "rotate-180" : ""}`} />
           </Button>
           <div>
