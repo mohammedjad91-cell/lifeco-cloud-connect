@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LIFECO PMS" },
+      { title: "LIFECO — المنظومة الكيميائية والتشغيلية" },
       { name: "description", content: "LIFECO Plant Management System" },
       { property: "og:title", content: "LIFECO PMS" },
       { name: "twitter:title", content: "LIFECO PMS" },

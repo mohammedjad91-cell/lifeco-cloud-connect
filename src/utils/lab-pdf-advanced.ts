@@ -17,22 +17,39 @@ export const generateLabPdf = async (data: LabPdfData) => {
   const dateStr = format(new Date(), "dd MMM yyyy HH:mm");
   const reportId = `LAB-${data.plant.substring(0, 3)}-${Date.now()}`;
 
-  // Header Box
-  doc.setFillColor(15, 23, 42); // slate-900
-  doc.rect(0, 0, 210, 40, "F");
+  // --- OFFICIAL HEADER ---
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, 210, 45, "F");
   
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
+  // LIFECO LOGO TEXT
+  doc.setTextColor(10, 37, 64); // #0A2540
   doc.setFont("helvetica", "bold");
-  doc.text("LIFECO PMS 2026", 15, 20);
+  doc.setFontSize(28);
+  doc.text("LIFE", 150, 20);
   
+  // The Golden Drop O
+  doc.setTextColor(245, 184, 0); // #F5B800
+  doc.text("O", 175, 20);
+  
+  // Arabic/English Subtext
+  doc.setTextColor(10, 37, 64);
   doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text("AMMONIA OPERATIONS DEPARTMENT | LABORATORY SECTION", 15, 30);
+  doc.text("الشركة الليبية للأسمدة", 163, 28, { align: "center" });
+  doc.setFontSize(7);
+  doc.text("Libyan Fertilizer Company", 163, 33, { align: "center" });
   
-  doc.setFontSize(8);
-  doc.text(`REPORT ID: ${reportId}`, 160, 15);
-  doc.text(`GENERATED: ${dateStr}`, 160, 20);
+  // Left side: Title
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("LABORATORY ANALYTICAL REPORT", 15, 25);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(`REPORT ID: ${reportId}`, 15, 32);
+  doc.text(`GENERATED: ${dateStr}`, 15, 37);
+
+  doc.setDrawColor(10, 37, 64);
+  doc.setLineWidth(1);
+  doc.line(15, 42, 195, 42);
 
   // Verification Seal
   doc.setDrawColor(59, 130, 246); // primary

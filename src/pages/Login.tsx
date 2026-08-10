@@ -98,19 +98,15 @@ const Login = () => {
         transition={{ duration: 0.6 }}
         className="text-center pt-6 pb-3 relative z-10"
       >
-        <motion.img
-          src={lifecoLogo}
-          alt="LIFECO PMS 2026"
-          className="mx-auto mb-3 drop-shadow-2xl"
-          width={100}
-          height={100}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring" }}
-        />
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] tracking-wider">
-          {t.lifecoDigital}
-        </h1>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <span className="text-5xl md:text-6xl font-black tracking-tighter text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+            LIFE<span className="text-[#F5B800]">O</span>
+          </span>
+          <div className="flex flex-col items-start border-l-2 border-white pl-4 text-white">
+            <span className="text-xl font-bold tracking-normal drop-shadow-md">الشركة الليبية للأسمدة</span>
+            <span className="text-xs font-medium uppercase tracking-widest opacity-90">Libyan Fertilizer Company</span>
+          </div>
+        </div>
         <p className="text-white/90 mt-1 text-xs tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
           {t.opsLoggingSystem}
         </p>

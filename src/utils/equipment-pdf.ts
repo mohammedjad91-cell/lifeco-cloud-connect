@@ -19,10 +19,11 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   const running = data?.detailed_running_data || {};
 
   // --- Header ---
-  doc.setFillColor(2, 6, 23); // bg-slate-950
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, 210, 45, "F");
   
-  doc.setTextColor(255, 255, 255);
+  // Left side: Title
+  doc.setTextColor(10, 37, 64); // #0A2540
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.text("N2-1 — NITROGEN GENERATION", 15, 15);
@@ -31,13 +32,22 @@ export async function generateEquipmentPDF(data: any, tag: string) {
   doc.setFontSize(26);
   doc.text(tag, 15, 35);
   
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Equipment: ${data.equipment_name || asset.asset_name || "N/A"}`, 140, 15);
-  doc.text(`Service: ${data.service || "N/A"}`, 140, 20);
-  doc.text(`Area: ${asset.location || "NITROGEN GENERATION"}`, 140, 25);
-  doc.text(`Status: ${asset.status || "Pending Verification"}`, 140, 30);
-  doc.text(`Plant: N2-1`, 140, 35);
+  // Right side: Official Logo Integration
+  doc.setTextColor(10, 37, 64);
+  doc.setFontSize(28);
+  doc.text("LIFE", 150, 20);
+  doc.setTextColor(245, 184, 0); // #F5B800
+  doc.text("O", 175, 20);
+  
+  doc.setTextColor(10, 37, 64);
+  doc.setFontSize(10);
+  doc.text("الشركة الليبية للأسمدة", 163, 28, { align: "center" });
+  doc.setFontSize(7);
+  doc.text("Libyan Fertilizer Company", 163, 33, { align: "center" });
+
+  doc.setDrawColor(10, 37, 64);
+  doc.setLineWidth(0.8);
+  doc.line(15, 42, 195, 42);
 
   let currentY = 55;
 
