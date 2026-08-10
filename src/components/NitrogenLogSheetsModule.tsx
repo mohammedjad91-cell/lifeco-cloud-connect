@@ -434,8 +434,8 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         <TableBody>
           {groups.map((group, gIdx) => (
             <React.Fragment key={gIdx}>
-              <TableRow className="bg-slate-200 hover:bg-slate-200 h-8 border-b-2 border-slate-900">
-                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-900 font-black uppercase text-[10px] tracking-widest border-r border-slate-900">
+              <TableRow className="bg-slate-300 hover:bg-slate-300 h-8 border-b-2 border-slate-900">
+                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-950 font-black uppercase text-[10px] tracking-widest border-r border-slate-900">
                   {group.label}
                 </TableCell>
               </TableRow>
@@ -457,7 +457,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                             value={cells[tag] || ""}
                             onChange={(e) => setCells(prev => ({ ...prev, [tag]: e.target.value }))}
                             onKeyDown={(e) => handleKeyDown(e, currentRow, cIdx, 1000, hours.length)}
-                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-bold text-[12px] text-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:bg-white placeholder:text-slate-300"
+                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-black text-[13px] text-slate-950 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:bg-white placeholder:text-slate-400"
                             placeholder="0.0"
                             inputMode="decimal"
                           />
