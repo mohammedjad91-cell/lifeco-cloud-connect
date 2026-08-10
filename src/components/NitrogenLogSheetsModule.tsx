@@ -112,7 +112,7 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
       className="bg-slate-100/95 overflow-y-auto print:bg-white rounded-xl shadow-lg border border-slate-200"
     >
       {/* FLOATING ACTION BAR */}
-      <div className="sticky top-0 z-[60] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
+      <div className="sticky top-0 z-[40] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100">
