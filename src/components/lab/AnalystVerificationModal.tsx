@@ -46,10 +46,10 @@ export const AnalystVerificationModal = ({ isOpen, onVerified }: AnalystVerifica
             </div>
             <div>
               <DialogTitle className="text-2xl font-black uppercase tracking-tight text-primary">
-                Analyst Verification
+                {""}
               </DialogTitle>
               <DialogDescription className="text-slate-400 font-bold text-xs uppercase tracking-widest">
-                Compulsory Access Protocol — LIFECO Laboratory
+                {""}
               </DialogDescription>
             </div>
           </div>
