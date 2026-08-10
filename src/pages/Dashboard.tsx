@@ -543,6 +543,11 @@ const Dashboard = () => {
                 <FlaskConical className="w-3.5 h-3.5" /> {t.labReadings}
               </TabsTrigger>
             )}
+            {(department.id === "NITROGEN" || sessionStorage.getItem("lifeco_plant") === "N2-1") && (
+              <TabsTrigger value="nitrogen-logs" className="gap-1.5 border-amber-500/40 text-amber-500 data-[state=active]:bg-amber-500/10 shrink-0">
+                <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "قراءات مصنع النيتروجين" : "Nitrogen Plant Logs"}
+              </TabsTrigger>
+            )}
             <TabsTrigger value="report" className="gap-1.5">
               <FileText className="w-3.5 h-3.5" /> {lang === "ar" ? "التقرير" : "Report"}
             </TabsTrigger>
@@ -748,6 +753,12 @@ const Dashboard = () => {
           )}
 
 
+
+          {(department.id === "NITROGEN" || sessionStorage.getItem("lifeco_plant") === "N2-1") && (
+            <TabsContent value="nitrogen-logs" className="mt-4">
+              <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
+            </TabsContent>
+          )}
 
           <TabsContent value="report" className="mt-4 space-y-4">
             <div className="glass-card neon-border p-4 flex flex-wrap items-center justify-between gap-3">
