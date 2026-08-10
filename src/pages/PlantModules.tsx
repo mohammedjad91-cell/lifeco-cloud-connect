@@ -152,8 +152,13 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     };
 
     if (dashboardTabs[key]) {
-      sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
-      navigate("/dashboard");
+      if (key === "lab-readings") {
+        // Direct route to the dedicated laboratory entry page
+        navigate("/lab");
+      } else {
+        sessionStorage.setItem("lifeco_dashboard_tab", dashboardTabs[key]);
+        navigate("/dashboard");
+      }
       return;
     }
 
