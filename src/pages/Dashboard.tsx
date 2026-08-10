@@ -427,9 +427,6 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen flex flex-col relative ${deptBg ? "" : "bg-background"}`}>
-      {activeTab === "nitrogen-logs" && (
-        <NitrogenLogSheetsModule onClose={() => setActiveTab("logs")} selectedDate={selectedDate} />
-      )}
 
       {deptBg && (
         <div className="fixed inset-0 -z-10 pointer-events-none">
