@@ -83,12 +83,41 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const handleSave = () => {
-    toast({ title: "Syncing...", description: "All entries synchronized with DCS database." });
+  const handleSave = async () => {
+    if (!operator) {
+      toast({ title: "Operator login required", variant: "destructive" });
+      return;
+    }
+    
+    setLoading(true);
+    const timestamp = new Date().toISOString();
+    const opsRows = Object.entries(cells).map(([tag, val]) => ({
+      department: "NITROGEN",
+      unit_tag: tag,
+      value: parseFloat(val) || 0,
+      employee_id: operator.employeeId,
+      timestamp: timestamp
+    }));
+
+    if (opsRows.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.from("operations_logs").insert(opsRows);
+    
+    if (error) {
+      toast({ title: "Sync Failed", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Sync Successful", description: "All entries synchronized with DCS database." });
+    }
+    setLoading(false);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     toast({ title: "Exporting...", description: "Generating professional engineering PDF layout..." });
+    // This would typically involve a dedicated N2 PDF generator
+    // For now, we reuse the generic lab one or notify user
   };
 
   const handlePrint = () => {
