@@ -59,7 +59,7 @@ const SampleEntryForm: React.FC<SampleEntryFormProps> = ({ sourceId, onCancel, o
     }
 
     setLoading(true);
-    const { error } = await supabase.from("lab_samples").insert([formData]);
+    const { error } = await supabase.from("lifeco_lab_samples").insert([formData]);
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
