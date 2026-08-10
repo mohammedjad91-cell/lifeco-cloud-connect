@@ -121,6 +121,14 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module", m.key);
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
+    // If opening lab results from a lab management context, allow data entry
+    if (key === "lab" && departmentKey === "LAB") {
+      sessionStorage.setItem("lifeco_lab_force_entry", "true");
+      sessionStorage.removeItem("lifeco_lab_plant"); // Clear plant filter to see everything
+      navigate("/lab");
+      return;
+    }
+
     if (key === "ops-logs" && plantCode === "N2-1") {
       // In N2-1, we open a specialized dashboard view where we can also see the equipment button.
       sessionStorage.setItem("lifeco_dashboard_tab", "logs");

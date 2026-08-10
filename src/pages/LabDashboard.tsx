@@ -126,8 +126,12 @@ const LabDashboard = () => {
   // نطاق إدارة (معمل الأمونيا / معمل اليوريا) — يعرض عينات مصانع تلك الإدارة فقط
   const [deptScope] = useState<string>(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
-  const [readOnly] = useState<boolean>(() =>
-    typeof window === "undefined" ? false : !!sessionStorage.getItem("lifeco_lab_plant"));
+  const [readOnly] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const forceEntry = sessionStorage.getItem("lifeco_lab_force_entry") === "true";
+    if (forceEntry) return false;
+    return !!sessionStorage.getItem("lifeco_lab_plant");
+  });
 
 
   const [activeTab, setActiveTab] = useState<"classic" | "samples">(() => {
