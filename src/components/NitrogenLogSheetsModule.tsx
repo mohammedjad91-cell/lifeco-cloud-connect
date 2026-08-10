@@ -148,16 +148,16 @@ const DataTable = ({ groups, hours }: DataTableProps) => {
   let globalRowCounter = 0;
 
   return (
-    <div className="border border-white/10 rounded-xl overflow-hidden shadow-2xl bg-slate-900/40">
+    <div className="border-[1.5px] border-slate-900 rounded-none overflow-hidden shadow-none bg-white">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-900 border-white/10 hover:bg-slate-900">
-              <TableHead className="w-[350px] text-primary font-bold uppercase text-[10px] tracking-widest border-r border-white/5">
+            <TableRow className="bg-slate-100 border-b-[1.5px] border-slate-900 hover:bg-slate-100">
+              <TableHead className="w-[350px] text-slate-900 font-black uppercase text-[10px] tracking-widest border-r-[1.5px] border-slate-900">
                 Parameters / Instruments
               </TableHead>
               {hours.map(h => (
-                <TableHead key={h} className="text-center text-white font-mono font-black text-sm border-r border-white/5 min-w-[100px]">
+                <TableHead key={h} className="text-center text-slate-900 font-mono font-black text-sm border-r-[1.5px] border-slate-900 min-w-[100px]">
                   {h}
                 </TableHead>
               ))}
@@ -166,28 +166,28 @@ const DataTable = ({ groups, hours }: DataTableProps) => {
           <TableBody>
             {groups.map((group, groupIdx) => (
               <React.Fragment key={groupIdx}>
-                <TableRow className="bg-primary/5 hover:bg-primary/10 border-white/10">
-                  <TableCell colSpan={hours.length + 1} className="py-2 px-4 text-primary font-black uppercase text-[10px] tracking-[0.3em]">
+                <TableRow className="bg-slate-50 border-b-[1.5px] border-slate-900">
+                  <TableCell colSpan={hours.length + 1} className="py-2 px-4 text-slate-900 font-black uppercase text-[10px] tracking-[0.3em]">
                     {group.label}
                   </TableCell>
                 </TableRow>
                 {group.parameters.map((param, paramIdx) => {
                   const currentRowIndex = globalRowCounter++;
                   return (
-                    <TableRow key={paramIdx} className="border-white/5 hover:bg-white/5 transition-colors group">
-                      <TableCell className="py-2 px-4 font-mono text-[11px] text-white/80 border-r border-white/5 group-hover:text-primary transition-colors">
+                    <TableRow key={paramIdx} className="border-b-[1.5px] border-slate-900 hover:bg-slate-50 transition-colors group">
+                      <TableCell className="py-2 px-4 font-mono text-[11px] font-bold text-slate-800 border-r-[1.5px] border-slate-900 group-hover:text-black transition-colors">
                         {param}
                       </TableCell>
                       {hours.map((h, colIdx) => {
                         const cellId = `${group.label}-${param}-${h}`;
                         return (
-                          <TableCell key={h} className="p-0 border-r border-white/5">
+                          <TableCell key={h} className="p-0 border-r-[1.5px] border-slate-900">
                             <Input
                               data-pos={`${currentRowIndex}-${colIdx}`}
                               value={data[cellId] || ""}
                               onChange={(e) => setData(prev => ({ ...prev, [cellId]: e.target.value }))}
                               onKeyDown={(e) => handleKeyDown(e, currentRowIndex, colIdx, 1000, hours.length)}
-                              className="h-10 w-full bg-transparent border-none rounded-none text-center font-mono text-sm text-white focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:bg-primary/5 placeholder:text-white/5 transition-all"
+                              className="h-10 w-full bg-transparent border-none rounded-none text-center font-mono text-sm text-slate-950 font-bold focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:bg-slate-50 placeholder:text-slate-300 transition-all"
                               placeholder="0.0"
                               inputMode="decimal"
                             />
