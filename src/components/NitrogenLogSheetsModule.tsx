@@ -197,6 +197,90 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
             <HourlyOpsTable cells={cells} setCells={setCells} hours={TWELVE_HOUR_TIMES} />
           </section>
 
+          {/* LABORATORY READINGS SECTION */}
+          {labReadings.length > 0 && (
+            <section className="space-y-4">
+              <div className="bg-emerald-50 p-3 border-l-4 border-emerald-600 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FlaskConical className="w-5 h-5 text-emerald-600" />
+                  <div>
+                    <h3 className="text-sm font-black text-emerald-900 uppercase tracking-widest">Official Laboratory Analytical Results</h3>
+                    <p className="text-[10px] text-emerald-600 font-bold uppercase">Published by Certified Lab Analyst — Read Only Mode</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 print:hidden">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-8 border-emerald-200 text-emerald-700 bg-white"
+                    onClick={async () => {
+                      const first = labReadings[0];
+                      const readings: Record<string, string> = {};
+                      labReadings.forEach(r => { readings[r.unit_tag.replace("LAB|", "")] = r.value; });
+                      const doc = await generateLabPdf({
+                        plant: "NITROGEN",
+                        sampleType: "daily",
+                        analyst: "Lab Analyst",
+                        badge: first.employee_id || "N/A",
+                        readings,
+                        timestamp: first.timestamp
+                      });
+                      doc.save("N2_LAB_REPORT.pdf");
+                    }}
+                  >
+                    <Download className="w-3.5 h-3.5 mr-2" /> PDF
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-8 border-emerald-200 text-emerald-700 bg-white"
+                    onClick={async () => {
+                      const first = labReadings[0];
+                      const readings: Record<string, string> = {};
+                      labReadings.forEach(r => { readings[r.unit_tag.replace("LAB|", "")] = r.value; });
+                      const doc = await generateLabPdf({
+                        plant: "NITROGEN",
+                        sampleType: "daily",
+                        analyst: "Lab Analyst",
+                        badge: first.employee_id || "N/A",
+                        readings,
+                        timestamp: first.timestamp
+                      });
+                      await shareLabPdf(doc, "N2_LAB_REPORT.pdf");
+                    }}
+                  >
+                    <Share2 className="w-3.5 h-3.5 mr-2" /> WhatsApp
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="border-2 border-emerald-600 overflow-hidden shadow-sm">
+                <Table className="w-full">
+                  <TableHeader>
+                    <TableRow className="bg-emerald-600 hover:bg-emerald-600 border-b-2 border-emerald-600 h-10">
+                      <TableHead className="text-white font-bold uppercase text-[10px] tracking-widest">Parameter Tag</TableHead>
+                      <TableHead className="text-center text-white font-bold uppercase text-[10px] tracking-widest">Analytical Value</TableHead>
+                      <TableHead className="text-center text-white font-bold uppercase text-[10px] tracking-widest">Published By</TableHead>
+                      <TableHead className="text-center text-white font-bold uppercase text-[10px] tracking-widest">Badge</TableHead>
+                      <TableHead className="text-right text-white font-bold uppercase text-[10px] tracking-widest">Timestamp</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {labReadings.map((r, i) => (
+                      <TableRow key={i} className="h-10 hover:bg-emerald-50/50 border-b border-emerald-100">
+                        <TableCell className="font-bold text-[11px] text-emerald-900">{r.unit_tag.replace("LAB|", "")}</TableCell>
+                        <TableCell className="text-center font-black text-emerald-700 text-sm bg-emerald-50/30">{r.value}</TableCell>
+                        <TableCell className="text-center font-mono text-[10px] text-slate-500 uppercase">LAB ANALYST</TableCell>
+                        <TableCell className="text-center font-mono text-[10px] text-slate-500">{r.employee_id || "---"}</TableCell>
+                        <TableCell className="text-right font-mono text-[9px] text-slate-400">{format(new Date(r.timestamp), "HH:mm:ss")}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </section>
+          )}
+
           {/* SIGNATURES SECTION */}
           <div className="grid grid-cols-2 gap-8 mt-16 pt-8 border-t-2 border-slate-900">
             {SHIFT_12H.map(shift => {
