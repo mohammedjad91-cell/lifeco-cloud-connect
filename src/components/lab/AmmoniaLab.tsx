@@ -20,7 +20,7 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => 
   const { lang } = useI18n();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
-  const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
+  const [selectedPlant, setSelectedPlant] = useState<string | null>(preSelectedPlant || null);
   const [sampleType, setSampleType] = useState<"daily" | "weekly">("daily");
   const [loading, setLoading] = useState(false);
 
