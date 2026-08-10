@@ -263,15 +263,15 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
   let rowCounter = 0;
 
   return (
-    <div className="border border-slate-300 overflow-hidden">
-      <Table className="border-collapse">
+    <div className="border-2 border-slate-900 overflow-hidden shadow-md">
+      <Table className="border-collapse w-full">
         <TableHeader>
-          <TableRow className="bg-slate-900 hover:bg-slate-900 border-b border-slate-900 h-10">
-            <TableHead className="w-[300px] text-white font-bold uppercase text-[9px] tracking-widest border-r border-slate-700">
+          <TableRow className="bg-slate-900 hover:bg-slate-900 border-b-2 border-slate-900 h-10">
+            <TableHead className="w-[300px] text-white font-bold uppercase text-[10px] tracking-widest border-r-2 border-slate-700">
               Parameter / Tag ID
             </TableHead>
             {hours.map(h => (
-              <TableHead key={h} className="text-center text-white font-mono font-bold text-[10px] border-r border-slate-700 p-0 w-[80px]">
+              <TableHead key={h} className="text-center text-white font-mono font-bold text-[11px] border-r border-slate-700 p-0 w-[80px]">
                 {h}:00
               </TableHead>
             ))}
@@ -280,22 +280,22 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
         <TableBody>
           {groups.map((group, gIdx) => (
             <React.Fragment key={gIdx}>
-              <TableRow className="bg-slate-200/50 hover:bg-slate-200/50 h-8 border-b border-slate-300">
-                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-900 font-black uppercase text-[9px] tracking-widest border-r border-slate-300">
+              <TableRow className="bg-slate-200 hover:bg-slate-200 h-8 border-b-2 border-slate-900">
+                <TableCell colSpan={hours.length + 1} className="py-1 px-3 text-slate-900 font-black uppercase text-[10px] tracking-widest border-r border-slate-900">
                   {group.label}
                 </TableCell>
               </TableRow>
               {group.parameters.map((param, pIdx) => {
                 const currentRow = rowCounter++;
                 return (
-                  <TableRow key={pIdx} className="h-9 hover:bg-slate-50 transition-colors border-b border-slate-200">
-                    <TableCell className="py-1 px-3 font-mono text-[10px] text-slate-700 border-r border-slate-300">
+                  <TableRow key={pIdx} className="h-9 hover:bg-slate-100 transition-colors border-b border-slate-400">
+                    <TableCell className="py-1 px-3 font-bold text-[11px] text-slate-900 border-r-2 border-slate-900 bg-slate-50/50">
                       {param}
                     </TableCell>
                     {hours.map((h, cIdx) => {
                       const tag = buildTag(group.label.includes("60-1001") ? `COMP-${group.label.split(":")[1].trim()}` : sheetKey, param, h);
                       return (
-                        <TableCell key={h} className="p-0 border-r border-slate-200">
+                        <TableCell key={h} className="p-0 border-r border-slate-300">
                           <Input
                             data-sheet={sheetKey}
                             data-row={currentRow}
@@ -303,7 +303,7 @@ const LogTable = ({ groups, hours, cells, setCells, sheetKey }: LogTableProps) =
                             value={cells[tag] || ""}
                             onChange={(e) => setCells(prev => ({ ...prev, [tag]: e.target.value }))}
                             onKeyDown={(e) => handleKeyDown(e, currentRow, cIdx, 1000, hours.length)}
-                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-mono text-[11px] text-slate-900 focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:bg-slate-50 placeholder:text-slate-200"
+                            className="h-9 w-full bg-transparent border-none rounded-none text-center font-bold text-[12px] text-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:bg-white placeholder:text-slate-300"
                             placeholder="0.0"
                             inputMode="decimal"
                           />
