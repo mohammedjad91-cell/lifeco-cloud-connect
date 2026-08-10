@@ -89,24 +89,19 @@ export const PLANT_GROUPS: { dept: string; deptAr: string; plants: { code: strin
   {
     dept: "AMMONIA", deptAr: "إدارة الأمونيا",
     plants: [
-      { code: "AMM1", ar: "مصنع الأمونيا الأول", hasModules: true, active: true },
-      { code: "AMM2", ar: "مصنع الأمونيا الثاني", hasModules: true, active: true },
-      { code: "DEMIN1", ar: "مصنع المياه الخالية من المعادن - الدمن الأول", hasModules: true, active: true },
-      { code: "DEMIN2", ar: "مصنع المياه الخالية من المعادن - الدمن الثاني", hasModules: true, active: true },
-      { code: "NITROGEN", ar: "مصنع النيتروجين", hasModules: true, active: true },
-      { code: "UTILITIES", ar: "الخدمات (Utilities)", hasModules: true, active: true },
-      { code: "PROC-ENG", ar: "هندسة العمليات", hasModules: true, active: true },
+      { code: "AMM1", ar: "Ammonia Plant 1", hasModules: true, active: true },
+      { code: "AMM2", ar: "Ammonia Plant 2", hasModules: true, active: true },
+      { code: "DEMIN1", ar: "Demin Water Plant 1", hasModules: true, active: true },
+      { code: "DEMIN2", ar: "Demin Water Plant 2", hasModules: true, active: true },
+      { code: "NITROGEN", ar: "Nitrogen Plant", hasModules: true, active: true },
     ],
   },
   {
     dept: "UREA", deptAr: "إدارة اليوريا",
     plants: [
-      { code: "UREA-1", ar: "مصنع اليوريا 1", hasModules: true, active: true },
-      { code: "UREA-2", ar: "مصنع اليوريا 2", hasModules: true, active: true },
-      { code: "AMM-STORAGE", ar: "خزانات الأمونيا", hasModules: true, active: true },
-      { code: "AMM-LOAD", ar: "تحميل الأمونيا", hasModules: true, active: true },
-      { code: "UREA-LOAD", ar: "تحميل اليوريا", hasModules: true, active: true },
-      { code: "WATER-1", ar: "وحدة معالجة المياه", hasModules: true, active: true },
+      { code: "UREA-1", ar: "Urea Plant 1", hasModules: true, active: true },
+      { code: "UREA-2", ar: "Urea Plant 2", hasModules: true, active: true },
+      { code: "AMM-STORAGE", ar: "Ammonia Storage", hasModules: true, active: true },
     ],
   },
 ];
