@@ -12,8 +12,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { Zap, ShieldCheck, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "@/lib/router-compat";
 
 export default function ElectricalWorkPermitForm({ formId, initialData, plantCode, onBack }: { formId?: string, initialData?: any, plantCode?: string, onBack?: () => void }) {
+  const navigate = useNavigate();
   const [data, setData] = useState(initialData?.form_data || {
     general: {
       permitNo: "",
