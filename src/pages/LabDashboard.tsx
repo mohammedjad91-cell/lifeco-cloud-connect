@@ -293,7 +293,7 @@ const LabDashboard = () => {
                           <Input 
                             value={readings[param]}
                             onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
-                            className="bg-slate-950 border-slate-800 text-primary font-mono text-2xl h-14 text-center border-2 focus:border-primary"
+                            className="bg-slate-950 border-slate-800 text-primary font-black text-2xl h-14 text-center border-2 focus:border-primary"
                           />
                         </div>
                      </div>
@@ -315,7 +315,7 @@ const LabDashboard = () => {
                           <Input 
                             value={readings[param]}
                             onChange={(e) => setReadings(prev => ({ ...prev, [param]: e.target.value }))}
-                            className="bg-slate-950 border-slate-800 text-primary font-mono text-2xl h-14 text-center border-2 focus:border-primary"
+                            className="bg-slate-950 border-slate-800 text-primary font-black text-2xl h-14 text-center border-2 focus:border-primary"
                           />
                         </div>
                      </div>
