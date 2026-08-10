@@ -14,7 +14,7 @@ const LabDashboard = () => {
   
   // Initialize view based on session storage
   const [view, setView] = useState<"DEPT_SELECT" | "AMMONIA_LAB">(
-    sessionStorage.getItem("lifeco_lab_plant") ? "AMMONIA_LAB" : "DEPT_SELECT"
+    "DEPT_SELECT"
   );
 
   const handleBack = () => {
