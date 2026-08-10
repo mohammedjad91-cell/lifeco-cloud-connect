@@ -39,20 +39,9 @@ export const AnalystVerificationModal = ({ isOpen, onVerified }: AnalystVerifica
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-[450px] bg-slate-900 border-primary/50 text-white shadow-2xl shadow-primary/20">
-        <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
-              <ShieldCheck className="w-7 h-7 text-primary shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
-            </div>
-            <div>
-              <DialogTitle className="text-2xl font-black uppercase tracking-tight text-primary">
-                {""}
-              </DialogTitle>
-              <DialogDescription className="text-slate-400 font-bold text-xs uppercase tracking-widest">
-                {""}
-              </DialogDescription>
-            </div>
-          </div>
+        <DialogHeader className="sr-only">
+          <DialogTitle>Analyst Verification</DialogTitle>
+          <DialogDescription>Please enter your credentials to access the laboratory module.</DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6 py-6 border-y border-white/10 my-4">
