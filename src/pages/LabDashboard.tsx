@@ -180,8 +180,17 @@ const LabDashboard = () => {
   return (
     <div className="min-h-screen bg-[#050b18] text-white flex flex-col font-sans">
       {/* 1. TOP CONTROL BAR */}
-      <header className="border-b-4 border-slate-900 p-4 flex items-center justify-between bg-slate-900/90 backdrop-blur-xl sticky top-0 z-50">
+      <header className="border-b-4 border-[#0A2540] p-4 flex items-center justify-between bg-white backdrop-blur-xl sticky top-0 z-50">
         <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 pr-6 border-r-2 border-[#0A2540]">
+            <span className="text-3xl font-black tracking-tighter text-[#0A2540]">
+              LIFE<span className="text-[#F5B800]">O</span>
+            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[#0A2540] font-bold text-[10px]">الشركة الليبية للأسمدة</span>
+              <span className="text-[#0A2540] text-[8px] font-medium uppercase">Libyan Fertilizer Company</span>
+            </div>
+          </div>
           <div className="flex items-center gap-3 bg-slate-950 border-2 border-slate-800 p-2 rounded-lg px-4 shadow-inner">
             <Clock className="w-5 h-5 text-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
             <span className="text-xl font-black font-mono text-primary tracking-tighter">

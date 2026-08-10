@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LIFECO PMS" },
+      { title: "LIFECO — المنظومة الكيميائية والتشغيلية" },
       { name: "description", content: "LIFECO Plant Management System" },
       { property: "og:title", content: "LIFECO PMS" },
       { name: "twitter:title", content: "LIFECO PMS" },
@@ -75,6 +75,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" },
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23F5B800"/><path d="M50 20 C65 20 80 50 80 70 C80 85 65 95 50 95 C35 95 20 85 20 70 C20 50 35 20 50 20 Z" fill="%23F5B800" stroke="%230A2540" stroke-width="2"/></svg>' },
     ],
   }),
   shellComponent: RootShell,

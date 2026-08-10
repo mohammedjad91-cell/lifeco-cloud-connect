@@ -439,10 +439,19 @@ const Dashboard = () => {
       )}
       
       {/* Header */}
-      <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none sticky top-0 z-50">
-        <div>
-          <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
-          <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">{department.label} {t.department}</p>
+      <header className="border-b-4 border-[#0A2540] px-6 py-4 flex items-center justify-between bg-white glass-card rounded-none sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="text-3xl font-black tracking-tighter text-[#0A2540]">
+                LIFE<span className="text-[#F5B800]">O</span>
+              </span>
+              <div className="flex flex-col leading-tight border-l-2 border-[#0A2540] pl-3">
+                <span className="text-[#0A2540] font-bold text-sm">الشركة الليبية للأسمدة</span>
+                <span className="text-[#0A2540] text-[10px] font-medium uppercase tracking-tight">Libyan Fertilizer Company</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {sessionStorage.getItem("lifeco_plant") === "N2-1" && activeTab === "logs" && (
