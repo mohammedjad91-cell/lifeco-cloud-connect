@@ -13,13 +13,14 @@ import LabManagementDashboard from "@/components/lab/LabManagementDashboard";
 import SampleManagementScreen from "@/components/lab/SampleManagementScreen";
 import SampleEntryForm from "@/components/lab/SampleEntryForm";
 import SampleDetailPage from "@/components/lab/SampleDetailPage";
+import AmmoniaLab from "@/components/lab/AmmoniaLab";
 
 const LabDashboard = () => {
   const navigate = useNavigate();
   const { t, lang, setLang } = useI18n();
 
   // Navigation State
-  const [currentView, setCurrentView] = useState<"DEPT_SELECT" | "AMMONIA_DASHBOARD" | "SAMPLE_LIST" | "ADD_SAMPLE" | "SAMPLE_DETAIL">("DEPT_SELECT");
+  const [currentView, setCurrentView] = useState<"DEPT_SELECT" | "AMMONIA_DASHBOARD" | "SAMPLE_LIST" | "ADD_SAMPLE" | "SAMPLE_DETAIL" | "AMMONIA_LAB_NEW">("DEPT_SELECT");
   const [selectedSource, setSelectedSource] = useState<string>("");
   const [selectedSampleId, setSelectedSampleId] = useState<string>("");
 
@@ -29,6 +30,7 @@ const LabDashboard = () => {
     else if (currentView === "ADD_SAMPLE") setCurrentView("SAMPLE_LIST");
     else if (currentView === "SAMPLE_LIST") setCurrentView("AMMONIA_DASHBOARD");
     else if (currentView === "AMMONIA_DASHBOARD") setCurrentView("DEPT_SELECT");
+    else if (currentView === "AMMONIA_LAB_NEW") setCurrentView("DEPT_SELECT");
     else navigate("/");
   };
 
@@ -76,7 +78,7 @@ const LabDashboard = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <button 
-                  onClick={() => setCurrentView("AMMONIA_DASHBOARD")} 
+                  onClick={() => setCurrentView("AMMONIA_LAB_NEW")} 
                   className="glass-card p-12 text-center hover:neon-border transition-all group relative overflow-hidden border-primary/20"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -96,6 +98,10 @@ const LabDashboard = () => {
                 </button>
               </div>
             </div>
+          )}
+
+          {currentView === "AMMONIA_LAB_NEW" && (
+            <AmmoniaLab onBack={() => setCurrentView("DEPT_SELECT")} />
           )}
 
           {currentView === "AMMONIA_DASHBOARD" && (
