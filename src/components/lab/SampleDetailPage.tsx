@@ -30,10 +30,10 @@ const SampleDetailPage: React.FC<SampleDetailPageProps> = ({ sampleId, onBack })
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: sData } = await supabase.from("lifeco_lab_samples" as any).select("*").eq("id", sampleId).single();
+    const { data: sData } = await supabase.from("lifeco_lab_samples" as any).select("*").eq("id", sampleId as any).single();
     if (sData) setSample(sData);
 
-    const { data: rData } = await supabase.from("lifeco_lab_analysis_results" as any).select("*").eq("sample_id", sampleId);
+    const { data: rData } = await supabase.from("lifeco_lab_analysis_results" as any).select("*").eq("sample_id", sampleId as any);
     if (rData) setResults(rData);
     
     setLoading(false);
@@ -43,7 +43,7 @@ const SampleDetailPage: React.FC<SampleDetailPageProps> = ({ sampleId, onBack })
     if (!newParam.parameter || !newParam.result) return;
     
     const { error } = await supabase.from("lifeco_lab_analysis_results" as any).insert([{
-      sample_id: sampleId,
+      sample_id: sampleId as any,
       parameter: newParam.parameter,
       result: newParam.result,
       unit: newParam.unit,

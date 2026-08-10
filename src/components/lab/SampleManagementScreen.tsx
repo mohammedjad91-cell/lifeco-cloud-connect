@@ -33,9 +33,9 @@ const SampleManagementScreen: React.FC<SampleManagementScreenProps> = ({ sourceI
   const fetchSamples = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("lifeco_lab_samples")
+      .from("lifeco_lab_samples" as any)
       .select("*")
-      .eq("plant_source", sourceId)
+      .eq("plant_source", sourceId as any)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
