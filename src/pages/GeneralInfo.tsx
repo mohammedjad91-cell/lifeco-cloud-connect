@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { useNavigate } from "@/lib/router-compat";
+import { getBackTarget } from "@/lib/nav-back";
 import { 
   ArrowLeft, Search, Info, Shield, Phone, Activity, 
   Loader2, AlertCircle, FileText, ChevronRight
@@ -82,7 +83,7 @@ const GeneralInfo = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => navigate("/")}
+          onClick={() => navigate(getBackTarget())}
           className="hover:bg-white/10"
         >
           <ArrowLeft className="w-5 h-5" />

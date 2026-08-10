@@ -192,7 +192,16 @@ const LabDashboard = () => {
            <Button 
              variant="secondary" 
              className="bg-white/10 border border-white/30 text-white hover:bg-white/20" 
-             onClick={() => navigate(getBackTarget())}
+             onClick={() => {
+               // If we have a specific plant context, go back to its modules. 
+               // Otherwise go to the LAB department screen.
+               const plant = sessionStorage.getItem("lifeco_plant");
+               if (plant) {
+                 navigate(`/modules/${plant}`);
+               } else {
+                 navigate("/dept/LAB");
+               }
+             }}
            >
              <LogOut className="w-4 h-4 mr-2" /> {lang === "ar" ? "رجوع" : "Back"}
            </Button>
