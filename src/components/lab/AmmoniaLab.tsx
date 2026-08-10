@@ -259,22 +259,18 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack }) => {
                   {selectedPlant === "NITROGEN" ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Oxygen Content (60-AL-003)</label>
+                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Oxygen %</label>
                         <div className="relative">
                           <Input 
                             value={results.oxygen} onChange={e => setResults({...results, oxygen: e.target.value})}
                             className="bg-secondary/30 h-14 pl-4 pr-16 text-xl font-mono text-primary"
                             placeholder="0.00"
                           />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">ppm</span>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground flex justify-between px-1">
-                          <span>LIMIT: &lt; 5-10</span>
-                          <span>NORMAL</span>
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">%</span>
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Main N2 Dew Point</label>
+                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Dew Point</label>
                         <div className="relative">
                           <Input 
                             value={results.dewPoint} onChange={e => setResults({...results, dewPoint: e.target.value})}
@@ -283,13 +279,9 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack }) => {
                           />
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">°C</span>
                         </div>
-                        <div className="text-[10px] text-muted-foreground flex justify-between px-1">
-                          <span>LIMIT: -40 to -60</span>
-                          <span>OPTIMAL</span>
-                        </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Nitrogen Purity %</label>
+                        <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">N2 Purity %</label>
                         <div className="relative">
                           <Input 
                             value={results.purity} onChange={e => setResults({...results, purity: e.target.value})}
@@ -297,10 +289,6 @@ const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack }) => {
                             placeholder="99.99"
                           />
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">%</span>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground flex justify-between px-1">
-                          <span>TARGET: 99.99</span>
-                          <span>VERIFIED</span>
                         </div>
                       </div>
                     </div>
