@@ -89,7 +89,10 @@ const Dashboard = () => {
   const [previewMode, setPreviewMode] = useState<"ops" | "lab" | null>(null);
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window === "undefined") return "logs";
-    return sessionStorage.getItem("lifeco_dashboard_tab") || "logs";
+    const saved = sessionStorage.getItem("lifeco_dashboard_tab");
+    // If someone is still trying to use the old labReadings tab, redirect them to the new Lab module
+    if (saved === "labReadings") return "logs";
+    return saved || "logs";
   });
   const [showN2LogSheets, setShowN2LogSheets] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
