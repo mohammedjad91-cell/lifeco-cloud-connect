@@ -83,6 +83,7 @@ const LabDashboard = () => {
   }, [deptScope, plantFilter]);
 
   const parameters = !plant ? [] : (LAB_PARAMETERS[plant]?.[sampleType] || []);
+  const hasModules = !!parameters.length;
 
   // Sync plant state to plantFilter to ensure UI consistency
   useEffect(() => {
@@ -123,12 +124,17 @@ const LabDashboard = () => {
       toast({ title: lang === "ar" ? "يرجى إدخال اسم المحلل والرقم الوظيفي" : "Please enter Analyst Name and ID", variant: "destructive" });
       return;
     }
+    
+    // Clear previous values when verifying a new plant entry session
+    setParamValues({});
     setVerified(true);
     setPlant(plantFilter);
+    
     // Persist to session storage to ensure state is maintained on refresh/navigation
     sessionStorage.setItem("lifeco_lab_verified", "true");
     sessionStorage.setItem("lifeco_lab_tech_name", technicianName);
     sessionStorage.setItem("lifeco_lab_tech_id", employeeId);
+    sessionStorage.setItem("lifeco_lab_plant", plantFilter);
   };
 
   const handleSaveAll = async () => {
@@ -333,9 +339,13 @@ const LabDashboard = () => {
                 ))}
               </div>
 
-              <Button onClick={handleSaveAll} disabled={saving} className="w-full h-14 text-xl font-black uppercase tracking-widest gap-3 shadow-xl shadow-primary/20">
+              <Button 
+                onClick={handleSaveAll} 
+                disabled={saving || !parameters.length} 
+                className="w-full h-14 text-xl font-black uppercase tracking-widest gap-3 shadow-xl shadow-primary/20"
+              >
                 {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
-                {lang === "ar" ? "حفظ وإرسال للسجلات التشغيلية" : "Save & Publish to Operations"}
+                {lang === "ar" ? "حفظ ونشر لسجلات التشغيل (Save & Publish)" : "Save & Publish to Operations Logs"}
               </Button>
             </div>
 
