@@ -47,10 +47,40 @@ const LabDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   
-  const [deptScope, setDeptScope] = useState<string>(() =>
-    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_dept") || "");
-  const [plantFilter, setPlantFilter] = useState<string>(() =>
-    typeof window === "undefined" ? "" : sessionStorage.getItem("lifeco_lab_plant") || "");
+  const [deptScope, setDeptScope] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("lifeco_lab_dept") || "";
+  });
+  const [plantFilter, setPlantFilter] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("lifeco_lab_plant") || "";
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isVerified = sessionStorage.getItem("lifeco_lab_verified") === "true";
+      const savedName = sessionStorage.getItem("lifeco_lab_tech_name") || "";
+      const savedId = sessionStorage.getItem("lifeco_lab_tech_id") || "";
+      const savedPlant = sessionStorage.getItem("lifeco_lab_plant") || "";
+      
+      if (isVerified && savedName && savedId && savedPlant) {
+        setVerified(true);
+        setTechnicianName(savedName);
+        setEmployeeId(savedId);
+        setPlant(savedPlant);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (deptScope) sessionStorage.setItem("lifeco_lab_dept", deptScope);
+      else sessionStorage.removeItem("lifeco_lab_dept");
+      
+      if (plantFilter) sessionStorage.setItem("lifeco_lab_plant", plantFilter);
+      else sessionStorage.removeItem("lifeco_lab_plant");
+    }
+  }, [deptScope, plantFilter]);
 
   const parameters = !plant ? [] : LAB_PARAMETERS[plant]?.[sampleType] || [];
 
@@ -88,6 +118,10 @@ const LabDashboard = () => {
     }
     setVerified(true);
     setPlant(plantFilter);
+    // Persist to session storage to ensure state is maintained on refresh/navigation
+    sessionStorage.setItem("lifeco_lab_verified", "true");
+    sessionStorage.setItem("lifeco_lab_tech_name", technicianName);
+    sessionStorage.setItem("lifeco_lab_tech_id", employeeId);
   };
 
   const handleSaveAll = async () => {
@@ -151,10 +185,13 @@ const LabDashboard = () => {
   const resetSelection = () => {
     if (verified) {
       setVerified(false);
+      sessionStorage.removeItem("lifeco_lab_verified");
     } else if (plantFilter) {
       setPlantFilter("");
+      sessionStorage.removeItem("lifeco_lab_plant");
     } else {
       setDeptScope("");
+      sessionStorage.removeItem("lifeco_lab_dept");
     }
   };
 
