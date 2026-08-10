@@ -110,7 +110,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
   const OPS_DEPTS = ["AMMONIA", "UREA"];
   const deptKey = plant?.department_key || "";
   
-  const modules = OPS_DEPTS.includes(deptKey) ? SIMPLE_MODULES : [];
+  const modules = (OPS_DEPTS.includes(deptKey) || deptKey === "LAB") ? SIMPLE_MODULES : [];
 
   const openModule = (m: PlantModule) => {
     const key = m.key.toLowerCase();
@@ -122,7 +122,7 @@ const PlantModules = ({ plantCode }: { plantCode: string }) => {
     sessionStorage.setItem("lifeco_module_label", m.labelAr || m.label);
 
     // If opening lab results from a lab management context, allow data entry
-    if (key === "lab" && departmentKey === "LAB") {
+    if (key === "lab-readings" && departmentKey === "LAB") {
       sessionStorage.setItem("lifeco_lab_force_entry", "true");
       sessionStorage.removeItem("lifeco_lab_plant"); // Clear plant filter to see everything
       navigate("/lab");

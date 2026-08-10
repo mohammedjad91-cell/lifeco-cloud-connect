@@ -71,6 +71,23 @@ const LabDashboard = () => {
   useEffect(() => {
     if (selectedPlant === "NITROGEN") {
       setReadings(N2_DEFAULTS[sampleType]);
+    } else if (selectedPlant === "AMM1" || selectedPlant === "AMM2") {
+      // Mock data for Ammonia Plants
+      setReadings({
+        "NH3 Concentration": selectedPlant === "AMM1" ? "99.8" : "99.7",
+        "H2 Content": "74.5",
+        "N2 Content": "24.8",
+        "CH4 Content": "0.5",
+        "CO + CO2": "0.1",
+        "Dew Point": "-45.0"
+      });
+    } else if (selectedPlant === "DEMIN1" || selectedPlant === "DEMIN2") {
+      setReadings({
+        "pH": "7.2",
+        "Conductivity": "0.1",
+        "Silica": "0.01",
+        "Hardness": "0.0"
+      });
     } else {
       setReadings({});
     }
