@@ -81,14 +81,30 @@ export const AnalystVerificationModal = ({ isOpen, onVerified }: AnalystVerifica
           </div>
         </div>
         
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button 
-            onClick={handleVerify}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase py-6 text-lg shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+        <div className="flex flex-col gap-3">
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button 
+              onClick={handleVerify}
+              className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase py-6 text-lg shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+            >
+              Verify & Grant Access
+            </Button>
+          </motion.div>
+          
+          <Button
+            variant="ghost"
+            onClick={() => {
+              const plant = sessionStorage.getItem("lifeco_plant");
+              const dept = sessionStorage.getItem("lifeco_dept");
+              if (plant) window.location.href = `/modules/${plant}`;
+              else if (dept) window.location.href = `/dept/${dept}`;
+              else window.location.href = "/";
+            }}
+            className="w-full text-slate-400 hover:text-white hover:bg-white/5 font-bold uppercase py-4"
           >
-            Verify & Grant Access
+            رجوع / Back
           </Button>
-        </motion.div>
+        </div>
         
         <p className="text-center text-[9px] text-slate-500 font-mono mt-2 uppercase tracking-tighter">
           All analytical actions are logged under this identity | Protocol V2.1

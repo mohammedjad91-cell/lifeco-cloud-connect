@@ -171,11 +171,10 @@ const NitrogenLogSheetsModule = ({ onClose, selectedDate = new Date() }: LogShee
       <div className="sticky top-0 z-[40] bg-white border-b border-slate-200 shadow-sm p-4 print:hidden">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="hidden">
-              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-slate-100">
-                <ChevronLeft className="w-6 h-6 text-slate-600" />
-              </Button>
-            </div>
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-slate-100 border border-slate-200 gap-2 font-bold text-slate-700">
+              <ChevronLeft className="w-5 h-5" />
+              <span>رجوع / Back</span>
+            </Button>
             <div>
               <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Nitrogen Plant Commissioning Log</h2>
               <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{format(selectedDate, "dd MMM yyyy")} | 12-Hour Shift System</p>
