@@ -37,7 +37,7 @@ const LabDashboard = () => {
       <header className="border-b border-border px-6 py-4 flex items-center justify-between glass-card rounded-none sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={handleBack} className="text-muted-foreground">
-            <ArrowLeft className={\`w-5 h-5 \${lang === "ar" ? "rotate-180" : ""}\`} />
+            <ArrowLeft className={`w-5 h-5 ${lang === "ar" ? "rotate-180" : ""}`} />
           </Button>
           <div>
             <h1 className="font-display text-xl md:text-2xl font-bold neon-text tracking-wider">{t.lifecoDigital}</h1>
