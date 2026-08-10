@@ -13,9 +13,10 @@ import { useI18n } from "@/lib/i18n";
 
 interface AmmoniaLabProps {
   onBack: () => void;
+  preSelectedPlant?: string | null;
 }
 
-const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack }) => {
+const AmmoniaLab: React.FC<AmmoniaLabProps> = ({ onBack, preSelectedPlant }) => {
   const { lang } = useI18n();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
