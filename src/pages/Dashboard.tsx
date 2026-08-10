@@ -94,6 +94,7 @@ const Dashboard = () => {
   useEffect(() => {
     const tab = sessionStorage.getItem("lifeco_dashboard_tab");
     if (tab === "n2-logs") {
+      setActiveTab("nitrogen");
       setShowN2LogSheets(true);
     }
   }, []);
