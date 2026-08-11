@@ -40,8 +40,8 @@ export const AnalystVerificationModal = ({ isOpen, onVerified }: AnalystVerifica
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-[450px] bg-slate-900 border-primary/50 text-white shadow-2xl shadow-primary/20">
         <DialogHeader className="sr-only">
-          <DialogTitle>Analyst Verification</DialogTitle>
-          <DialogDescription>Please enter your credentials to access the laboratory module.</DialogDescription>
+          <DialogTitle>Verification</DialogTitle>
+          <DialogDescription>Credentials entry</DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6 py-6 border-y border-white/10 my-4">
